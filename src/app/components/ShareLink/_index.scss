@@ -1,0 +1,44 @@
+$ShareLink_width: 40px;
+
+.ShareLink {
+  flex: 1 1 $ShareLink_width;
+  width: $ShareLink_width;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.Nav .ShareLink {
+  flex: 0 1 $ShareLink_width;
+}
+
+.ShareLink--email {
+  background-image: url(share-links/email.svg);
+
+  @media #{$mq-sm} {
+    display: none;
+  }
+}
+
+.ShareLink--facebook {
+  background-image: url(share-links/facebook.svg);
+}
+
+.ShareLink--reddit {
+  background-image: url(share-links/reddit.svg);
+
+  @media #{$mq-sm} {
+    display: none;
+  }
+}
+
+.ShareLink--twitter {
+  background-image: url(share-links/twitter.svg);
+}
+
+.ShareLink--whatsapp {
+  background-image: url(share-links/whatsapp.svg);
+
+  @media #{$mq-not-sm} {
+    display: none;
+  }
+}

@@ -1,0 +1,17 @@
+.Main {
+  font-family: $font-serif;
+  font-size: 18px;
+  line-height: 1.666666667;
+
+  h1,
+  h2,
+  h3 {
+    font-family: $font-serif;
+    font-weight: bold;
+  }
+
+  a,
+  a > * {
+    color: $color-darkPrimary;
+  }
+}

@@ -1,0 +1,29 @@
+$font-sans: "ABCSans", Arial, Helvetica, sans-serif;
+$font-serif: "ABCSerif", "Times New Roman", Georgia, serif;
+
+$color-white: #fff;
+$color-lighterGrey: #f9f9f9;
+$color-lightGrey: #eee;
+$color-grey: #bbb;
+$color-darkGrey: #666;
+$color-darkerGrey: #1c1c1c;
+$color-black: #111;
+
+$gradient-vertical: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%);
+$gradient-vertical-content: linear-gradient(to bottom, rgba(0,0,0,0.43) 0%, rgba(0,0,0,0.75) 100%);
+
+$color-lighterPrimary: #01ceff;
+$color-lightPrimary: #68e1FF;
+$color-primary: #007aff;
+$color-darkPrimary: #0073a8;
+$color-darkerPrimary: #315768;
+$color-secondary: #7b3b3b;
+
+$mq-sm: "(max-width: 699px)";
+$mq-md: "(min-width: 700px) and (max-width: 979px)";
+$mq-lg: "(min-width: 980px)";
+$mq-not-sm: "(min-width: 700px)";
+$mq-not-md: "(max-width: 699px), (min-width: 980px)";
+$mq-not-lg: "(max-width: 979px)";
+$mq-portrait: "(orientation: portrait)";
+$mq-landscape: "(orientation: landscape)";

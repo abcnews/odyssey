@@ -1,0 +1,29 @@
+{
+  "name": "narricle",
+  "version": "1.0.0",
+  "description": "Enhance feature-worthy stories",
+  "license": "MIT",
+  "private": true,
+  "contributors": [
+    "Colin Gourlay <Gourlay.Colin@abc.net.au>"
+  ],
+  "scripts": {
+    "start": "aunty serve --debug"
+  },
+  "dependencies": {
+    "bel": "^4.5.1",
+    "domready": "^1.0.8",
+    "fastclick": "^1.0.6",
+    "inn-abcdatetime-lib": "git+ssh://git@stash.abc-dev.net.au:7999/news/news-abcdatetime-lib#v1.1.3",
+    "object-fit-images": "^3.1.3",
+    "picturefill": "^3.0.2",
+    "util-dewysiwyg": "git+ssh://git@stash.abc-dev.net.au:7999/news/util-dewysiwyg.git#3.6.0",
+    "util-news-selectors": "git+ssh://git@stash.abc-dev.net.au:7999/news/util-news-selectors.git#2.3.0"
+  },
+  "devDependencies": {
+    "@abcnews/aunty": "2.1.x"
+  },
+  "aunty": {
+    "type": "basic-story"
+  }
+}
