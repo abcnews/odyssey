@@ -121,9 +121,6 @@
 }
 
 .Header-content > h1 {
-  position: relative;
-  margin: 0 auto;
-
   .is-layered &,
   .is-dark & {
     color: $color-white;

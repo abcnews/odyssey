@@ -18,6 +18,34 @@
     color: $color-darkPrimary;
   }
 
+  > h2 {
+    &::before {
+      content: "";
+      opacity: .3;
+      display: block;
+      margin: 3rem auto 1rem;
+      width: 7.5rem;
+      height: 1px;
+      background-color: $color-black;
+
+      @media #{$mq-md} {
+        margin: 4rem auto 1.5rem;
+      }
+
+      @media #{$mq-lg} {
+        margin: 5rem auto 1.5rem;
+      }
+    }
+
+    @media #{$mq-md} {
+      padding-bottom: .5rem;
+    }
+
+    @media #{$mq-lg} {
+      padding-bottom: 1rem;
+    }
+  }
+
   .Header + p::first-letter,
   .Header + :not(p) + p::first-letter {
     float: left;

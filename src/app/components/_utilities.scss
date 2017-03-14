@@ -48,10 +48,15 @@
 
   & > * {
     font-family: $font-serif;
+    margin-top: 0;
     margin-bottom: 1.5rem;
 
-    @media #{$mq-not-sm} {
+    @media #{$mq-md} {
       margin-bottom: 2rem;
+    }
+
+    @media #{$mq-lg} {
+      margin-bottom: 2.25rem;
     }
   }
 
@@ -69,6 +74,7 @@
     font-family: $font-serif;
     font-weight: bold;
     line-height: 1.294117647;
+    text-transform: none;
   }
 
   > h1 {
@@ -84,14 +90,18 @@
   }
 
   > h2 {
+    clear: both;
     font-size: 2.125rem;
+    text-align: center;
 
     @media #{$mq-md} {
       font-size: 2.375rem;
+      max-width: cells(8);
     }
 
     @media #{$mq-lg} {
       font-size: 2.5rem;
+      max-width: cells(6);
     }
   }
 
