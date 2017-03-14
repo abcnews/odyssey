@@ -47,9 +47,10 @@
   font-family: $font-serif;
 
   & > * {
-    font-family: $font-serif;
     margin-top: 0;
     margin-bottom: 1.5rem;
+    color: $color-darkestGrey;
+    font-family: $font-serif;
 
     @media #{$mq-md} {
       margin-bottom: 2rem;
@@ -71,6 +72,7 @@
   > h1,
   > h2,
   > h3 {
+    color: $color-black;
     font-family: $font-serif;
     font-weight: bold;
     line-height: 1.294117647;
@@ -119,5 +121,24 @@
     @media #{$mq-not-sm} {
       line-height: 1.666666667;
     }
+  }
+
+  > ul,
+  > ol,
+  > * > * > ul,
+  > * > * > ol {
+    margin-left: 0;
+    padding-left: 0;
+    list-style: none;
+  }
+
+  > * > li,
+  > * > li > * > li {
+    margin-bottom: .5rem;
+    padding-left: .75em;
+    background-image: url(richtext/bullet.svg);
+    background-position: 0 .65em;
+    background-repeat: no-repeat;
+    list-style: none;
   }
 }

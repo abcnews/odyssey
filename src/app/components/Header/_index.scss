@@ -34,11 +34,6 @@
     }
   }
 
-  &.is-dark > *,
-  &.is-layered > * {
-    color: $color-lighterGrey;
-  }
-
   &.is-dark a,
   &.is-layered a,
   &.is-dark a > *
@@ -117,6 +112,11 @@
 
   @media #{$mq-lg} {
     padding: 0 calc(#{cells(1, 10)} - #{$layout-fixed-padding});
+  }
+
+  .is-dark &,
+  .is-layered & {
+    color: $color-lighterGrey;
   }
 }
 
