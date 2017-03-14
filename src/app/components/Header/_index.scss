@@ -122,31 +122,17 @@
 
 .Header-content > h1 {
   position: relative;
-  margin: 0 auto 1.25rem;
-  padding-top: .0625em;
-  padding-bottom: .425em;
-  font-size: 2.5rem;
-  line-height: 1.2;
+  margin: 0 auto;
 
   .is-layered &,
   .is-dark & {
     color: $color-white;
   }
 
-  @media #{$mq-md} {
-    font-size: 3.125rem;
-  }
-
-  @media #{$mq-lg} {
-    font-size: 3.5rem;
-  }
-
   &::after {
     content: "";
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translate(-50%, 0);
+    display: block;
+    margin: 1.25rem auto;
     width: 55%;
     max-width: 18rem;
     height: 1px;
@@ -170,7 +156,7 @@
 .Header-byline + *,
 .Header-infoSource,
 .Header-infoSource + * {
-  margin-top: 1rem;
+  margin-top: -1rem;
 }
 
 .Header-byline,
@@ -201,6 +187,7 @@
 
 .Header-updated,
 .Header-published {
+  margin-bottom: 0;
   font-size: .75rem;
   color: $color-darkGrey;
 

@@ -3,7 +3,7 @@ const html = require('bel');
 const ABCDateTime = require('inn-abcdatetime-lib');
 
 // Ours
-const {before, isElement, select, slug} = require('../../../utils');
+const {before, isElement, select, slug, trim} = require('../../../utils');
 const Picture = require('../Picture');
 
 const SM_RATIO_PATTERN = /sm(\d+x\d+)/;
@@ -73,7 +73,7 @@ function Header({
       ${pictureEl ? html`<div class="Header-media">
         ${pictureEl}
       </div>` : null}
-      <div class="Header-content">
+      <div class="Header-content u-richtext">
         ${contentEls}
       </div>
     </div>
@@ -92,7 +92,7 @@ function transformSection(section, meta) {
 
     if (!config.imageEl && imageEl) {
       config.imageEl = imageEl;
-    } else {
+    } else if (trim(node.textContent).length > 0) {
       config.miscNodes.push(node);
     }
 

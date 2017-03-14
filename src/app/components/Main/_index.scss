@@ -1,19 +1,16 @@
 .Main {
-  font-family: $font-serif;
-  font-size: 1.125rem;
-  line-height: 1.666666667;
-
   *,
   *::before,
   *::after {
     box-sizing: border-box;
   }
 
-  h1,
-  h2,
-  h3 {
-    font-family: $font-serif;
-    font-weight: bold;
+  img,
+  video,
+  picture,
+  iframe,
+  object {
+    max-width: 100%;
   }
 
   a,
@@ -21,11 +18,17 @@
     color: $color-darkPrimary;
   }
 
-  img,
-  video,
-  picture,
-  iframe,
-  embed {
-    max-width: 100%;
+  .Header + p::first-letter,
+  .Header + :not(p) + p::first-letter {
+    float: left;
+    padding-right: .25rem;
+    font-size: 3.3125rem;
+    font-weight: bold;
+    line-height: .95;
+
+    @media #{$mq-not-sm} {
+      font-size: 3.625rem;
+      line-height: 1;
+    }
   }
 }

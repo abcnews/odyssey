@@ -42,3 +42,72 @@
     }
   }
 }
+
+.u-richtext {
+  font-family: $font-serif;
+
+  & > * {
+    font-family: $font-serif;
+    margin-bottom: 1.5rem;
+
+    @media #{$mq-not-sm} {
+      margin-bottom: 2rem;
+    }
+  }
+
+  table,
+  button,
+  input,
+  select,
+  textarea {
+    font-size: 1rem;
+  }
+
+  > h1,
+  > h2,
+  > h3 {
+    font-family: $font-serif;
+    font-weight: bold;
+    line-height: 1.294117647;
+  }
+
+  > h1 {
+    font-size: 2.5rem;
+
+    @media #{$mq-md} {
+      font-size: 3.125rem;
+    }
+
+    @media #{$mq-lg} {
+      font-size: 3.5rem;
+    }
+  }
+
+  > h2 {
+    font-size: 2.125rem;
+
+    @media #{$mq-md} {
+      font-size: 2.375rem;
+    }
+
+    @media #{$mq-lg} {
+      font-size: 2.5rem;
+    }
+  }
+
+  > h3 {
+    font-size: 1.375rem;
+    text-align: center;
+  }
+
+  > p,
+  > * > li,
+  > blockquote {
+    font-size: 1.125rem;
+    line-height: 1.444444;
+
+    @media #{$mq-not-sm} {
+      line-height: 1.666666667;
+    }
+  }
+}
