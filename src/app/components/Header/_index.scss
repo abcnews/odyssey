@@ -1,11 +1,14 @@
 .Header {
   position: relative;
-  margin: 0 0 30px;
-  font-size: 18px;
+  margin-bottom: 2rem;
   line-height: 1.5;
 
   @media #{$mq-not-sm} {
-    font-size: 20px;
+    font-size: 1.25rem;
+  }
+
+  @media #{$mq-lg} {
+    margin-bottom: 3rem;
   }
 
   &.is-dark,
@@ -18,15 +21,15 @@
     flex-direction: column;
     justify-content: flex-end;
     box-sizing: border-box;
-    padding-top: 250px;
+    padding-top: 16rem;
 
     @media #{$mq-md} {
-      padding-top: 350px;
+      padding-top: 22rem;
       min-height: 100vw;
     }
 
     @media #{$mq-lg} {
-      padding-top: 450px;
+      padding-top: 28rem;
       min-height: 56.25vw;
     }
   }
@@ -43,7 +46,12 @@
     color: $color-lightPrimary;
   }
 
-  // TODO: Alternative link color
+  &.is-dark a:visited,
+  &.is-layered a:visited,
+  &.is-dark a:visited > *
+  &.is-layered a:visited > * {
+    color: $color-tertiary;
+  }
 }
 
 .Header-media {
@@ -65,7 +73,7 @@
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 100px;
+    height: 6.25rem;
     background-image: $gradient-vertical;
   }
 
@@ -85,36 +93,39 @@
 .Header-content {
   margin: 0 auto;
   padding: 20px 0;
-  max-width: 610px;
+  width: calc(#{cells(12)} - #{$layout-fluid-gutter});
   text-align: center;
 
+  @media #{$mq-md} {
+    width: calc(#{cells(10)} - #{$layout-fluid-gutter});
+  }
+
   @media #{$mq-lg} {
-    max-width: 952px;
+    width: $layout-fixed - $layout-fixed-gutter;
   }
 
   .is-layered & {
     position: relative;
     z-index: 1;
-    width: calc(100% - 30px);
     background-image: $gradient-vertical-content;
   }
 }
 
 
 .Header-content > * {
-  margin: 0 auto;
-  max-width: 83.3333333%;
+  padding: 0 calc(#{cells(1, 10)});
 
-  @media #{$mq-not-sm} {
-    max-width: 80%;
+  @media #{$mq-lg} {
+    padding: 0 calc(#{cells(1, 10)} - #{$layout-fixed-padding});
   }
 }
 
 .Header-content > h1 {
   position: relative;
-  margin: 0 auto 20px;
-  padding: .0625em 0 .425em;
-  font-size: 40px;
+  margin: 0 auto 1.25rem;
+  padding-top: .0625em;
+  padding-bottom: .425em;
+  font-size: 2.5rem;
   line-height: 1.2;
 
   .is-layered &,
@@ -122,12 +133,12 @@
     color: $color-white;
   }
 
-  @media #{$mq-not-sm} {
-    font-size: 50px;
+  @media #{$mq-md} {
+    font-size: 3.125rem;
   }
 
   @media #{$mq-lg} {
-    font-size: 56px;
+    font-size: 3.5rem;
   }
 
   &::after {
@@ -137,7 +148,7 @@
     left: 50%;
     transform: translate(-50%, 0);
     width: 55%;
-    max-width: 300px;
+    max-width: 18rem;
     height: 1px;
     background-color: $color-black;
 
@@ -159,12 +170,12 @@
 .Header-byline + *,
 .Header-infoSource,
 .Header-infoSource + * {
-  margin-top: 15px;
+  margin-top: 1rem;
 }
 
 .Header-byline,
 .Header-infoSource {
-  font-size: 15px;
+  font-size: .9375rem;
 }
 
 .Header-byline > em:first-child {
@@ -190,7 +201,7 @@
 
 .Header-updated,
 .Header-published {
-  font-size: 12px;
+  font-size: .75rem;
   color: $color-darkGrey;
 
   .is-layered &,

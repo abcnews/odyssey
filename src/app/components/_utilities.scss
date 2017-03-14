@@ -1,0 +1,44 @@
+.u-layout {
+  margin-left: auto;
+  margin-right: auto;
+  width: $layout-fluid;
+
+  @media #{$mq-lg} {
+    width: $layout-fixed;
+  }
+}
+
+.u-layout > :not(.u-full) {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: $layout-fluid-padding;
+  padding-right: $layout-fluid-padding;
+  width: cells(12);
+
+  @media #{$mq-md} {
+    width: cells(10);
+  }
+
+  @media #{$mq-lg} {
+    padding-left: $layout-fixed-padding;
+    padding-right: $layout-fixed-padding;
+    width: cells(8);
+  }
+}
+
+.u-layout > .u-full {
+  margin-left: calc(-50vw + 50%);
+  width: 100vw;
+
+  // Phase 1 (Standard)
+  html.fixed & {
+    @media (max-width: 1000px) {
+      min-width: 1000px;
+      margin-left: -10px;
+    }
+
+    @media #{$mq-not-lg} {
+      margin-left: 0;
+    }
+  }
+}

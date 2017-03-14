@@ -100,10 +100,6 @@ function getShareLinks() {
 }
 
 function getMeta() {
-  // console.log(getMetaContent('DCTERMS.issued'));
-  // console.log(Date.parse(getMetaContent('DCTERMS.issued'));
-  // console.log(new Date(Date.parse(getMetaContent('DCTERMS.issued'))));
-
   return {
     title: getMetaContent('replacement-title') ||
       getMetaContent('replacement-title') ||

@@ -1,7 +1,13 @@
 .Main {
   font-family: $font-serif;
-  font-size: 18px;
+  font-size: 1.125rem;
   line-height: 1.666666667;
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
 
   h1,
   h2,
@@ -13,5 +19,13 @@
   a,
   a > * {
     color: $color-darkPrimary;
+  }
+
+  img,
+  video,
+  picture,
+  iframe,
+  embed {
+    max-width: 100%;
   }
 }

@@ -1,3 +1,5 @@
+$rem: 16px;
+
 $font-sans: "ABCSans", Arial, Helvetica, sans-serif;
 $font-serif: "ABCSerif", "Times New Roman", Georgia, serif;
 
@@ -18,6 +20,18 @@ $color-primary: #007aff;
 $color-darkPrimary: #0073a8;
 $color-darkerPrimary: #315768;
 $color-secondary: #7b3b3b;
+$color-tertiary: #f1ccf3;
+
+@function cells($numColumns, $totalColumns: 12) {
+  @return $numColumns / $totalColumns * 100%;
+}
+
+$layout-fluid: 100%;
+$layout-fixed: 980px;
+$layout-fluid-gutter: 30px;
+$layout-fixed-gutter: 28px;
+$layout-fluid-padding: $layout-fluid-gutter / 2;
+$layout-fixed-padding: $layout-fixed-gutter / 2;
 
 $mq-sm: "(max-width: 699px)";
 $mq-md: "(min-width: 700px) and (max-width: 979px)";

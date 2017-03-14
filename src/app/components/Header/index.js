@@ -20,7 +20,7 @@ function Header({
   isLayered,
   miscNodes = []
 }) {
-  const className = `Header${isDark ? ' is-dark' : ''}${isLayered ? ' is-layered' : ''}`;
+  const className = `Header${isDark ? ' is-dark' : ''}${isLayered && imageEl ? ' is-layered' : ''} u-full`;
   let pictureEl;
 
   if (imageEl) {
