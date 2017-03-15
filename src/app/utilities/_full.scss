@@ -1,0 +1,18 @@
+.u-full {
+  margin-left: calc(-50vw + 50%);
+  padding-left: 0;
+  padding-right: 0;
+  width: 100vw;
+
+  // Phase 1 (Standard)
+  html.fixed & {
+    @media (max-width: 1000px) {
+      min-width: 1000px;
+      margin-left: -10px;
+    }
+
+    @media #{$mq-not-lg} {
+      margin-left: 0;
+    }
+  }
+}

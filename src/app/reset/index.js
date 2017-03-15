@@ -1,10 +1,11 @@
 // External
 const html = require('bel');
+const dewysiwyg = require('util-dewysiwyg');
 
 // Ours
 const Main = require('../components/Main');
 const {SELECTORS} = require('../../constants');
-const {slice, literalList, select, selectAll, detachAll, before} = require('../../utils');
+const {append, before, detachAll, literalList, select, selectAll, slice} = require('../../utils');
 
 const P1S = literalList(`
   #container_header
@@ -53,6 +54,50 @@ function promoteToMain(storyEl) {
 
 function reset(storyEl) {
   storyEl = promoteToMain(storyEl);
+
+  selectAll(SELECTORS.WYSIWYG_EMBED, storyEl).forEach(el => {
+    dewysiwyg.normalise(el);
+    el.className = 'u-richtext';
+  });
+
+  selectAll('.comp-embedded-float-left', storyEl).forEach(el => {
+    el.className = el.className.replace('comp-embedded-float-left', 'u-pull-left');
+  });
+
+  selectAll('.comp-embedded-float-right', storyEl).forEach(el => {
+    el.className = el.className.replace('comp-embedded-float-right', 'u-pull-right');
+  });
+
+  selectAll('.inline-content.left', storyEl).forEach(el => {
+    const pullEl = html`<div class="pull-left"></div>`;
+
+    el.classList.remove('inline-content', 'left');
+    before(el, pullEl);
+    append(pullEl, el);
+  });
+
+  selectAll('.inline-content.right', storyEl).forEach(el => {
+    const pullEl = html`<div class="pull-right"></div>`;
+
+    el.classList.remove('inline-content', 'right');
+    before(el, pullEl);
+    append(pullEl, el);
+  });
+
+  // const leftClassList = SELECTORS.LEFT_EMBED.replace(/\.|,/g, ' ').split(' ').filter(x => x);
+  // console.log(leftClassList);
+  // selectAll(SELECTORS.LEFT_EMBED, storyEl)
+  // .forEach(el => {
+  //   el.classList.remove.apply(el.classList, leftClassList);
+  //   el.classList.add('u-pull-left');
+  //   console.log(el);
+  // });
+
+  // selectAll(SELECTORS.WYSIWYG_EMBED, storyEl)
+  // .forEach(el => console.log(el));
+  //
+  // selectAll(SELECTORS.EMBED, storyEl)
+  // .forEach(el => console.log(el));
 
   detachAll(selectAll(P1S));
   detachAll(selectAll(P1M));

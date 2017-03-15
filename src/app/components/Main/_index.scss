@@ -18,6 +18,15 @@
     color: $color-darkPrimary;
   }
 
+  a:visited,
+  a:visited > * {
+    color: $color-darkSecondary;
+  }
+
+  > a[name] {
+    padding: 0;
+  }
+
   > h2 {
     &::before {
       content: "";

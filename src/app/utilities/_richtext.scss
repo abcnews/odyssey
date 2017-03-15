@@ -1,55 +1,8 @@
-.u-layout {
-  margin-left: auto;
-  margin-right: auto;
-  width: $layout-fluid;
-
-  @media #{$mq-lg} {
-    width: $layout-fixed;
-  }
-}
-
-.u-layout > :not(.u-full) {
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: $layout-fluid-padding;
-  padding-right: $layout-fluid-padding;
-  width: cells(12);
-
-  @media #{$mq-md} {
-    width: cells(10);
-  }
-
-  @media #{$mq-lg} {
-    padding-left: $layout-fixed-padding;
-    padding-right: $layout-fixed-padding;
-    width: cells(8);
-  }
-}
-
-.u-layout > .u-full {
-  margin-left: calc(-50vw + 50%);
-  width: 100vw;
-
-  // Phase 1 (Standard)
-  html.fixed & {
-    @media (max-width: 1000px) {
-      min-width: 1000px;
-      margin-left: -10px;
-    }
-
-    @media #{$mq-not-lg} {
-      margin-left: 0;
-    }
-  }
-}
-
 .u-richtext {
-  font-family: $font-serif;
-
-  & > * {
+  > * {
     margin-top: 0;
     margin-bottom: 1.5rem;
-    color: $color-darkestGrey;
+    color: $color-grey-900;
     font-family: $font-serif;
 
     @media #{$mq-md} {
@@ -59,14 +12,6 @@
     @media #{$mq-lg} {
       margin-bottom: 2.25rem;
     }
-  }
-
-  table,
-  button,
-  input,
-  select,
-  textarea {
-    font-size: 1rem;
   }
 
   > h1,
@@ -109,7 +54,7 @@
 
   > h3 {
     font-size: 1.375rem;
-    text-align: center;
+    font-family: $font-sans;
   }
 
   > p,
@@ -127,8 +72,7 @@
   > ol,
   > * > * > ul,
   > * > * > ol {
-    margin-left: 0;
-    padding-left: 0;
+    margin-left: auto;
     list-style: none;
   }
 
@@ -140,5 +84,51 @@
     background-position: 0 .65em;
     background-repeat: no-repeat;
     list-style: none;
+  }
+}
+
+.u-richtext .u-richtext {
+  > * {
+    margin-bottom: 1.25rem;
+
+    @media #{$mq-md} {
+      margin-bottom: 1.666666667rem;
+    }
+
+    @media #{$mq-lg} {
+      margin-bottom: 1.875rem;
+    }
+  }
+
+  > h2 {
+    max-width: none;
+    color: $color-grey-700;
+    font-size: 1.375rem;
+    font-family: $font-sans;
+    text-align: left;
+  }
+
+  > h3 {
+    color: $color-grey-700;
+    font-size: 1.145833333rem;
+  }
+
+  > p,
+  > * > li,
+  > blockquote {
+    color: $color-grey-800;
+    font-size: .9375rem;
+  }
+
+  > ul,
+  > ol,
+  > * > * > ul,
+  > * > * > ol {
+    padding-left: 0;
+  }
+
+  > * > li,
+  > * > li > * > li {
+    margin-bottom: .416666667rem;
   }
 }

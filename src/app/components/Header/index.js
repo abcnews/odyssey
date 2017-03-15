@@ -18,7 +18,7 @@ function Header({
   lgRatio,
   isDark,
   isLayered,
-  miscNodes = []
+  miscEls = []
 }) {
   const className = `Header${isDark ? ' is-dark' : ''}${isLayered && imageEl ? ' is-layered' : ''} u-full`;
   let pictureEl;
@@ -33,16 +33,22 @@ function Header({
     });
   }
 
+  const clonedMiscEls = miscEls.map(el => {
+      const clonedEl = el.cloneNode(true);
+
+      clonedEl.classList.add('Header-miscEl');
+
+      return clonedEl;
+  });
+  const clonedBylineNodes = meta.bylineNodes ? meta.bylineNodes.map(node => node.cloneNode(true)) : null;
+  const infoSource = meta.infoSource ? html`<a href="${meta.infoSource.url}">${meta.infoSource.name}</a>` : null;
   const updated = meta.updated ? ABCDateTime.formatUIGRelative(meta.updated) : null;
   const published = ABCDateTime.formatUIGRelative(meta.published);
-  const clonedMiscNodes = miscNodes.map(el => el.cloneNode(true));
-  const clonedBylineNodes = meta.bylineNodes ? meta.bylineNodes.map(el => el.cloneNode(true)) : null;
-  const infoSource = meta.infoSource ? html`<a href="${meta.infoSource.url}">${meta.infoSource.name}</a>` : null;
 
   const contentEls = [
     html`<h1>${meta.title}</h1>`
   ]
-  .concat(clonedMiscNodes)
+  .concat(clonedMiscEls)
   .concat([
     clonedBylineNodes ? html`
       <div class="Header-byline">
@@ -92,8 +98,8 @@ function transformSection(section, meta) {
 
     if (!config.imageEl && imageEl) {
       config.imageEl = imageEl;
-    } else if (trim(node.textContent).length > 0) {
-      config.miscNodes.push(node);
+    } else if (isElement(node) && trim(node.textContent).length > 0) {
+      config.miscEls.push(node);
     }
 
     return config;
@@ -104,7 +110,7 @@ function transformSection(section, meta) {
     lgRatio,
     isDark,
     isLayered,
-    miscNodes: []
+    miscEls: []
   });
 
   section.replaceWith(Header(config));

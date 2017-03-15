@@ -3,25 +3,35 @@ $rem: 16px;
 $font-sans: "ABCSans", Arial, Helvetica, sans-serif;
 $font-serif: "ABCSerif", "Times New Roman", Georgia, serif;
 
-$color-white: #fff;
-$color-lighterGrey: #f9f9f9;
-$color-lightGrey: #eee;
-$color-grey: #bbb;
-$color-darkGrey: #666;
-$color-darkerGrey: #1c1c1c;
-$color-darkestGrey: #111;
 $color-black: #000;
+$color-white: #fff;
 
-$gradient-vertical: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%);
-$gradient-vertical-content: linear-gradient(to bottom, rgba(0,0,0,0.43) 0%, rgba(0,0,0,0.75) 100%);
+$color-grey-50: #f9f9f9;
+$color-grey-100: #eee;
+$color-grey-200: #dedede;
+$color-grey-300: #d2d2d2;
+$color-grey-400: #bbb;
+$color-grey-500: #898989;
+$color-grey-600: #6a6a6a;
+$color-grey-700: #444;
+$color-grey-800: #333;
+$color-grey-850: #1c1c1c;
+$color-grey-900: #111;
 
 $color-lighterPrimary: #01ceff;
 $color-lightPrimary: #68e1FF;
 $color-primary: #007aff;
 $color-darkPrimary: #0073a8;
 $color-darkerPrimary: #315768;
-$color-secondary: #7b3b3b;
-$color-tertiary: #f1ccf3;
+
+$color-lightSecondary: #f1ccf3;
+// $color-secondary: ;
+$color-darkSecondary: #69236b;
+
+$color-tertiary: #7b3b3b;
+
+$gradient-vertical: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%);
+$gradient-vertical-content: linear-gradient(to bottom, rgba(0,0,0,0.43) 0%, rgba(0,0,0,0.75) 100%);
 
 @function cells($numColumns, $totalColumns: 12) {
   @return $numColumns / $totalColumns * 100%;

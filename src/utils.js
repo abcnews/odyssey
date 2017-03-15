@@ -76,7 +76,7 @@ function detachAll(nodes) {
 }
 
 function append(parent, node) {
-  parent.appendChild(child);
+  parent.appendChild(node);
 }
 
 function prepend(parent, node) {
@@ -136,52 +136,7 @@ function getSections(names) {
 
   return sections;
 }
-/*
-const dateFromISO = (() => {
-  const dISO = Date.parse('2001-09-09T01:46:40.000Z');
-  const isoRegex = /^(\d{4}\-\d\d\-\d\d([tT][\d:\.]*)?)([zZ]|([+\-])(\d\d):(\d\d))?$/;
 
-  if (dISO ===) {
-    return x => new Date(Date.parse(x));
-  } else {
-    return x => {
-      const p = isoRegex.exec(x) || [];
-      let day;
-      let timezone;
-
-      if (p[1]) {
-        day = p[1].split(/\D/).map(y => parseInt(y, 10) || 0);
-        day[1] -= 1;
-        day = new Date(Date.UTC.apply(Date, day));
-
-        if (!day.getDate()) {
-          return NaN;
-        }
-
-        if (p[5]) {
-          timezone = parseInt(p[5], 10)*60;
-
-          if (p[6]) {
-            timezone += parseInt(p[6], 10);
-          }
-
-          if (p[4]== "+") {
-            timezone *= -1;
-          }
-
-          if (timezone) {
-            day.setUTCMinutes(day.getUTCMinutes() + timezone);
-          }
-        }
-
-        return day;
-      }
-
-      return NaN;
-    }
-  }
-})();
-*/
 module.exports = {
   trim,
   slug,

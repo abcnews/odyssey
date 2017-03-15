@@ -11,7 +11,11 @@ const SELECTORS = {
   SHARE_TOOLS: '.share-tools-list, .share, .tools',
   BYLINE: '.view-byline, header > .attribution, .byline',
   INFO_SOURCE: '.bylinepromo, .program',
-  INFO_SOURCE_LINK: '.bylinepromo > a, .program > a'
+  INFO_SOURCE_LINK: '.bylinepromo > a, .program > a',
+  EMBED: ns('embed'),
+  LEFT_EMBED: ns('embed:left'),
+  RIGHT_EMBED: ns('embed:right'),
+  WYSIWYG_EMBED: ns('embed:wysiwyg')
 };
 
 const NOEL = document.createElement('noscript');
