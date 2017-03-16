@@ -18,6 +18,8 @@ const SELECTORS = {
   WYSIWYG_EMBED: ns('embed:wysiwyg')
 };
 
+const EMBED_TAGNAMES = ['ASIDE', 'BLOCKQUOTE', 'DIV', 'FIGURE'];
+
 const NOEL = document.createElement('noscript');
 
 const MQ = {
@@ -37,6 +39,7 @@ module.exports = {
   NEWLINE,
   HYPHEN,
   SELECTORS,
+  EMBED_TAGNAMES,
   NOEL,
   MQ,
   SMALLEST_IMAGE

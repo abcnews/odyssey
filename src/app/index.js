@@ -14,6 +14,18 @@ function app(done) {
 
   after(select(SELECTORS.GLOBAL_NAV), Nav({shareLinks: meta.shareLinks}));
 
+  getPlaceholders([
+    'share',
+  ]).forEach(placeholder => {
+    switch (placeholder.name) {
+      case 'share':
+        Share.transformPlaceholder(placeholder, meta.shareLinks);
+        break;
+      default:
+        break;
+    }
+  });
+
   getSections([
     'header',
     'pull'
@@ -24,18 +36,6 @@ function app(done) {
         break;
       case 'pull':
         UPull.transformSection(section);
-        break;
-      default:
-        break;
-    }
-  });
-
-  getPlaceholders([
-    'share',
-  ]).forEach(placeholder => {
-    switch (placeholder.name) {
-      case 'share':
-        Share.transformPlaceholder(placeholder, meta.shareLinks);
         break;
       default:
         break;
