@@ -1,8 +1,10 @@
 // Ours
 const {SELECTORS} = require('../constants');
-const {after, before, detachAll, getSections, isElement, select} = require('../utils');
+const {after, before, detachAll, getPlaceholders, getSections, isElement, select} = require('../utils');
 const Header = require('./components/Header');
 const Nav = require('./components/Nav');
+const Share = require('./components/Share');
+const UPull = require('./components/UPull');
 const {getMeta} = require('./meta');
 const reset = require('./reset');
 
@@ -18,11 +20,22 @@ function app(done) {
   ]).forEach(section => {
     switch (section.name) {
       case 'header':
-        // console.log('header', section);
         Header.transformSection(section, meta);
         break;
       case 'pull':
-        // console.log('pull', section);
+        UPull.transformSection(section);
+        break;
+      default:
+        break;
+    }
+  });
+
+  getPlaceholders([
+    'share',
+  ]).forEach(placeholder => {
+    switch (placeholder.name) {
+      case 'share':
+        Share.transformPlaceholder(placeholder, meta.shareLinks);
         break;
       default:
         break;

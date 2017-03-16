@@ -17,7 +17,7 @@ function init() {
 
     if ('unveil' in window) {
       window.unveil();
-      document.documentElement.classList.add('is-debug');
+      // document.documentElement.classList.add('is-debug');
     }
   });
 }

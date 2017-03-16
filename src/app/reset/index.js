@@ -4,6 +4,7 @@ const dewysiwyg = require('util-dewysiwyg');
 
 // Ours
 const Main = require('../components/Main');
+const UPull = require('../components/UPull');
 const {SELECTORS} = require('../../constants');
 const {append, before, detachAll, literalList, select, selectAll, slice} = require('../../utils');
 
@@ -69,7 +70,7 @@ function reset(storyEl) {
   });
 
   selectAll('.inline-content.left', storyEl).forEach(el => {
-    const pullEl = html`<div class="pull-left"></div>`;
+    const pullEl = html`<div class="u-pull-left"></div>`;
 
     el.classList.remove('inline-content', 'left');
     before(el, pullEl);
@@ -77,7 +78,7 @@ function reset(storyEl) {
   });
 
   selectAll('.inline-content.right', storyEl).forEach(el => {
-    const pullEl = html`<div class="pull-right"></div>`;
+    const pullEl = html`<div class="u-pull-right"></div>`;
 
     el.classList.remove('inline-content', 'right');
     before(el, pullEl);

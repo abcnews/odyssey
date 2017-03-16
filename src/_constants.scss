@@ -3,19 +3,19 @@ $rem: 16px;
 $font-sans: "ABCSans", Arial, Helvetica, sans-serif;
 $font-serif: "ABCSerif", "Times New Roman", Georgia, serif;
 
-$color-black: #000;
 $color-white: #fff;
+$color-black: #000;
 
 $color-grey-50: #f9f9f9;
+$color-grey-75: #f3f3f3; // Blockquote BG?
 $color-grey-100: #eee;
 $color-grey-200: #dedede;
 $color-grey-300: #d2d2d2;
 $color-grey-400: #bbb;
 $color-grey-500: #898989;
-$color-grey-600: #6a6a6a;
+$color-grey-600: #666;
 $color-grey-700: #444;
 $color-grey-800: #333;
-$color-grey-850: #1c1c1c;
 $color-grey-900: #111;
 
 $color-lighterPrimary: #01ceff;
@@ -28,7 +28,8 @@ $color-lightSecondary: #f1ccf3;
 // $color-secondary: ;
 $color-darkSecondary: #69236b;
 
-$color-tertiary: #7b3b3b;
+$color-tertiary: #ffbf00;
+$color-darkTertiary: #7b3b3b;
 
 $gradient-vertical: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%);
 $gradient-vertical-content: linear-gradient(to bottom, rgba(0,0,0,0.43) 0%, rgba(0,0,0,0.75) 100%);

@@ -114,7 +114,7 @@ function transformSection(section, meta) {
   });
 
   section.replaceWith(Header(config));
-};
+}
 
-module.exports = Header
+module.exports = Header;
 module.exports.transformSection = transformSection;

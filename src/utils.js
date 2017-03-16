@@ -80,7 +80,7 @@ function append(parent, node) {
 }
 
 function prepend(parent, node) {
-  parent.insertBefore(node, parent.firstChild);
+  before(parent.firstChild, node);
 }
 
 function before(sibling, node) {
@@ -91,7 +91,7 @@ function after(sibling, node) {
   sibling.parentElement.insertBefore(node, sibling.nextSibling);
 }
 
-function _replaceWith(el) {
+function _replaceSectionWith(el) {
   before(this.startNode, el);
 
   return detachAll(this.betweenNodes.concat([this.startNode, this.endNode]));
@@ -129,13 +129,45 @@ function getSections(names) {
         endNode: nextNode
     	};
 
-      section.replaceWith = _replaceWith.bind(section);
+      section.replaceWith = _replaceSectionWith.bind(section);
     	sections.push(section);
     });
   });
 
   return sections;
 }
+
+function _replacePlaceholderWith(el) {
+  before(this.node, el);
+
+  return detach(this.node);
+}
+
+function getPlaceholders(names) {
+  if (typeof names === 'string') {
+    names = [names];
+  }
+
+  const placeholders = [];
+
+  names.forEach(name => {
+    selectAll(`a[name^="${name}"]`).forEach(node => {
+      const suffix = node.getAttribute('name').slice(name.length);
+
+      const placeholder = {
+        name,
+        suffix,
+    		node
+    	};
+
+      placeholder.replaceWith = _replacePlaceholderWith.bind(placeholder);
+    	placeholders.push(placeholder);
+    });
+  });
+
+  return placeholders;
+}
+
 
 module.exports = {
   trim,
@@ -154,5 +186,6 @@ module.exports = {
   prepend,
   before,
   after,
-  getSections
+  getSections,
+  getPlaceholders
 };

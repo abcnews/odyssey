@@ -79,7 +79,7 @@
   > * > li,
   > * > li > * > li {
     margin-bottom: .5rem;
-    padding-left: .75em;
+    padding-left: 1em;
     background-image: url(richtext/bullet.svg);
     background-position: 0 .65em;
     background-repeat: no-repeat;
@@ -126,9 +126,13 @@
   > * > * > ol {
     padding-left: 0;
   }
+}
 
-  > * > li,
-  > * > li > * > li {
-    margin-bottom: .416666667rem;
-  }
+[class*="u-pull"] .u-richtext {
+  margin-top: .375rem;
+  margin-bottom: .375rem;
+  border-top: 1px solid $color-grey-400;
+  border-bottom: 1px solid $color-grey-400;
+  padding-top: 2rem;
+  padding-bottom: 1rem;
 }

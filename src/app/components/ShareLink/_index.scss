@@ -1,18 +1,28 @@
-$ShareLink_width: 40px;
+$ShareLink_width: 38px;
 
 .ShareLink {
   flex: 1 1 $ShareLink_width;
   width: $ShareLink_width;
+  background-color: $color-grey-100;
   background-position: center;
   background-repeat: no-repeat;
 }
 
+.ShareLink + .ShareLink {
+  margin-left: 2px;
+}
+
 .Nav .ShareLink {
   flex: 0 1 $ShareLink_width;
+  background-color: transparent;
 }
 
 .ShareLink--email {
   background-image: url(share-links/email.svg);
+
+  .Nav & {
+    background-image: url(share-links/email--nav.svg);
+  }
 
   @media #{$mq-sm} {
     display: none;
@@ -21,10 +31,19 @@ $ShareLink_width: 40px;
 
 .ShareLink--facebook {
   background-image: url(share-links/facebook.svg);
+
+  .Nav & {
+    background-image: url(share-links/facebook--nav.svg);
+  }
 }
 
 .ShareLink--reddit {
   background-image: url(share-links/reddit.svg);
+
+  .Nav & {
+    // background-image: url(share-links/reddit--nav.svg);
+    display: none;
+  }
 
   @media #{$mq-sm} {
     display: none;
@@ -33,10 +52,18 @@ $ShareLink_width: 40px;
 
 .ShareLink--twitter {
   background-image: url(share-links/twitter.svg);
+
+  .Nav & {
+    background-image: url(share-links/twitter--nav.svg);
+  }
 }
 
 .ShareLink--whatsapp {
   background-image: url(share-links/whatsapp.svg);
+
+  .Nav & {
+    background-image: url(share-links/whatsapp--nav.svg);
+  }
 
   @media #{$mq-not-sm} {
     display: none;
