@@ -52,11 +52,19 @@
     }
   }
 
-  > h3 {
-    font-size: 1.375rem;
+  > h3,
+  > h4,
+  > h5,
+  > h6 {
     font-family: $font-sans;
+    font-weight: bold;
   }
 
+  > h3 {
+    font-size: 1.375rem;
+  }
+
+  > h4,
   > p,
   > * > li,
   > blockquote {
@@ -100,19 +108,24 @@
     }
   }
 
+  > h2,
+  > h3,
+  > h4 {
+    color: $color-grey-700;
+  }
+
   > h2 {
     max-width: none;
-    color: $color-grey-700;
     font-size: 1.375rem;
     font-family: $font-sans;
     text-align: left;
   }
 
   > h3 {
-    color: $color-grey-700;
     font-size: 1.145833333rem;
   }
 
+  > h4,
   > p,
   > * > li,
   > blockquote {
