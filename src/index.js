@@ -9,6 +9,8 @@ const picturefill = require('picturefill');
 // Local
 const app = require('./app');
 
+const KEY_D = 68;
+
 function init() {
   app(() => {
     // fastclick(document.body);
@@ -17,8 +19,13 @@ function init() {
 
     if ('unveil' in window) {
       window.unveil();
-      // document.documentElement.classList.add('is-debug');
     }
+
+    document.documentElement.addEventListener('keyup', e => {
+      if (e.altKey && e.ctrlKey && e.shiftKey && e.keyCode === KEY_D) {
+        document.documentElement.classList.add('is-debug');
+      }
+    }, true);
   });
 }
 

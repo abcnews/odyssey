@@ -6,9 +6,9 @@
   @media #{$mq-lg} {
     width: $layout-fixed;
 
-    .is-debug &:hover {
-      background: transparent url(https://cldup.com/JZWt8q4zFA-3000x3000.png) repeat -1px 0;
-    }
+    // .is-debug &:hover {
+    //   background: transparent url(https://cldup.com/JZWt8q4zFA-3000x3000.png) repeat -1px 0;
+    // }
   }
 }
 

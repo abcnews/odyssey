@@ -1,6 +1,6 @@
 // Ours
 const {SELECTORS} = require('../constants');
-const {after, before, detachAll, getPlaceholders, getSections, isElement, select} = require('../utils');
+const {after, before, detachAll, getPlaceholders, getSections, isElement, select, selectAll} = require('../utils');
 const Header = require('./components/Header');
 const Nav = require('./components/Nav');
 const Share = require('./components/Share');
@@ -41,6 +41,10 @@ function app(done) {
         break;
     }
   });
+
+  // Nullify nested pulls (outer always wins)
+  selectAll('[class*="u-pull"] [class*="u-pull"]')
+  .forEach(el => el.className = el.className.replace(/u-pull(-\w+)?/, 'n-pull$1'));
 
   if (typeof done === 'function') {
     done();

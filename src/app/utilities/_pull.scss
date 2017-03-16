@@ -1,13 +1,44 @@
 [class*="u-pull"] {
   @media #{$mq-not-sm} {
-    // ?
+    clear: both;
+  }
+
+  .is-debug & {
+    position: relative;
+  }
+
+  .is-debug &::before {
+    content: attr(class);
+    position: absolute;
+    bottom: 100%;
+    padding: 0 .25rem;
+    background-color: $color-darkTertiary;
+    color: $color-white;
+    font-size: .625rem;
+    font-family: monospace;
+    line-height: 1.5;
   }
 }
 
 .u-pull {
   @media #{$mq-not-sm} {
-    margin-left: 0;
-    margin-right: 0;
+    width: 100%;
+  }
+}
+
+.u-pull-in {
+  @media #{$mq-md} {
+    width: cells(8);
+  }
+
+  @media #{$mq-lg} {
+    width: cells(6);
+  }
+}
+
+.u-pull-out {
+  @media #{$mq-lg} {
+    width: cells(10);
   }
 }
 
@@ -34,12 +65,5 @@
 
   @media #{$mq-md} {
     margin-right: cells(1);
-  }
-}
-
-.u-pull-partial {
-  @media #{$mq-not-sm} {
-    margin-left: 0;
-    margin-right: 0;
   }
 }

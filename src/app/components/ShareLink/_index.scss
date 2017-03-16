@@ -6,6 +6,12 @@ $ShareLink_width: 38px;
   background-color: $color-grey-100;
   background-position: center;
   background-repeat: no-repeat;
+  transition: .25s filter;
+
+  &:hover {
+    -webkit-filter: brightness(.95);
+    filter: brightness(.95);
+  }
 }
 
 .ShareLink + .ShareLink {
