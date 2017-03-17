@@ -85,15 +85,19 @@ function Header({
 
     function updateRatio() {
       const rect = mediaEl.getBoundingClientRect();
-      const parentPaddingTop = +window.getComputedStyle(mediaEl.parentElement).paddingTop.replace('px', '');
 
       if (rect.bottom < 0 || rect.top > rect.height) {
         return;
       }
 
+      const top = Math.min(0, rect.top);
+      const opacityExtent = mediaEl.nextElementSibling ?
+        mediaEl.nextElementSibling.getBoundingClientRect().top - top :
+        rect.height;
+
       nextState = {
-        opacity: 1 + Math.min(0, rect.top) / (parentPaddingTop || rect.height),
-        translateY: -33.33 * Math.min(0, rect.top) / rect.height,
+        opacity: 1 + top / opacityExtent,
+        translateY: -33.33 * (top / rect.height),
       };
     }
 
