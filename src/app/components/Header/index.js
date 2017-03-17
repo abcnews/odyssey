@@ -74,47 +74,9 @@ function Header({
     ` : null
   ]);
 
-  const mediaEl = pictureEl ? html`<div class="Header-media">
+  const mediaEl = pictureEl ? html`<div class="Header-media u-parallax">
     ${pictureEl}
   </div>` : null;
-
-  if (pictureEl) {
-    let currentState = {opacity: 1, translateY: 0};
-    let nextState = {};
-    const imgEl = select('img', pictureEl);
-
-    function updateRatio() {
-      const rect = mediaEl.getBoundingClientRect();
-
-      if (rect.bottom < 0 || rect.top > rect.height) {
-        return;
-      }
-
-      const top = Math.min(0, rect.top);
-      const opacityExtent = mediaEl.nextElementSibling ?
-        mediaEl.nextElementSibling.getBoundingClientRect().top - top :
-        rect.height;
-
-      nextState = {
-        opacity: 1 + top / opacityExtent,
-        translateY: -33.33 * (top / rect.height),
-      };
-    }
-
-    window.requestAnimationFrame(function updateImgEl() {
-      if (nextState.translateY !== currentState.translateY) {
-        currentState = nextState;
-        imgEl.style.opacity = currentState.opacity;
-        imgEl.style.transform = `translateY(${currentState.translateY}%)`;
-      }
-
-      window.requestAnimationFrame(updateImgEl);
-    });
-
-    window.addEventListener('scroll', updateRatio);
-    window.addEventListener('resize', updateRatio);
-    window.addEventListener('load', updateRatio);
-  }
 
   return html`
     <div class="${className}">
