@@ -1,6 +1,6 @@
 .Header {
   position: relative;
-  margin-bottom: 2rem;
+  margin-top: 0;
   line-height: 1.5;
 
   @media #{$mq-not-sm} {
@@ -76,6 +76,7 @@
     width: 100%;
     height: auto;
     vertical-align: top;
+    will-change: opacity, transform;
 
     .is-layered & {
       overflow: hidden;

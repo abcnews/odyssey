@@ -74,11 +74,47 @@ function Header({
     ` : null
   ]);
 
+  const mediaEl = pictureEl ? html`<div class="Header-media">
+    ${pictureEl}
+  </div>` : null;
+
+  if (pictureEl) {
+    let currentState = {opacity: 1, translateY: 0};
+    let nextState = {};
+    const imgEl = select('img', pictureEl);
+
+    function updateRatio() {
+      const rect = mediaEl.getBoundingClientRect();
+      const parentPaddingTop = +window.getComputedStyle(mediaEl.parentElement).paddingTop.replace('px', '');
+
+      if (rect.bottom < 0 || rect.top > rect.height) {
+        return;
+      }
+
+      nextState = {
+        opacity: 1 + Math.min(0, rect.top) / (parentPaddingTop || rect.height),
+        translateY: -33.33 * Math.min(0, rect.top) / rect.height,
+      };
+    }
+
+    window.requestAnimationFrame(function updateImgEl() {
+      if (nextState.translateY !== currentState.translateY) {
+        currentState = nextState;
+        imgEl.style.opacity = currentState.opacity;
+        imgEl.style.transform = `translateY(${currentState.translateY}%)`;
+      }
+
+      window.requestAnimationFrame(updateImgEl);
+    });
+
+    window.addEventListener('scroll', updateRatio);
+    window.addEventListener('resize', updateRatio);
+    window.addEventListener('load', updateRatio);
+  }
+
   return html`
     <div class="${className}">
-      ${pictureEl ? html`<div class="Header-media">
-        ${pictureEl}
-      </div>` : null}
+      ${mediaEl}
       <div class="Header-content u-richtext">
         ${contentEls}
       </div>

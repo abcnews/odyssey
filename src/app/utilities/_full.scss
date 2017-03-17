@@ -1,8 +1,15 @@
 .u-full {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
   margin-left: calc(-50vw + 50%);
   padding-left: 0;
   padding-right: 0;
   width: 100vw;
+
+  @media #{$mq-lg} {
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+  }
 
   // Phase 1 (Standard)
   html.fixed & {
