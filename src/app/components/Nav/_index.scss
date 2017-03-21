@@ -3,17 +3,37 @@ $Nav-logo_width: 118px;
 $Nav-bar_bg-color: #1c1c1c;
 
 .Nav {
-  // position: sticky;
-  // top: 0;
+  position: relative;
   height: $Nav_height;
+  background-color: $Nav-bar_bg-color;
 }
 
 .Nav-bar {
   display: flex;
   justify-content: space-between;
+  box-sizing: border-box;
   padding-right: 6px;
-  height: 100%;
+  width: 100%;
+  height: $Nav_height;
   background-color: $Nav-bar_bg-color;
+  transition-property: transform;
+  transition-timing-function: cubic-bezier(0, 0, .32, 1);
+  will-change: transform;
+
+  &.is-fixed {
+    position: fixed;
+    top: 0;
+    z-index: 3;
+  }
+
+  @media (max-height: 799px) {
+    transform: translateY(-102%) !important;
+    transition-duration: .125s !important;
+
+    &.is-peeking {
+      transform: none !important;
+    }
+  }
 }
 
 .Nav-home {

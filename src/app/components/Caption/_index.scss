@@ -1,0 +1,15 @@
+.Caption {
+  padding-top: .45rem;
+  padding-bottom: .4rem;
+  margin-bottom: 0;
+  font-family: $font-sans;
+
+  * > & {
+    font-size: .8125rem !important;
+    line-height: 1.25rem;
+  }
+}
+
+.Caption-attribution {
+  white-space: nowrap;
+}

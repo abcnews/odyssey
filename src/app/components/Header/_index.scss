@@ -7,10 +7,6 @@
     font-size: 1.25rem;
   }
 
-  @media #{$mq-lg} {
-    margin-bottom: 3rem;
-  }
-
   &.is-dark,
   &.is-layered {
     background-color: $color-black;
@@ -20,7 +16,6 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    box-sizing: border-box;
     padding-top: 16rem;
 
     @media #{$mq-md} {
@@ -32,20 +27,6 @@
       padding-top: 28rem;
       min-height: 56.25vw;
     }
-  }
-
-  &.is-dark a,
-  &.is-layered a,
-  &.is-dark a > *
-  &.is-layered a > * {
-    color: $color-lightPrimary;
-  }
-
-  &.is-dark a:visited,
-  &.is-layered a:visited,
-  &.is-dark a:visited > *
-  &.is-layered a:visited > * {
-    color: $color-lightSecondary;
   }
 }
 
@@ -69,10 +50,11 @@
     left: 0;
     width: 100%;
     height: 6.25rem;
-    background-image: $gradient-vertical;
+    background-image: $gradient-vertical-0-0-100-60;
   }
 
-  img {
+  img,
+  video {
     width: 100%;
     height: auto;
     vertical-align: top;
@@ -101,7 +83,7 @@
   .is-layered & {
     position: relative;
     z-index: 1;
-    background-image: $gradient-vertical-content;
+    background-image: $gradient-vertical-0-43-100-75;
   }
 }
 
@@ -114,11 +96,6 @@
 }
 
 .Header-content > h1 {
-  .is-layered &,
-  .is-dark & {
-    color: $color-white;
-  }
-
   &::after {
     content: "";
     display: block;
@@ -138,13 +115,7 @@
 .Header-content > .Header-miscEl,
 .Header-content > .Header-byline {
   .Header > & {
-    color: $color-black;
     font-size: 1.25rem;
-  }
-
-  .Header.is-dark &,
-  .Header.is-layered & {
-    color: $color-grey-50;
   }
 }
 

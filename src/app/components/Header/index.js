@@ -6,40 +6,36 @@ const ABCDateTime = require('inn-abcdatetime-lib');
 const {before, isElement, select, slug, trim} = require('../../../utils');
 const Picture = require('../Picture');
 
-const SM_RATIO_PATTERN = /sm(\d+x\d+)/;
-const MD_RATIO_PATTERN = /md(\d+x\d+)/;
-const LG_RATIO_PATTERN = /lg(\d+x\d+)/;
-
 function Header({
   meta = {},
-  imageEl,
+  mediaEl,
   smRatio,
   mdRatio,
   lgRatio,
   isDark,
   isLayered,
-  miscEls = []
+  miscContentEls = []
 }) {
-  const className = `Header${isDark ? ' is-dark' : ''}${isLayered && imageEl ? ' is-layered' : ''} u-full`;
-  let pictureEl;
+  const className = `Header${isDark ? ' is-dark' : ''}${isLayered && mediaEl ? ' is-layered' : ''} u-full`;
 
-  if (imageEl) {
-    pictureEl = Picture({
-      src: imageEl.src,
-      alt: imageEl.getAttribute('alt'),
+  if (mediaEl && mediaEl.tagName === 'IMG') {
+    mediaEl = Picture({
+      src: mediaEl.src,
+      alt: mediaEl.getAttribute('alt'),
       smRatio: smRatio || isLayered ? '3x4' : undefined,
       mdRatio: mdRatio || isLayered ? '1x1' : undefined,
       lgRatio
     });
   }
 
-  const clonedMiscEls = miscEls.map(el => {
+  const clonedMiscContentEls = miscContentEls.map(el => {
       const clonedEl = el.cloneNode(true);
 
       clonedEl.classList.add('Header-miscEl');
 
       return clonedEl;
   });
+
   const clonedBylineNodes = meta.bylineNodes ? meta.bylineNodes.map(node => node.cloneNode(true)) : null;
   const infoSource = meta.infoSource ? html`<a href="${meta.infoSource.url}">${meta.infoSource.name}</a>` : null;
   const updated = meta.updated ? ABCDateTime.formatUIGRelative(meta.updated) : null;
@@ -48,12 +44,12 @@ function Header({
   const contentEls = [
     html`<h1>${meta.title}</h1>`
   ]
-  .concat(clonedMiscEls)
+  .concat(clonedMiscContentEls)
   .concat([
     clonedBylineNodes ? html`
-      <div class="Header-byline">
+      <p class="Header-byline">
         ${clonedBylineNodes}
-      </div>
+      </p>
     ` : null,
     infoSource ? html`
       <div class="Header-infoSource Header-infoSource--${slug(meta.infoSource.name)}">
@@ -74,14 +70,12 @@ function Header({
     ` : null
   ]);
 
-  const mediaEl = pictureEl ? html`<div class="Header-media u-parallax">
-    ${pictureEl}
-  </div>` : null;
-
   return html`
     <div class="${className}">
-      ${mediaEl}
-      <div class="Header-content u-richtext">
+      ${mediaEl ? html`<div class="Header-media u-parallax">
+        ${mediaEl}
+      </div>` : null}
+      <div class="Header-content u-richtext${isDark || isLayered && mediaEl ? '-invert' : ''}">
         ${contentEls}
       </div>
     </div>
@@ -96,12 +90,12 @@ function transformSection(section, meta) {
   const isLayered = section.suffix.indexOf('layered') > -1;
 
   const config = section.betweenNodes.reduce((config, node) => {
-    const imageEl = isElement(node) && select('img', node);
+    const mediaEl = isElement(node) && select('img, video', node);
 
-    if (!config.imageEl && imageEl) {
-      config.imageEl = imageEl;
+    if (!config.mediaEl && mediaEl) {
+      config.mediaEl = mediaEl;
     } else if (isElement(node) && trim(node.textContent).length > 0) {
-      config.miscEls.push(node);
+      config.miscContentEls.push(node);
     }
 
     return config;
@@ -112,7 +106,7 @@ function transformSection(section, meta) {
     lgRatio,
     isDark,
     isLayered,
-    miscEls: []
+    miscContentEls: []
   });
 
   section.replaceWith(Header(config));

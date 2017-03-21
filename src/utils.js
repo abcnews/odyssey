@@ -42,6 +42,12 @@ function isDocument(node) {
   return node && node.nodeType === Node.DOCUMENT_NODE;
 }
 
+function getWindowScrollY() {
+    return (window.pageYOffset !== undefined) ?
+      window.pageYOffset :
+      (document.documentElement || document.body.parentNode || document.body).scrollTop;
+  }
+
 function select(selector, root) {
   root = isElement(root) ? root : document;
 
@@ -178,6 +184,7 @@ module.exports = {
   isText,
   isElement,
   isDocument,
+  getWindowScrollY,
   select,
   selectAll,
   detach,

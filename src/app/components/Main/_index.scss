@@ -14,16 +14,6 @@
     height: auto;
   }
 
-  a,
-  a > * {
-    color: $color-darkPrimary;
-  }
-
-  a:visited,
-  a:visited > * {
-    color: $color-darkSecondary;
-  }
-
   > a[name] {
     padding: 0;
   }

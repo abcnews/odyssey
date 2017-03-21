@@ -1,7 +1,7 @@
 .u-full {
   margin-top: 2rem;
   margin-bottom: 2rem;
-  margin-left: calc(-50vw + 50%);
+  margin-left: calc(-50vw + 50%) !important;
   padding-left: 0;
   padding-right: 0;
   width: 100vw;
@@ -15,11 +15,11 @@
   html.fixed & {
     @media (max-width: 1000px) {
       min-width: 1000px;
-      margin-left: -10px;
+      margin-left: -10px  !important;
     }
 
     @media #{$mq-not-lg} {
-      margin-left: 0;
+      margin-left: 0  !important;
     }
   }
 }

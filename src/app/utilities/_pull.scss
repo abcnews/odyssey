@@ -46,12 +46,12 @@
   @media #{$mq-not-sm} {
     clear: left;
     float: left;
-    margin-right: 2.5rem;
+    margin-right: 2.5rem !important;
     width: cells(4);
   }
 
   @media #{$mq-md} {
-    margin-left: cells(1);
+    margin-left: cells(1)  !important;
   }
 }
 
@@ -59,11 +59,11 @@
   @media #{$mq-not-sm} {
     clear: right;
     float: right;
-    margin-left: 2.5rem;
+    margin-left: 2.5rem !important;
     width: cells(4);
   }
 
   @media #{$mq-md} {
-    margin-right: cells(1);
+    margin-right: cells(1)  !important;
   }
 }

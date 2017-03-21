@@ -1,4 +1,4 @@
-.u-richtext {
+[class*="u-richtext"] {
   > * {
     margin-top: 0;
     margin-bottom: 1.5rem;
@@ -38,17 +38,16 @@
 
   > h2 {
     clear: both;
+    max-width: 32rem;
     font-size: 2.125rem;
     text-align: center;
 
     @media #{$mq-md} {
       font-size: 2.375rem;
-      max-width: cells(8);
     }
 
     @media #{$mq-lg} {
       font-size: 2.5rem;
-      max-width: cells(6);
     }
   }
 
@@ -66,7 +65,8 @@
 
   > h4,
   > p,
-  > * > li,
+  > ul li,
+  > ol li,
   > blockquote {
     font-size: 1.125rem;
     line-height: 1.444444;
@@ -78,24 +78,83 @@
 
   > ul,
   > ol,
-  > * > * > ul,
-  > * > * > ol {
+  > ul ul,
+  > ol ul,
+  > ul ol,
+  > ol ol {
     margin-left: auto;
+  }
+
+  > ul,
+  > ul ul,
+  > ol ul {
     list-style: none;
   }
 
-  > * > li,
-  > * > li > * > li {
+  > ol,
+  > ul ol,
+  > ol ol {
+    padding-left: calc(#{$layout-fluid-padding} + .85em);
+    list-style-position: outside;
+
+    @media #{$mq-lg} {
+      padding-left: calc(#{$layout-fixed-padding} + .85em);
+    }
+  }
+
+  > ul ul,
+  > ol ul,
+  > ul ol,
+  > ol ol {
+    margin-top: .5rem;
+    margin-bottom: 0;
+  }
+
+  > ul ol,
+  > ol ol {
+    padding-left: .85em;
+  }
+
+  > ul li,
+  > ol li {
     margin-bottom: .5rem;
+  }
+
+  > ul > li,
+  > ul ul > li,
+  > ol ul > li {
     padding-left: 1em;
     background-image: url(richtext/bullet.svg);
     background-position: 0 .65em;
     background-repeat: no-repeat;
-    list-style: none;
+  }
+
+  > ol > li,
+  > ul ol > li,
+  > ol ol > li {
+    padding-left: .25em;
+    background: none;
+  }
+
+  a,
+  a > * {
+    color: $color-darkPrimary;
+  }
+
+  a:visited,
+  a:visited > * {
+    color: $color-darkSecondary;
   }
 }
 
-.u-richtext .u-richtext {
+[class*="u-pull"] [class*="u-richtext"] {
+  margin-top: .375rem;
+  margin-bottom: .375rem;
+  border-top: 1px solid $color-grey-400;
+  border-bottom: 1px solid $color-grey-400;
+  padding-top: 2rem;
+  padding-bottom: .75rem;
+
   > * {
     margin-bottom: 1.25rem;
 
@@ -127,7 +186,8 @@
 
   > h4,
   > p,
-  > * > li,
+  > ul li,
+  > ol li,
   > blockquote {
     color: $color-grey-800;
     font-size: .9375rem;
@@ -135,17 +195,43 @@
 
   > ul,
   > ol,
-  > * > * > ul,
-  > * > * > ol {
+  > ul ul,
+  > ol ul,
+  > ul ol,
+  > ol ol {
     padding-left: 0;
   }
 }
 
-[class*="u-pull"] .u-richtext {
-  margin-top: .375rem;
-  margin-bottom: .375rem;
-  border-top: 1px solid $color-grey-400;
-  border-bottom: 1px solid $color-grey-400;
-  padding-top: 2rem;
-  padding-bottom: .75rem;
+.u-richtext-invert {
+  > h1,
+  > h2,
+  > h3,
+  > h4 {
+    color: $color-white;
+  }
+
+  > h4,
+  > p,
+  > ul li,
+  > ol li,
+  > blockquote {
+    color: $color-grey-50;
+  }
+
+  > ul > li,
+  > ul ul > li,
+  > ol ul > li {
+    background-image: url(richtext/bullet-inverted.svg);
+  }
+
+  a,
+  a > * {
+    color: $color-lightPrimary;
+  }
+
+  a:visited,
+  a:visited > * {
+    color: $color-lightSecondary;
+  }
 }

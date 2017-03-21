@@ -13,8 +13,8 @@
 }
 
 .u-layout > * {
-  margin-left: auto;
-  margin-right: auto;
+  margin-left: auto !important;
+  margin-right: auto !important;
   padding-left: $layout-fluid-padding;
   padding-right: $layout-fluid-padding;
   width: cells(12);

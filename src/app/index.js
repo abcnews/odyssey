@@ -1,10 +1,15 @@
+// External
+const raf = require('raf');
+
 // Ours
 const {SELECTORS} = require('../constants');
 const {after, before, detachAll, getPlaceholders, getSections, isElement, select, selectAll} = require('../utils');
+const Cover = require('./components/Cover');
 const Header = require('./components/Header');
 const Nav = require('./components/Nav');
 const Share = require('./components/Share');
 const UPull = require('./components/UPull');
+const {getData, subscribe} = require('./hooks');
 const {getMeta} = require('./meta');
 const reset = require('./reset');
 
@@ -28,11 +33,15 @@ function app(done) {
 
   getSections([
     'header',
+    'cover',
     'pull'
   ]).forEach(section => {
     switch (section.name) {
       case 'header':
         Header.transformSection(section, meta);
+        break;
+      case 'cover':
+        Cover.transformSection(section);
         break;
       case 'pull':
         UPull.transformSection(section);
@@ -54,6 +63,7 @@ function app(done) {
   .filter(parallax => parallax.mediaEl);
 
   if (parallaxes.length > 0) {
+
     function updateNextStates() {
       parallaxes.forEach(parallax => {
         const rect = parallax.el.getBoundingClientRect();
@@ -74,7 +84,7 @@ function app(done) {
       });
     }
 
-    window.requestAnimationFrame(function updateMediaEls() {
+    function updateMediaEls() {
       parallaxes.forEach(parallax => {
         if (parallax.nextState.translateY !== parallax.state.translateY) {
           parallax.state = parallax.nextState;
@@ -82,13 +92,17 @@ function app(done) {
           parallax.mediaEl.style.transform = `translateY(${parallax.state.translateY}%)`;
         }
       });
+    }
 
-      window.requestAnimationFrame(updateMediaEls);
+    subscribe({
+      onSize: updateNextStates,
+      onPan: updateNextStates,
+      onFrame: updateMediaEls
     });
 
-    window.addEventListener('scroll', updateNextStates);
-    window.addEventListener('resize', updateNextStates);
-    window.addEventListener('load', updateNextStates);
+    raf(() => {
+      updateNextStates();
+    });
   }
 
   // Nullify nested pulls (outer always wins)

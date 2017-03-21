@@ -13,7 +13,7 @@ const KEY_D = 68;
 
 function init() {
   app(() => {
-    // fastclick(document.body);
+    // fastclick(document.body); // TODO: Phase 2 module import
     picturefill();
     objectFitImages();
 
