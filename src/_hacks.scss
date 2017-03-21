@@ -1,0 +1,6 @@
+// [!] Everything in this file will be gone by the time we are feature-complete
+
+// Re-apply thumbnail height for Phase 1 (mobile)'s embedded video teasers
+.type-video img {
+  height: 74px;
+}
