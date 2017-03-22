@@ -105,7 +105,7 @@ function transformSection(section) {
 
     if (!config.mediaEl && mediaEl) {
       config.mediaEl = mediaEl;
-      config.mediaCaptionEl = Caption.createFromMediaEl(node);
+      config.mediaCaptionEl = Caption.createFromEl(node);
       detach(node);
     } else if (isElement(node) && trim(node.textContent).length > 0) {
       config.contentEls.push(node);

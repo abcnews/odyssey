@@ -1,9 +1,10 @@
 // External
+const html = require('bel');
 const raf = require('raf');
 
 // Ours
 const {SELECTORS} = require('../constants');
-const {after, before, detachAll, getPlaceholders, getSections, isElement, select, selectAll} = require('../utils');
+const {after, append, before, detachAll, getPlaceholders, getSections, isElement, select, selectAll} = require('../utils');
 const Cover = require('./components/Cover');
 const Header = require('./components/Header');
 const Nav = require('./components/Nav');
@@ -104,6 +105,14 @@ function app(done) {
       updateNextStates();
     });
   }
+
+  // Test - full-width photo/video
+  // selectAll('.inline-content.photo.full, .inline-content.video.full, .view-image-embed-full, .view-inlineMediaPlayer', storyEl).forEach(el => {
+  //   const pullEl = html`<div class="u-pull"></div>`;
+  //
+  //   before(el, pullEl);
+  //   append(pullEl, el);
+  // });
 
   // Nullify nested pulls (outer always wins)
   selectAll('[class*="u-pull"] [class*="u-pull"]')

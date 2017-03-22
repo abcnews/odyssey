@@ -39,6 +39,19 @@ $url-font-serif: '#{$url-fonts-root}abcserif/abcserif';
 }
 
 @font-face {
+  font-family: 'ABCSans Condensed';
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: condensed;
+  src: url('#{$url-font-sans}-boldcondensed.eot');
+  src: url('#{$url-font-sans}-boldcondensed.eot?#iefix') format('embedded-opentype'),
+       url('#{$url-font-sans}-boldcondensed.woff2') format('woff2'),
+       url('#{$url-font-sans}-boldcondensed.woff') format('woff'),
+       url('#{$url-font-sans}-boldcondensed.ttf') format('truetype'),
+       url('#{$url-font-sans}-boldcondensed.svg#abcsansbold') format('svg');
+}
+
+@font-face {
   font-family: 'ABCSerif';
   font-weight: normal;
   font-style: normal;

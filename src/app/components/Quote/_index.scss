@@ -1,0 +1,103 @@
+.Quote {
+
+  blockquote {
+    overflow: visible;
+    margin: 0;
+    padding: 1rem 1.25rem;
+    border-width: 0;
+    border-left: 5px solid $color-grey-200;
+    background: $color-grey-75;
+
+    @media #{$mq-not-sm} {
+      padding: 1.75rem 2rem;
+    }
+
+    .u-pull-left &,
+    .u-pull-right & {
+      padding: 1rem 1.25rem;
+    }
+  }
+
+  p {
+    overflow: visible;
+    margin: 0 0 1rem 0;
+    color: $color-darkerPrimary;
+    font-size: 1.125rem;
+    line-height: 1.66;
+  }
+
+  footer {
+    color: $color-grey-600;
+    font-family: $font-sans;
+    font-size: .9375rem;
+
+    &::before {
+      content: none;
+    }
+  }
+
+}
+
+.Quote.is-pullquote {
+  text-align: center;
+  font-weight: bold;
+
+  .u-pull-left &,
+  .u-pull-right & {
+    text-align: left;
+  }
+
+  blockquote {
+    border: none;
+    padding: .5rem 1.5rem 0 2.5rem;
+    background-color: transparent;
+  }
+
+  p {
+    font-size: 1.75rem;
+    line-height: 1.4;
+
+    @media #{$mq-not-sm} {
+      font-size: 1.875rem;
+    }
+  }
+
+  footer {
+    font-size: 1.125rem;
+    font-family: $font-condensed;
+    color: $color-grey-500;
+
+    @media #{$mq-not-sm} {
+      font-size: 1.25rem;
+    }
+
+    &::before {
+      content: "\2014\00A0";
+    }
+  }
+}
+
+.Quote-opener,
+.Quote-closer {
+  position: relative;
+}
+
+.Quote-opener::before,
+.Quote-closer::before {
+  content: "";
+  position: absolute;
+  width: 33px;
+  height: 22px;
+  background-image: url(richtext/quotemarks.svg);
+}
+
+.Quote-opener::before {
+  bottom: .55em;
+  right: calc(100% + .33em);
+}
+
+.Quote-closer::before {
+  top: .5em;
+  left: calc(100% + .33em);
+  transform: rotate(180deg);
+}

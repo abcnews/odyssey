@@ -145,6 +145,12 @@
   a:visited > * {
     color: $color-darkSecondary;
   }
+
+  &::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
 }
 
 [class*="u-pull"] [class*="u-richtext"] {

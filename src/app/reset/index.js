@@ -3,10 +3,10 @@ const html = require('bel');
 const dewysiwyg = require('util-dewysiwyg');
 
 // Ours
-const Main = require('../components/Main');
-const UPull = require('../components/UPull');
 const {SELECTORS} = require('../../constants');
-const {append, before, detachAll, literalList, select, selectAll, slice} = require('../../utils');
+const {append, before, detach, detachAll, literalList, select, selectAll, slice} = require('../../utils');
+const Main = require('../components/Main');
+const Quote = require('../components/Quote');
 
 const TEMPLATE_REMOVABLES = {
   '.platform-standard:not(.platform-mobile)': literalList(`
@@ -38,6 +38,25 @@ const TEMPLATE_REMOVABLES = {
   `)
 };
 
+const P1S_FLOAT = {
+  SELECTOR: `
+    .inline-content.left,
+    .inline-content.right
+  `,
+  PATTERN: /inline-content.*(left|right)/
+};
+
+const P2_FLOAT = {
+  SELECTOR: `
+    .comp-embedded-float-left,
+    .comp-embedded-float-right,
+    [class*="view-inline"].left,
+    [class*="view-inline"].right
+  `,
+  PATTERN: /(comp-embedded-float-|view-inline[\w-]+\s)(left|right)/,
+  REPLACEMENT: 'u-pull-$2'
+};
+
 function promoteToMain(storyEl) {
   const existingMainEl = select(SELECTORS.MAIN);
   const id = existingMainEl.getAttribute('id');
@@ -47,6 +66,8 @@ function promoteToMain(storyEl) {
     mainEl.setAttribute('id', id);
     existingMainEl.removeAttribute('id');
   }
+
+  existingMainEl.removeAttribute('role');
 
   before(existingMainEl, mainEl);
 
@@ -67,38 +88,41 @@ function reset(storyEl) {
     el.className = 'u-richtext';
   });
 
-  selectAll('.comp-embedded-float-left', storyEl).forEach(el => {
-    el.className = el.className.replace('comp-embedded-float-left', 'u-pull-left');
-  });
+  selectAll(P1S_FLOAT.SELECTOR, storyEl).forEach(el => {
+    const [, side] = el.className.match(P1S_FLOAT.PATTERN);
+    const pullEl = html`<div class="u-pull-${side}"></div>`;
 
-  selectAll('.comp-embedded-float-right', storyEl).forEach(el => {
-    el.className = el.className.replace('comp-embedded-float-right', 'u-pull-right');
-  });
-
-  selectAll('.inline-content.left', storyEl).forEach(el => {
-    const pullEl = html`<div class="u-pull-left"></div>`;
-
-    el.classList.remove('inline-content', 'left');
+    el.classList.remove(side);
+    el.classList.add('full');
     before(el, pullEl);
     append(pullEl, el);
   });
 
-  selectAll('.inline-content.right', storyEl).forEach(el => {
-    const pullEl = html`<div class="u-pull-right"></div>`;
+  selectAll(P2_FLOAT.SELECTOR, storyEl).forEach(el => {
+    if (el.className.indexOf('view-') > -1) {
+      const [, , side] = el.className.match(P2_FLOAT.PATTERN);
+      const pullEl = html`<div class="u-pull-${side}"></div>`;
 
-    el.classList.remove('inline-content', 'right');
-    before(el, pullEl);
-    append(pullEl, el);
+      el.classList.remove(side);
+      el.classList.add('full');
+      before(el, pullEl);
+      append(pullEl, el);
+    } else {
+      el.className = el.className.replace(P2_FLOAT.PATTERN, P2_FLOAT.REPLACEMENT);
+    }
   });
 
-  // const leftClassList = SELECTORS.LEFT_EMBED.replace(/\.|,/g, ' ').split(' ').filter(x => x);
-  // console.log(leftClassList);
-  // selectAll(SELECTORS.LEFT_EMBED, storyEl)
-  // .forEach(el => {
-  //   el.classList.remove.apply(el.classList, leftClassList);
-  //   el.classList.add('u-pull-left');
-  //   console.log(el);
-  // });
+  selectAll(`
+    blockquote:not([class]),
+    .quote--pullquote,
+    .inline-content.quote,
+    .embed-quote,
+    .comp-rich-text-blockquote,
+    .view-inline-pullquote
+  `, storyEl).forEach(el => {
+    before(el, Quote.createFromEl(el));
+    detach(el);
+  });
 
   // selectAll(SELECTORS.WYSIWYG_EMBED, storyEl)
   // .forEach(el => console.log(el));

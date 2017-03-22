@@ -18,7 +18,7 @@ function Caption({
   `;
 }
 
-function createFromMediaEl(el) {
+function createFromEl(el) {
   if (!isElement(el)) {
     return null;
   }
@@ -59,4 +59,4 @@ function createFromMediaEl(el) {
 }
 
 module.exports = Caption;
-module.exports.createFromMediaEl = createFromMediaEl;
+module.exports.createFromEl = createFromEl;
