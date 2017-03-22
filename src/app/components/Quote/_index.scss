@@ -9,12 +9,11 @@
     background: $color-grey-75;
 
     @media #{$mq-not-sm} {
-      padding: 1.75rem 2rem;
-    }
-
-    .u-pull-left &,
-    .u-pull-right & {
-      padding: 1rem 1.25rem;
+      .u-richtext > &,
+      .u-pull-out > &,
+      .u-pull > & {
+        padding: 1.75rem 2rem;
+      }
     }
   }
 
@@ -42,15 +41,29 @@
   text-align: center;
   font-weight: bold;
 
-  .u-pull-left &,
-  .u-pull-right & {
-    text-align: left;
+  @media #{$mq-not-sm} {
+    .u-pull-left &,
+    .u-pull-right & {
+      text-align: left;
+    }
+
+    .u-richtext > &,
+    .u-pull-out > &,
+    .u-pull > & {
+      padding-left: cells(1);
+      padding-right: cells(1);
+    }
   }
 
   blockquote {
     border: none;
-    padding: .5rem 1.5rem 0 2.5rem;
+    padding: 0 1.5rem;
     background-color: transparent;
+
+    .u-pull-left &,
+    .u-pull-right & {
+      padding: 0 1.5rem;
+    }
   }
 
   p {
@@ -59,6 +72,10 @@
 
     @media #{$mq-not-sm} {
       font-size: 1.875rem;
+    }
+
+    .u-richtext-invert > & {
+      color: $color-lightestPrimary;
     }
   }
 
@@ -69,6 +86,11 @@
 
     @media #{$mq-not-sm} {
       font-size: 1.25rem;
+    }
+
+
+    .u-richtext-invert > & {
+      color: $color-grey-200;
     }
 
     &::before {
