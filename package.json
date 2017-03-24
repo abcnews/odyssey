@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "bel": "^4.5.1",
+    "classnames": "^2.2.5",
     "domready": "^1.0.8",
     "fastclick": "^1.0.6",
     "inn-abcdatetime-lib": "git+ssh://git@stash.abc-dev.net.au:7999/news/news-abcdatetime-lib#v1.1.3",

@@ -1,4 +1,5 @@
 // External
+const cn = require('classnames');
 const html = require('bel');
 const ABCDateTime = require('inn-abcdatetime-lib');
 
@@ -16,7 +17,10 @@ function Header({
   isLayered,
   miscContentEls = []
 }) {
-  const className = `Header${isDark ? ' is-dark' : ''}${isLayered && mediaEl ? ' is-layered' : ''} u-full`;
+  const className = cn('Header', {
+    'is-dark': isDark,
+    'is-layered': isLayered && mediaEl
+  }, 'u-full');
 
   if (mediaEl && mediaEl.tagName === 'IMG') {
     mediaEl = Picture({

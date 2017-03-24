@@ -1,4 +1,5 @@
 // External
+const cn = require('classnames');
 const html = require('bel');
 
 // Ours
@@ -10,7 +11,9 @@ function Quote({
   parEls = [],
   attributionNodes = []
 }) {
-  const className = `Quote${isPullquote ? ' is-pullquote' : ''}`;
+  const className = cn('Quote', {
+    'is-pullquote': isPullquote
+  });
   const attributionEl = attributionNodes.length ? html`
     <footer>${slice(attributionNodes).map(node => {
       return isText(node) ? trim(node.textContent) : node;

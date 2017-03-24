@@ -1,4 +1,5 @@
 // External
+const cn = require('classnames');
 const html = require('bel');
 const raf = require('raf');
 
@@ -20,9 +21,15 @@ function Cover({
   lgRatio,
   contentEls = []
 }) {
-  const className = `Cover u-full is-${type}${align ? ` is-${align}` : ''}`;
-  const mediaClassName = `Cover-media${type === 'heading' ? ' u-parallax' : ''}`;
-  const contentClassName = `Cover-content${type !== 'caption' ? ' u-layout' : ''} u-richtext-invert`;
+  const className = cn('Cover', `is-${type}`, {
+    [`is-${align}`]: align
+  }, 'u-full');
+  const mediaClassName = cn('Cover-media', {
+    'u-parallax': type === 'heading'
+  });
+  const contentClassName = cn('Cover-content', {
+    'u-layout': type !== 'caption'
+  }, 'u-richtext-invert');
   let pictureEl;
 
   if (mediaEl && mediaEl.tagName === 'IMG') {

@@ -6,6 +6,7 @@ const raf = require('raf');
 const {SELECTORS} = require('../constants');
 const {after, append, before, detachAll, getPlaceholders, getSections, isElement, select, selectAll} = require('../utils');
 const Cover = require('./components/Cover');
+const Gallery = require('./components/Gallery');
 const Header = require('./components/Header');
 const Nav = require('./components/Nav');
 const Share = require('./components/Share');
@@ -35,6 +36,7 @@ function app(done) {
   getSections([
     'header',
     'cover',
+    'gallery',
     'pull'
   ]).forEach(section => {
     switch (section.name) {
@@ -43,6 +45,9 @@ function app(done) {
         break;
       case 'cover':
         Cover.transformSection(section);
+        break;
+      case 'gallery':
+        Gallery.transformSection(section);
         break;
       case 'pull':
         UPull.transformSection(section);

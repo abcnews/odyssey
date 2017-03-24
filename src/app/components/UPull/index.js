@@ -9,14 +9,11 @@ function UPull({
   type,
   nodes = []
 }) {
-  const className = `u-pull${type ? `-${type}` : ''}`;
-
-  const isRichtext = nodes.length > 0 &&
-    isElement(nodes[0]) &&
+  const isRichtext = nodes.length > 0 && isElement(nodes[0]) &&
     EMBED_TAGNAMES.indexOf(nodes[0].tagName) === -1;
 
   return html`
-    <div class="${className}">
+    <div class="u-pull${type ? `-${type}` : ''}">
       ${isRichtext ? html`<div class="u-richtext">${nodes}</div>` : nodes}
     </div>
   `;
