@@ -202,15 +202,24 @@ function Gallery({
   }
 
   const className = cn('Gallery', {
-    'is-long': images.length > 3,
+    'is-short': images.length < 4,
     'is-tiling-specified': tiledRowLengths.length > 0
-  });
+  }, 'u-full');
+
+  const tileWidths = tiledRowLengths.reduce((widths, rowLength) => {
+    for (let i = 0, len = rowLength; i < rowLength; i++) {
+      widths.push(100 / rowLength);
+    }
+
+    return widths;
+  }, []);
 
   const imageEls = images.map(({pictureEl, captionEl}, index) => {
     select('img', pictureEl).onload = updateMeasuredState;
 
     const imageEl = html`
       <div class="Gallery-image"
+        style="-ms-flex: 0 0 ${tileWidths[index] || 100}%; flex: 0 0 ${tileWidths[index] || 100}%"
         data-index="${index}"
         onmouseup=${swipeIntent}
         onclick=${stopIfIgnoringClicks}>
@@ -276,8 +285,10 @@ function Gallery({
 
   const galleryEl = html`
     <div class="${className}">
-      ${paneEl}
-      ${controlsEl}
+      <div class="Gallery-layout">
+        ${paneEl}
+        ${controlsEl}
+      </div>
     </div>
   `;
 
@@ -321,7 +332,7 @@ function transformSection(section) {
     return config;
   }, {
     images: [],
-    tiledRowLengths: tiledRowLengthsString.split()
+    tiledRowLengths: tiledRowLengthsString.split('')
   });
 
   section.betweenNodes = [];

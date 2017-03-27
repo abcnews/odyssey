@@ -1,6 +1,5 @@
 .Gallery {
-  position: relative;
-  width: cells(10);
+  overflow: hidden;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -8,50 +7,90 @@
   user-select: none;
   -webkit-user-drag: none;
   user-drag: none;
+}
+
+.Gallery-layout {
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: $layout-fluid-padding;
+  padding-right: $layout-fluid-padding;
+  width: cells(10);
+
+  @media #{$mq-sm} {
+    .is-short & {
+      padding-left: 0;
+      padding-right: 0;
+      width: 100%;
+    }
+  }
+
+  @media #{$mq-md} {
+    .is-tiling-specified & {
+      padding-left: 0;
+      padding-right: 0;
+      width: 100%;
+    }
+  }
 
   @media #{$mq-lg} {
-    width: cells(12);
+    padding-left: $layout-fixed-padding;
+    padding-right: $layout-fixed-padding;
+    width: $layout-fixed;
   }
 
-  &.is-long {
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      z-index: 2;
+      width: calc(50vw - #{cells(5)});
+      height: 100%;
+      background-image: $gradient-horizontal-bg-0-0-75-100;
+      pointer-events: none;
 
-  }
+      // Phase 1 (Standard)
+      html.fixed & {
+        @media (max-width: 1000px) {
+          min-width: 100px;
+        }
+      }
+    }
 
-  &.is-tiling-specified {
+    &::before {
+      transform: rotate(180deg);
+      right: 100%;
+    }
 
-  }
-
-  &::before,
-  &::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    z-index: 2;
-    width: calc(50vw - #{cells(5)});
-    height: 100%;
-    background-image: $gradient-horizontal-bg-0-0-75-100;
-    pointer-events: none;
-  }
-
-  &::before {
-    transform: rotate(180deg);
-    right: 100%;
-  }
-
-  &::after {
-    left: 100%;
-  }
+    &::after {
+      left: 100%;
+    }
 }
 
 .Gallery-pane {
   margin: 0 -10px;
 
+  @media #{$mq-sm} {
+    .is-short & {
+      margin: 0 -4px;
+    }
+  }
+
   @media #{$mq-md} {
     margin: 0 -15px;
+
+    .is-tiling-specified & {
+      margin: 0 -4px;
+    }
   }
 
   @media #{$mq-lg} {
     margin: 0 -20px;
+
+    .is-tiling-specified & {
+      margin: 0 -5px;
+    }
   }
 }
 
@@ -59,31 +98,23 @@
   display: -ms-flexbox;
   display: flex;
   position: relative;
-  // -webkit-backface-visibility: hidden;
-  // backface-visibility: hidden;
-  // -webkit-perspective: 1px;
-  // perspective: 1px;
-  // -ms-transform: translate3d(0, 0, 0);
-  // transform: translate3d(0, 0, 0);
-  // -ms-transform: translateX(0);
-  // transform: translateX(0);
   transition: transform .125s ease-out;
   will-change: transform;
 
-  @media #{$mq-md} {
-
+  @media #{$mq-sm} {
+    .is-short & {
+      flex-wrap: wrap;
+      transform: none !important;
+      transition-duration: 0s;
+    }
   }
 
-  @media #{$mq-lg} {
-
-  }
-
-  &.is-long {
-
-  }
-
-  &.is-tiling-specified {
-
+  @media #{$mq-not-sm} {
+    .is-tiling-specified & {
+      flex-wrap: wrap;
+      transform: none !important;
+      transition-duration: 0s;
+    }
   }
 }
 
@@ -108,12 +139,39 @@
   transition: .125s opacity;
   will-change: opacity;
 
+  @media #{$mq-sm} {
+    -ms-flex: 0 0 100% !important;
+    flex: 0 0 100% !important;
+
+    .is-short & {
+      opacity: 1;
+      margin-bottom: 8px;
+      padding: 0 4px;
+    }
+  }
+
   @media #{$mq-md} {
     padding: 0 15px;
+
+    .is-tiling-specified & {
+      margin-bottom: 8px;
+      padding: 0 4px;
+    }
   }
 
   @media #{$mq-lg} {
     padding: 0 20px;
+
+    .is-tiling-specified & {
+      margin-bottom: 10px;
+      padding: 0 5px;
+    }
+  }
+
+  @media #{$mq-not-sm} {
+    .is-tiling-specified & {
+      opacity: 1;
+    }
   }
 
   &.is-active {
@@ -135,6 +193,18 @@
       cursor: -moz-grabbing;
       cursor: grabbing;
     }
+
+    @media #{$mq-sm} {
+      .is-short & {
+        cursor: default;
+      }
+    }
+
+    @media #{$mq-not-sm} {
+      .is-tiling-specified & {
+        cursor: default;
+      }
+    }
   }
 
   .Caption {
@@ -144,22 +214,6 @@
     pointer-events: none;
     transition: .125s opacity;
     will-change: opacity;
-
-    // position: absolute;
-    // bottom: 0;
-    // padding-left: .66rem;
-    // padding-right: .66rem;
-    // background-color: rgba(0, 0, 0, 0.5);
-    // color: #eee;
-    //
-    //
-    // @media #{$mq-sm} {
-    //   .is-long & {
-    //     top: 100%;
-    //     left: 0;
-    //     max-width: 50%;
-    //   }
-    // }
   }
 
   &.is-active .Caption {
@@ -173,16 +227,59 @@
     }
   }
 
-  &.is-long {
+  @media #{$mq-sm} {
+    .is-short & .Caption {
+      opacity: 0;
+      position: absolute;
+      bottom: 0;
+      padding-left: .66rem;
+      padding-right: .66rem;
+      max-width: calc(100% - 10px);
+      min-height: 0;
+      background-color: $color-transparent-black-50;
+      color: $color-grey-100;
+      pointer-events: none;
 
+      a {
+        color: $color-lightPrimary;
+      }
+
+      a:visited {
+        color: $color-lightSecondary;
+      }
+    }
+
+    .is-short &:hover .Caption {
+      opacity: 1;
+      pointer-events: all;
+    }
   }
 
-  &.is-tiling-specified {
+  @media #{$mq-not-sm} {
+    .is-tiling-specified & .Caption {
+      opacity: 0;
+      position: absolute;
+      bottom: 0;
+      padding-left: .66rem;
+      padding-right: .66rem;
+      max-width: calc(100% - 10px);
+      min-height: 0;
+      background-color: $color-transparent-black-50;
+      color: $color-grey-100;
+      pointer-events: none;
 
-    .Caption {
-      // top: auto;
-      // bottom: 0;
-      // max-width: 100%;
+      a {
+        color: $color-lightPrimary;
+      }
+
+      a:visited {
+        color: $color-lightSecondary;
+      }
+    }
+
+    .is-tiling-specified &:hover .Caption {
+      opacity: 1;
+      pointer-events: all;
     }
   }
 }
@@ -193,6 +290,18 @@
   top: 0; // Dynamic, based on image height;
   right: $layout-fluid-padding;
   padding-left: 1rem;
+
+  @media #{$mq-sm} {
+    .is-short & {
+      display: none;
+    }
+  }
+
+  @media #{$mq-not-sm} {
+    .is-tiling-specified & {
+      display: none;
+    }
+  }
 
   @media #{$mq-lg} {
     right: $layout-fixed-padding;
