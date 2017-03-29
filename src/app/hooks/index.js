@@ -62,13 +62,13 @@ function unsubscribe(id) {
   return subscriber;
 }
 
-const wheelEventName = 'onwheel' in NOEL ? 'wheel' :
-  document.onmousewheel !== undefined ? 'mousewheel' :
-  'DOMMouseScroll';
+// const wheelEventName = 'onwheel' in NOEL ? 'wheel' :
+//   document.onmousewheel !== undefined ? 'mousewheel' :
+//   'DOMMouseScroll';
 const callPanHooks = callHooks.bind(null, 'onPan');
 const callSizeHooks = callHooks.bind(null, 'onSize');
 
-window.addEventListener(wheelEventName, callPanHooks, {passive: true});
+// window.addEventListener(wheelEventName, callPanHooks, {passive: true});
 window.addEventListener('scroll', callPanHooks);
 window.addEventListener('resize', callSizeHooks);
 window.addEventListener('orientationchange', callSizeHooks);

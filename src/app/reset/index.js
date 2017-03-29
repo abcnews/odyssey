@@ -6,7 +6,6 @@ const dewysiwyg = require('util-dewysiwyg');
 const {SELECTORS} = require('../../constants');
 const {append, before, detach, detachAll, literalList, select, selectAll, slice} = require('../../utils');
 const Main = require('../components/Main');
-const Quote = require('../components/Quote');
 
 const TEMPLATE_REMOVABLES = {
   '.platform-standard:not(.platform-mobile)': literalList(`
@@ -110,18 +109,6 @@ function reset(storyEl) {
     } else {
       el.className = el.className.replace(P2_FLOAT.PATTERN, P2_FLOAT.REPLACEMENT);
     }
-  });
-
-  selectAll(`
-    blockquote:not([class]),
-    .quote--pullquote,
-    .inline-content.quote,
-    .embed-quote,
-    .comp-rich-text-blockquote,
-    .view-inline-pullquote
-  `, storyEl).forEach(el => {
-    before(el, Quote.createFromEl(el));
-    detach(el);
   });
 
   // selectAll(SELECTORS.WYSIWYG_EMBED, storyEl)

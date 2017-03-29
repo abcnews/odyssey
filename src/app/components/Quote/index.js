@@ -4,7 +4,7 @@ const html = require('bel');
 
 // Ours
 const {NOEL} = require('../../../constants');
-const {append, detach, isElement, isText, linebreaksToParagraphs, prepend, select, selectAll, slice, trim} = require('../../../utils');
+const {append, before, detach, isElement, isText, linebreaksToParagraphs, prepend, select, selectAll, slice, trim} = require('../../../utils');
 
 function Quote({
   isPullquote = false,
@@ -86,9 +86,14 @@ function createFromEl(el) {
     return Quote(config);
   }
 
-  // return null;
-  return clone; // TODO: restore above line
+  return null;
+}
+
+function transformEl(el) {
+  before(el, createFromEl(el));
+  detach(el);
 }
 
 module.exports = Quote;
 module.exports.createFromEl = createFromEl;
+module.exports.transformEl = transformEl;

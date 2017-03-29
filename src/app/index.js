@@ -8,9 +8,12 @@ const {after, append, before, detachAll, getPlaceholders, getSections, isElement
 const Cover = require('./components/Cover');
 const Gallery = require('./components/Gallery');
 const Header = require('./components/Header');
+const ImageEmbed = require('./components/ImageEmbed');
 const Nav = require('./components/Nav');
+const Quote = require('./components/Quote');
 const Share = require('./components/Share');
 const UPull = require('./components/UPull');
+const VideoEmbed = require('./components/VideoEmbed');
 const {getData, subscribe} = require('./hooks');
 const {getMeta} = require('./meta');
 const reset = require('./reset');
@@ -111,13 +114,40 @@ function app(done) {
     });
   }
 
-  // Test - full-width photo/video
-  // selectAll('.inline-content.photo.full, .inline-content.video.full, .view-image-embed-full, .view-inlineMediaPlayer', storyEl).forEach(el => {
-  //   const pullEl = html`<div class="u-pull"></div>`;
-  //
-  //   before(el, pullEl);
-  //   append(pullEl, el);
-  // });
+  // Transform image embeds
+  const sidePulls = selectAll('.u-pull-left, .u-pull-right');
+
+  selectAll(`
+    .inline-content.photo,
+    [class*="view-image-embed"]
+  `, storyEl)
+  .concat(selectAll('.embed-content', storyEl)
+    .filter(el => select('.type-photo', el)))
+  .forEach(el => {
+    const isSidePulled = sidePulls.filter(pEl => pEl.contains(el)).length > 0;
+
+    ImageEmbed.transformEl(el, isSidePulled);
+  });
+
+  // Transform video embeds
+  selectAll(`
+    .inline-content.video,
+    .view-inlineMediaPlayer
+  `, storyEl)
+  .concat(selectAll('.embed-content', storyEl)
+    .filter(el => select('.type-video', el)))
+  .forEach(VideoEmbed.transformEl);
+
+  // Transform quotes (native and embedded)
+  selectAll(`
+    blockquote:not([class]),
+    .quote--pullquote,
+    .inline-content.quote,
+    .embed-quote,
+    .comp-rich-text-blockquote,
+    .view-inline-pullquote
+  `, storyEl)
+  .forEach(Quote.transformEl);
 
   // Nullify nested pulls (outer always wins)
   selectAll('[class*="u-pull"] [class*="u-pull"]')

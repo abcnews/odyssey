@@ -12,27 +12,36 @@ const SIZES = {
 	'3x4': {sm: '700x933', md: '940x1253', lg: '940x1253'}
 }
 
+const RATIO_PATTERN = /(\d+x\d+)/;
 const P1_RATIO_SIZE_PATTERN = /(\d+x\d+)-(\d+x\d+)/;
 const P2_RATIO_SIZE_PATTERN = /(\d+x\d+)-([a-z]+)/;
-const P2_RATIO_PATTERN = /(\d+x\d+)/;
 
 module.exports = function Picture({
   src = SMALLEST_IMAGE,
   alt = '',
   smRatio = '1x1',
   mdRatio = '3x2',
-  lgRatio = '16x9'
+  lgRatio = '16x9',
+  preserveOriginalRatio = false
 }) {
+  const [, originalRatio] = src.match(RATIO_PATTERN) || [, null];
+
+  if (preserveOriginalRatio && originalRatio) {
+    smRatio = originalRatio;
+    mdRatio = originalRatio;
+    lgRatio = originalRatio;
+  }
+
   const imageURL = src
     .replace(P2_RATIO_SIZE_PATTERN, '$1-large');
   const smImageURL = imageURL
-    .replace(P2_RATIO_PATTERN, smRatio)
+    .replace(RATIO_PATTERN, smRatio)
     .replace(P1_RATIO_SIZE_PATTERN, `${smRatio}-${SIZES[smRatio].sm}`);
   const mdImageURL = imageURL
-    .replace(P2_RATIO_PATTERN, mdRatio)
+    .replace(RATIO_PATTERN, mdRatio)
     .replace(P1_RATIO_SIZE_PATTERN, `${mdRatio}-${SIZES[mdRatio].md}`);
   const lgImageURL = imageURL
-    .replace(P2_RATIO_PATTERN, lgRatio)
+    .replace(RATIO_PATTERN, lgRatio)
     .replace(P1_RATIO_SIZE_PATTERN, `${lgRatio}-${SIZES[lgRatio].lg}`);
   const lansdcapeImageURL = imageURL
     .replace(P1_RATIO_SIZE_PATTERN, `${lgRatio}-${SIZES[lgRatio].md}`);

@@ -1,0 +1,27 @@
+.ImageEmbed {
+  margin-bottom: 1.5rem;
+  
+  @media #{$mq-not-lg} {
+    .Main > & {
+      padding-left: 0;
+      padding-right: 0;
+      width: 100%;
+    }
+  }
+
+  img {
+    width: 100%;
+    vertical-align: bottom;
+  }
+
+  > .Caption {
+
+
+    @media #{$mq-not-lg} {
+      .Main > & {
+        padding-left: $layout-fluid-padding;
+        padding-right: $layout-fluid-padding;
+      }
+    }
+  }
+}

@@ -85,7 +85,7 @@ function selectAll(selector, roots) {
 }
 
 function detach(node = {}) {
-  if (node.parentNode) {
+  if (node != null && node.parentNode) {
     node.parentNode.removeChild(node);
   }
 

@@ -1,6 +1,55 @@
 // [!] Everything in this file will be gone by the time we are feature-complete
 
-// Re-apply thumbnail height for Phase 1 (mobile)'s embedded video teasers
-.type-video img {
-  height: 74px;
+// Massage Phase 1 (mobile)'s embedded video teaser layout
+.type-video {
+  font-family: $font-sans;
+
+  [class*="u-richtext"] > * > & {
+    padding: 0 $layout-fluid-padding;
+
+    @media #{$mq-lg} {
+      padding: 0 $layout-fixed-padding;
+    }
+  }
+
+  h3 {
+    width: auto !important;
+  }
+
+  img {
+    height: 74px;
+  }
+}
+
+// Hide actions & captions on Phase 2 video embeds
+.comp-video-player .actions,
+.comp-video-player .caption, {
+  display: none;
+}
+
+.comp-video-player .placeholder-play {
+  top: 50% !important;
+  transform: translateY(-50%);
+}
+
+// Fix placeholder play button position on Phase 2 video embeds
+.comp-video-player .actions,
+.comp-video-player .caption, {
+  display: none;
+}
+
+// Make sure fullscren Lively videos are centered
+.Lively.fullscreen {
+  margin-left: calc(-50vw + 50%) !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+// Make sure Lively controls are the same width as the video
+.Lively:not(.fullscreen) .Lively-controls {
+  width: calc(100% - #{$layout-fluid-gutter});
+
+  @media #{$mq-lg} {
+    width: calc(100% - #{$layout-fixed-gutter});
+  }
 }
