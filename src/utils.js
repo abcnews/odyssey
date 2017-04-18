@@ -10,6 +10,10 @@ const INLINE_TAG_NAMES = [
     'sub', 'sup', 'button', 'input', 'label', 'select', 'textarea'
 ];
 
+function returnFalse() {
+  return false;
+}
+
 function trim(str) {
   return str.replace(TRIM_PATTERN, '');
 }
@@ -52,12 +56,6 @@ function isInlineElement(node) {
 function isDocument(node) {
   return node && node.nodeType === Node.DOCUMENT_NODE;
 }
-
-function getWindowScrollY() {
-    return (window.pageYOffset !== undefined) ?
-      window.pageYOffset :
-      (document.documentElement || document.body.parentNode || document.body).scrollTop;
-  }
 
 function create(tagName) {
   return document.createElement(tagName);
@@ -263,6 +261,7 @@ function linebreaksToParagraphs(el) {
 }
 
 module.exports = {
+  returnFalse,
   trim,
   slug,
   slice,
@@ -271,7 +270,6 @@ module.exports = {
   isText,
   isElement,
   isDocument,
-  getWindowScrollY,
   select,
   selectAll,
   detach,

@@ -1,11 +1,10 @@
 // External
 const cn = require('classnames');
 const html = require('bel');
-const raf = require('raf');
 
 // Ours
 const {detach, isElement, select, trim} = require('../../../utils');
-const {getData, subscribe} = require('../../hooks');
+const {subscribe} = require('../../loop');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
 
@@ -59,40 +58,35 @@ function Cover({
 
   if (mediaContainerEl && type === 'richtext') {
     let listener = null;
+    let previousState = {};
     let state = {};
-    let nextState = {};
 
-    function updateNextState(data) {
+    function measure(viewport) {
       const rect = coverEl.getBoundingClientRect();
-      const isBeyond = data.windowInnerHeight >= rect.bottom;
+      const isBeyond = viewport.height >= rect.bottom;
       const isFixed = !isBeyond && rect.top <= 0;
 
-      nextState = {
+      state = {
         isFixed,
         isBeyond
       };
     }
 
-    function updateMediaPosition() {
-      if (nextState.isFixed !== state.isFixed) {
-        mediaContainerEl.classList[nextState.isFixed ? 'add' : 'remove']('is-fixed');
+    function mutate() {
+      if (state.isFixed !== previousState.isFixed) {
+        mediaContainerEl.classList[state.isFixed ? 'add' : 'remove']('is-fixed');
       }
 
-      if (nextState.isBeyond !== state.isBeyond) {
-        mediaContainerEl.classList[nextState.isBeyond ? 'add' : 'remove']('is-beyond');
+      if (state.isBeyond !== previousState.isBeyond) {
+        mediaContainerEl.classList[state.isBeyond ? 'add' : 'remove']('is-beyond');
       }
 
-      state = nextState;
+      previousState = state;
     }
 
     subscribe({
-      onSize: updateNextState,
-      onPan: updateNextState,
-      onFrame: updateMediaPosition
-    });
-
-    raf(() => {
-      updateNextState(getData());
+      measure,
+      mutate
     });
   }
 

@@ -1,6 +1,5 @@
 // External
 const html = require('bel');
-const raf = require('raf');
 
 // Ours
 const {SELECTORS} = require('../constants');
@@ -14,7 +13,7 @@ const Quote = require('./components/Quote');
 const Share = require('./components/Share');
 const UPull = require('./components/UPull');
 const VideoEmbed = require('./components/VideoEmbed');
-const {getData, subscribe} = require('./hooks');
+const {start, subscribe} = require('./loop');
 const {getMeta} = require('./meta');
 const reset = require('./reset');
 
@@ -23,6 +22,8 @@ function app(done) {
   const storyEl = reset(select(SELECTORS.STORY));
 
   after(select(SELECTORS.GLOBAL_NAV), Nav({shareLinks: meta.shareLinks}));
+
+  start(); // loop
 
   getPlaceholders([
     'share',
@@ -64,16 +65,14 @@ function app(done) {
   const parallaxes = selectAll('.u-parallax')
   .map(el => ({
     el,
-    mediaEl: select('img, video', el),
     nextEl: el.nextElementSibling,
-    state: {opacity: 1, translateY: 0},
-    nextState: {}
-  }))
-  .filter(parallax => parallax.mediaEl);
+    previousState: {},
+    state: {}
+  }));
 
   if (parallaxes.length > 0) {
 
-    function updateNextStates() {
+    function measure() {
       parallaxes.forEach(parallax => {
         const rect = parallax.el.getBoundingClientRect();
 
@@ -86,31 +85,26 @@ function app(done) {
           parallax.nextEl.getBoundingClientRect().top - top :
           rect.height;
 
-        parallax.nextState = {
+        parallax.state = {
           opacity: 1 + top / opacityExtent,
           translateY: -33.33 * (top / rect.height),
         };
       });
     }
 
-    function updateMediaEls() {
+    function mutate() {
       parallaxes.forEach(parallax => {
-        if (parallax.nextState.translateY !== parallax.state.translateY) {
-          parallax.state = parallax.nextState;
-          parallax.mediaEl.style.opacity = parallax.state.opacity;
-          parallax.mediaEl.style.transform = `translateY(${parallax.state.translateY}%)`;
+        if (parallax.state.translateY !== parallax.previousState.translateY) {
+          parallax.el.style.opacity = parallax.state.opacity;
+          parallax.el.style.transform = `translateY(${parallax.state.translateY}%)`;
+          parallax.previousState = parallax.state;
         }
       });
     }
 
     subscribe({
-      onSize: updateNextStates,
-      onPan: updateNextStates,
-      onFrame: updateMediaEls
-    });
-
-    raf(() => {
-      updateNextStates();
+      measure,
+      mutate
     });
   }
 
@@ -129,14 +123,16 @@ function app(done) {
     ImageEmbed.transformEl(el, isSidePulled);
   });
 
+  // TODO: Restore and complete these
+
   // Transform video embeds
-  selectAll(`
-    .inline-content.video,
-    .view-inlineMediaPlayer
-  `, storyEl)
-  .concat(selectAll('.embed-content', storyEl)
-    .filter(el => select('.type-video', el)))
-  .forEach(VideoEmbed.transformEl);
+  // selectAll(`
+  //   .inline-content.video,
+  //   .view-inlineMediaPlayer
+  // `, storyEl)
+  // .concat(selectAll('.embed-content', storyEl)
+  //   .filter(el => select('.type-video', el)))
+  // .forEach(VideoEmbed.transformEl);
 
   // Transform quotes (native and embedded)
   selectAll(`

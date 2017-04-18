@@ -1,5 +1,7 @@
 html {
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  background-color: $color-white;
   font-size: $rem;
 
   // Phase 1 (Standard)
@@ -11,7 +13,7 @@ html {
 }
 
 body {
-  height: 102vh;
+  min-height: 102vh;
   width:  100vw;
   background-color: #f9f9f9;
 }

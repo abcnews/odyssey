@@ -1,4 +1,5 @@
 .Header {
+  overflow: hidden;
   position: relative;
   margin-top: 0;
   line-height: 1.5;
@@ -16,15 +17,12 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding-top: 16rem;
 
     @media #{$mq-md} {
-      padding-top: 22rem;
       min-height: 100vw;
     }
 
     @media #{$mq-lg} {
-      padding-top: 28rem;
       min-height: 56.25vw;
     }
   }
@@ -41,6 +39,10 @@
     left: 0;
     width: 100%;
     height: 100%;
+
+    > .Picture {
+      height: 100%;
+    }
   }
 
   &::after {
@@ -51,18 +53,6 @@
     width: 100%;
     height: 6.25rem;
     background-image: $gradient-vertical-0-0-100-60;
-  }
-
-  img,
-  video {
-    width: 100%;
-    height: auto;
-    vertical-align: top;
-
-    .is-layered & {
-      object-fit: cover; font-family: 'object-fit: cover;';
-      height: 100%;
-    }
   }
 }
 
@@ -82,8 +72,16 @@
 
   .is-layered & {
     position: relative;
-    z-index: 1;
+    margin-top: 16rem;
     background-image: $gradient-vertical-0-43-100-75;
+
+    @media #{$mq-md} {
+      margin-top: 22rem;
+    }
+
+    @media #{$mq-lg} {
+      margin-top: 28rem;
+    }
   }
 }
 

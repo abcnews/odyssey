@@ -1,6 +1,6 @@
 .ImageEmbed {
   margin-bottom: 1.5rem;
-  
+
   @media #{$mq-not-lg} {
     .Main > & {
       padding-left: 0;
@@ -11,7 +11,7 @@
 
   img {
     width: 100%;
-    vertical-align: bottom;
+    vertical-align: top;
   }
 
   > .Caption {

@@ -1,9 +1,5 @@
 .u-parallax {
-
-  img,
-  video {
-    opacity: 1;
-    transform: none;
-    will-change: opacity, transform;
-  }
+  opacity: 1;
+  transform: none;
+  will-change: opacity, transform;
 }

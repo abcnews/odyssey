@@ -3,6 +3,7 @@ $Nav-logo_width: 118px;
 $Nav-bar_bg-color: $color-grey-brand;
 
 .Nav {
+  z-index: 3;
   position: relative;
   height: $Nav_height;
   background-color: $Nav-bar_bg-color;
@@ -23,15 +24,14 @@ $Nav-bar_bg-color: $color-grey-brand;
   &.is-fixed {
     position: fixed;
     top: 0;
-    z-index: 3;
   }
 
   @media (max-height: 799px) {
-    transform: translateY(-102%) !important;
-    transition-duration: .125s !important;
+    transform: translateY(-102%);
+    transition-duration: .125s;
 
     &.is-peeking {
-      transform: none !important;
+      transform: none;
     }
   }
 }

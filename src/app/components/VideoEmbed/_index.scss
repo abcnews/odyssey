@@ -1,5 +1,11 @@
 .VideoEmbed {
-  margin-bottom: 1.5rem;
+  &.u-full {
+    height: 100vh;
+  }
+
+  &:not(.u-pull) {
+    margin-bottom: 1.5rem;
+  }
 
   @media #{$mq-not-lg} {
     .Main > & {
@@ -9,9 +15,25 @@
     }
   }
 
-  video {
+  > video {
     width: 100%;
-    vertical-align: bottom;
+    vertical-align: top;
+
+    &.IIV::-webkit-media-controls-play-button,
+		&[autoplay]::-webkit-media-controls-start-playback-button {
+			opacity: 0;
+			width: 5px;
+			pointer-events: none;
+		}
+  }
+
+  &.u-full > video {
+    height: 100%;
+    object-fit: cover; font-family: 'object-fit: cover;';
+
+    // @media (min-aspect-ratio: 16/9) {
+		// 	object-fit: contain; font-family: 'object-fit: contain;';
+		// }
   }
 
   > .Caption {
@@ -22,6 +44,12 @@
         padding-left: $layout-fluid-padding;
         padding-right: $layout-fluid-padding;
       }
+    }
+  }
+
+  &.u-full {
+    > .Caption {
+      display: none;
     }
   }
 }

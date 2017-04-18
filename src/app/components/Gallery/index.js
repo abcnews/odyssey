@@ -1,11 +1,10 @@
 // External
 const cn = require('classnames');
 const html = require('bel');
-const raf = require('raf');
 
 // Ours
-const {detach, isElement, select, selectAll, trim} = require('../../../utils');
-const {subscribe} = require('../../hooks');
+const {detach, isElement, returnFalse, select, selectAll, trim} = require('../../../utils');
+const {nextFrame, subscribe} = require('../../loop');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
 
@@ -26,14 +25,15 @@ function Gallery({
   let swipeAxis;
   let shouldIgnoreClicks;
   let currentIndex;
+  let lastViewport = {};
   let paneWidth;
-  let lastImageHeight;
+  let previousImageHeight;
   let imageHeight;
-  let lastControlsWidth;
+  let previousControlsWidth;
   let controlsWidth;
 
   function updateImagesTransform(transform) {
-    raf(() => {
+    nextFrame(() => {
       imagesEl.style.transform = transform;
     });
   }
@@ -181,23 +181,28 @@ function Gallery({
     goToImage(nextIndex);
   }
 
-  function updateMeasuredState() {
+  function measure(viewport) {
+    if (lastViewport.width === viewport.width && lastViewport.height === viewport.height) {
+      return;
+    }
+
+    lastViewport = viewport;
     paneWidth = paneEl.getBoundingClientRect().width;
     imageHeight = select('img', imageEls[currentIndex]).getBoundingClientRect().height;
     controlsWidth = controlsEl.getBoundingClientRect().width;
   }
 
-  function updateMeasuredView() {
-    if (imageHeight !== lastImageHeight) {
-      lastImageHeight = imageHeight;
+  function mutate() {
+    if (imageHeight !== previousImageHeight) {
       controlsEl.style.top = `${imageHeight}px`;
+      previousImageHeight = imageHeight;
     }
 
-    if (controlsWidth !== lastControlsWidth) {
-      lastControlsWidth = controlsWidth;
+    if (controlsWidth !== previousControlsWidth) {
       selectAll('.Caption', imagesEl).forEach(el => {
         el.style.marginRight = `${controlsWidth}px`;
       })
+      previousControlsWidth = controlsWidth;
     }
   }
 
@@ -215,12 +220,13 @@ function Gallery({
   }, []);
 
   const imageEls = images.map(({pictureEl, captionEl}, index) => {
-    select('img', pictureEl).onload = updateMeasuredState;
+    select('img', pictureEl).onload = measure;
 
     const imageEl = html`
       <div class="Gallery-image"
         style="-ms-flex: 0 0 ${tileWidths[index] || 100}%; flex: 0 0 ${tileWidths[index] || 100}%"
         data-index="${index}"
+        ondragstart=${returnFalse}
         onmouseup=${swipeIntent}
         onclick=${stopIfIgnoringClicks}>
         ${select('img', pictureEl).setAttribute('draggable', 'false'), pictureEl}
@@ -293,10 +299,9 @@ function Gallery({
   `;
 
   subscribe({
-    onSize: updateMeasuredState,
-    onFrame: updateMeasuredView,
+    measure,
+    mutate,
   });
-  raf(updateMeasuredState);
 
   goToImage(currentIndex = 0);
 

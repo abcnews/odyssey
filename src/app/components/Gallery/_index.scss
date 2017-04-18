@@ -39,33 +39,45 @@
     width: $layout-fixed;
   }
 
-    &::before,
-    &::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      z-index: 2;
-      width: calc(50vw - #{cells(5)});
-      height: 100%;
-      background-image: $gradient-horizontal-bg-0-0-75-100;
-      pointer-events: none;
+  &::before,
+  &::after {
+    content: "";
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    width: calc(50vw - #{cells(5)});
+    height: 100%;
+    background-image: $gradient-horizontal-bg-0-0-75-100;
+    pointer-events: none;
 
-      // Phase 1 (Standard)
-      html.fixed & {
-        @media (max-width: 1000px) {
-          min-width: 100px;
-        }
+    @media #{$mq-sm} {
+      .is-short & {
+        content: none;
       }
     }
 
-    &::before {
-      transform: rotate(180deg);
-      right: 100%;
+    @media #{$mq-md} {
+      .is-tiling-specified & {
+        content: none;
+      }
     }
 
-    &::after {
-      left: 100%;
+    // Phase 1 (Standard)
+    html.fixed & {
+      @media (max-width: 1000px) {
+        min-width: 100px;
+      }
     }
+  }
+
+  &::before {
+    transform: rotate(180deg);
+    right: 100%;
+  }
+
+  &::after {
+    left: 100%;
+  }
 }
 
 .Gallery-pane {
@@ -179,10 +191,7 @@
     transition-delay: .0625s;
   }
 
-  img {
-    width: 100%;
-    height: auto;
-    vertical-align: top;
+  .Picture {
     cursor: pointer;
     cursor: -webkit-grab;
     cursor: -moz-grab;

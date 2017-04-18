@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  overflow-x: hidden;
+  overflow: hidden;
   position: relative;
   margin-top: 0;
   min-height: 100vw;
@@ -13,16 +13,12 @@
     font-size: 1.25rem;
   }
 
-  @media #{$mq-lg} {
+  @media #{$mq-landscape} and #{$mq-not-lg}, #{$mq-lg} {
     min-height: 56.25vw;
   }
 
   &.is-richtext {
     justify-content: center;
-  }
-
-  &.is-heading {
-    align-items: center;
   }
 }
 
@@ -51,10 +47,12 @@
   .is-caption &,
   .is-heading & {
     position: static;
+    height: auto;
   }
 
   .is-richtext &::before {
     content: "";
+    z-index: 1;
     position: absolute;
     bottom: 0;
     left: 0;
@@ -73,6 +71,7 @@
     .is-left &::after,
     .is-right &::after {
       content: "";
+      z-index: 1;
       position: absolute;
       bottom: 0;
       left: 0;
@@ -100,12 +99,8 @@
     background-image: $gradient-vertical-40-0-80-60;
   }
 
-  img,
-  video {
-    object-fit: cover; font-family: 'object-fit: cover;';
-    width: 100%;
+  > .Picture {
     height: 100%;
-    vertical-align: top;
   }
 }
 
@@ -173,7 +168,12 @@
   .is-caption > &,
   .is-heading > & {
     position: absolute;
+    bottom: 0;
     max-width: 100%;
+  }
+
+  .is-heading > & {
+    width: 100%;
   }
 
   .is-caption > & > .Caption {

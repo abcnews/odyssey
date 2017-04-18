@@ -1,9 +1,8 @@
 // External
 const html = require('bel');
-const raf = require('raf');
 
 // Ours
-const {getData, subscribe} = require('../../hooks');
+const {subscribe} = require('../../loop');
 const ShareLinks = require('../ShareLinks');
 
 module.exports = function Nav({homeHref = '/news/', shareLinks}) {
@@ -20,54 +19,34 @@ module.exports = function Nav({homeHref = '/news/', shareLinks}) {
     </div>
   `;
 
+  let previousState = {};
   let state = {};
-  let nextState = {};
 
-  function updateNextState(data) {
-    const rect = navEl.getBoundingClientRect();
-
-    nextState = {
-      scrollY: data.windowScrollY,
-      top: rect.top,
-      isFixed: rect.top <= 0
+  function measure() {
+    state = {
+      top: navEl.getBoundingClientRect().top
     };
   }
 
-  function updateBarPosition() {
-    if (nextState.isFixed !== state.isFixed) {
-      navBarEl.classList[nextState.isFixed ? 'add' : 'remove']('is-fixed');
+  function mutate() {
+    const wasFixed = previousState.top <= 0;
+    const isFixed = state.top <= 0;
+    const topDiff = state.top - previousState.top;
 
-      if ('isFixed' in state && nextState.isFixed) {
-        navBarEl.style.transitionDuration = '0s';
-        navBarEl.style.transform = `translateY(${nextState.top}px)`;
-
-        raf(() => {
-          const listener = navBarEl.addEventListener('transitionend', () => {
-            navBarEl.removeEventListener('transitionend', listener);
-            navBarEl.style.transitionDuration = '';
-          }, false);
-
-          navBarEl.style.transitionDuration = '.25s';
-          navBarEl.style.transform = '';
-        });
-      }
+    if (wasFixed !== isFixed) {
+      navBarEl.classList[isFixed ? 'add' : 'remove']('is-fixed');
     }
 
-    if (!nextState.isFixed || Math.abs(nextState.scrollY - state.scrollY) > 10) {
-      navBarEl.classList[!nextState.isFixed || nextState.scrollY - state.scrollY < 0 ? 'add' : 'remove']('is-peeking');
+    if (!isFixed || Math.abs(topDiff) > 10) {
+      navBarEl.classList[!isFixed || topDiff > 0 ? 'add' : 'remove']('is-peeking');
     }
 
-    state = nextState;
+    previousState = state;
   }
 
   subscribe({
-    onSize: updateNextState,
-    onPan: updateNextState,
-    onFrame: updateBarPosition
-  });
-
-  raf(() => {
-    updateNextState(getData());
+    measure,
+    mutate
   });
 
   return navEl;

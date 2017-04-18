@@ -16,7 +16,7 @@ const RATIO_PATTERN = /(\d+x\d+)/;
 const P1_RATIO_SIZE_PATTERN = /(\d+x\d+)-(\d+x\d+)/;
 const P2_RATIO_SIZE_PATTERN = /(\d+x\d+)-([a-z]+)/;
 
-module.exports = function Picture({
+function Picture({
   src = SMALLEST_IMAGE,
   alt = '',
   smRatio = '1x1',
@@ -32,26 +32,46 @@ module.exports = function Picture({
     lgRatio = originalRatio;
   }
 
+  const sizerClassName = `u-sizer-sm-${smRatio} u-sizer-md-${mdRatio} u-sizer-lg-${lgRatio}`;
+
   const imageURL = src
     .replace(P2_RATIO_SIZE_PATTERN, '$1-large');
   const smImageURL = imageURL
     .replace(RATIO_PATTERN, smRatio)
-    .replace(P1_RATIO_SIZE_PATTERN, `${smRatio}-${SIZES[smRatio].sm}`);
+    .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[smRatio].sm}`);
   const mdImageURL = imageURL
     .replace(RATIO_PATTERN, mdRatio)
-    .replace(P1_RATIO_SIZE_PATTERN, `${mdRatio}-${SIZES[mdRatio].md}`);
+    .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[mdRatio].md}`);
   const lgImageURL = imageURL
     .replace(RATIO_PATTERN, lgRatio)
-    .replace(P1_RATIO_SIZE_PATTERN, `${lgRatio}-${SIZES[lgRatio].lg}`);
-  const lansdcapeImageURL = imageURL
-    .replace(P1_RATIO_SIZE_PATTERN, `${lgRatio}-${SIZES[lgRatio].md}`);
+    .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[lgRatio].lg}`);
+  const lansdcapeNotLgImageURL = imageURL
+    .replace(RATIO_PATTERN, lgRatio)
+    .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[lgRatio].md}`);
+
+  // const currentSrc = SMALLEST_IMAGE;
+
+  // const imgEl = html`<img src="${currentSrc}" alt="${alt}" />`;
+  const imgEl = html`<img alt="${alt}" loading="" />`;
+
+  const loadListener = imgEl.addEventListener('load', () => {
+    imgEl.removeEventListener('load', loadListener);
+    imgEl.removeAttribute('loading');
+  }, false);
 
   return html`
-    <picture>
-      <source srcset="${lgImageURL}" media="${MQ.LG}" />
-      <source srcset="${lansdcapeImageURL}" media="${MQ.LANDSCAPE} and ${MQ.NOT_LG}" />
-      <source srcset="${smImageURL}" media="${MQ.SM}" />
-      <img srcset="${mdImageURL}" src=${mdImageURL} alt="${alt}" />
-    </picture>
+    <div class="Picture">
+      <div class="${sizerClassName}"></div>
+      <picture>
+        <source srcset="${lgImageURL}" media="${MQ.LG}" />
+        <source srcset="${lansdcapeNotLgImageURL}" media="${MQ.LANDSCAPE} and ${MQ.NOT_LG}" />
+        <source srcset="${mdImageURL}" media="${MQ.MD}" />
+        <source srcset="${smImageURL}" media="${MQ.SM}" />
+        ${imgEl}
+      </picture>
+    </div>
   `;
 };
+
+module.exports = Picture;
+module.exports.SIZES = SIZES

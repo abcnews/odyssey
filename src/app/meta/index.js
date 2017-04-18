@@ -5,7 +5,7 @@ const html = require('bel');
 const {SELECTORS, NOEL} = require('../../constants');
 const {detach, isText, trim, select, selectAll, slice} = require('../../utils');
 
-const EMPHASISABLE_BYLINE_TEXT = ['by', ',', 'and'];
+const EMPHASISABLE_BYLINE_TEXT_PATTERN = /^(?:by|,|and)$/;
 
 const FACEBOOK = /facebook\.com/;
 const TWITTER = /twitter\.com/;
@@ -44,7 +44,7 @@ function getBylineNodes() {
   .map(node => {
     const clonedNode = node.cloneNode(true);
 
-    if (EMPHASISABLE_BYLINE_TEXT.indexOf(trim(node.textContent).toLowerCase()) > -1) {
+    if (EMPHASISABLE_BYLINE_TEXT_PATTERN.test(trim(node.textContent).toLowerCase())) {
       return html`<em>${clonedNode}</em>`
     };
 
