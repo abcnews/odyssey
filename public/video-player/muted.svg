@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="52" height="50" viewBox="0 0 52 50">
+  <g fill="none" fill-rule="evenodd" opacity=".8">
+    <path stroke="#EEE" stroke-width="2" d="M31.5 19.5c2.5.77 4.24 3.08 4.24 5.73 0 2.66-1.74 4.97-4.24 5.73"/>
+    <path stroke="#EEE" stroke-width="2" d="M31.5 14.74c5.1.85 8.92 5.25 8.92 10.5 0 5.27-3.83 9.68-8.92 10.52"/>
+    <path fill="#EEE" d="M17.8 30.2l9.36 7.36V13l-9.37 7.35H9.94v9.85h7.83"/>
+  </g>
+</svg>

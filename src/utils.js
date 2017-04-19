@@ -110,6 +110,10 @@ function after(sibling, node) {
   sibling.parentElement.insertBefore(node, sibling.nextSibling);
 }
 
+function toggleAttribute(node, attribute, shouldBeApplied) {
+  node[`${shouldBeApplied ? 'set' : 'remove'}Attribute`](attribute, '');
+}
+
 function _replaceSectionWith(el) {
   before(this.startNode, el);
 
@@ -278,6 +282,7 @@ module.exports = {
   prepend,
   before,
   after,
+  toggleAttribute,
   getSections,
   getPlaceholders,
   linebreaksToParagraphs

@@ -15,7 +15,7 @@
     opacity: 0;
   }
 
-  :not([loading]) {
+  img:not([loading]) {
     opacity: 1;
     animation: fadeIn 1s;
   }

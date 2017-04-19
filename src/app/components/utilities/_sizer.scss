@@ -5,24 +5,26 @@
   display: block;
 }
 
-.u-sizer-sm-16x9 {
-  padding-top: 56.25%;
-}
+@media #{$mq-sm} {
+  .u-sizer-sm-16x9 {
+    padding-top: 56.25%;
+  }
 
-.u-sizer-sm-3x2 {
-  padding-top: 66.6666667%;
-}
+  .u-sizer-sm-3x2 {
+    padding-top: 66.6666667%;
+  }
 
-.u-sizer-sm-4x3 {
-  padding-top: 75%;
-}
+  .u-sizer-sm-4x3 {
+    padding-top: 75%;
+  }
 
-.u-sizer-sm-1x1 {
-  padding-top: 100%;
-}
+  .u-sizer-sm-1x1 {
+    padding-top: 100%;
+  }
 
-.u-sizer-sm-3x4 {
-  padding-top: 133.3333333%;
+  .u-sizer-sm-3x4 {
+    padding-top: 133.3333333%;
+  }
 }
 
 @media #{$mq-md} {

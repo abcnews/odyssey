@@ -1,0 +1,134 @@
+.VideoPlayer {
+  overflow: hidden;
+  position: relative;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  user-drag: none;
+
+  .u-full > & {
+    height: 100%;
+  }
+
+  video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    vertical-align: top;
+    object-fit: cover; font-family: 'object-fit: cover;';
+
+    &.IIV::-webkit-media-controls-play-button,
+		&[autoplay]::-webkit-media-controls-start-playback-button {
+			opacity: 0;
+			width: 5px;
+			pointer-events: none;
+		}
+  }
+}
+
+.VideoPlayer-controls {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 100%;
+  max-width: 100vw;
+  height: 100%;
+  cursor: pointer;
+  -webkit-tap-highlight-color: $color-white-transparent;
+
+  &::before,
+  & > * {
+    position: absolute;
+    margin: 0;
+    outline: none;
+    border: none;
+    padding: 0;
+    background-color: $color-transparent-black-50;
+    color: $color-white;
+    font-family: $font-sans;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+
+  &::before {
+    content: "";
+    top: 50%;
+    left: 50%;
+    margin-top: -2.1875rem;
+    margin-left: -2.25rem;
+    width: 4.5rem;
+    height: 4.375rem;
+    background-image: url(video-player/play.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    transition: .25s opacity, .25s transform;
+    will-change: opacity, transform;
+
+    @media #{$mq-not-sm} {
+      .u-pull &,
+      .u-full & {
+        margin-top: -2.8125rem;
+        margin-left: -2.9375rem;
+        width: 5.875rem;
+        height: 5.625rem;
+      }
+    }
+  }
+
+  [playing] + &::before {
+    opacity: 0;
+    transform: scale(1.5);
+    background-image: url(video-player/pause.svg);
+  }
+
+  [ended] + &::before {
+    background-image: url(video-player/replay.svg);
+  }
+
+  [ended][playing] + &::before {
+    opacity: 0;
+  }
+}
+
+.VideoPlayer-mute {
+  opacity: 0.125;
+  top: 0;
+  right: 0;
+  width: 3.25rem;
+  height: 3.125rem;
+  background-image: url(video-player/muted.svg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  transition: .25s opacity;
+  will-change: opacity;
+
+  @media #{$mq-not-sm} {
+    .u-pull &,
+    .u-full & {
+      width: 4.5rem;
+      height: 4.375rem;
+    }
+  }
+
+  &:hover,
+  [muted] + .VideoPlayer-controls & {
+    opacity: 1;
+  }
+
+  [muted] + .VideoPlayer-controls & {
+    background-image: url(video-player/mute.svg);
+  }
+
+  :not([playing]) + .VideoPlayer-controls & {
+    opacity: 0;
+    pointer-events: none;
+  }
+}

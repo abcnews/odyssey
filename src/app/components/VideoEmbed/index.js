@@ -1,21 +1,17 @@
 // External
 const cn = require('classnames');
 const html = require('bel');
-const playInline = require('iphone-inline-video');
 const url2cmid = require('util-url2cmid');
 const xhr = require('xhr');
 
 // Ours
-const {append, before, detach, prepend, select} = require('../../../utils');
-const {subscribe} = require('../../loop');
+const {before, detach, prepend, select, selectAll} = require('../../../utils');
 const Caption = require('../Caption');
-// const {SIZES} = require('../Picture');
+const VideoPlayer = require('../VideoPlayer');
 
+const BACKGROUND_IMAGE_PATTERN = /url\(['"]?(.*\.\w*)['"]?\)/;
 const API_URL_ROOT = 'https://content-gateway.abc-prod.net.au/api/v1/content/id/';
 const SCROLLPLAY_PCT_PATTERN = /scrollplay(\d+)/;
-// const IS_PHASE_2 = document.querySelectorAll('img[src*="thumbnail"]').length > 0;
-
-const instances = [];
 
 function VideoEmbed({
   videoId,
@@ -37,60 +33,94 @@ function VideoEmbed({
     </div>
   `;
 
-  const videoElBoolAttrs = {
-    controls: true, // TODO: Remove this when custom controls exist
-    autoplay: isAutoplay,
-    loop: isLoop,
-    muted: isAutoplay || isMuted,
-    playsinline: true,
-    scrollplay: !!scrollplayPct,
-    'webkit-playsinline': true
-  };
+  // Create player from poster & sources, inferred based on site template
 
-  xhr({
-    json: true,
-    url: `${API_URL_ROOT}${videoId}`
-  }, (err, response, body) => {
-    if (err) {
-      return;
-    }
+  function createAndPrependPlayer(posterURL, sources) {
+    prepend(videoEmbedEl, VideoPlayer({
+      posterURL,
+      sources,
+      isAutoplay,
+      isFullscreen,
+      isLoop,
+      isMuted,
+      scrollplayPct,
+    }));
+  }
 
-    const posterId = body.relatedItems.length > 0 ? body.relatedItems[0].id : null;
-    // const posterURL = posterId ? `/news/${IS_PHASE_2 ? 'r' : ''}image/${posterId}-16x9-${IS_PHASE_2 ? 'large' : SIZES['16x9'].md}.jpg` : null;
-    const posterURL = posterId ? `/news/rimage/${posterId}-16x9-large.jpg` : null;
+  if ('WCMS' in window) {
+    // Phase 2
+    // * Sources & poster are nested inside global `WCMS` object
 
-    const videoEl = html`<video poster="${posterURL ? posterURL : ''}"></video>`;
+    let wasConfigFound;
 
-    Object.keys(videoElBoolAttrs).forEach(attrName => {
-      if (videoElBoolAttrs[attrName]) {
-        videoEl.setAttribute(attrName, '');
+    Object.keys(WCMS.pluginCache.plugins.videoplayer).forEach(key => {
+      if (wasConfigFound) {
+        return;
+      }
+
+      const config = WCMS.pluginCache.plugins.videoplayer[key][0].videos[0];
+
+      if (config.url.indexOf(videoId) > -1) {
+        wasConfigFound = true;
+
+        const posterURL = config.thumbnail.replace('-thumbnail', '-large');
+        const sources = config.sources.map(source => ({src: source.url, type: source.contentType}));
+
+        createAndPrependPlayer(posterURL, sources);
       }
     });
+  } else if ('inlineVideoData' in window) {
+    // Phase 1 (Standard)
+    // * Sources are in global `inlineVideoData` object
+    // * Poster can be inferred from DOM (pre- or post- jwplayer transform)
 
-    body.renditions.forEach(rendition => {
-      append(videoEl, html`<source src="${rendition.url}" type="${rendition.contentType}" />`);
+    const inlineVideoEls = selectAll(`.inline-video`);
+    const scriptTexts = inlineVideoEls.map(el => el.previousElementSibling.textContent);
+    let wasConfigFound;
+
+    inlineVideoData.forEach(config => {
+      inlineVideoEls.forEach((inlineVideoEl, inlineVideoIndex) => {
+        if (wasConfigFound) {
+          return;
+        }
+
+        if (scriptTexts[inlineVideoIndex].indexOf(config[0].url) > -1) {
+          wasConfigFound = true;
+
+          const posterURL = window.getComputedStyle(inlineVideoEl).backgroundImage.replace(BACKGROUND_IMAGE_PATTERN, '$1') ||
+            select('img', inlineVideoEl).getAttribute('href')
+          const sources = config.map(source => ({src: source.url, type: source.contentType}));
+
+          createAndPrependPlayer(posterURL, sources);
+        }
+      });
     });
+  } else {
+    // Phase 1 (Mobile)
+    // * Video must be published because...
+    // * Sources and poster must be fetched from live Content API
 
-    prepend(videoEmbedEl, videoEl);
+    xhr({
+      json: true,
+      url: `${API_URL_ROOT}${videoId}`
+    }, (err, response, body) => {
+      if (err) {
+        if (window.location.hostname.indexOf('nucwed') > -1) {
+          prepend(videoEmbedEl, html`
+            <div class="VideoEmbed-unpublished">This video is unpublished and cannot be previewed on the Phase 1 (Mobile) site</div>
+          `);
+        }
 
-    // iOS8-9 inline video (muted only)
-    if (isAutoplay || isMuted) {
-			playInline(videoEl, false);
-    }
+        return;
+      }
 
-    instances.push({
-      videoEl,
-      scrollplayPct: !!scrollplayPct ? scrollplayPct : null,
-      pause: () => {
-        // TODO: Update controls UI
-        videoEl.pause();
-      },
-      play: () => {
-        // TODO: Update controls UI
-        videoEl.play();
-      },
+      const posterId = body.relatedItems.length > 0 ? body.relatedItems[0].id : null;
+      const posterURL = posterId ? `/news/rimage/${posterId}-16x9-large.jpg` : null; // TODO: Can we always depend on Phase 2 image?
+      const sources = body.renditions.map(rendition => ({src: rendition.url, type: rendition.contentType}));
+
+      createAndPrependPlayer(posterURL, sources);
     });
-  });
+  }
 
   return videoEmbedEl;
 };
@@ -117,36 +147,6 @@ function transformEl(el) {
     detach(el);
   }
 }
-
-function measure(viewport) {
-  instances.forEach((instance, index) => {
-    const rect = instance.videoEl.getBoundingClientRect();
-    const scrollplayRatio = (instance.scrollplayPct || 100) / 100;
-
-    instance.isVisible = (rect.top - viewport.height * scrollplayRatio < viewport.height) &&
-      (rect.bottom + viewport.height * scrollplayRatio > 0);
-  });
-}
-
-function mutate() {
-  instances.forEach(instance => {
-    if (!instance.isAutoplay && !instance.scrollplayPct) {
-      return;
-    }
-
-    if (instance.isVisible !== instance.wasVisible) {
-      instance[instance.isVisible ? 'play' : 'pause']();
-      instance.videoEl.classList[instance.isVisible ? 'add' : 'remove']('is-visible');
-    }
-
-    instance.isVisible = instance.wasVisible;
-  });
-}
-
-subscribe({
-  measure,
-  mutate
-});
 
 module.exports = VideoEmbed;
 module.exports.transformEl = transformEl;

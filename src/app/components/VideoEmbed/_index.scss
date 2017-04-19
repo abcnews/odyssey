@@ -1,9 +1,10 @@
 .VideoEmbed {
   &.u-full {
     height: 100vh;
+    min-height: 56.25vw;
   }
 
-  &:not(.u-pull) {
+  &:not(.u-pull):not(.u-full) {
     margin-bottom: 1.5rem;
   }
 
@@ -12,35 +13,8 @@
       padding-left: 0;
       padding-right: 0;
       width: 100%;
-    }
-  }
 
-  > video {
-    width: 100%;
-    vertical-align: top;
-
-    &.IIV::-webkit-media-controls-play-button,
-		&[autoplay]::-webkit-media-controls-start-playback-button {
-			opacity: 0;
-			width: 5px;
-			pointer-events: none;
-		}
-  }
-
-  &.u-full > video {
-    height: 100%;
-    object-fit: cover; font-family: 'object-fit: cover;';
-
-    // @media (min-aspect-ratio: 16/9) {
-		// 	object-fit: contain; font-family: 'object-fit: contain;';
-		// }
-  }
-
-  > .Caption {
-
-
-    @media #{$mq-not-lg} {
-      .Main > & {
+      .Caption {
         padding-left: $layout-fluid-padding;
         padding-right: $layout-fluid-padding;
       }
@@ -52,4 +26,12 @@
       display: none;
     }
   }
+}
+
+.VideoEmbed-unpublished {
+  padding: 1rem;
+  height: 100%;
+  background-color: $color-darkTertiary;
+  color: $color-tertiary;
+  font-family: $font-sans;
 }

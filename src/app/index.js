@@ -123,16 +123,14 @@ function app(done) {
     ImageEmbed.transformEl(el, isSidePulled);
   });
 
-  // TODO: Restore and complete these
-
   // Transform video embeds
-  // selectAll(`
-  //   .inline-content.video,
-  //   .view-inlineMediaPlayer
-  // `, storyEl)
-  // .concat(selectAll('.embed-content', storyEl)
-  //   .filter(el => select('.type-video', el)))
-  // .forEach(VideoEmbed.transformEl);
+  selectAll(`
+    .inline-content.video,
+    .view-inlineMediaPlayer
+  `, storyEl)
+  .concat(selectAll('.embed-content', storyEl)
+    .filter(el => select('.type-video', el)))
+  .forEach(VideoEmbed.transformEl);
 
   // Transform quotes (native and embedded)
   selectAll(`
