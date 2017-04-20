@@ -14,8 +14,10 @@
   }
 
   @media #{$mq-landscape} and #{$mq-not-lg}, #{$mq-lg} {
-    &:not(.is-richtext) {
-      min-height: 56.25vw;
+    min-height: 56.25vw;
+
+    &.is-richtext {
+      min-height: 100vh;
     } 
   }
 
