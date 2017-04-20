@@ -11,18 +11,30 @@ const players = [];
 function VideoPlayer({
   posterURL,
   sources = [],
+  isAmbient,
   isAutoplay,
   isFullscreen,
   isLoop,
   isMuted,
   scrollplayPct
 }) {
+  if (isAmbient) {
+    isMuted = true;
+    isFullscreen = true;
+    isLoop = true;
+    scrollplayPct = 1;
+  }
+
+  if (isAutoplay) {
+    isMuted = true;
+  }
+
   const videoEl = html`<video poster="${posterURL ? posterURL : ''}" preload="${scrollplayPct ? 'auto' : 'none'}"></video>`;
 
   const booleanAttributes = {
     autoplay: isAutoplay,
     loop: isLoop,
-    muted: isAutoplay || isMuted,
+    muted: isMuted,
     playsinline: true,
     scrollplay: !!scrollplayPct,
     'webkit-playsinline': true
@@ -37,7 +49,7 @@ function VideoPlayer({
   });
 
   // iOS8-9 inline video (muted only)
-  if (isAutoplay || isMuted) {
+  if (scrollplayPct || isAutoplay) {
     nextFrame(() => {
       playInline(videoEl, false);
     });
@@ -74,8 +86,15 @@ function VideoPlayer({
         });
       }
 
-      videoEl[wasPaused ? 'play' : 'pause']();
-      toggleAttribute(videoEl, 'playing', wasPaused);
+      const attrToggle = toggleAttribute.bind(null, videoEl, 'playing', wasPaused);
+      const promise = videoEl[wasPaused ? 'play' : 'pause']();
+
+      if (promise) {
+        promise.then(attrToggle);
+      } else {
+        attrToggle();
+      }
+
       setTimeout(() => {
         videoEl.removeAttribute('ended');
       }, 300);
@@ -117,11 +136,13 @@ function VideoPlayer({
     <div class="VideoPlayer">
       <div class="u-sizer-sm-16x9 u-sizer-md-16x9 u-sizer-lg-16x9"></div>
       ${videoEl}
-      <div class="VideoPlayer-interface" onclick=${player.togglePlay}>
-        <button class="VideoPlayer-mute" title="Mute control" onclick=${player.toggleMute}></button>
-        ${timeRemainingEl}
-        ${progressBarEl}
-      </div>
+      ${isAmbient ? null : html`
+        <div class="VideoPlayer-interface" onclick=${player.togglePlay}>
+          <button class="VideoPlayer-mute" title="Mute control" onclick=${player.toggleMute}></button>
+          ${timeRemainingEl}
+          ${progressBarEl}
+        </div>
+      `}
     </div>
   `;
 };

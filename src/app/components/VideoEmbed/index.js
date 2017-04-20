@@ -16,12 +16,17 @@ const SCROLLPLAY_PCT_PATTERN = /scrollplay(\d+)/;
 function VideoEmbed({
   videoId,
   captionEl,
+  isAmbient,
   isAutoplay,
   isFullscreen,
   isLoop,
   isMuted,
   scrollplayPct
 }) {
+  if (isAmbient) {
+    isFullscreen = true;
+  }
+
   const className = cn('VideoEmbed', {
     'u-pull': !isFullscreen,
     'u-full': isFullscreen
@@ -39,6 +44,7 @@ function VideoEmbed({
     prepend(videoEmbedEl, VideoPlayer({
       posterURL,
       sources,
+      isAmbient,
       isAutoplay,
       isFullscreen,
       isLoop,
@@ -104,7 +110,7 @@ function VideoEmbed({
       json: true,
       url: `${API_URL_ROOT}${videoId}`
     }, (err, response, body) => {
-      if (err) {
+      if (err || response.statusCode !== 200) {
         if (window.location.hostname.indexOf('nucwed') > -1) {
           prepend(videoEmbedEl, html`
             <div class="VideoEmbed-unpublished">This video is unpublished and cannot be previewed on the Phase 1 (Mobile) site</div>
@@ -135,6 +141,7 @@ function transformEl(el) {
     const videoEmbedEl = VideoEmbed({
       videoId,
       captionEl: Caption.createFromEl(el),
+      isAmbient: suffix.indexOf('ambient') > -1,
       isAutoplay: suffix.indexOf('autoplay') > -1,
       isFullscreen: suffix.indexOf('fullscreen') > -1,
       isLoop: suffix.indexOf('loop') > -1,
