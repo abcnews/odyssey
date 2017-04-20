@@ -108,7 +108,7 @@ function Cover({
 
 function transformSection(section) {
   const isDocked = section.suffix.indexOf('docked') > -1;
-  const isPiecemeal = section.suffix.indexOf('Piecemeal') > -1;
+  const isPiecemeal = section.suffix.indexOf('piecemeal') > -1;
   const [, alignment] = section.suffix.match(ALIGNMENT_PATTERN) || [];
   const [, smRatio] = section.suffix.match(Picture.SM_RATIO_PATTERN) || [];
   const [, mdRatio] = section.suffix.match(Picture.MD_RATIO_PATTERN) || [];
