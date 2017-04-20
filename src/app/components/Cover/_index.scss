@@ -14,11 +14,17 @@
   }
 
   @media #{$mq-landscape} and #{$mq-not-lg}, #{$mq-lg} {
-    min-height: 56.25vw;
+    &:not(.is-richtext) {
+      min-height: 56.25vw;
+    } 
   }
 
   &.is-richtext {
     justify-content: center;
+  }
+
+  & + & {
+    margin-top: -3rem;
   }
 }
 
@@ -31,7 +37,24 @@
   height: 100%;
 
   &.is-fixed {
-    position: fixed;
+    clip: rect(0, auto, auto, 0);
+    -webkit-clip-path: inset(0 0 0 0);
+    clip-path: inset(0 0 0 0);
+
+    // & + * {
+    //   z-index: 1;
+    // }
+
+    & > .Picture {
+      position: fixed;
+      transform: translateZ(0);
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
   }
 
   &.is-beyond {
@@ -42,6 +65,10 @@
 
   .is-richtext & {
     max-height: 100vh;
+
+    &.is-fixed {
+      max-height: none;
+    }
   }
 
   .is-caption &,
@@ -50,11 +77,11 @@
     height: auto;
   }
 
-  .is-richtext &::before {
+  .is-richtext & .Picture::after {
     content: "";
     z-index: 1;
     position: absolute;
-    bottom: 0;
+    top: 0;
     left: 0;
     width: 100%;
     height: 100%;
@@ -62,30 +89,26 @@
   }
 
   @media #{$mq-lg} {
-    .is-left &::before,
-    .is-right &::before {
-      background-color: transparent;
-      background-image: $gradient-vertical-50-0-100-50;
-    }
-
     .is-left &::after,
     .is-right &::after {
       content: "";
       z-index: 1;
       position: absolute;
-      bottom: 0;
+      top: 0;
       left: 0;
       width: 100%;
       height: 100%;
       background-image: $gradient-horizontal-45-40-65-0;
     }
 
-    .is-left &::after {
-
-    }
-
     .is-right &::after {
       transform: scaleX(-1);
+    }
+
+    .is-left & .Picture::after,
+    .is-right & .Picture::after {
+      background-color: transparent;
+      background-image: $gradient-vertical-50-0-100-50;
     }
   }
 
@@ -135,6 +158,25 @@
     & > * {
       @media #{$mq-sm} {
         width: cells(10);
+      }
+    }
+
+    &.is-piecemeal {
+      margin-top: 50vh;
+      margin-bottom: 50vh;
+      padding-top: 1.5rem;
+      padding-bottom: 0;
+
+      @media #{$mq-lg} {
+        padding-top: 2.25rem;
+      }
+
+      &:nth-child(2) {
+        margin-top: 100vh;
+      }
+
+      &:last-child {
+        margin-bottom: 100vh;
       }
     }
 

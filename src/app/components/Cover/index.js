@@ -8,11 +8,13 @@ const {subscribe} = require('../../loop');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
 
-const ALIGN_PATTERN = /(left|right)/;
+const ALIGNMENT_PATTERN = /(left|right)/;
 
 function Cover({
   type = 'richtext',
-  align,
+  isDocked,
+  isPiecemeal,
+  alignment,
   mediaEl,
   mediaCaptionEl,
   smRatio,
@@ -21,13 +23,15 @@ function Cover({
   contentEls = []
 }) {
   const className = cn('Cover', `is-${type}`, {
-    [`is-${align}`]: align
+    [`is-${alignment}`]: alignment
   }, 'u-full');
   const mediaClassName = cn('Cover-media', {
-    'u-parallax': type === 'heading'
+    'u-parallax': type === 'heading',
+    'is-fixed': type === 'richtext' && !isDocked
   });
   const contentClassName = cn('Cover-content', {
-    'u-layout': type !== 'caption'
+    'u-layout': type !== 'caption',
+    'is-piecemeal': type === 'richtext' && isPiecemeal
   }, 'u-richtext-invert');
   let pictureEl;
 
@@ -50,13 +54,22 @@ function Cover({
   const coverEl = html`
     <div class="${className}">
       ${mediaContainerEl}
-      <div class="${contentClassName}">
-        ${contentEls.length > 0 ? contentEls : mediaCaptionEl}
-      </div>
+      ${isPiecemeal ?
+        contentEls.map(contentEl => html`
+          <div class="${contentClassName}">
+            ${contentEl}
+          </div>
+        `) :
+        html`
+          <div class="${contentClassName}">
+            ${contentEls.length > 0 ? contentEls : mediaCaptionEl}
+          </div>
+        `
+      }
     </div>
   `;
 
-  if (mediaContainerEl && type === 'richtext') {
+  if (mediaContainerEl && type === 'richtext' && isDocked) {
     let listener = null;
     let previousState = {};
     let state = {};
@@ -94,7 +107,9 @@ function Cover({
 };
 
 function transformSection(section) {
-  const [, align] = section.suffix.match(ALIGN_PATTERN) || [];
+  const isDocked = section.suffix.indexOf('docked') > -1;
+  const isPiecemeal = section.suffix.indexOf('Piecemeal') > -1;
+  const [, alignment] = section.suffix.match(ALIGNMENT_PATTERN) || [];
   const [, smRatio] = section.suffix.match(Picture.SM_RATIO_PATTERN) || [];
   const [, mdRatio] = section.suffix.match(Picture.MD_RATIO_PATTERN) || [];
   const [, lgRatio] = section.suffix.match(Picture.LG_RATIO_PATTERN) || [];
@@ -114,7 +129,9 @@ function transformSection(section) {
 
     return config;
   }, {
-    align,
+    isDocked,
+    isPiecemeal,
+    alignment,
     smRatio,
     mdRatio,
     lgRatio,
