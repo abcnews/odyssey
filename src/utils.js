@@ -24,6 +24,10 @@ function slug(str) {
   .replace(SLUG_REPLACE_PATTERN, HYPHEN);
 }
 
+function twoDigits(number) {
+	return `${number < 10 ? '0' : ''}${number}`;
+}
+
 function slice(arrayLike) {
   return Array.prototype.slice.call(arrayLike);
 }
@@ -268,6 +272,7 @@ module.exports = {
   returnFalse,
   trim,
   slug,
+  twoDigits,
   slice,
   flatten,
   literalList,

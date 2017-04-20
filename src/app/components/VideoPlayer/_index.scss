@@ -31,7 +31,7 @@
   }
 }
 
-.VideoPlayer-controls {
+.VideoPlayer-interface {
   position: absolute;
   top: 0;
   left: 50%;
@@ -95,10 +95,26 @@
   [ended][playing] + &::before {
     opacity: 0;
   }
+
+  & > * {
+    opacity: 0;
+    transition: .5s opacity .5s;
+    will-change: opacity;
+  }
+
+  &:hover > * {
+    opacity: 1;
+    transition: .25s opacity;
+  }
+
+  :not([playing]) + & > * {
+    opacity: 0;
+    pointer-events: none;
+    transition: .25s opacity;
+  }
 }
 
 .VideoPlayer-mute {
-  opacity: 0.125;
   top: 0;
   right: 0;
   width: 3.25rem;
@@ -107,8 +123,6 @@
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100%;
-  transition: .25s opacity;
-  will-change: opacity;
 
   @media #{$mq-not-sm} {
     .u-pull &,
@@ -118,17 +132,73 @@
     }
   }
 
-  &:hover,
-  [muted] + .VideoPlayer-controls & {
+  [muted] + .VideoPlayer-interface & {
     opacity: 1;
   }
 
-  [muted] + .VideoPlayer-controls & {
+  [muted] + .VideoPlayer-interface & {
     background-image: url(video-player/mute.svg);
   }
+}
 
-  :not([playing]) + .VideoPlayer-controls & {
-    opacity: 0;
-    pointer-events: none;
+.VideoPlayer-timeRemaining {
+  right: 5%;
+  bottom: calc(8.888% + 1.5rem);
+  padding: .75rem;
+  min-width: 4.5rem;
+  font-size: 1.125rem;
+  line-height: 1;
+  letter-spacing: 0.075rem;
+
+  &:empty {
+    display: none;
   }
+}
+
+.VideoPlayer-progressBar {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  right: 5%;
+  bottom: 8.888%;
+  left: 5%;
+  padding: .125rem;
+  width: 90%;
+  height: .75rem;
+  color: $color-transparent-black-50;
+
+  &::-webkit-progress-bar {
+		background: none;
+	}
+
+  &::-moz-progress-bar {
+		background: none;
+	}
+
+	&::-webkit-progress-value {
+		background: rgba(255, 255, 255, .6);
+    transition: 1s width linear;
+
+    [ended][playing] + .VideoPlayer-interface & {
+      transition: none;
+    }
+	}
+
+	&::-moz-progress-value {
+		background: rgba(255, 255, 255, .6);
+    transition: 1s width linear;
+
+    [ended][playing] + .VideoPlayer-interface & {
+      transition: none;
+    }
+	}
+
+  &::-ms-fill {
+		background: rgba(255, 255, 255, .6);
+    transition: 1s width linear;
+
+    [ended][playing] + .VideoPlayer-interface & {
+      transition: none;
+    }
+	}
 }

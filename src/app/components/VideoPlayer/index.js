@@ -3,7 +3,7 @@ const html = require('bel');
 const playInline = require('iphone-inline-video');
 
 // Ours
-const {append, selectAll, toggleAttribute} = require('../../../utils');
+const {append, selectAll, toggleAttribute, twoDigits} = require('../../../utils');
 const {nextFrame, subscribe} = require('../../loop');
 
 const players = [];
@@ -43,6 +43,9 @@ function VideoPlayer({
     });
   }
 
+  const timeRemainingEl = html`<time class="VideoPlayer-timeRemaining"></time>`;
+  const progressBarEl = html`<progress class="VideoPlayer-progressBar" value="0"></progress>`;
+
   const player = {
     isAutoplay,
     scrollplayPct,
@@ -51,9 +54,7 @@ function VideoPlayer({
     },
     toggleMute: event => {
       event.stopPropagation();
-
       player.hasUserInteracted = true;
-
       videoEl.muted = !videoEl.muted;
       toggleAttribute(videoEl, 'muted', videoEl.muted);
     },
@@ -78,10 +79,33 @@ function VideoPlayer({
       setTimeout(() => {
         videoEl.removeAttribute('ended');
       }, 300);
+    },
+    updatePlaybackPosition: () => {
+      const secondsRemaining = videoEl.duration - videoEl.currentTime;
+      const progress = videoEl.currentTime / videoEl.duration;
+
+      timeRemainingEl.textContent = `${
+        secondsRemaining > 0 ? '-' : ''
+      }${
+        Math.floor(secondsRemaining / 60)
+      }:${
+        twoDigits(Math.round(secondsRemaining % 60))
+      }`;
+
+      progressBarEl.setAttribute('value', progress);
     }
   };
 
   players.push(player);
+
+  const readinessCheckInterval = setInterval(() => {
+	  if (videoEl.readyState > 0) {
+      player.updatePlaybackPosition();
+		  clearInterval(readinessCheckInterval);
+    }
+  }, 200);
+
+  videoEl.addEventListener('timeupdate', player.updatePlaybackPosition);
 
   videoEl.addEventListener('ended', () => {
     videoEl.removeAttribute('playing', '');
@@ -92,8 +116,10 @@ function VideoPlayer({
     <div class="VideoPlayer">
       <div class="u-sizer-sm-16x9 u-sizer-md-16x9 u-sizer-lg-16x9"></div>
       ${videoEl}
-      <div class="VideoPlayer-controls" onclick=${player.togglePlay}>
+      <div class="VideoPlayer-interface" onclick=${player.togglePlay}>
         <button class="VideoPlayer-mute" title="Mute control" onclick=${player.toggleMute}></button>
+        ${timeRemainingEl}
+        ${progressBarEl}
       </div>
     </div>
   `;
@@ -113,10 +139,6 @@ function measure(viewport) {
       (rect.top >= 0 && rect.top <= (viewport.height - scrollplayExtent)) ||
       // Bottom within scrollplay range
       (rect.bottom >= scrollplayExtent && (rect.bottom <= viewport.height))
-      // // Top within scrollplay range
-      // ((rect.top >= (viewport.height - scrollplayExtent)) && (rect.top <= viewport.height)) ||
-      // // Bottom within scrollplay range
-      // ((rect.bottom >= 0) && (rect.bottom <= scrollplayExtent))
     );
   });
 }
