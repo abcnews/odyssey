@@ -54,7 +54,7 @@ function VideoPlayer({
     },
     toggleMute: event => {
       event.stopPropagation();
-      player.hasUserInteracted = true;
+      player.isUserInControl = true;
       videoEl.muted = !videoEl.muted;
       toggleAttribute(videoEl, 'muted', videoEl.muted);
     },
@@ -62,7 +62,7 @@ function VideoPlayer({
       const wasPaused = videoEl.paused;
       
       if (!wasScrollBased) {
-        player.hasUserInteracted = true;
+        player.isUserInControl = true;
       }
 
       if (wasPaused) {
@@ -108,6 +108,7 @@ function VideoPlayer({
   videoEl.addEventListener('timeupdate', player.updatePlaybackPosition);
 
   videoEl.addEventListener('ended', () => {
+    player.isUserInControl = true;
     videoEl.removeAttribute('playing', '');
     videoEl.setAttribute('ended', '');
   });
@@ -145,7 +146,7 @@ function measure(viewport) {
 
 function mutate() {
   players.forEach(player => {
-    if (player.hasUserInteracted || !player.isAutoplay && !player.scrollplayPct) {
+    if (player.isUserInControl || !player.isAutoplay && !player.scrollplayPct) {
       return;
     }
 
