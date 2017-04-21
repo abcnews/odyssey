@@ -25,7 +25,7 @@ function VideoPlayer({
     scrollplayPct = 1;
   }
 
-  if (isAutoplay) {
+  if (isAutoplay || scrollplayPct) {
     isMuted = true;
   }
 
@@ -51,7 +51,7 @@ function VideoPlayer({
   // iOS8-9 inline video (muted only)
   if (scrollplayPct || isAutoplay) {
     nextFrame(() => {
-      playInline(videoEl, false);
+      playInline(videoEl, !isMuted);
     });
   }
 
@@ -128,6 +128,7 @@ function VideoPlayer({
 
   videoEl.addEventListener('ended', () => {
     player.isUserInControl = true;
+    videoEl.currentTime = 0;
     videoEl.removeAttribute('playing', '');
     videoEl.setAttribute('ended', '');
   });
