@@ -11,6 +11,19 @@
     margin-bottom: 3rem;
   }
 
+  & + & {
+    margin-top: -2rem;
+
+    @media #{$mq-lg} {
+      margin-top: -3rem;
+    }
+  }
+
+  &:first-child,
+  a[name]:first-child + & {
+    margin-top: 0;
+  }
+
   // Phase 1 (Standard)
   html.fixed & {
     @media (max-width: 1000px) {

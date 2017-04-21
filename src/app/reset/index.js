@@ -4,7 +4,7 @@ const dewysiwyg = require('util-dewysiwyg');
 
 // Ours
 const {SELECTORS} = require('../../constants');
-const {append, before, detach, detachAll, literalList, select, selectAll, slice} = require('../../utils');
+const {append, before, detach, detachAll, literalList, select, selectAll, slice, trim} = require('../../utils');
 const Main = require('../components/Main');
 
 const TEMPLATE_REMOVABLES = {
@@ -36,6 +36,10 @@ const TEMPLATE_REMOVABLES = {
     .view-hero-media
   `)
 };
+
+const WHITESPACE_REMOVABLES = `
+  p.first
+`;
 
 const P1S_FLOAT = {
   SELECTOR: `
@@ -79,6 +83,12 @@ function reset(storyEl) {
   Object.keys(TEMPLATE_REMOVABLES).forEach(templateBodySelector => {
     if (select(templateBodySelector)) {
       detachAll(selectAll(TEMPLATE_REMOVABLES[templateBodySelector]));
+    }
+  });
+
+  selectAll(WHITESPACE_REMOVABLES, storyEl).forEach(el => {
+    if (trim(el.textContent).length === 0) {
+      detach(el);
     }
   });
 

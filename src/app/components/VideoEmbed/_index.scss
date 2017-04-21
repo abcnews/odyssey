@@ -4,10 +4,6 @@
     min-height: 56.25vw;
   }
 
-  :first-child[name*="video"] + & {
-    margin-top: 0;
-  }
-
   &:not(.u-pull):not(.u-full) {
     margin-bottom: 1.5rem;
   }

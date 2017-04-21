@@ -24,10 +24,6 @@
   &.is-richtext {
     justify-content: center;
   }
-
-  & + & {
-    margin-top: -3rem;
-  }
 }
 
 .Cover-media {

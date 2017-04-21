@@ -1,7 +1,6 @@
 .Header {
   overflow: hidden;
   position: relative;
-  margin-top: 0;
   line-height: 1.5;
 
   @media #{$mq-not-sm} {
