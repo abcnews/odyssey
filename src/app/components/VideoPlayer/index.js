@@ -1,10 +1,14 @@
 // External
 const html = require('bel');
 const playInline = require('iphone-inline-video');
+const xhr = require('xhr');
 
 // Ours
 const {append, selectAll, toggleAttribute, twoDigits} = require('../../../utils');
 const {nextFrame, subscribe} = require('../../loop');
+
+const BACKGROUND_IMAGE_PATTERN = /url\(['"]?(.*\.\w*)['"]?\)/;
+const API_URL_ROOT = 'https://content-gateway.abc-prod.net.au/api/v1/content/id/';
 
 const players = [];
 
@@ -19,10 +23,9 @@ function VideoPlayer({
   scrollplayPct
 }) {
   if (isAmbient) {
-    isMuted = true;
+    isAutoplay = true;
     isFullscreen = true;
     isLoop = true;
-    scrollplayPct = 1;
   }
 
   if (isAutoplay || scrollplayPct) {
@@ -148,6 +151,83 @@ function VideoPlayer({
   `;
 };
 
+function getMetadata(videoId, callback) {
+  function done(err, metadata) {
+    nextFrame(() => {
+      callback(err, metadata);
+    });
+  }
+
+  if ('WCMS' in window) {
+    // Phase 2
+    // * Sources & poster are nested inside global `WCMS` object
+
+    let wasConfigFound;
+
+    Object.keys(WCMS.pluginCache.plugins.videoplayer).forEach(key => {
+      if (wasConfigFound) {
+        return;
+      }
+
+      const config = WCMS.pluginCache.plugins.videoplayer[key][0].videos[0];
+
+      if (config.url.indexOf(videoId) > -1) {
+        wasConfigFound = true;
+
+        const posterURL = config.thumbnail.replace('-thumbnail', '-large');
+        const sources = config.sources.map(source => ({src: source.url, type: source.contentType}));
+
+        done(null, {posterURL, sources});
+      }
+    });
+  } else if ('inlineVideoData' in window) {
+    // Phase 1 (Standard)
+    // * Sources are in global `inlineVideoData` object
+    // * Poster can be inferred from DOM (pre- or post- jwplayer transform)
+
+    const inlineVideoEls = selectAll(`.inline-video`);
+    const scriptTexts = inlineVideoEls.map(el => el.previousElementSibling.textContent);
+    let wasConfigFound;
+
+    inlineVideoData.forEach(config => {
+      inlineVideoEls.forEach((inlineVideoEl, inlineVideoIndex) => {
+        if (wasConfigFound) {
+          return;
+        }
+
+        if (scriptTexts[inlineVideoIndex].indexOf(config[0].url) > -1) {
+          wasConfigFound = true;
+
+          const posterURL = window.getComputedStyle(inlineVideoEl).backgroundImage.replace(BACKGROUND_IMAGE_PATTERN, '$1') ||
+            select('img', inlineVideoEl).getAttribute('href')
+          const sources = config.map(source => ({src: source.url, type: source.contentType}));
+
+          done(null, {posterURL, sources});
+        }
+      });
+    });
+  } else {
+    // Phase 1 (Mobile)
+    // * Video must be published because...
+    // * Sources and poster must be fetched from live Content API
+
+    xhr({
+      json: true,
+      url: `${API_URL_ROOT}${videoId}`
+    }, (err, response, body) => {
+      if (err || response.statusCode !== 200) {
+        return done(new Error('This video is unpublished and cannot be previewed on the Phase 1 (Mobile) site)'));
+      }
+
+      const posterId = body.relatedItems.length > 0 ? body.relatedItems[0].id : null;
+      const posterURL = posterId ? `/news/rimage/${posterId}-16x9-large.jpg` : null; // TODO: Can we always depend on Phase 2 image?
+      const sources = body.renditions.map(rendition => ({src: rendition.url, type: rendition.contentType}));
+
+      done(null, {posterURL, sources});
+    });
+  }
+}
+
 function measure(viewport) {
   players.forEach(player => {
     const rect = player.getRect();
@@ -168,7 +248,7 @@ function measure(viewport) {
 
 function mutate() {
   players.forEach(player => {
-    if (player.isUserInControl || !player.isAutoplay && !player.scrollplayPct) {
+    if (player.isUserInControl || player.isAutoplay && !player.scrollplayPct) {
       return;
     }
 
@@ -189,3 +269,4 @@ subscribe({
 });
 
 module.exports = VideoPlayer;
+module.exports.getMetadata = getMetadata;

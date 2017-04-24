@@ -39,7 +39,7 @@
     width: 100%;
     height: 100%;
 
-    > .Picture {
+    > * {
       height: 100%;
     }
   }
@@ -56,6 +56,7 @@
 }
 
 .Header-content {
+  position: relative;
   margin: 0 auto;
   padding: 20px 0;
   width: calc(#{cells(12)} - #{$layout-fluid-gutter});
@@ -70,7 +71,6 @@
   }
 
   .is-layered & {
-    position: relative;
     margin-top: 16rem;
     background-image: $gradient-vertical-0-43-100-75;
 

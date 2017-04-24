@@ -2,14 +2,17 @@
 const cn = require('classnames');
 const html = require('bel');
 const ABCDateTime = require('inn-abcdatetime-lib');
+const url2cmid = require('util-url2cmid');
 
 // Ours
-const {before, isElement, select, slug, trim} = require('../../../utils');
+const {before, detach, isElement, select, slug, trim} = require('../../../utils');
 const Picture = require('../Picture');
+const VideoPlayer = require('../VideoPlayer');
 
 function Header({
   meta = {},
-  mediaEl,
+  videoId,
+  imgEl,
   smRatio,
   mdRatio,
   lgRatio,
@@ -19,16 +22,38 @@ function Header({
 }) {
   const className = cn('Header', {
     'is-dark': isDark,
-    'is-layered': isLayered && mediaEl
+    'is-layered': isLayered && (imgEl || videoId)
   }, 'u-full');
 
-  if (mediaEl && mediaEl.tagName === 'IMG') {
+  let mediaEl;
+
+  if (imgEl) {
     mediaEl = Picture({
-      src: mediaEl.src,
-      alt: mediaEl.getAttribute('alt'),
+      src: imgEl.src,
+      alt: imgEl.getAttribute('alt'),
       smRatio: smRatio || isLayered ? '3x4' : undefined,
       mdRatio: mdRatio || isLayered ? '1x1' : undefined,
       lgRatio
+    });
+    
+    if (!isLayered) {
+      mediaEl.classList.add('u-parallax');
+    }
+  } else if (videoId) {
+    mediaEl = html`<div></div>`;
+    VideoPlayer.getMetadata(videoId, (err, metadata) => {
+      if (err) {
+        return;
+      }
+
+      const replacementMediaEl = VideoPlayer(Object.assign(metadata, {isAmbient: true}));
+
+      if (!isLayered) {
+        replacementMediaEl.classList.add('u-parallax');
+      }
+
+      before(mediaEl, replacementMediaEl);
+      detach(mediaEl);
     });
   }
 
@@ -76,7 +101,7 @@ function Header({
 
   return html`
     <div class="${className}">
-      ${mediaEl ? html`<div class="Header-media u-parallax">
+      ${mediaEl ? html`<div class="Header-media${isLayered ? ' u-parallax' : ''}">
         ${mediaEl}
       </div>` : null}
       <div class="Header-content u-richtext${isDark || isLayered && mediaEl ? '-invert' : ''}">
@@ -94,11 +119,31 @@ function transformSection(section, meta) {
   const isLayered = section.suffix.indexOf('layered') > -1;
 
   const config = section.betweenNodes.reduce((config, node) => {
-    const mediaEl = isElement(node) && select('img, video', node);
+    let classList;
+    let videoId;
+    let imgEl;
 
-    if (!config.mediaEl && mediaEl) {
-      config.mediaEl = mediaEl;
-    } else if (isElement(node) && trim(node.textContent).length > 0) {
+    if (!config.videoId && !config.imgEl && isElement(node) ) {
+      classList = node.className.split(' ');
+
+      videoId = (
+        (classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
+        (classList.indexOf('view-inlineMediaPlayer') > -1) ||
+        (classList.indexOf('embed-content') > -1 && select('.type-video', node))
+      ) && url2cmid(select('a', node).getAttribute('href'));
+
+      if (videoId) {
+        config.videoId = videoId;
+      } else {
+        imgEl = select('img', node);
+
+        if (imgEl) {
+          config.imgEl = imgEl;
+        }
+      }
+    }
+
+    if (!videoId && !imgEl && isElement(node) && trim(node.textContent).length > 0) {
       config.miscContentEls.push(node);
     }
 

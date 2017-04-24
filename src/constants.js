@@ -35,6 +35,8 @@ const MQ = {
 
 const SMALLEST_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAAAADs=';
 
+const IS_PREVIEW = window.location.hostname.indexOf('nucwed') > -1;
+
 module.exports = {
   NEWLINE,
   HYPHEN,
@@ -42,5 +44,6 @@ module.exports = {
   EMBED_TAGNAMES,
   NOEL,
   MQ,
-  SMALLEST_IMAGE
+  SMALLEST_IMAGE,
+  IS_PREVIEW
 };
