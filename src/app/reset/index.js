@@ -38,7 +38,7 @@ const TEMPLATE_REMOVABLES = {
 };
 
 const WHITESPACE_REMOVABLES = `
-  p.first
+  p
 `;
 
 const P1S_FLOAT = {
