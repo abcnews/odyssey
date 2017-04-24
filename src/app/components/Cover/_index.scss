@@ -39,11 +39,7 @@
     -webkit-clip-path: inset(0 0 0 0);
     clip-path: inset(0 0 0 0);
 
-    // & + * {
-    //   z-index: 1;
-    // }
-
-    & > .Picture {
+    & > * {
       position: fixed;
       transform: translateZ(0);
       -webkit-backface-visibility: hidden;
@@ -75,9 +71,8 @@
     height: auto;
   }
 
-  .is-richtext & .Picture::after {
+  .is-richtext & *::after {
     content: "";
-    z-index: 1;
     position: absolute;
     top: 0;
     left: 0;
@@ -103,8 +98,8 @@
       transform: scaleX(-1);
     }
 
-    .is-left & .Picture::after,
-    .is-right & .Picture::after {
+    .is-left & *::after,
+    .is-right & *::after {
       background-color: transparent;
       background-image: $gradient-vertical-50-0-100-50;
     }
@@ -120,7 +115,7 @@
     background-image: $gradient-vertical-40-0-80-60;
   }
 
-  > .Picture {
+  > * {
     height: 100%;
   }
 }

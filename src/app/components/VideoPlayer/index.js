@@ -1,6 +1,7 @@
 // External
 const html = require('bel');
 const playInline = require('iphone-inline-video');
+const url2cmid = require('util-url2cmid');
 const xhr = require('xhr');
 
 // Ours
@@ -11,6 +12,7 @@ const BACKGROUND_IMAGE_PATTERN = /url\(['"]?(.*\.\w*)['"]?\)/;
 const API_URL_ROOT = 'https://content-gateway.abc-prod.net.au/api/v1/content/id/';
 
 const players = [];
+let phase1InlineVideoConfig;
 
 function VideoPlayer({
   posterURL,
@@ -81,8 +83,8 @@ function VideoPlayer({
       }
 
       if (wasPaused) {
-        selectAll('video').forEach((otherVideoEl) => {
-          if (otherVideoEl !== videoEl && !otherVideoEl.paused) {
+        selectAll('video').forEach(otherVideoEl => {
+          if (otherVideoEl !== videoEl && !otherVideoEl.paused && !otherVideoEl.hasAttribute('autoplay')) {
             otherVideoEl.pause();
             otherVideoEl.removeAttribute('playing');
           }
@@ -180,34 +182,8 @@ function getMetadata(videoId, callback) {
         done(null, {posterURL, sources});
       }
     });
-  } else if ('inlineVideoData' in window) {
-    // Phase 1 (Standard)
-    // * Sources are in global `inlineVideoData` object
-    // * Poster can be inferred from DOM (pre- or post- jwplayer transform)
-
-    const inlineVideoEls = selectAll(`.inline-video`);
-    const scriptTexts = inlineVideoEls.map(el => el.previousElementSibling.textContent);
-    let wasConfigFound;
-
-    inlineVideoData.forEach(config => {
-      inlineVideoEls.forEach((inlineVideoEl, inlineVideoIndex) => {
-        if (wasConfigFound) {
-          return;
-        }
-
-        if (scriptTexts[inlineVideoIndex].indexOf(config[0].url) > -1) {
-          wasConfigFound = true;
-
-          const posterURL = window.getComputedStyle(inlineVideoEl).backgroundImage.replace(BACKGROUND_IMAGE_PATTERN, '$1') ||
-            select('img', inlineVideoEl).getAttribute('href')
-          const sources = config.map(source => ({src: source.url, type: source.contentType}));
-
-          done(null, {posterURL, sources});
-        }
-      });
-    });
   } else {
-    // Phase 1 (Mobile)
+    // Phase 1
     // * Video must be published because...
     // * Sources and poster must be fetched from live Content API
 
@@ -248,7 +224,7 @@ function measure(viewport) {
 
 function mutate() {
   players.forEach(player => {
-    if (player.isUserInControl || player.isAutoplay && !player.scrollplayPct) {
+    if (player.isUserInControl || player.isAutoplay || !player.scrollplayPct) {
       return;
     }
 

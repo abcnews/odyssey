@@ -11,7 +11,8 @@
     margin-bottom: 3rem;
   }
 
-  & + & {
+  & + &,
+  & + a[name] + & {
     margin-top: -2rem;
 
     @media #{$mq-lg} {
