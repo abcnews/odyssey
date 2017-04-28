@@ -2,4 +2,8 @@
   opacity: 1;
   transform: none;
   will-change: opacity, transform;
+
+  @media #{$mq-sm} {
+    transform: none !important;
+  }
 }
