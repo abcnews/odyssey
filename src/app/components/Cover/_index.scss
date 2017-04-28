@@ -118,6 +118,10 @@
   > * {
     height: 100%;
   }
+
+  video {
+    z-index: -1;
+  }
 }
 
 .Cover-content {
