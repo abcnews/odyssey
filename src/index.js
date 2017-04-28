@@ -1,10 +1,14 @@
+const isAMD = typeof define === 'function' && define.amd;
+
 require('./polyfills');
 
 // External
 const domready = require('domready');
-// const fastclick = require('fastclick');
 const objectFitImages = require('object-fit-images');
 const picturefill = require('picturefill');
+if (isAMD) { define._amd = define.amd; delete define.amd; }
+const fastclick = require('fastclick');
+if (isAMD) { define.amd = define._amd; delete define._amd; }
 
 // Local
 const app = require('./app');
@@ -13,7 +17,7 @@ const KEY_D = 68;
 
 function init() {
   app(() => {
-    // fastclick(document.body); // TODO: Phase 2 module import
+    fastclick(document.body);
     picturefill();
     objectFitImages();
 
