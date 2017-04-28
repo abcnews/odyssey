@@ -34,7 +34,7 @@ function createFromEl(el) {
     };
     detach(select('.inline-caption strong', clone));
     config.text = trim((select('.inline-caption', clone) || NOEL).textContent);
-  } else if (select('.type-photo', clone)) {
+  } else if (select('.type-photo, .type-video', clone)) {
     // P1M
     detach(select('h3 strong', clone));
     config = {
