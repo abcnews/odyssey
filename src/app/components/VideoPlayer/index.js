@@ -117,19 +117,18 @@ function VideoPlayer({
       }`;
 
       progressBarEl.setAttribute('value', progress);
+
+      player.previousTime = Math.floor(videoEl.currentTime);
     }
   };
 
   players.push(player);
 
-  const readinessCheckInterval = setInterval(() => {
-	  if (videoEl.readyState > 0) {
+  const playbackUpdateInterval = setInterval(() => {
+	  if (videoEl.readyState > 0 && Math.floor(videoEl.currentTime) !== player.previousTime) {
       player.updatePlaybackPosition();
-		  clearInterval(readinessCheckInterval);
     }
-  }, 200);
-
-  videoEl.addEventListener('timeupdate', player.updatePlaybackPosition);
+  }, 1000);
 
   videoEl.addEventListener('ended', () => {
     player.isUserInControl = true;
