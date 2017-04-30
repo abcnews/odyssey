@@ -57,12 +57,27 @@
 
   blockquote {
     border: none;
-    padding: 0 1.5rem;
+    padding: 0 .25rem;
     background-color: transparent;
 
-    .u-pull-left &,
-    .u-pull-right & {
-      padding: 0 1.5rem;
+    @media #{$mq-not-sm} {
+      .u-pull-left & {
+        padding: .25rem 0 .25rem 2.75rem;
+      }
+
+      .u-pull-right & {
+        padding: .25rem 0 .25rem .5rem;
+      }
+    }
+
+    @media #{$mq-lg} {
+      .u-pull-left & {
+        padding-right: .5rem;
+      }
+
+      .u-pull-right & {
+        padding-left: .5rem;
+      }
     }
   }
 
@@ -70,7 +85,16 @@
     font-size: 1.75rem;
     line-height: 1.4;
 
-    @media #{$mq-not-sm} {
+    @media #{$mq-sm} {
+      position: relative;
+      z-index: 1;
+    }
+
+    @media #{$mq-md} {
+      font-size: 1.75rem;
+    }
+
+    @media #{$mq-lg} {
       font-size: 1.875rem;
     }
 
@@ -80,6 +104,7 @@
   }
 
   footer {
+    padding-top: .25rem;
     font-size: 1.125rem;
     font-family: $font-condensed;
     color: $color-grey-500;
@@ -122,4 +147,30 @@
   top: .5em;
   left: calc(100% + .33em);
   transform: rotate(180deg);
+}
+
+@media #{$mq-sm} {
+  .Quote-opener,
+  .Quote-closer {
+    position: static;
+  }
+
+  .Quote-opener::before,
+  .Quote-closer::before {
+    z-index: -1;
+  }
+
+  .Quote-opener::before {
+    top: 0;
+    right: auto;
+    bottom: auto;
+    left: 0;
+  }
+
+  .Quote-closer::before {
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: auto;
+  }
 }
