@@ -5,11 +5,11 @@
   overflow: hidden;
   position: relative;
   margin-top: 0;
-  min-height: 100vw;
   background-color: $color-black;
   line-height: 1.5;
 
   @media #{$mq-not-sm} {
+    min-height: 100vw;
     font-size: 1.25rem;
   }
 
@@ -230,7 +230,7 @@
     margin-bottom: 3rem;
     margin-left: auto;
     font-family: $font-serif;
-    font-size: 2.5rem;
+    font-size: 2rem;
     text-align: center;
 
     @media #{$mq-not-sm} {

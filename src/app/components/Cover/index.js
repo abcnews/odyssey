@@ -43,7 +43,7 @@ function Cover({
     mediaEl = Picture({
       src: imgEl.src,
       alt: imgEl.getAttribute('alt'),
-      smRatio: smRatio || '3x4',
+      smRatio: smRatio || '4x3',
       mdRatio: mdRatio || '1x1',
       lgRatio
     });
