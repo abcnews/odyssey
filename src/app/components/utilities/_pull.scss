@@ -46,7 +46,7 @@
   @media #{$mq-not-sm} {
     clear: left;
     float: left;
-    margin-right: 2.5rem !important;
+    margin-right: 2rem !important;
     width: cells(4);
   }
 
@@ -59,7 +59,7 @@
   @media #{$mq-not-sm} {
     clear: right;
     float: right;
-    margin-left: 2.5rem !important;
+    margin-left: 2rem !important;
     width: cells(4);
   }
 
