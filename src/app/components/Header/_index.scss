@@ -17,13 +17,15 @@
     flex-direction: column;
     justify-content: flex-end;
 
-    @media #{$mq-md} {
-      min-height: 100vw;
-    }
+    min-height: calc(100vh - 84px);  // ABC Global Nav + Narricle Nav
+    
+    // @media #{$mq-md} {
+    //   min-height: 100vw;
+    // }
 
-    @media #{$mq-lg} {
-      min-height: 56.25vw;
-    }
+    // @media #{$mq-lg} {
+    //   min-height: 56.25vw;
+    // }
   }
 }
 
