@@ -147,6 +147,24 @@ function app(done) {
   selectAll('[class*="u-pull"] [class*="u-pull"]')
   .forEach(el => el.className = el.className.replace(/u-pull(-\w+)?/, 'n-pull$1'));
 
+  // Enable drop-caps
+  selectAll('.Header')
+  .forEach(el => {
+    let nextEl = el.nextElementSibling;
+
+    if (nextEl.tagName !== 'P') {
+      nextEl = nextEl.nextElementSibling;
+    }
+
+    if (
+      nextEl.tagName === 'P' &&
+      nextEl.textContent.length > 80 &&
+      nextEl.textContent[0] !== '"'
+    ) {
+      nextEl.classList.add('u-dropcap');
+    }
+  });
+
   if (typeof done === 'function') {
     done();
   }
