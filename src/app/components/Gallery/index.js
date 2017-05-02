@@ -52,7 +52,6 @@ function Gallery({
     galleryEl.classList[index === images.length - 1 ? 'add' : 'remove']('is-at-end');
     imageEls[currentIndex].classList.add('is-active');
     linkEls[currentIndex].classList.add('is-active');
-    indexEl.textContent = `${currentIndex + 1} of ${images.length}`;
 
     updateImagesTransform(`translateX(-${currentIndex * 100}%)`);
   }
@@ -200,14 +199,13 @@ function Gallery({
 
     if (controlsWidth !== previousControlsWidth) {
       selectAll('.Caption', imagesEl).forEach(el => {
-        el.style.marginRight = `${controlsWidth}px`;
+        el.style.marginRight = controlsWidth ? `${controlsWidth}px` : '';
       })
       previousControlsWidth = controlsWidth;
     }
   }
 
   const className = cn('Gallery', {
-    'is-short': images.length < 4,
     'is-tiling-specified': tiledRowLengths.length > 0
   }, 'u-full');
 
@@ -220,7 +218,12 @@ function Gallery({
   }, []);
 
   const imageEls = images.map(({pictureEl, captionEl}, index) => {
-    select('img', pictureEl).onload = measure;
+    const imgEl = select('img', pictureEl);
+    
+    imgEl.onload = measure;
+    imgEl.setAttribute('draggable', 'false');
+
+    pictureEl.append(html`<div class="Gallery-index">${index + 1} / ${images.length}</div>`);
 
     const imageEl = html`
       <div class="Gallery-image"
@@ -279,13 +282,9 @@ function Gallery({
       onclick=${() => goToImage(currentIndex + 1)}></button>
   `;
 
-  const indexEl = html`
-    <div class="Gallery-index"></div>
-  `;
-
   const controlsEl = html`
     <div class="Gallery-controls">
-      ${linkEls.concat(prevEl, nextEl, indexEl)}
+      ${linkEls.concat(prevEl, nextEl)}
     </div>
   `;
 

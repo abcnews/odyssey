@@ -34,8 +34,9 @@ function Cover({
   });
   const contentClassName = cn('Cover-content', {
     'u-layout': type !== 'caption',
-    'is-piecemeal': type === 'richtext' && isPiecemeal
-  }, 'u-richtext-invert');
+    'u-richtext-invert': type !== 'caption',
+    'is-piecemeal': type === 'richtext' && isPiecemeal,
+  });
 
   let mediaEl;
 

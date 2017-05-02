@@ -7,6 +7,12 @@
   user-select: none;
   -webkit-user-drag: none;
   user-drag: none;
+
+  @media #{$mq-sm} {
+    padding-top: 1.25rem;
+    padding-bottom: .5rem;
+    background-color: $color-grey-100;
+  }
 }
 
 .Gallery-layout {
@@ -16,14 +22,6 @@
   padding-left: $layout-fluid-padding;
   padding-right: $layout-fluid-padding;
   width: cells(10);
-
-  @media #{$mq-sm} {
-    .is-short & {
-      padding-left: 0;
-      padding-right: 0;
-      width: 100%;
-    }
-  }
 
   @media #{$mq-md} {
     .is-tiling-specified & {
@@ -47,13 +45,11 @@
     top: 0;
     width: calc(50vw - #{cells(5)});
     height: 100%;
-    background-image: $gradient-horizontal-bg-0-0-75-100;
+    background-image: $gradient-horizontal-grey-50-0-0-75-100;
     pointer-events: none;
 
     @media #{$mq-sm} {
-      .is-short & {
-        content: none;
-      }
+      background-image: $gradient-horizontal-grey-100-0-0-75-100;
     }
 
     @media #{$mq-md} {
@@ -83,12 +79,6 @@
 .Gallery-pane {
   margin: 0 -10px;
 
-  @media #{$mq-sm} {
-    .is-short & {
-      margin: 0 -4px;
-    }
-  }
-
   @media #{$mq-md} {
     margin: 0 -15px;
 
@@ -112,14 +102,6 @@
   position: relative;
   transition: transform .125s ease-out;
   will-change: transform;
-
-  @media #{$mq-sm} {
-    .is-short & {
-      flex-wrap: wrap;
-      transform: none !important;
-      transition-duration: 0s;
-    }
-  }
 
   @media #{$mq-not-sm} {
     .is-tiling-specified & {
@@ -154,12 +136,6 @@
   @media #{$mq-sm} {
     -ms-flex: 0 0 100% !important;
     flex: 0 0 100% !important;
-
-    .is-short & {
-      opacity: 1;
-      margin-bottom: 8px;
-      padding: 0 4px;
-    }
   }
 
   @media #{$mq-md} {
@@ -203,12 +179,6 @@
       cursor: grabbing;
     }
 
-    @media #{$mq-sm} {
-      .is-short & {
-        cursor: default;
-      }
-    }
-
     @media #{$mq-not-sm} {
       .is-tiling-specified & {
         cursor: default;
@@ -218,11 +188,17 @@
 
   .Caption {
     opacity: 0;
-    margin-right: 0; // Dynamic, based on controls widtht;
-    min-height: 48px;
+    margin-left: -$layout-fluid-padding;
+    margin-right: -$layout-fluid-padding; // Dynamic, based on controls width;
+    min-height: 52px;
+    background-color: transparent;
     pointer-events: none;
     transition: .125s opacity;
     will-change: opacity;
+
+    @media #{$mq-lg} {
+      margin-left: -$layout-fixed-padding;
+    }
   }
 
   &.is-active .Caption {
@@ -236,60 +212,57 @@
     }
   }
 
-  @media #{$mq-sm} {
-    .is-short & .Caption {
-      opacity: 0;
-      position: absolute;
-      bottom: 0;
-      padding-left: .66rem;
-      padding-right: .66rem;
-      max-width: calc(100% - 10px);
-      min-height: 0;
-      background-color: $color-transparent-black-50;
-      color: $color-grey-100;
-      pointer-events: none;
-
-      a {
-        color: $color-lightPrimary;
-      }
-
-      a:visited {
-        color: $color-lightSecondary;
-      }
-    }
-
-    .is-short &:hover .Caption {
-      opacity: 1;
-      pointer-events: all;
-    }
-  }
 
   @media #{$mq-not-sm} {
     .is-tiling-specified & .Caption {
       opacity: 0;
       position: absolute;
       bottom: 0;
-      padding-left: .66rem;
-      padding-right: .66rem;
+      margin-left: 0;
       max-width: calc(100% - 10px);
       min-height: 0;
       background-color: $color-transparent-black-50;
-      color: $color-grey-100;
+      color: $color-grey-50;
       pointer-events: none;
-
-      a {
-        color: $color-lightPrimary;
-      }
-
-      a:visited {
-        color: $color-lightSecondary;
-      }
     }
 
     .is-tiling-specified &:hover .Caption {
       opacity: 1;
       pointer-events: all;
     }
+
+    .is-tiling-specified & .Caption-attribution {
+      color: $color-grey-300;
+    }
+  }
+}
+
+.Gallery-index {
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: .45rem .8rem .4rem;
+  background-color: $color-transparent-black-50;
+  color: $color-grey-50;
+  font-family: "ABCSans", Arial, Helvetica, sans-serif;
+  font-size: .8125rem;
+  letter-spacing: .05rem;
+  transition: .125s opacity;
+  will-change: opacity;
+
+  .is-active & {
+    opacity: 1;
+    transition-delay: .125s;
+  }
+
+  .is-moving & {
+    opacity: 0;
+    transition-delay: 0s;
+  }
+
+  @media #{$mq-not-sm} {
+    display: none;
   }
 }
 
@@ -298,12 +271,9 @@
   position: absolute;
   top: 0; // Dynamic, based on image height;
   right: $layout-fluid-padding;
-  padding-left: 1rem;
 
   @media #{$mq-sm} {
-    .is-short & {
-      display: none;
-    }
+    display: none;
   }
 
   @media #{$mq-not-sm} {
@@ -319,20 +289,19 @@
 
 .Gallery-link {
   margin: auto 4px;
+  border: 0;
   padding: 0;
-  border: 1px solid $color-grey-400;
-  border-radius: 1px;
   width: 10px;
   height: 10px;
-  background-color: transparent;
-  transition: .25s background-color, .25s border-color;
+  background-color: $color-grey-300;
+  cursor: pointer;
+  transition: .25s background-color;
 
   &:hover {
-    background-color: $color-grey-300;
+    background-color: $color-grey-400;
   }
 
   &.is-active {
-    border-color: $color-grey-600;
     background-color: $color-grey-600;
   }
 
@@ -347,16 +316,12 @@
   border: none;
   width: 42px;
   height: 36px;
-  background-color: $color-grey-100;
+  background-color: $color-grey-300;
   background-image: url(gallery/step.svg);
   background-position: center;
   background-repeat: no-repeat;
   transition: .25s opacity;
   will-change: opacity;
-
-  @media #{$mq-sm} {
-    display: none;
-  }
 }
 
 .Gallery-step-prev {
@@ -369,20 +334,7 @@
 
 .is-at-start .Gallery-step-prev,
 .is-at-end .Gallery-step-next {
-  opacity: .33;
+  opacity: .5;
   cursor: disabled;
   pointer-events: none;
-}
-
-.Gallery-index {
-  padding-top: .45rem;
-  padding-bottom: .4rem;
-  color: #666;
-  font-family: "ABCSans", Arial, Helvetica, sans-serif;
-  font-size: .8125rem;
-  font-weight: bold;
-
-  @media #{$mq-not-sm} {
-    display: none;
-  }
 }

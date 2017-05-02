@@ -60,10 +60,10 @@ const P2_FLOAT = {
   REPLACEMENT: 'u-pull-$2'
 };
 
-function promoteToMain(storyEl) {
+function promoteToMain(storyEl, meta) {
   const existingMainEl = select(SELECTORS.MAIN);
   const id = existingMainEl.getAttribute('id');
-  const mainEl = Main(slice(storyEl.childNodes));
+  const mainEl = Main(slice(storyEl.childNodes), meta);
 
   if (id) {
     mainEl.setAttribute('id', id);
@@ -77,8 +77,8 @@ function promoteToMain(storyEl) {
   return mainEl;
 }
 
-function reset(storyEl) {
-  storyEl = promoteToMain(storyEl);
+function reset(storyEl, meta) {
+  storyEl = promoteToMain(storyEl, meta);
 
   Object.keys(TEMPLATE_REMOVABLES).forEach(templateBodySelector => {
     if (select(templateBodySelector)) {

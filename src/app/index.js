@@ -18,8 +18,8 @@ const {getMeta} = require('./meta');
 const reset = require('./reset');
 
 function app(done) {
-  const meta = getMeta(); // Must happen before the story reset
-  const storyEl = reset(select(SELECTORS.STORY));
+  const meta = getMeta();
+  const storyEl = reset(select(SELECTORS.STORY), meta);
 
   after(select(SELECTORS.GLOBAL_NAV), Nav({shareLinks: meta.shareLinks}));
 

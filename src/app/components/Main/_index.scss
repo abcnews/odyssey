@@ -47,14 +47,16 @@
   .Header + p::first-letter,
   .Header + :not(p) + p::first-letter {
     float: left;
+    padding-top: .4rem;
     padding-right: .25rem;
-    font-size: 3.3125rem;
+    font-size: 3.46875rem;
     font-weight: bold;
-    line-height: .95;
+    line-height: .78; // Gecko ignores this
 
     @media #{$mq-not-sm} {
+      padding-top: .5rem;
       font-size: 3.625rem;
-      line-height: 1;
+      line-height: .74; // Gecko ignores this
     }
   }
 }

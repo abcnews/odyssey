@@ -41,15 +41,7 @@ function getBylineNodes() {
 
   return slice((bylineSubEl || bylineEl).childNodes)
   .filter(node => node !== infoSourceEl && trim(node.textContent).length > -1)
-  .map(node => {
-    const clonedNode = node.cloneNode(true);
-
-    if (EMPHASISABLE_BYLINE_TEXT_PATTERN.test(trim(node.textContent).toLowerCase())) {
-      return html`<em>${clonedNode}</em>`
-    };
-
-    return clonedNode;
-  });
+  .map(node => node.cloneNode(true));
 }
 
 function getInfoSource() {
@@ -102,13 +94,13 @@ function getShareLinks() {
 function getMeta() {
   return {
     title: getMetaContent('replacement-title') ||
-      getMetaContent('replacement-title') ||
       select('h1').textContent,
     published: getDate('DCTERMS.issued', 'original'),
     updated: getDate('DCTERMS.modified', 'updated'),
     bylineNodes: getBylineNodes(),
     infoSource: getInfoSource(),
     shareLinks: getShareLinks(),
+    hasCaptionAttributions: getMetaContent('caption-attributions') === 'yes'
   };
 }
 

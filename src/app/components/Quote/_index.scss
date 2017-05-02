@@ -3,18 +3,9 @@
   blockquote {
     overflow: visible;
     margin: 0;
-    padding: 1rem 1.25rem;
+    padding: 0 2rem;
     border-width: 0;
-    border-left: 5px solid $color-grey-200;
-    background: $color-grey-75;
-
-    @media #{$mq-not-sm} {
-      .u-richtext > &,
-      .u-pull-out > &,
-      .u-pull > & {
-        padding: 1.75rem 2rem;
-      }
-    }
+    border-left: 10px solid $color-grey-200;
   }
 
   p {
@@ -34,7 +25,20 @@
       content: none;
     }
   }
+}
 
+.Quote:not(.is-pullquote) {
+  @media #{$mq-sm} {
+    .Main > [class*="u-pull"] > & {
+      margin-left: -$layout-fluid-padding;
+      margin-right: -$layout-fluid-padding;
+    }
+
+    .Main > & {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
 }
 
 .Quote.is-pullquote {
@@ -57,7 +61,7 @@
 
   blockquote {
     border: none;
-    padding: 0 .25rem;
+    padding: 0 1rem;
     background-color: transparent;
 
     @media #{$mq-not-sm} {
@@ -82,7 +86,7 @@
   }
 
   p {
-    font-size: 1.75rem;
+    font-size: 1.625rem;
     line-height: 1.4;
 
     @media #{$mq-sm} {
@@ -105,17 +109,18 @@
 
   footer {
     padding-top: .25rem;
-    font-size: 1.125rem;
-    font-family: $font-condensed;
+    font-size: 1rem;
     color: $color-grey-500;
 
-    @media #{$mq-not-sm} {
-      font-size: 1.25rem;
+    @media #{$mq-md} {
+      font-size: 1.125rem;
     }
 
-
+    @media #{$mq-lg} {
+      font-size: 1.25rem;
+    }
     .u-richtext-invert > & {
-      color: $color-grey-200;
+      color: $color-grey-300;
     }
 
     &::before {
@@ -127,6 +132,10 @@
 .Quote-opener,
 .Quote-closer {
   position: relative;
+
+  @media #{$mq-sm} {
+    z-index: -1;
+  }
 }
 
 .Quote-opener::before,
@@ -141,36 +150,26 @@
 .Quote-opener::before {
   bottom: .55em;
   right: calc(100% + .33em);
+
+  @media #{$mq-sm} {
+    right: calc(100% - .166666667em);
+  }
+
+  .u-richtext-invert & {
+    right: calc(100% - .166666667em);
+  }
 }
 
 .Quote-closer::before {
   top: .5em;
   left: calc(100% + .33em);
   transform: rotate(180deg);
-}
 
-@media #{$mq-sm} {
-  .Quote-opener,
-  .Quote-closer {
-    position: static;
+  @media #{$mq-sm} {
+    left: calc(100% - .166666667em);
   }
 
-  .Quote-opener::before,
-  .Quote-closer::before {
-    z-index: -1;
-  }
-
-  .Quote-opener::before {
-    top: 0;
-    right: auto;
-    bottom: auto;
-    left: 0;
-  }
-
-  .Quote-closer::before {
-    top: auto;
-    right: 0;
-    bottom: 0;
-    left: auto;
+  .u-richtext-invert & {
+    left: calc(100% - .166666667em);
   }
 }

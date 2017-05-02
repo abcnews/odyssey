@@ -8,16 +8,18 @@
     margin-bottom: 1.5rem;
   }
 
+  @media #{$mq-sm} {
+    .Main > [class*="u-pull"] > & {
+      margin-left: -$layout-fluid-padding;
+      margin-right: -$layout-fluid-padding;
+    }
+  }
+
   @media #{$mq-not-lg} {
     .Main > & {
       padding-left: 0;
       padding-right: 0;
       width: 100%;
-
-      .Caption {
-        padding-left: $layout-fluid-padding;
-        padding-right: $layout-fluid-padding;
-      }
     }
   }
 

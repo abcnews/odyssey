@@ -3,15 +3,59 @@
   margin-bottom: 0;
   padding-top: .45rem;
   padding-bottom: .4rem;
-  color: $color-grey-600;
   font-family: $font-sans;
+
+  @media #{$mq-not-lg} {
+    padding-left: $layout-fluid-padding;
+    padding-right: $layout-fluid-padding;
+    background-color: $color-grey-100;
+  }
+
+  .u-full & {
+    @media #{$mq-lg} {
+      padding-left: $layout-fixed-padding;
+      padding-right: $layout-fixed-padding;
+      background-color: $color-grey-100;
+    }
+  }
+
+  .u-richtext-invert & {
+    padding-left: $layout-fluid-padding;
+    padding-right: $layout-fluid-padding;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: $color-white;
+
+    @media #{$mq-lg} {
+      padding-left: $layout-fluid-padding;
+      padding-right: $layout-fluid-padding;
+    }
+  }
 
   * > & {
     font-size: .8125rem !important;
     line-height: 1.25rem;
   }
+
+  :first-child {
+    margin-right: .25rem;
+  }
+
+  a {
+    color: currentColor;
+  }
 }
 
 .Caption-attribution {
+  display: none;
   white-space: nowrap;
+  font-size: .6875rem;
+  color: $color-grey-600;
+
+  .has-caption-attributions & {
+    display: inline;
+  }
+
+  .u-richtext-invert & {
+    color: $color-grey-300;
+  }
 }

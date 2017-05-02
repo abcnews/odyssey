@@ -1,6 +1,13 @@
 .ImageEmbed {
   margin-bottom: 1.5rem;
 
+  @media #{$mq-sm} {
+    .Main > [class*="u-pull"] > & {
+      margin-left: -$layout-fluid-padding;
+      margin-right: -$layout-fluid-padding;
+    }
+  }
+
   @media #{$mq-not-lg} {
     .Main > & {
       padding-left: 0;
@@ -12,16 +19,5 @@
   img {
     width: 100%;
     vertical-align: top;
-  }
-
-  > .Caption {
-
-
-    @media #{$mq-not-lg} {
-      .Main > & {
-        padding-left: $layout-fluid-padding;
-        padding-right: $layout-fluid-padding;
-      }
-    }
   }
 }

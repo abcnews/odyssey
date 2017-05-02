@@ -5,7 +5,6 @@
   overflow: hidden;
   position: relative;
   margin-top: 0;
-  background-color: $color-black;
   line-height: 1.5;
 
   @media #{$mq-not-sm} {
@@ -19,6 +18,11 @@
     &.is-richtext {
       min-height: 100vh;
     } 
+  }
+
+  &.is-heading,
+  &.is-richtext {
+    background-color: $color-black;
   }
 
   &.is-richtext {
@@ -204,7 +208,6 @@
     }
   }
 
-  .is-caption > &,
   .is-heading > & {
     position: absolute;
     bottom: 0;
@@ -213,13 +216,6 @@
 
   .is-heading > & {
     width: 100%;
-  }
-
-  .is-caption > & > .Caption {
-    padding-left: .66rem;
-    padding-right: .66rem;
-    background-color: $color-transparent-black-50;
-    color: $color-grey-100;
   }
 }
 

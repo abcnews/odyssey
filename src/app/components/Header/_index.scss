@@ -18,14 +18,6 @@
     justify-content: flex-end;
 
     min-height: calc(100vh - 84px);  // ABC Global Nav + Narricle Nav
-    
-    // @media #{$mq-md} {
-    //   min-height: 100vw;
-    // }
-
-    // @media #{$mq-lg} {
-    //   min-height: 56.25vw;
-    // }
   }
 }
 
@@ -137,8 +129,12 @@
   font-size: .9375rem;
 }
 
-.Header-byline > em:first-child {
+.Header-byline > em {
   text-transform: lowercase;
+}
+
+.Header-byline > em + a {
+  margin-left: .1em;
 }
 
 // .Header-infoSource--<slug>,

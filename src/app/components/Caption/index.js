@@ -11,9 +11,9 @@ function Caption({
   attribution
 }) {
   return html`
-    <p class="Caption">
+    <p class="Caption" title="${text}${attribution ? ` (${attribution})` : ''}">
       <a href="${url}">${text}</a>
-      ${attribution ? html`<span class="Caption-attribution">(${attribution})</span>` : null}
+      ${attribution ? html`<em class="Caption-attribution">${attribution}</em>` : null}
     </p>
   `;
 }
