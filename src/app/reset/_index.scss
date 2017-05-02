@@ -16,7 +16,12 @@ body {
   min-height: 102vh;
   width:  100vw;
   background-color: #f9f9f9;
-  -webkit-text-size-adjust: 100%;
+
+  @media #{$mq-sm} {
+    -webkit-text-size-adjust: none;
+    -moz-text-size-adjust: none;
+    -ms-text-size-adjust: none;
+  }
 }
 
 #abcHeader.global {
