@@ -279,6 +279,7 @@ module.exports = {
   isText,
   isElement,
   isDocument,
+  create,
   select,
   selectAll,
   detach,

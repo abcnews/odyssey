@@ -29,6 +29,16 @@
     "@abcnews/aunty": "2.1.x"
   },
   "aunty": {
-    "type": "basic-story"
+    "type": "basic-story",
+    "build": {
+      "scripts": {
+        "files": ["index.js", "adapter-*.js"]
+      }
+    },
+    "build_debug": {
+      "scripts": {
+        "files": ["index.js", "adapter-*.js"]
+      }
+    }
   }
 }
