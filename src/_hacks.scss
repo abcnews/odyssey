@@ -37,19 +37,3 @@
 .comp-video-player .caption, {
   display: none;
 }
-
-// Make sure fullscren Lively videos are centered
-.Lively.fullscreen {
-  margin-left: calc(-50vw + 50%) !important;
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-}
-
-// Make sure Lively controls are the same width as the video
-.Lively:not(.fullscreen) .Lively-controls {
-  width: calc(100% - #{$layout-fluid-gutter});
-
-  @media #{$mq-lg} {
-    width: calc(100% - #{$layout-fixed-gutter});
-  }
-}
