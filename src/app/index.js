@@ -19,6 +19,8 @@ const {start, subscribe} = require('./loop');
 const {getMeta} = require('./meta');
 const reset = require('./reset');
 
+const BEGINS_WITH_ALPHANUMERIC_PATTERN = /^\w/;
+
 function app(done) {
   const meta = getMeta();
   const storyEl = reset(select(SELECTORS.STORY), meta);
@@ -190,7 +192,7 @@ function app(done) {
     if (
       nextEl.tagName === 'P' &&
       nextEl.textContent.length > 80 &&
-      nextEl.textContent[0] !== '"'
+      BEGINS_WITH_ALPHANUMERIC_PATTERN.test(nextEl.textContent)
     ) {
       nextEl.classList.add('u-dropcap');
     }
