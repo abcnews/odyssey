@@ -3,7 +3,9 @@ const html = require('bel');
 
 // Ours
 const {SELECTORS} = require('../constants');
-const {after, append, before, detachAll, getPlaceholders, getSections, isElement, select, selectAll} = require('../utils');
+const {after, append, before, detach, detachAll, getPlaceholders,
+  getSections, isElement, select, selectAll} = require('../utils');
+const Caption = require('./components/Caption');
 const Cover = require('./components/Cover');
 const Gallery = require('./components/Gallery');
 const Header = require('./components/Header');
@@ -146,6 +148,35 @@ function app(done) {
   // Nullify nested pulls (outer always wins)
   selectAll('[class*="u-pull"] [class*="u-pull"]')
   .forEach(el => el.className = el.className.replace(/u-pull(-\w+)?/, 'n-pull$1'));
+
+  // Transform embedded external link captions
+  let eels = selectAll('.inline-content[class*="embed"]', storyEl)
+    .concat(selectAll('.embed-content', storyEl)
+      .filter(el => select('.type-external', el)));
+
+  setTimeout(function transformRemainingEELs() {
+    eels = eels.reduce((memo, el) => {
+      if (el.className.indexOf(' embedded') > -1 || select('.embedded', el)) {
+        const captionEl = Caption.createFromEl(el);
+
+        const oldCaptionEl = select(`
+          .embed-caption,
+          .inline-caption
+        `);
+
+        before(oldCaptionEl, captionEl);
+        detach(oldCaptionEl);
+      } else {
+        memo.push(el);
+      }
+
+      return memo;
+    }, []);
+
+    if (eels.length > 0) {
+      setTimeout(transformRemainingEELs, 500);
+    }
+  }, 0);
 
   // Enable drop-caps
   selectAll('.Header')
