@@ -225,9 +225,11 @@ function Gallery({
 
     pictureEl.append(html`<div class="Gallery-index">${index + 1} / ${images.length}</div>`);
 
+    const flexBasisPct = tileWidths[index] || 100;
+
     const imageEl = html`
       <div class="Gallery-image"
-        style="-ms-flex: 0 0 ${tileWidths[index] || 100}%; flex: 0 0 ${tileWidths[index] || 100}%"
+        style="-ms-flex: 0 0 ${flexBasisPct}%; flex: 0 0 ${flexBasisPct}%"
         data-index="${index}"
         ondragstart=${returnFalse}
         onmouseup=${swipeIntent}
