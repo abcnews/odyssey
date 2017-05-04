@@ -105,7 +105,7 @@ function getMeta() {
     bylineNodes: getBylineNodes(),
     infoSource: getInfoSource(),
     shareLinks: getShareLinks(),
-    hasCaptionAttributions: getMetaContent('caption-attributions') === 'yes'
+    hasCaptionAttributions: getMetaContent('hide-caption-attributions') !== 'no'
   };
 }
 
