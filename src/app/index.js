@@ -185,11 +185,15 @@ function app(done) {
   .forEach(el => {
     let nextEl = el.nextElementSibling;
 
-    if (nextEl.tagName !== 'P') {
+    if (
+      nextEl !== null &&
+      nextEl.tagName !== 'P'
+    ) {
       nextEl = nextEl.nextElementSibling;
     }
 
     if (
+      nextEl !== null &&
       nextEl.tagName === 'P' &&
       nextEl.textContent.length > 80 &&
       BEGINS_WITH_ALPHANUMERIC_PATTERN.test(nextEl.textContent)
