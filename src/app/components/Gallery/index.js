@@ -211,7 +211,7 @@ function Gallery({
 
   const tileWidths = tiledRowLengths.reduce((widths, rowLength) => {
     for (let i = 0, len = rowLength; i < rowLength; i++) {
-      widths.push(100 / rowLength);
+      widths.push(100 / Math.min(3, rowLength));
     }
 
     return widths;
