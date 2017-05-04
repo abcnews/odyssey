@@ -45,6 +45,7 @@ function app(done) {
     'header',
     'cover',
     'gallery',
+    'mosaic',
     'pull'
   ]).forEach(section => {
     switch (section.name) {
@@ -55,6 +56,7 @@ function app(done) {
         Cover.transformSection(section);
         break;
       case 'gallery':
+      case 'mosaic':
         Gallery.transformSection(section);
         break;
       case 'pull':

@@ -7,12 +7,6 @@
   user-select: none;
   -webkit-user-drag: none;
   user-drag: none;
-
-  @media #{$mq-sm} {
-    padding-top: 1.25rem;
-    padding-bottom: .5rem;
-    background-color: $color-grey-100;
-  }
 }
 
 .Gallery-layout {
@@ -23,8 +17,8 @@
   padding-right: $layout-fluid-padding;
   width: cells(10);
 
-  @media #{$mq-md} {
-    .is-tiling-specified & {
+  @media #{$mq-not-lg} {
+    .is-mosaic & {
       padding-left: 0;
       padding-right: 0;
       width: 100%;
@@ -52,10 +46,8 @@
       background-image: $gradient-horizontal-grey-100-0-0-75-100;
     }
 
-    @media #{$mq-md} {
-      .is-tiling-specified & {
-        content: none;
-      }
+    .is-mosaic & {
+      content: none;
     }
 
     // Phase 1 (Standard)
@@ -79,10 +71,14 @@
 .Gallery-pane {
   margin: 0 -10px;
 
+  .is-mosaic & {
+    margin: 0 -2px;
+  }
+
   @media #{$mq-md} {
     margin: 0 -15px;
 
-    .is-tiling-specified & {
+    .is-mosaic & {
       margin: 0 -4px;
     }
   }
@@ -90,7 +86,7 @@
   @media #{$mq-lg} {
     margin: 0 -20px;
 
-    .is-tiling-specified & {
+    .is-mosaic & {
       margin: 0 -5px;
     }
   }
@@ -103,12 +99,10 @@
   transition: transform .125s ease-out;
   will-change: transform;
 
-  @media #{$mq-not-sm} {
-    .is-tiling-specified & {
-      flex-wrap: wrap;
-      transform: none !important;
-      transition-duration: 0s;
-    }
+  .is-mosaic & {
+    flex-wrap: wrap;
+    transform: none !important;
+    transition-duration: 0s;
   }
 }
 
@@ -133,7 +127,13 @@
   transition: .125s opacity;
   will-change: opacity;
 
-  @media #{$mq-sm} {
+  .is-mosaic & {
+    opacity: 1;
+    margin-bottom: 4px;
+    padding: 0 2px;
+  }
+
+  .Gallery:not(.is-mosaic) & {
     -ms-flex: 0 0 100% !important;
     flex: 0 0 100% !important;
   }
@@ -141,7 +141,7 @@
   @media #{$mq-md} {
     padding: 0 15px;
 
-    .is-tiling-specified & {
+    .is-mosaic & {
       margin-bottom: 8px;
       padding: 0 4px;
     }
@@ -150,15 +150,9 @@
   @media #{$mq-lg} {
     padding: 0 20px;
 
-    .is-tiling-specified & {
+    .is-mosaic & {
       margin-bottom: 10px;
       padding: 0 5px;
-    }
-  }
-
-  @media #{$mq-not-sm} {
-    .is-tiling-specified & {
-      opacity: 1;
     }
   }
 
@@ -179,12 +173,18 @@
       cursor: grabbing;
     }
 
-    @media #{$mq-not-sm} {
-      .is-tiling-specified & {
-        cursor: default;
-      }
+    .is-mosaic & {
+      display: none;
     }
   }
+
+  .Picture + .Picture {
+    display: none;
+
+    .is-mosaic & {
+      display: block;
+    }
+  } 
 
   .Caption {
     opacity: 0;
@@ -212,28 +212,37 @@
     }
   }
 
+  .is-mosaic & .Caption {
+    opacity: 0;
+    position: absolute;
+    bottom: 0;
+    margin-left: 0;
+    max-width: calc(100% - 4px);
+    min-height: 0;
+    background-color: $color-transparent-black-50;
+    color: $color-grey-50;
+    pointer-events: none;
 
-  @media #{$mq-not-sm} {
-    .is-tiling-specified & .Caption {
-      opacity: 0;
-      position: absolute;
-      bottom: 0;
-      margin-left: 0;
+    @media #{$mq-sm} {
+      display: none;
+    }
+
+    @media #{$mq-md} {
+      max-width: calc(100% - 8px);
+    }
+
+    @media #{$mq-lg} {
       max-width: calc(100% - 10px);
-      min-height: 0;
-      background-color: $color-transparent-black-50;
-      color: $color-grey-50;
-      pointer-events: none;
     }
+  }
 
-    .is-tiling-specified &:hover .Caption {
-      opacity: 1;
-      pointer-events: all;
-    }
+  .is-mosaic &:hover .Caption {
+    opacity: 1;
+    pointer-events: all;
+  }
 
-    .is-tiling-specified & .Caption-attribution {
-      color: $color-grey-300;
-    }
+  .is-mosaic & .Caption-attribution {
+    color: $color-grey-300;
   }
 }
 
@@ -261,7 +270,11 @@
     transition-delay: 0s;
   }
 
-  @media #{$mq-not-sm} {
+  .is-mosaic & {
+    display: none;
+  }
+
+  .is-mosaic & {
     display: none;
   }
 }
@@ -272,40 +285,11 @@
   top: 0; // Dynamic, based on image height;
   right: $layout-fluid-padding;
 
-  @media #{$mq-sm} {
-    display: none;
-  }
-
-  @media #{$mq-not-sm} {
-    .is-tiling-specified & {
-      display: none;
-    }
-  }
-
   @media #{$mq-lg} {
     right: $layout-fixed-padding;
   }
-}
 
-.Gallery-link {
-  margin: auto 4px;
-  border: 0;
-  padding: 0;
-  width: 10px;
-  height: 10px;
-  background-color: $color-grey-300;
-  cursor: pointer;
-  transition: .25s background-color;
-
-  &:hover {
-    background-color: $color-grey-400;
-  }
-
-  &.is-active {
-    background-color: $color-grey-600;
-  }
-
-  @media #{$mq-sm} {
+  .is-mosaic & {
     display: none;
   }
 }

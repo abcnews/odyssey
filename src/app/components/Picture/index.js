@@ -13,6 +13,9 @@ const SIZES = {
 }
 
 const RATIO_PATTERN = /(\d+x\d+)/;
+const SM_RATIO_PATTERN = /sm(\d+x\d+)/;
+const MD_RATIO_PATTERN = /md(\d+x\d+)/;
+const LG_RATIO_PATTERN = /lg(\d+x\d+)/;
 const P1_RATIO_SIZE_PATTERN = /(\d+x\d+)-(\d+x\d+)/;
 const P2_RATIO_SIZE_PATTERN = /(\d+x\d+)-([a-z]+)/;
 
@@ -75,3 +78,6 @@ function Picture({
 
 module.exports = Picture;
 module.exports.SIZES = SIZES
+module.exports.SM_RATIO_PATTERN = SM_RATIO_PATTERN;
+module.exports.MD_RATIO_PATTERN = MD_RATIO_PATTERN;
+module.exports.LG_RATIO_PATTERN = LG_RATIO_PATTERN;

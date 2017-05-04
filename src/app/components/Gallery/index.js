@@ -8,14 +8,14 @@ const {nextFrame, subscribe} = require('../../loop');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
 
-const TILED_ROW_LENGTHS_PATTERN = /tiled(\d+)/;
+const MOSAIC_ROW_LENGTHS_PATTERN = /(?:tiled|mosaic)(\d+)/;
 const TRANSLATE_X_PCT_PATTERN = /(-?[0-9\.]+)/;
 const SWIPE_THRESHOLD = 25;
 const AXIS_THRESHOLD = 5;
 
 function Gallery({
   images = [],
-  tiledRowLengths = []
+  mosaicRowLengths = []
 }) {
   let startTransitionX;
   let startX;
@@ -44,14 +44,12 @@ function Gallery({
     }
 
     imageEls[currentIndex].classList.remove('is-active');
-    linkEls[currentIndex].classList.remove('is-active');
 
     currentIndex = index;
 
     galleryEl.classList[index === 0 ? 'add' : 'remove']('is-at-start');
     galleryEl.classList[index === images.length - 1 ? 'add' : 'remove']('is-at-end');
     imageEls[currentIndex].classList.add('is-active');
-    linkEls[currentIndex].classList.add('is-active');
 
     updateImagesTransform(`translateX(-${currentIndex * 100}%)`);
   }
@@ -206,26 +204,52 @@ function Gallery({
   }
 
   const className = cn('Gallery', {
-    'is-tiling-specified': tiledRowLengths.length > 0
+    'is-mosaic': mosaicRowLengths.length > 0
   }, 'u-full');
 
-  const tileWidths = tiledRowLengths.reduce((widths, rowLength) => {
-    for (let i = 0, len = rowLength; i < rowLength; i++) {
-      widths.push(100 / Math.min(3, rowLength));
+  mosaicRowLengths = mosaicRowLengths.map(rowLength => Math.min(3, rowLength));
+
+  const mosaicRowLengthsClone = [].concat(mosaicRowLengths);
+  const mosaicRows = images.reduce((memo, image, index) => {
+    if (mosaicRowLengthsClone.length === 0) {
+      mosaicRowLengthsClone.push(1);
     }
 
-    return widths;
-  }, []);
+    memo[memo.length - 1].push(image);
 
-  const imageEls = images.map(({pictureEl, captionEl}, index) => {
+    mosaicRowLengthsClone[0]--;
+
+    if (mosaicRowLengthsClone[0] === 0) {
+      mosaicRowLengthsClone.shift();
+
+      if (index + 1 < images.length) {
+        memo.push([]);
+      }
+    }
+
+    return memo;
+  }, [[]]);
+
+  mosaicRows.forEach(images => {
+    images.forEach(image => {
+      image.rowLength = images.length;
+      image.flexBasisPct = 100 / image.rowLength;
+      image.mosaicPictureEl = image.mosaicPictureEls[image.rowLength  - 1];
+    });
+  });
+
+  const imageEls = images.map(({
+    pictureEl,
+    mosaicPictureEl,
+    captionEl,
+    flexBasisPct
+  }, index) => {
     const imgEl = select('img', pictureEl);
     
     imgEl.onload = measure;
     imgEl.setAttribute('draggable', 'false');
 
     pictureEl.append(html`<div class="Gallery-index">${index + 1} / ${images.length}</div>`);
-
-    const flexBasisPct = tileWidths[index] || 100;
 
     const imageEl = html`
       <div class="Gallery-image"
@@ -234,10 +258,13 @@ function Gallery({
         ondragstart=${returnFalse}
         onmouseup=${swipeIntent}
         onclick=${stopIfIgnoringClicks}>
-        ${select('img', pictureEl).setAttribute('draggable', 'false'), pictureEl}
+        ${pictureEl}
+        ${mosaicPictureEl}
         ${captionEl}
       </div>
     `;
+
+    // TODO ^ mosaicPictureEl
 
     imageEl.addEventListener('touchend', swipeIntent, false);
 
@@ -265,13 +292,6 @@ function Gallery({
     </div>
   `;
 
-  const linkEls = images.map((image, index) => html`
-    <button class="Gallery-link"
-      title="View image ${index + 1} of ${images.length}"
-      onmouseup=${swipeIntent}
-      onclick=${goToImage.bind(null, index)}></button>
-  `);
-
   const prevEl = html`
     <button class="Gallery-step-prev"
       title="View the previous image"
@@ -286,7 +306,8 @@ function Gallery({
 
   const controlsEl = html`
     <div class="Gallery-controls">
-      ${linkEls.concat(prevEl, nextEl)}
+      ${prevEl}
+      ${nextEl}
     </div>
   `;
 
@@ -310,7 +331,7 @@ function Gallery({
 };
 
 function transformSection(section) {
-  const [, tiledRowLengthsString] = section.suffix.match(TILED_ROW_LENGTHS_PATTERN) || [null, ''];
+  const [, mosaicRowLengthsString] = (`${section.name}${section.suffix}`).match(MOSAIC_ROW_LENGTHS_PATTERN) || [null, ''];
   const [, smRatio] = section.suffix.match(Picture.SM_RATIO_PATTERN) || [];
   const [, mdRatio] = section.suffix.match(Picture.MD_RATIO_PATTERN) || [];
   const [, lgRatio] = section.suffix.match(Picture.LG_RATIO_PATTERN) || [];
@@ -321,14 +342,40 @@ function transformSection(section) {
     const imgEl = isElement(node) && select('img', node);
 
     if (imgEl) {
+      const src = imgEl.src;
+      const alt = imgEl.getAttribute('alt');
+
       config.images.push({
         pictureEl: Picture({
-          src: imgEl.src,
-          alt: imgEl.getAttribute('alt'),
+          src,
+          alt,
           smRatio: smRatio || '3x4',
           mdRatio,
           lgRatio
         }),
+        mosaicPictureEls: [
+          Picture({
+            src,
+            alt,
+            smRatio: smRatio || '3x2',
+            mdRatio: mdRatio || '16x9',
+            lgRatio
+          }),
+          Picture({
+            src,
+            alt,
+            smRatio: smRatio || '1x1',
+            mdRatio,
+            lgRatio: lgRatio || '3x2'
+          }),
+          Picture({
+            src,
+            alt,
+            smRatio: smRatio || '3x4',
+            mdRatio: mdRatio || '4x3',
+            lgRatio: lgRatio || '4x3'
+          })
+        ],
         captionEl: Caption.createFromEl(node)
       });
     }
@@ -338,7 +385,7 @@ function transformSection(section) {
     return config;
   }, {
     images: [],
-    tiledRowLengths: tiledRowLengthsString.split('')
+    mosaicRowLengths: mosaicRowLengthsString.split('')
   });
 
   section.betweenNodes = [];
