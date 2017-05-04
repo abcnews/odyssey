@@ -11,8 +11,8 @@
     margin-bottom: 3rem;
   }
 
-  & + &,
-  & + a[name] + & {
+  &:not(.Gallery) + &:not(.Gallery),
+  &:not(.Gallery) + a[name] + &:not(.Gallery) {
     margin-top: -2rem;
 
     @media #{$mq-lg} {
