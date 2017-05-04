@@ -51,20 +51,23 @@
 
 .Header-content {
   position: relative;
-  margin: 0 auto;
+  margin-left: $layout-fluid-padding;
+  margin-right: $layout-fluid-padding;
   padding: 20px 0;
-  width: calc(#{cells(12)} - #{$layout-fluid-gutter});
   text-align: center;
 
   @media #{$mq-md} {
-    width: calc(#{cells(10)} - #{$layout-fluid-gutter});
+    margin-left: calc(#{cells(1)} + #{$layout-fluid-padding});
+    margin-right: calc(#{cells(1)} + #{$layout-fluid-padding});
   }
 
   @media #{$mq-lg} {
-    width: $layout-fixed - $layout-fixed-gutter;
+    margin-left: auto;
+    margin-right: auto;
+    width: 952px;
   }
 
-  .is-layered & {
+  .is-layered > & {
     margin-top: 16rem;
     background-image: $gradient-vertical-0-43-100-75;
 
@@ -79,34 +82,53 @@
 }
 
 .Header-content > * {
-  padding: 0 calc(#{cells(1, 10)});
+  padding-left: cells(1);
+  padding-right: cells(1);
+
+  @media #{$mq-md} {
+    padding-left: cells(1, 10);
+    padding-right: cells(1, 10);
+  }
 
   @media #{$mq-lg} {
-    padding: 0 calc(#{cells(1, 10)} - #{$layout-fixed-padding});
+    padding-left: calc(#{cells(1)} + #{$layout-fixed-padding});
+    padding-right: calc(#{cells(1)} + #{$layout-fixed-padding});
   }
 }
 
 .Header-content > h1 {
+  @media #{$mq-sm} {
+    margin-left: -$layout-fluid-padding;
+    margin-right: -$layout-fluid-padding;
+  }
+
   &::after {
     content: "";
     display: block;
     margin: 1.25rem auto;
-    width: 55%;
-    max-width: 18rem;
+    width: 9rem;
     height: 1px;
-    background-color: $color-black;
+    background-color: $color-grey-400;
 
     .is-layered &,
     .is-dark & {
-      background-color: $color-white;
+      background-color: $color-grey-500;
+    }
+
+    @media #{$mq-not-sm} {
+      width: 18rem;
     }
   }
 }
 
-.Header-content > .Header-miscEl,
-.Header-content > .Header-byline {
-  .Header > & {
-    font-size: 1.25rem;
+.Header-miscEl,
+.Header-byline {
+  .Header > .Header-content > & {
+    font-size: 1.125rem;
+
+    @media #{$mq-not-sm} {
+      font-size: 1.25rem;
+    }
   }
 }
 
@@ -121,7 +143,7 @@
 .Header-byline + *,
 .Header-infoSource,
 .Header-infoSource + * {
-  margin-top: -1rem;
+  margin-top: -.5rem;
 }
 
 .Header .Header-content .Header-byline,
