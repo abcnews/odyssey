@@ -37,6 +37,11 @@ function getDate(metaElName, timeElClassName) {
 function getBylineNodes() {
   const infoSourceEl = select(SELECTORS.INFO_SOURCE);
   const bylineEl = select(SELECTORS.BYLINE);
+
+  if (!bylineEl) {
+    return [];
+  }
+
   const bylineSubEl = select('p', bylineEl);
 
   return slice((bylineSubEl || bylineEl).childNodes)
