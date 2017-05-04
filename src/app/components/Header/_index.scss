@@ -138,6 +138,7 @@
 }
 
 // .Header-infoSource--<slug>,
+.Header-infoSource--730,
 .Header-infoSource--four-corners {
   height: 50px;
   background-repeat: no-repeat;
@@ -145,11 +146,16 @@
   background-size: auto 100%;
 }
 
+.Header-infoSource--730 {
+  background-image: url(info-sources/730.png);
+}
+
 .Header-infoSource--four-corners {
   background-image: url(info-sources/four-corners.png);
 }
 
 // .Header-infoSource--<slug> a,
+.Header-infoSource--730 a,
 .Header-infoSource--four-corners a {
   display: none;
 }

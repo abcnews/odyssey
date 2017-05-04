@@ -1,7 +1,7 @@
 const {HYPHEN, NEWLINE} = require('./constants');
 
 const TRIM_PATTERN = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
-const SLUG_ALLOWED_PATTERN = /[^\w\s\-\.\_~]/g;
+const SLUG_ALLOWED_PATTERN = /[^\w\s\-\_]/g;
 const SLUG_REPLACE_PATTERN = /[-\s]+/g;
 const INLINE_TAG_NAMES = [
     'b', 'big', 'br', 'i', 'small', 'tt', 'abbr', 'acronym', 'cite',
