@@ -10,6 +10,10 @@ function Caption({
   text,
   attribution
 }) {
+  if (!text && !attribution) {
+    return null;
+  }
+
   return html`
     <p class="Caption" title="${text}${attribution ? ` (${attribution})` : ''}">
       <a href="${url || ''}">${text}</a>
