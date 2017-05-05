@@ -15,6 +15,7 @@ const AXIS_THRESHOLD = 5;
 
 function Gallery({
   images = [],
+  masterCaptionEl,
   mosaicRowLengths = []
 }) {
   let startTransitionX;
@@ -29,8 +30,6 @@ function Gallery({
   let paneWidth;
   let previousImageHeight;
   let imageHeight;
-  let previousControlsWidth;
-  let controlsWidth;
 
   function updateImagesTransform(transform) {
     nextFrame(() => {
@@ -50,6 +49,7 @@ function Gallery({
     galleryEl.classList[index === 0 ? 'add' : 'remove']('is-at-start');
     galleryEl.classList[index === images.length - 1 ? 'add' : 'remove']('is-at-end');
     imageEls[currentIndex].classList.add('is-active');
+    indexEl.textContent = `${currentIndex + 1} / ${images.length}`;
 
     updateImagesTransform(`translateX(-${currentIndex * 100}%)`);
   }
@@ -179,27 +179,22 @@ function Gallery({
   }
 
   function measure(viewport) {
-    if (lastViewport.width === viewport.width && lastViewport.height === viewport.height) {
+    if (
+      lastViewport.width === viewport.width &&
+      lastViewport.height === viewport.height
+    ) {
       return;
     }
 
     lastViewport = viewport;
     paneWidth = paneEl.getBoundingClientRect().width;
     imageHeight = select('img', imageEls[currentIndex]).getBoundingClientRect().height;
-    controlsWidth = controlsEl.getBoundingClientRect().width;
   }
 
   function mutate() {
     if (imageHeight !== previousImageHeight) {
       controlsEl.style.top = `${imageHeight}px`;
       previousImageHeight = imageHeight;
-    }
-
-    if (controlsWidth !== previousControlsWidth) {
-      selectAll('.Caption', imagesEl).forEach(el => {
-        el.style.marginRight = controlsWidth ? `${controlsWidth}px` : '';
-      })
-      previousControlsWidth = controlsWidth;
     }
   }
 
@@ -249,8 +244,6 @@ function Gallery({
     imgEl.onload = measure;
     imgEl.setAttribute('draggable', 'false');
 
-    pictureEl.append(html`<div class="Gallery-index">${index + 1} / ${images.length}</div>`);
-
     const imageEl = html`
       <div class="Gallery-image"
         style="-ms-flex: 0 0 ${flexBasisPct}%; flex: 0 0 ${flexBasisPct}%"
@@ -260,13 +253,20 @@ function Gallery({
         onclick=${stopIfIgnoringClicks}>
         ${pictureEl}
         ${mosaicPictureEl}
-        ${captionEl}
+        ${masterCaptionEl ? null : captionEl}
       </div>
     `;
 
-    // TODO ^ mosaicPictureEl
-
     imageEl.addEventListener('touchend', swipeIntent, false);
+
+    const captionLinkEl = masterCaptionEl ? null : select('a', captionEl);
+
+    if (captionLinkEl) {
+      captionLinkEl.addEventListener('focus', () => {
+        galleryEl.scrollLeft = 0;
+        goToImage(index);
+      }, false);
+    }
 
     return imageEl;
   });
@@ -292,6 +292,10 @@ function Gallery({
     </div>
   `;
 
+  const indexEl = html`
+    <div class="Gallery-index"></div>
+  `;
+
   const prevEl = html`
     <button class="Gallery-step-prev"
       title="View the previous image"
@@ -306,16 +310,19 @@ function Gallery({
 
   const controlsEl = html`
     <div class="Gallery-controls">
-      ${prevEl}
-      ${nextEl}
+      ${indexEl}
+      <div class="Gallery-steps">
+        ${prevEl}${nextEl}
+      </div>
     </div>
   `;
 
   const galleryEl = html`
     <div class="${className}">
       <div class="Gallery-layout">
-        ${paneEl}
         ${controlsEl}
+        ${paneEl}
+        ${masterCaptionEl}
       </div>
     </div>
   `;
@@ -378,6 +385,19 @@ function transformSection(section) {
         ],
         captionEl: Caption.createFromEl(node)
       });
+    } else if (node.tagName === 'P') {
+      if (!config.masterCaptionText) {
+        config.masterCaptionText = node.textContent;
+        config.masterCaptionEl = Caption({
+          text: config.masterCaptionText
+        });
+      } else if (!config.masterCaptionAttribution) {
+        config.masterCaptionAttribution = node.textContent;
+        config.masterCaptionEl = Caption({
+          text: config.masterCaptionText,
+          attribution: config.masterCaptionAttribution
+        });
+      }
     }
 
     detach(node);
@@ -385,8 +405,14 @@ function transformSection(section) {
     return config;
   }, {
     images: [],
+    masterCaptionEl: null,
+    masterCaptionText: null,
+    masterCaptionAttribution: null,
     mosaicRowLengths: mosaicRowLengthsString.split('')
   });
+
+  delete config.masterCaptionText;
+  delete config.masterCaptionAttribution;
 
   section.betweenNodes = [];
 

@@ -15,7 +15,6 @@
   margin-right: auto;
   padding-left: $layout-fluid-padding;
   padding-right: $layout-fluid-padding;
-  width: cells(10);
 
   @media #{$mq-not-lg} {
     .is-mosaic & {
@@ -25,51 +24,38 @@
     }
   }
 
+  @media #{$mq-sm} {
+    width: calc(100% - 45px);
+  }
+
+  @media #{$mq-md} {
+    width: cells(10);
+  }
+
   @media #{$mq-lg} {
     padding-left: $layout-fixed-padding;
     padding-right: $layout-fixed-padding;
     width: $layout-fixed;
   }
 
-  &::before,
-  &::after {
-    content: "";
-    z-index: 1;
-    position: absolute;
-    top: 0;
-    width: calc(50vw - #{cells(5)});
-    height: 100%;
-    background-image: $gradient-horizontal-grey-50-0-0-75-100;
-    pointer-events: none;
-
-    @media #{$mq-sm} {
-      background-image: $gradient-horizontal-grey-100-0-0-75-100;
-    }
-
-    .is-mosaic & {
-      content: none;
-    }
-
-    // Phase 1 (Standard)
-    html.fixed & {
-      @media (max-width: 1000px) {
-        min-width: 100px;
-      }
-    }
+  .Gallery:not(.is-mosaic) & > .Caption {
+    padding-left: 0;
+    padding-right: 0;
+    background-color: transparent;
   }
 
-  &::before {
-    transform: rotate(180deg);
-    right: 100%;
-  }
-
-  &::after {
-    left: 100%;
+  .is-mosaic & > .Caption {
+    @media #{$mq-lg} {
+      padding-top: 0;
+      padding-left: 0;
+      padding-right: 0;
+      background-color: transparent;
+    }
   }
 }
 
 .Gallery-pane {
-  margin: 0 -10px;
+  margin: 0 -7.5px;
 
   .is-mosaic & {
     margin: 0 -2px;
@@ -115,8 +101,8 @@
   flex: 0 0 100%;
   overflow: hidden;
   position: relative;
-  opacity: .75;
-  padding: 0 10px;
+  opacity: .2;
+  padding: 0 7.5px;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -189,8 +175,7 @@
   .Caption {
     opacity: 0;
     margin-left: -$layout-fluid-padding;
-    margin-right: -$layout-fluid-padding; // Dynamic, based on controls width;
-    min-height: 52px;
+    margin-right: -$layout-fluid-padding;
     background-color: transparent;
     pointer-events: none;
     transition: .125s opacity;
@@ -246,47 +231,19 @@
   }
 }
 
-.Gallery-index {
-  opacity: 0;
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  padding: .45rem .8rem .4rem;
-  background-color: $color-transparent-black-50;
-  color: $color-grey-50;
-  font-family: "ABCSans", Arial, Helvetica, sans-serif;
-  font-size: .8125rem;
-  letter-spacing: .05rem;
-  transition: .125s opacity;
-  will-change: opacity;
-
-  .is-active & {
-    opacity: 1;
-    transition-delay: .125s;
-  }
-
-  .is-moving & {
-    opacity: 0;
-    transition-delay: 0s;
-  }
-
-  .is-mosaic & {
-    display: none;
-  }
-
-  .is-mosaic & {
-    display: none;
-  }
-}
-
 .Gallery-controls {
   display: flex;
+  justify-content: space-between;
   position: absolute;
+  z-index: 1;
+  transform: translate(0, -100%);
   top: 0; // Dynamic, based on image height;
-  right: $layout-fluid-padding;
+  left: 0;
+  padding: 0 $layout-fluid-padding;
+  width: 100%;
 
   @media #{$mq-lg} {
-    right: $layout-fixed-padding;
+    padding: 0 $layout-fixed-padding;
   }
 
   .is-mosaic & {
@@ -294,31 +251,47 @@
   }
 }
 
-[class*="Gallery-step"] {
-  margin: 12px 0 12px 2px;
+.Gallery-index {
+  padding: 0 .8rem;
+  min-width: 3.5rem;
+  height: 40px;
+  background-color: $color-transparent-black-60;
+  color: $color-white;
+  font-family: "ABCSans", Arial, Helvetica, sans-serif;
+  font-size: .8125rem;
+  line-height: 40px;
+  letter-spacing: .05rem;
+  text-align: right;
+
+  .is-mosaic & {
+    display: none;
+  }
+}
+
+// .Gallery-steps {}
+
+[class*="Gallery-step-"] {
   padding: 0;
   border: none;
-  width: 42px;
-  height: 36px;
-  background-color: $color-grey-300;
+  width: 40px;
+  height: 40px;
+  background-color: $color-transparent-black-60;
   background-image: url(gallery/step.svg);
   background-position: center;
   background-repeat: no-repeat;
+  vertical-align: bottom;
   transition: .25s opacity;
   will-change: opacity;
 }
 
-.Gallery-step-prev {
-  margin-left: 16px;
-}
-
 .Gallery-step-next {
-  transform: rotate(180deg);
+  transform: scale(-1, 1);
+  margin-left: 3px;
 }
 
 .is-at-start .Gallery-step-prev,
 .is-at-end .Gallery-step-next {
-  opacity: .5;
+  opacity: .2;
   cursor: disabled;
   pointer-events: none;
 }
