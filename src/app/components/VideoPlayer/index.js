@@ -142,11 +142,11 @@ function VideoPlayer({
       <div class="u-sizer-sm-16x9 u-sizer-md-16x9 u-sizer-lg-16x9"></div>
       ${videoEl}
       ${isAmbient ? null : html`
-        <div class="VideoPlayer-interface" onclick=${player.togglePlay}>
+        <button class="VideoPlayer-interface" onclick=${player.togglePlay}>
           <button class="VideoPlayer-mute" title="Mute control" onclick=${player.toggleMute}></button>
           ${timeRemainingEl}
           ${progressBarEl}
-        </div>
+        </button>
       `}
     </div>
   `;
