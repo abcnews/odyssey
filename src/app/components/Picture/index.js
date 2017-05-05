@@ -10,21 +10,25 @@ const SIZES = {
 	'4x3': {sm: '700x525', md: '940x705', lg: '940x705'},
 	'1x1': {sm: '700x700', md: '940x940', lg: '1400x1400'},
 	'3x4': {sm: '700x933', md: '940x1253', lg: '940x1253'}
-}
-
+};
 const RATIO_PATTERN = /(\d+x\d+)/;
 const SM_RATIO_PATTERN = /sm(\d+x\d+)/;
 const MD_RATIO_PATTERN = /md(\d+x\d+)/;
 const LG_RATIO_PATTERN = /lg(\d+x\d+)/;
 const P1_RATIO_SIZE_PATTERN = /(\d+x\d+)-(\d+x\d+)/;
 const P2_RATIO_SIZE_PATTERN = /(\d+x\d+)-([a-z]+)/;
+const DEFAULTS = {
+  SM_RATIO: '1x1',
+  MD_RATIO: '3x2',
+  LG_RATIO: '16x9'
+};
 
 function Picture({
   src = SMALLEST_IMAGE,
   alt = '',
-  smRatio = '1x1',
-  mdRatio = '3x2',
-  lgRatio = '16x9',
+  smRatio = DEFAULTS.SM_RATIO,
+  mdRatio = DEFAULTS.MD_RATIO,
+  lgRatio = DEFAULTS.LG_RATIO,
   preserveOriginalRatio = false
 }) {
   const [, originalRatio] = src.match(RATIO_PATTERN) || [, null];
