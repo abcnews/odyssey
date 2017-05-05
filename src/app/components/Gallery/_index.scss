@@ -241,6 +241,7 @@
   left: 0;
   padding: 0 $layout-fluid-padding;
   width: 100%;
+  pointer-events: none;
 
   @media #{$mq-lg} {
     padding: 0 $layout-fixed-padding;
@@ -268,7 +269,9 @@
   }
 }
 
-// .Gallery-steps {}
+.Gallery-steps {
+  pointer-events: all;
+}
 
 [class*="Gallery-step-"] {
   padding: 0;
