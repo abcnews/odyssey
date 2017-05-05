@@ -229,7 +229,9 @@ function Gallery({
     images.forEach(image => {
       image.rowLength = images.length;
       image.flexBasisPct = 100 / image.rowLength;
-      image.mosaicPictureEl = image.mosaicPictureEls[image.rowLength  - 1];
+      image.mosaicPictureEl = image.mosaicPictureEls ?
+        image.mosaicPictureEls[image.rowLength  - 1] :
+        image.pictureEl.cloneNode(true);
     });
   });
 
