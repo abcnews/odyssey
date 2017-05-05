@@ -16,7 +16,7 @@ function Caption({
 
   return html`
     <p class="Caption" title="${text}${attribution ? ` (${attribution})` : ''}">
-      <a href="${url || ''}">${text}</a>
+      ${url ? html`<a href="${url}">${text}</a>` : text}
       ${attribution ? html`<em class="Caption-attribution">${attribution}</em>` : null}
     </p>
   `;
@@ -90,7 +90,7 @@ function createFromEl(el) {
   }
 
   if (config) {
-    return Caption(config);
+    return Caption(Object.assign(config));
   }
 
   return null;
