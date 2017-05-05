@@ -40,7 +40,7 @@ selectAll('a[name="subtitle"]')
 
 [
   ['subtitle', 'header'],
-  ['wall', 'gallerytiled'],
-  ['endwall', 'endgallery'],
+  ['wall', 'mosaic'],
+  ['endwall', 'endmosaic'],
 ]
 .forEach(updateAnchor);
