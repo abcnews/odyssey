@@ -10,6 +10,7 @@ const Cover = require('./components/Cover');
 const Gallery = require('./components/Gallery');
 const Header = require('./components/Header');
 const ImageEmbed = require('./components/ImageEmbed');
+const MasterGallery = require('./components/MasterGallery');
 const Nav = require('./components/Nav');
 const Quote = require('./components/Quote');
 const Share = require('./components/Share');
@@ -29,8 +30,18 @@ function app(done) {
 
   start(); // loop
 
+  // Register all embedded images with MasterGallery 
+  selectAll(`
+    .inline-content.photo,
+    [class*="view-image-embed"]
+  `, storyEl)
+  .concat(selectAll('.embed-content', storyEl)
+    .filter(el => select('.type-photo', el)))
+  .forEach(MasterGallery.register);
+
+  // Replace placeholders
   getPlaceholders([
-    'share',
+    'share'
   ]).forEach(placeholder => {
     switch (placeholder.name) {
       case 'share':
@@ -41,6 +52,7 @@ function app(done) {
     }
   });
 
+  // Replace sections
   getSections([
     'header',
     'cover',
@@ -202,6 +214,13 @@ function app(done) {
     ) {
       nextEl.classList.add('u-dropcap');
     }
+  });
+
+  // Embed master galleries
+  getPlaceholders([
+    'mastergallery',
+  ]).forEach(placeholder => {
+    MasterGallery.transformPlaceholder(placeholder);
   });
 
   if (typeof done === 'function') {
