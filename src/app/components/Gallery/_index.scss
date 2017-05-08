@@ -85,6 +85,10 @@
   transition: transform .125s ease-out;
   will-change: transform;
 
+  @media #{$mq-lg} {
+    transition-duration: .25s;
+  }
+
   .is-mosaic & {
     flex-wrap: wrap;
     transform: none !important;
@@ -112,6 +116,10 @@
   user-drag: none;
   transition: .125s opacity;
   will-change: opacity;
+
+  @media #{$mq-lg} {
+    transition-duration: .25s;
+  }
 
   .is-mosaic & {
     opacity: 1;
@@ -183,6 +191,7 @@
 
     @media #{$mq-lg} {
       margin-left: -$layout-fixed-padding;
+      transition-duration: .25s;
     }
   }
 
@@ -190,6 +199,10 @@
     opacity: 1;
     transition-delay: .125s;
     pointer-events: all;
+
+    @media #{$mq-lg} {
+      transition-delay: .25s;
+    }
 
     .is-moving & {
       opacity: 0;
