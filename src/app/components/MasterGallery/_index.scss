@@ -1,12 +1,114 @@
-.MasterGallery {
-  
-  .Gallery {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-    background-color: $color-black;
+html.is-master-gallery-open {
+  overflow: hidden;
+
+  #abcHeader {
+    display: none;
   }
 
-  .Caption-attribution {
-    display: block;
+  .Nav {
+    @media #{$mq-sm} and #{$mq-landscape} {
+      display: none;
+    }
   }
+
+  .Nav-bar {
+    transform: none;
+  }
+}
+
+.MasterGallery {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: fixed;
+  opacity: 0;
+  transform: translate(0, 102%);
+  z-index: 2;
+  top: 0;
+  left: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 44px;
+  padding-right: 0;
+  padding-left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: $color-transparent-black-93;
+  transition: .125s opacity;
+  will-change: opacity, transform;
+
+  @media #{$mq-sm} and #{$mq-landscape} {
+    padding-top: 0;
+  }
+
+  html.is-master-gallery-open & {
+    opacity: 1;
+    transform: none;
+  }
+
+  .Gallery {
+    margin: 0 auto;
+  }
+
+  .Gallery-layout {
+    padding: 0;
+    width: 100%;
+    // max-width: 2150px; // Phase 1 largest natural image width
+    max-width: 1920px; // 1080p 
+    // max-width: 125vh; // Safe ratio to reduce need for scrolling
+  }
+
+  .Gallery-controls {
+    padding: 0;
+  }
+
+  .Picture {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .Picture img {
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    width: auto;
+    height: auto;
+  }
+
+  .Caption {
+    margin: 1rem auto;
+    width: 100%;
+    max-width: 952px;
+
+    @media #{$mq-not-sm} {
+      font-size: 1rem !important;
+      line-height: 1.625rem;
+
+      .Caption-attribution {
+        display: block;
+        font-size: .8125rem !important;
+      }
+    }
+  }
+
+
+}
+
+.MasterGallery-container {
+  overflow: auto;
+}
+
+.MasterGallery-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0;
+  border: none;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.6);
+  background-image: url(master-gallery/close.svg);
+  background-position: center;
+  background-repeat: no-repeat;
+  vertical-align: bottom;
 }

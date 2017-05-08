@@ -268,6 +268,13 @@ function linebreaksToParagraphs(el) {
   return el;
 }
 
+function triggerScroll() {
+  const evt = document.createEvent('HTMLEvents');
+  
+  evt.initEvent('scroll', true, false);
+  window.dispatchEvent(evt);
+}
+
 module.exports = {
   returnFalse,
   trim,
@@ -291,5 +298,6 @@ module.exports = {
   toggleAttribute,
   getSections,
   getPlaceholders,
-  linebreaksToParagraphs
+  linebreaksToParagraphs,
+  triggerScroll
 };

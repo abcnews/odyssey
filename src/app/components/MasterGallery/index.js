@@ -1,22 +1,127 @@
 // External
 const html = require('bel');
+const screenfull = require('screenfull');
 const cmid = require('util-url2cmid');
 
 // Ours
-const {select} = require('../../../utils');
+const {append, select, triggerScroll} = require('../../../utils');
 const Caption = require('../Caption');
 const Gallery = require('../Gallery');
 const Picture = require('../Picture');
 
 const registeredImageIds = {};
 const images = [];
+const masterGalleryEl = null; // singleton
 
 function MasterGallery() {
-  return html`
-    <div class="MasterGallery u-richtext-invert">
-      ${Gallery({images})}
+  if (masterGalleryEl) {
+    return masterGalleryEl;
+  }
+
+  const galleryEl = Gallery({images});
+
+  galleryEl.classList.remove('u-full');
+
+  function goToId(id) {
+    const imageEl = select(`[data-id="${id}"]`, galleryEl);
+    const index = imageEl.dataset['index'];
+
+    if (index != null) {
+      galleryEl.api.goToImage(+index, true);
+      open(galleryEl);
+      triggerScroll();
+    }
+  }
+
+  window.addEventListener('click', event => {
+    if (
+      (event.button && event.button !== 0) ||
+      event.ctrlKey ||
+      event.metaKey ||
+      event.altKey ||
+      event.shiftKey
+    ) {
+      return;
+    }
+
+    let node = (function traverse(node) {
+      if (!node || node === window.document) {
+        return;
+      }
+
+      if (
+        (node.localName !== 'a') ||
+        (node.href === undefined) ||
+        (window.location.host !== node.host)
+      ) {
+         return traverse(node.parentNode);
+      }
+
+      return node;
+    })(event.target);
+
+    if (!node || galleryEl.contains(node)) {
+      return;
+    }
+
+    const id = cmid(node.href);
+
+    if (!has(id)) {
+      return;
+    }
+
+    event.preventDefault();
+
+    goToId(id);
+  });
+
+  append(select('.Gallery-layout', galleryEl), html`
+    <button class="MasterGallery-close"
+      title="Close the gallery"
+      onclick=${close}></button>
+  `);
+
+  masterGalleryEl = html`
+    <div
+      class="MasterGallery"
+      onclick=${function (event) {
+        if (this === event.target) {
+          close();
+        }
+    }}>
+      <div class="MasterGallery-container u-richtext-invert">
+        ${galleryEl}
+      </div>
     </div>
   `;
+
+  return masterGalleryEl;
+}
+
+function open(el) {
+  document.documentElement.classList.add('is-master-gallery-open');
+
+  if (screenfull.enabled) {
+    screenfull.request();
+  }
+}
+
+function close() {
+  document.documentElement.classList.remove('is-master-gallery-open');
+
+  if (screenfull.isFullscreen) {
+    screenfull.exit();
+  }
+}
+
+screenfull.onchange(() => {
+	if (!screenfull.isFullscreen) {
+    close();
+  }
+});
+
+function has(id) {
+  return images.filter(image => image.id === id).length > 0;
 }
 
 function register(el) {
@@ -36,6 +141,7 @@ function register(el) {
   registeredImageIds[id] = true;
   
   images.push({
+    id,
     pictureEl: Picture({
       src: src,
       alt: imgEl.getAttribute('alt'),
@@ -46,10 +152,5 @@ function register(el) {
   });
 }
 
-function transformPlaceholder(placeholder) {
-  placeholder.replaceWith(MasterGallery());
-}
-
 module.exports = MasterGallery;
 module.exports.register = register;
-module.exports.transformPlaceholder = transformPlaceholder;
