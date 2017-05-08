@@ -216,12 +216,8 @@ function app(done) {
     }
   });
 
-  // Embed master galleries
-  getPlaceholders([
-    'mastergallery',
-  ]).forEach(placeholder => {
-    MasterGallery.transformPlaceholder(placeholder);
-  });
+  // Embed master gallery
+  append(storyEl, MasterGallery());
 
   if (typeof done === 'function') {
     done();
