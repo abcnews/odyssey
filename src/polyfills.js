@@ -143,16 +143,3 @@ if (!Array.from) {
         return timestamp;
     };
 }(Date));
-
-// // For debugging window.innerHeight reads (anywhere but WebKit)
-// if (!window.webkitURL) {
-//   console.debug('Wrapping window.innerHeight.get()');
-//   const original = Object.getOwnPropertyDescriptor(window, 'innerHeight');
-//   const clone = Object.assign({}, original);
-//   clone.get = function get() {
-//     const value = original.get.apply(this, arguments);
-//     console.log('innerHeight', value, get.caller);
-//     return value;
-//   };
-//   Object.defineProperty(window, 'innerHeight', clone);
-// }
