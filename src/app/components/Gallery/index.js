@@ -1,6 +1,7 @@
 // External
 const cn = require('classnames');
 const html = require('bel');
+const cmid = require('util-url2cmid');
 
 // Ours
 const {detach, isElement, returnFalse, select, selectAll, trim} = require('../../../utils');
@@ -31,13 +32,23 @@ function Gallery({
   let previousImageHeight;
   let imageHeight;
 
-  function updateImagesTransform(transform) {
+  function updateImagesTransform(transform, isImmediate) {
+    if (isImmediate) {
+      const onEnd = () => {
+        imagesEl.removeEventListener('transitionend', onEnd);
+        imagesEl.style.transitionDuration = '';
+      };
+
+      imagesEl.style.transitionDuration = '0s';
+      imagesEl.addEventListener('transitionend', onEnd, false);
+    }
+
     nextFrame(() => {
       imagesEl.style.transform = transform;
     });
   }
 
-  function goToImage(index) {
+  function goToImage(index, isImmediate) {
     if (index < 0 || index >= images.length) {
       index = currentIndex;
     }
@@ -51,7 +62,7 @@ function Gallery({
     imageEls[currentIndex].classList.add('is-active');
     indexEl.textContent = `${currentIndex + 1} / ${images.length}`;
 
-    updateImagesTransform(`translateX(-${currentIndex * 100}%)`);
+    updateImagesTransform(`translateX(-${currentIndex * 100}%)`, isImmediate);
   }
 
   function pointerHandler(fn) {
@@ -188,7 +199,7 @@ function Gallery({
 
     lastViewport = viewport;
     paneWidth = paneEl.getBoundingClientRect().width;
-    imageHeight = select('img', imageEls[currentIndex]).getBoundingClientRect().height;
+    imageHeight = select('[class^=u-sizer]', imageEls[currentIndex]).getBoundingClientRect().height;
   }
 
   function mutate() {
@@ -236,6 +247,7 @@ function Gallery({
   });
 
   const imageEls = images.map(({
+    id,
     pictureEl,
     mosaicPictureEl,
     captionEl,
@@ -249,6 +261,7 @@ function Gallery({
     const imageEl = html`
       <div class="Gallery-image"
         style="-ms-flex: 0 0 ${flexBasisPct}%; flex: 0 0 ${flexBasisPct}%"
+        data-id="${id}"
         data-index="${index}"
         ondragstart=${returnFalse}
         onmouseup=${swipeIntent}
@@ -329,6 +342,12 @@ function Gallery({
     </div>
   `;
 
+  galleryEl.api = {
+    goToImage,
+    measure,
+    mutate
+  };
+
   subscribe({
     measure,
     mutate,
@@ -355,6 +374,7 @@ function transformSection(section) {
       const alt = imgEl.getAttribute('alt');
 
       config.images.push({
+        id: cmid(src),
         pictureEl: Picture({
           src,
           alt,
