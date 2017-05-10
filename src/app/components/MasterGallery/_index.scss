@@ -67,7 +67,11 @@ html.is-master-gallery-open {
     height: auto;
   }
 
-  .Picture img {
+  [class*="u-sizer"] {
+    background-color: $color-black;
+  }
+
+  img {
     transform: translate(-50%, -50%);
     top: 50%;
     left: 50%;
@@ -90,8 +94,6 @@ html.is-master-gallery-open {
       }
     }
   }
-
-
 }
 
 .MasterGallery-container {
