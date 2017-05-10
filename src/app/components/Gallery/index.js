@@ -13,6 +13,7 @@ const MOSAIC_ROW_LENGTHS_PATTERN = /(?:tiled|mosaic)(\d+)/;
 const PCT_PATTERN = /(-?[0-9\.]+)%/;
 const SWIPE_THRESHOLD = 25;
 const AXIS_THRESHOLD = 5;
+const INACTIVE_OPACITY = .2;
 
 function Gallery({
   images = [],
@@ -32,19 +33,25 @@ function Gallery({
   let previousImageHeight;
   let imageHeight;
 
+
   function updateImagesTransform(xPct, isImmediate) {
     if (isImmediate) {
       const onEnd = () => {
         imagesEl.removeEventListener('transitionend', onEnd);
         imagesEl.style.transitionDuration = '';
+        pictureEls.forEach(pictureEl => pictureEl.style.transitionDuration = '');
       };
 
       imagesEl.style.transitionDuration = '0s';
+      pictureEls.forEach(pictureEl => pictureEl.style.transitionDuration = '0s');
       imagesEl.addEventListener('transitionend', onEnd, false);
     }
 
     nextFrame(() => {
       imagesEl.style.transform = `translate3d(${xPct}%, 0, 0)`;
+      pictureEls.forEach((pictureEl, index) => {
+        pictureEl.style.opacity = offsetBasedOpacity(index, xPct);
+      });
     });
   }
 
@@ -286,6 +293,8 @@ function Gallery({
     return imageEl;
   });
 
+  const pictureEls = imageEls.map(imageEl => select('picture', imageEl));
+
   const imagesEl = html`
     <div class="Gallery-images"
       onmousedown=${pointerHandler(swipeBegin)}
@@ -357,6 +366,12 @@ function Gallery({
 
   return galleryEl;
 };
+
+function offsetBasedOpacity(imageIndex, imagesTransformXPct) {
+  return (
+    (100 - Math.min(100, Math.abs(imageIndex * 100 + imagesTransformXPct))
+  ) / 100) * (1 - INACTIVE_OPACITY) + INACTIVE_OPACITY;
+}
 
 function transformSection(section) {
   const [, mosaicRowLengthsString] = (`${section.name}${section.suffix}`).match(MOSAIC_ROW_LENGTHS_PATTERN) || [null, ''];
