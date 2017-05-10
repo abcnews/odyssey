@@ -6,7 +6,7 @@ html.is-master-gallery-open {
   }
 
   .Nav {
-    @media #{$mq-sm} and #{$mq-landscape} {
+    @media #{$mq-not-lg} and #{$mq-gt-4-3} {
       display: none;
     }
   }
@@ -37,7 +37,7 @@ html.is-master-gallery-open {
   transition: .125s opacity;
   will-change: opacity, transform;
 
-  @media #{$mq-sm} and #{$mq-landscape} {
+  @media #{$mq-not-lg} and #{$mq-gt-4-3} {
     padding-top: 0;
   }
 
@@ -53,9 +53,7 @@ html.is-master-gallery-open {
   .Gallery-layout {
     padding: 0;
     width: 100%;
-    // max-width: 2150px; // Phase 1 largest natural image width
-    max-width: 1920px; // 1080p 
-    // max-width: 125vh; // Safe ratio to reduce need for scrolling
+    max-width: 133vh;
   }
 
   .Gallery-controls {
@@ -84,7 +82,7 @@ html.is-master-gallery-open {
     width: 100%;
     max-width: 952px;
 
-    @media #{$mq-not-sm} {
+    @media #{$mq-lg} {
       font-size: 1rem !important;
       line-height: 1.625rem;
 
