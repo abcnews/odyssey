@@ -204,7 +204,7 @@ function Gallery({
 
   function mutate() {
     if (imageHeight !== previousImageHeight) {
-      controlsEl.style.top = `${imageHeight}px`;
+      controlsEl.style.top = `${Math.round(imageHeight)}px`;
       previousImageHeight = imageHeight;
     }
   }
