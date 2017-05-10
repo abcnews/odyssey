@@ -29,7 +29,8 @@ function Picture({
   smRatio = DEFAULTS.SM_RATIO,
   mdRatio = DEFAULTS.MD_RATIO,
   lgRatio = DEFAULTS.LG_RATIO,
-  preserveOriginalRatio = false
+  preserveOriginalRatio = false,
+  linkUrl = ''
 }) {
   const [, originalRatio] = src.match(RATIO_PATTERN) || [, null];
 
@@ -66,8 +67,8 @@ function Picture({
     imgEl.removeAttribute('loading');
   }, false);
 
-  return html`
-    <div class="Picture">
+  const pictureEl = html`
+    <a class="Picture">
       <div class="${sizerClassName}"></div>
       <picture>
         <source srcset="${lgImageURL}" media="${MQ.LG}" />
@@ -76,8 +77,14 @@ function Picture({
         <source srcset="${smImageURL}" media="${MQ.SM}" />
         ${imgEl}
       </picture>
-    </div>
+    </a>
   `;
+
+  if (linkUrl) {
+    pictureEl.href = linkUrl;
+  }
+
+  return pictureEl;
 };
 
 module.exports = Picture;
