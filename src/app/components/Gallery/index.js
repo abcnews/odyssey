@@ -124,7 +124,7 @@ function Gallery({
       event.stopPropagation();
 
       imagesEl.classList.add('is-moving');
-      updateImagesTransform(`translateX(${startTransitionX / 100 * paneWidth + diffX}px)`);
+      updateImagesTransform(`translateX(${startTransitionX + diffX / paneWidth * 100}%)`);
     }
   }
 
