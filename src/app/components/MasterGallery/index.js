@@ -98,7 +98,10 @@ function MasterGallery() {
   return masterGalleryEl;
 }
 
+let lastKnownScrollY;
+
 function open(el) {
+  lastKnownScrollY = window.scrollY;
   document.documentElement.classList.add('is-master-gallery-open');
 
   if (screenfull.enabled) {
@@ -115,7 +118,10 @@ function close() {
 }
 
 screenfull.onchange(() => {
-	if (!screenfull.isFullscreen) {
+	if (screenfull.isFullscreen) {
+    window.scrollTo(0, lastKnownScrollY);
+    // ...because window scrolls to y=0 while fullscreen is active 
+  } else {
     close();
   }
 });
