@@ -162,7 +162,7 @@
 
   .Picture + .Picture {
     display: none;
-    cursor: default;
+    cursor: initial;
 
     .is-mosaic & {
       display: block;

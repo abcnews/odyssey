@@ -172,10 +172,12 @@ function Gallery({
       // Ignore click events for a small period to stop
       // secondary actions on swipes that originated on
       // a link or something else with an event handler
-      shouldIgnoreClicks = true;
-      setTimeout(function () {
-        shouldIgnoreClicks = false;
-      }, 50);
+      if (galleryEl.className.indexOf('is-mosaic') === -1) {
+        shouldIgnoreClicks = true;
+        setTimeout(function () {
+          shouldIgnoreClicks = false;
+        }, 50);
+      }
 
       if (absDiffX > SWIPE_THRESHOLD) {
         // Update the image index we'll be navigating to
@@ -387,6 +389,8 @@ function transformSection(section) {
     if (imgEl) {
       const src = imgEl.src;
       const alt = imgEl.getAttribute('alt');
+      const id = cmid(src);
+      const linkUrl = `/news/${id}`;
 
       config.images.push({
         id: cmid(src),
@@ -395,7 +399,8 @@ function transformSection(section) {
           alt,
           smRatio: smRatio || '3x4',
           mdRatio,
-          lgRatio
+          lgRatio,
+          linkUrl
         }),
         mosaicPictureEls: [
           Picture({
@@ -403,21 +408,24 @@ function transformSection(section) {
             alt,
             smRatio: smRatio || '3x2',
             mdRatio: mdRatio || '16x9',
-            lgRatio
+            lgRatio,
+            linkUrl
           }),
           Picture({
             src,
             alt,
             smRatio: smRatio || '1x1',
             mdRatio,
-            lgRatio: lgRatio || '3x2'
+            lgRatio: lgRatio || '3x2',
+            linkUrl
           }),
           Picture({
             src,
             alt,
             smRatio: smRatio || '3x4',
             mdRatio: mdRatio || '4x3',
-            lgRatio: lgRatio || '4x3'
+            lgRatio: lgRatio || '4x3',
+            linkUrl
           })
         ],
         captionEl: Caption.createFromEl(node)
