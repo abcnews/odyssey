@@ -211,7 +211,7 @@ function Gallery({
 
   function mutate() {
     if (imageHeight !== previousImageHeight) {
-      controlsEl.style.top = `${Math.round(imageHeight)}px`;
+      controlsEl.style.transform = `translate(0, ${imageHeight}px) translate(0, -100%)`;
       previousImageHeight = imageHeight;
     }
   }
