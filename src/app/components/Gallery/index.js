@@ -32,7 +32,7 @@ function Gallery({
   let previousImageHeight;
   let imageHeight;
 
-  function updateImagesTransform(transform, isImmediate) {
+  function updateImagesTransform(xPct, isImmediate) {
     if (isImmediate) {
       const onEnd = () => {
         imagesEl.removeEventListener('transitionend', onEnd);
@@ -44,7 +44,7 @@ function Gallery({
     }
 
     nextFrame(() => {
-      imagesEl.style.transform = transform;
+      imagesEl.style.transform = `translateX(${xPct}%)`;
     });
   }
 
@@ -62,7 +62,7 @@ function Gallery({
     imageEls[currentIndex].classList.add('is-active');
     indexEl.textContent = `${currentIndex + 1} / ${images.length}`;
 
-    updateImagesTransform(`translateX(-${currentIndex * 100}%)`, isImmediate);
+    updateImagesTransform(-currentIndex * 100, isImmediate);
   }
 
   function pointerHandler(fn) {
@@ -124,7 +124,7 @@ function Gallery({
       event.stopPropagation();
 
       imagesEl.classList.add('is-moving');
-      updateImagesTransform(`translateX(${startTransitionX + diffX / paneWidth * 100}%)`);
+      updateImagesTransform(startTransitionX + diffX / paneWidth * 100);
     }
   }
 
