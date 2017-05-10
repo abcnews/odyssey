@@ -41,12 +41,18 @@ function Cover({
   let mediaEl;
 
   if (imgEl) {
+    const src = imgEl.src;
+    const alt = imgEl.getAttribute('alt');
+    const id = url2cmid(src);
+    const linkUrl = `/news/${id}`;
+
     mediaEl = Picture({
-      src: imgEl.src,
-      alt: imgEl.getAttribute('alt'),
+      src,
+      alt,
       smRatio: smRatio || '4x3',
       mdRatio: mdRatio || '1x1',
-      lgRatio
+      lgRatio,
+      linkUrl: type === 'caption' ? linkUrl : ''
     });
   } else if (videoId) {
     mediaEl = html`<div></div>`;
