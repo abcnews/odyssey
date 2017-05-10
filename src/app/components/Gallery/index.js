@@ -10,7 +10,7 @@ const Caption = require('../Caption');
 const Picture = require('../Picture');
 
 const MOSAIC_ROW_LENGTHS_PATTERN = /(?:tiled|mosaic)(\d+)/;
-const TRANSLATE_X_PCT_PATTERN = /(-?[0-9\.]+)/;
+const PCT_PATTERN = /(-?[0-9\.]+)%/;
 const SWIPE_THRESHOLD = 25;
 const AXIS_THRESHOLD = 5;
 
@@ -19,7 +19,7 @@ function Gallery({
   masterCaptionEl,
   mosaicRowLengths = []
 }) {
-  let startTransitionX;
+  let startImagesTransformXPct;
   let startX;
   let startY;
   let diffX;
@@ -44,7 +44,7 @@ function Gallery({
     }
 
     nextFrame(() => {
-      imagesEl.style.transform = `translateX(${xPct}%)`;
+      imagesEl.style.transform = `translate3d(${xPct}%, 0, 0)`;
     });
   }
 
@@ -86,13 +86,13 @@ function Gallery({
   }
 
   function swipeBegin(event) {
-    if (startTransitionX != null) {
+    if (startImagesTransformXPct != null) {
       return;
     }
 
-    const [, transformXPct] = imagesEl.style.transform.match(TRANSLATE_X_PCT_PATTERN) || [, 0];
+    const [, xPct] = imagesEl.style.transform.match(PCT_PATTERN) || [, 0];
 
-    startTransitionX = parseInt(transformXPct, 10);
+    startImagesTransformXPct = parseInt(xPct, 10);
     startX = event.clientX;
     startY = event.clientY;
     diffX = 0;
@@ -103,7 +103,7 @@ function Gallery({
   }
 
   function swipeUpdate(event) {
-    if (startTransitionX == null || swipeAxis === 'vertical') {
+    if (startImagesTransformXPct == null || swipeAxis === 'vertical') {
       return;
     }
 
@@ -124,7 +124,7 @@ function Gallery({
       event.stopPropagation();
 
       imagesEl.classList.add('is-moving');
-      updateImagesTransform(startTransitionX + diffX / paneWidth * 100);
+      updateImagesTransform(startImagesTransformXPct + diffX / paneWidth * 100);
     }
   }
 
@@ -150,7 +150,7 @@ function Gallery({
   }
 
   function swipeComplete(event) {
-    if (startTransitionX == null) {
+    if (startImagesTransformXPct == null) {
       return;
     }
 
@@ -176,7 +176,7 @@ function Gallery({
       }
     }
 
-    startTransitionX = null;
+    startImagesTransformXPct = null;
     startX = null;
     startY = null;
     diffX = null;
