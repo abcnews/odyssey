@@ -152,16 +152,17 @@
     .is-mosaic & {
       display: none;
     }
-  }
 
-  &.is-moving .Picture {
-    cursor: -webkit-grabbing;
-    cursor: -moz-grabbing;
-    cursor: grabbing;
+    .is-moving & {
+      cursor: -webkit-grabbing;
+      cursor: -moz-grabbing;
+      cursor: grabbing;
+    }
   }
 
   .Picture + .Picture {
     display: none;
+    cursor: default;
 
     .is-mosaic & {
       display: block;
