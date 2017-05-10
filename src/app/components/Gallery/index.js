@@ -1,7 +1,7 @@
 // External
 const cn = require('classnames');
 const html = require('bel');
-const cmid = require('util-url2cmid');
+const url2cmid = require('util-url2cmid');
 
 // Ours
 const {detach, isElement, returnFalse, select, selectAll, trim} = require('../../../utils');
@@ -389,11 +389,11 @@ function transformSection(section) {
     if (imgEl) {
       const src = imgEl.src;
       const alt = imgEl.getAttribute('alt');
-      const id = cmid(src);
+      const id = url2cmid(src);
       const linkUrl = `/news/${id}`;
 
       config.images.push({
-        id: cmid(src),
+        id,
         pictureEl: Picture({
           src,
           alt,

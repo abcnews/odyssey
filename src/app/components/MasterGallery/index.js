@@ -1,7 +1,7 @@
 // External
 const html = require('bel');
 const screenfull = require('screenfull');
-const cmid = require('util-url2cmid');
+const url2cmid = require('util-url2cmid');
 
 // Ours
 const {append, select, triggerScroll} = require('../../../utils');
@@ -64,7 +64,7 @@ function MasterGallery() {
       return;
     }
 
-    const id = cmid(node.href);
+    const id = url2cmid(node.href);
 
     if (!has(id)) {
       return;
@@ -138,7 +138,7 @@ function register(el) {
   }
 
   const src = imgEl.src;
-  const id = cmid(src);
+  const id = url2cmid(src);
 
   if (!id || registeredImageIds[id]) {
     return;
