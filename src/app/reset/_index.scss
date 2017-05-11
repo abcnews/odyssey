@@ -3,6 +3,10 @@ html {
   -webkit-overflow-scrolling: touch;
   background-color: $color-white;
   font-size: $rem;
+  -webkit-text-size-adjust: none;
+  -moz-text-size-adjust: none;
+  -ms-text-size-adjust: none;
+  text-size-adjust: none;
 
   // Phase 1 (Standard)
   &.fixed {
@@ -16,12 +20,6 @@ body {
   min-height: 102vh;
   width:  100vw;
   background-color: #f9f9f9;
-
-  @media #{$mq-sm} {
-    -webkit-text-size-adjust: none;
-    -moz-text-size-adjust: none;
-    -ms-text-size-adjust: none;
-  }
 }
 
 #abcHeader.global {
