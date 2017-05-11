@@ -121,6 +121,10 @@
   }
 }
 
+.Header-content > h2 {
+  max-width: none;
+}
+
 .Header-miscEl,
 .Header-byline {
   .Header > .Header-content > & {
