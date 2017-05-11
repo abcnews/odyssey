@@ -117,14 +117,16 @@ function close() {
   }
 }
 
-screenfull.onchange(() => {
-	if (screenfull.isFullscreen) {
-    window.scrollTo(0, lastKnownScrollY);
-    // ...because window scrolls to y=0 while fullscreen is active 
-  } else {
-    close();
-  }
-});
+if (screenfull) {
+  screenfull.onchange(() => {
+    if (screenfull.isFullscreen) {
+      window.scrollTo(0, lastKnownScrollY);
+      // ...because window scrolls to y=0 while fullscreen is active 
+    } else {
+      close();
+    }
+  });
+}
 
 function has(id) {
   return images.filter(image => image.id === id).length > 0;
