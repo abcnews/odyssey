@@ -146,6 +146,10 @@
     color: $color-darkSecondary;
   }
 
+  > br {
+    content: "";
+  }
+
   &::after {
     content: "";
     display: table;
