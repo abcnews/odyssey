@@ -44,7 +44,7 @@
   height: 100%;
   background-color: transparent;
   cursor: pointer;
-  -webkit-tap-highlight-color: $color-white-transparent;
+  -webkit-tap-highlight-color: $color-black-transparent;
 
   &::before,
   & > * {
@@ -53,7 +53,7 @@
     outline: none;
     border: none;
     padding: 0;
-    background-color: $color-transparent-black-60;
+    background-color: $color-black-transparent-60;
     color: $color-white;
     font-family: $font-sans;
     font-size: 1rem;
@@ -190,7 +190,7 @@
   padding: .125rem;
   width: 90%;
   height: .75rem;
-  color: $color-transparent-black-60;
+  color: $color-black-transparent-60;
 
   &::-webkit-progress-bar {
 		background: none;

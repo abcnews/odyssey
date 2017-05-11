@@ -82,7 +82,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: $color-transparent-black-40;
+    background-color: $color-black-transparent-40;
   }
 
   @media #{$mq-lg} {
@@ -145,7 +145,7 @@
       transform: translateX(-50%);
       width: calc(#{cells(10)} + 0.75rem);
       height: 100%;
-      background-color: $color-transparent-black-10;
+      background-color: $color-black-transparent-10;
 
       @media #{$mq-md} {
         width: calc(#{cells(10)} + 1.75rem);
