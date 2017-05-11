@@ -5,7 +5,9 @@ const ABCDateTime = require('inn-abcdatetime-lib');
 const url2cmid = require('util-url2cmid');
 
 // Ours
+const {MS_VERSION} = require('../../../constants');
 const {before, detach, isElement, select, slug, trim} = require('../../../utils');
+const {subscribe} = require('../../loop');
 const Picture = require('../Picture');
 const VideoPlayer = require('../VideoPlayer');
 
@@ -99,7 +101,7 @@ function Header({
     ` : null
   ]);
 
-  return html`
+  const headerEl = html`
     <div class="${className}">
       ${mediaEl ? html`<div class="Header-media${isLayered ? ' u-parallax' : ''}">
         ${mediaEl}
@@ -109,6 +111,30 @@ function Header({
       </div>
     </div>
   `;
+
+  // https://github.com/philipwalton/flexbugs#3-min-height-on-a-flex-container-wont-apply-to-its-flex-items
+  if (isLayered && MS_VERSION === 10 || MS_VERSION === 11) {
+    let lastViewportHeight;
+    let headerElMinHeight;
+    let lastHeaderElMinHeight;
+
+    subscribe({
+      measure: viewport => {
+        if (viewport.height !== lastViewportHeight) {
+          headerElMinHeight = window.getComputedStyle(headerEl).minHeight;
+          lastViewportHeight = viewport.height;
+        }
+      },
+      mutate: () => {
+        if (headerElMinHeight !== lastHeaderElMinHeight) {
+          headerEl.style.height = headerElMinHeight;
+          lastHeaderElMinHeight = headerElMinHeight;
+        }
+      }  
+    });
+  }
+
+  return headerEl;
 };
 
 function transformSection(section, meta) {

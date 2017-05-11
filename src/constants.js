@@ -37,6 +37,31 @@ const SMALLEST_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAAAADs=';
 
 const IS_PREVIEW = window.location.hostname.indexOf('nucwed') > -1;
 
+const MS_VERSION = (ua => {
+  const msie = ua.indexOf('MSIE ');
+
+  if (msie > 0) {
+    // IE 10 or older => return version number
+    return parseInt(uaUA.substring(msie + 5, ua.indexOf('.', msie)), 10);
+  }
+
+  const trident = ua.indexOf('Trident/');
+
+  if (trident > 0) {
+    // IE 11 => return version number
+    var rv = ua.indexOf('rv:');
+    return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+  }
+
+  const edge = ua.indexOf('Edge/');
+
+  if (edge > 0) {
+    // Edge (IE 12+) => return version number
+    return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
+  }
+})(window.navigator.userAgent);
+
+
 module.exports = {
   NEWLINE,
   HYPHEN,
@@ -45,5 +70,6 @@ module.exports = {
   NOEL,
   MQ,
   SMALLEST_IMAGE,
-  IS_PREVIEW
+  IS_PREVIEW,
+  MS_VERSION
 };
