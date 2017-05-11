@@ -113,7 +113,7 @@ function Header({
   `;
 
   // https://github.com/philipwalton/flexbugs#3-min-height-on-a-flex-container-wont-apply-to-its-flex-items
-  if (isLayered && MS_VERSION === 10 || MS_VERSION === 11) {
+  if (isLayered && (MS_VERSION === 10 || MS_VERSION === 11)) {
     let lastViewportHeight;
     let headerElMinHeight;
     let lastHeaderElMinHeight;
