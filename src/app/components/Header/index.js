@@ -69,8 +69,8 @@ function Header({
 
   const clonedBylineNodes = meta.bylineNodes ? meta.bylineNodes.map(node => node.cloneNode(true)) : null;
   const infoSource = meta.infoSource ? html`<a href="${meta.infoSource.url}">${meta.infoSource.name}</a>` : null;
-  const updated = meta.updated ? formatUIGRelative(meta.updated) : null;
-  const published = formatUIGRelative(meta.published);
+  const updated = typeof meta.updated === 'string' ? meta.updated : formatUIGRelative(meta.updated);
+  const published = typeof meta.published === 'string' ? meta.published : formatUIGRelative(meta.published);
 
   const contentEls = [
     html`<h1>${meta.title}</h1>`

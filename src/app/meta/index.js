@@ -7,6 +7,8 @@ const {SELECTORS, NOEL} = require('../../constants');
 const {detach, isText, trim, select, selectAll} = require('../../utils');
 
 const EMPHASISABLE_BYLINE_TEXT_PATTERN = /^(?:by|,|and)$/;
+const STARTS_WITH_YEAR_PATTERN = /^\d{4}-/;
+const ROGUE_YEAR_COLON_PATTERN = /:(\d+)$/;
 
 const FACEBOOK = /facebook\.com/;
 const TWITTER = /twitter\.com/;
@@ -22,8 +24,6 @@ const SHARE_ORDERING = [
   'email'
 ];
 
-const DATETIME_END_COLON_PATTERN = /:(\d+)$/;
-
 function getMetaContent(name) {
   const el = select(`meta[name="${name}"]`);
 
@@ -31,10 +31,20 @@ function getMetaContent(name) {
 }
 
 function getDate(metaElName, timeElClassName) {
-  return parseDate((
-    getMetaContent(metaElName) ||
-    (select(`time.${timeElClassName}`) || NOEL).getAttribute('datetime')
-  ).replace(DATETIME_END_COLON_PATTERN, '$1'));
+  let datetime = getMetaContent(metaElName);
+
+  if (!datetime) {
+    return parseDate(datetime);
+  }
+
+  datetime = (select(`time.${timeElClassName}`) || NOEL)
+    .getAttribute('datetime');
+  
+  if (STARTS_WITH_YEAR_PATTERN.test(datetime)) {
+    return parseDate(datetime);  
+  }
+  
+  return datetime.replace(ROGUE_YEAR_COLON_PATTERN, '$1');
 }
 
 function getBylineNodes() {
