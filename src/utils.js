@@ -28,10 +28,6 @@ function twoDigits(number) {
 	return `${number < 10 ? '0' : ''}${number}`;
 }
 
-function slice(arrayLike) {
-  return Array.prototype.slice.call(arrayLike);
-}
-
 function flatten(lists) {
   return lists.reduce((acc, list) => {
     return acc.concat(list);
@@ -259,10 +255,10 @@ function _linebreaksToParagraphsReducer(state, node, index, nodes) {
 }
 
 function linebreaksToParagraphs(el) {
-  const cEl = slice(el.childNodes)
+  const cEl = Array.from(el.childNodes)
   .reduce(_linebreaksToParagraphsReducer, {});
 
-  slice(cEl.childNodes)
+  Array.from(cEl.childNodes)
   .forEach(childEl => append(el, childEl));
 
   return el;
@@ -280,7 +276,6 @@ module.exports = {
   trim,
   slug,
   twoDigits,
-  slice,
   flatten,
   literalList,
   isText,

@@ -1,9 +1,10 @@
 // External
 const html = require('bel');
+const {parseDate} = require('inn-abcdatetime-lib');
 
 // Ours
 const {SELECTORS, NOEL} = require('../../constants');
-const {detach, isText, trim, select, selectAll, slice} = require('../../utils');
+const {detach, isText, trim, select, selectAll} = require('../../utils');
 
 const EMPHASISABLE_BYLINE_TEXT_PATTERN = /^(?:by|,|and)$/;
 
@@ -30,10 +31,10 @@ function getMetaContent(name) {
 }
 
 function getDate(metaElName, timeElClassName) {
-  return new Date(Date.parse((
+  return parseDate((
     getMetaContent(metaElName) ||
     (select(`time.${timeElClassName}`) || NOEL).getAttribute('datetime')
-  ).replace(DATETIME_END_COLON_PATTERN, '$1')));
+  ).replace(DATETIME_END_COLON_PATTERN, '$1'));
 }
 
 function getBylineNodes() {
@@ -46,7 +47,7 @@ function getBylineNodes() {
 
   const bylineSubEl = select('p', bylineEl);
 
-  return slice((bylineSubEl || bylineEl).childNodes)
+  return Array.from((bylineSubEl || bylineEl).childNodes)
   .filter(node => node !== infoSourceEl && trim(node.textContent).length > -1)
   .map(node => node.cloneNode(true));
 }

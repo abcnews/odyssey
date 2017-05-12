@@ -1,3 +1,5 @@
+require('./polyfills');
+
 // Ours
 const {after, append, create, detachAll, select, selectAll} = require('./utils');
 

@@ -4,7 +4,7 @@ const dewysiwyg = require('util-dewysiwyg');
 
 // Ours
 const {SELECTORS} = require('../../constants');
-const {append, before, detach, detachAll, literalList, select, selectAll, slice, trim} = require('../../utils');
+const {append, before, detach, detachAll, literalList, select, selectAll, trim} = require('../../utils');
 const Main = require('../components/Main');
 
 const TEMPLATE_REMOVABLES = {
@@ -63,7 +63,7 @@ const P2_FLOAT = {
 function promoteToMain(storyEl, meta) {
   const existingMainEl = select(SELECTORS.MAIN);
   const id = existingMainEl.getAttribute('id');
-  const mainEl = Main(slice(storyEl.childNodes), meta);
+  const mainEl = Main(Array.from(storyEl.childNodes), meta);
 
   if (id) {
     mainEl.setAttribute('id', id);

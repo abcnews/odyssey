@@ -1,7 +1,7 @@
 // External
 const cn = require('classnames');
 const html = require('bel');
-const ABCDateTime = require('inn-abcdatetime-lib');
+const {formatUIGRelative} = require('inn-abcdatetime-lib');
 const url2cmid = require('util-url2cmid');
 
 // Ours
@@ -69,8 +69,8 @@ function Header({
 
   const clonedBylineNodes = meta.bylineNodes ? meta.bylineNodes.map(node => node.cloneNode(true)) : null;
   const infoSource = meta.infoSource ? html`<a href="${meta.infoSource.url}">${meta.infoSource.name}</a>` : null;
-  const updated = meta.updated ? ABCDateTime.formatUIGRelative(meta.updated) : null;
-  const published = ABCDateTime.formatUIGRelative(meta.published);
+  const updated = meta.updated ? formatUIGRelative(meta.updated) : null;
+  const published = formatUIGRelative(meta.published);
 
   const contentEls = [
     html`<h1>${meta.title}</h1>`

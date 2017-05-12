@@ -4,7 +4,7 @@ const html = require('bel');
 
 // Ours
 const {NOEL} = require('../../../constants');
-const {append, before, detach, isElement, isText, linebreaksToParagraphs, prepend, select, selectAll, slice, trim} = require('../../../utils');
+const {append, before, detach, isElement, isText, linebreaksToParagraphs, prepend, select, selectAll, trim} = require('../../../utils');
 
 function Quote({
   isPullquote = false,
@@ -15,7 +15,7 @@ function Quote({
     'is-pullquote': isPullquote
   });
   const attributionEl = attributionNodes.length ? html`
-    <footer>${slice(attributionNodes).map(node => {
+    <footer>${Array.from(attributionNodes).map(node => {
       return isText(node) ? trim(node.textContent) : node;
     })}</footer>
   ` : null;
@@ -69,7 +69,7 @@ function createFromEl(el) {
     // P1M-E
     config = {
       isPullquote: true,
-      parEls: slice(linebreaksToParagraphs(select('blockquote', clone) || NOEL.cloneNode()).childNodes),
+      parEls: Array.from(linebreaksToParagraphs(select('blockquote', clone) || NOEL.cloneNode()).childNodes),
       attributionNodes: (select('figcaption', clone) || NOEL.cloneNode()).childNodes
     };
   } else if (clone.className.indexOf('inline-content quote') > -1 ||
