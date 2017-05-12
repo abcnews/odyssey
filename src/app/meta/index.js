@@ -33,12 +33,12 @@ function getMetaContent(name) {
 function getDate(metaElName, timeElClassName) {
   let datetime = getMetaContent(metaElName);
 
-  if (!datetime) {
+  if (datetime) {
     return parseDate(datetime);
   }
 
   datetime = (select(`time.${timeElClassName}`) || NOEL)
-    .getAttribute('datetime');
+    .getAttribute('datetime') || '';
   
   if (STARTS_WITH_YEAR_PATTERN.test(datetime)) {
     return parseDate(datetime);  
