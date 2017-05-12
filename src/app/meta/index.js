@@ -21,6 +21,8 @@ const SHARE_ORDERING = [
   'email'
 ];
 
+const DATETIME_END_COLON_PATTERN = /:(\d+)$/;
+
 function getMetaContent(name) {
   const el = select(`meta[name="${name}"]`);
 
@@ -28,10 +30,10 @@ function getMetaContent(name) {
 }
 
 function getDate(metaElName, timeElClassName) {
-  return new Date(Date.parse(
+  return new Date(Date.parse((
     getMetaContent(metaElName) ||
     (select(`time.${timeElClassName}`) || NOEL).getAttribute('datetime')
-  ));
+  ).replace(DATETIME_END_COLON_PATTERN, '$1')));
 }
 
 function getBylineNodes() {
