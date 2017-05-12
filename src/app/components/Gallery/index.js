@@ -33,7 +33,6 @@ function Gallery({
   let previousImageHeight;
   let imageHeight;
 
-
   function updateImagesTransform(xPct, isImmediate) {
     if (isImmediate) {
       const onEnd = () => {
@@ -93,7 +92,7 @@ function Gallery({
   }
 
   function swipeBegin(event) {
-    if (startImagesTransformXPct != null) {
+    if (isMosaic || startImagesTransformXPct != null) {
       return;
     }
 
@@ -218,8 +217,10 @@ function Gallery({
     }
   }
 
+  const isMosaic = mosaicRowLengths.length > 0;
+
   const className = cn('Gallery', {
-    'is-mosaic': mosaicRowLengths.length > 0
+    'is-mosaic': isMosaic
   }, 'u-full');
 
   mosaicRowLengths = mosaicRowLengths.map(rowLength => Math.min(3, rowLength));
