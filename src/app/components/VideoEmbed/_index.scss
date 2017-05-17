@@ -31,9 +31,24 @@
 }
 
 .VideoEmbed-unpublished {
-  padding: 1rem;
-  height: 100%;
-  background-color: $color-darkTertiary;
-  color: $color-tertiary;
-  font-family: $font-sans;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: $color-black;
+
+  p {
+    padding: 1rem;
+    max-width: 24rem;
+    color: $color-white;
+    font-family: $font-sans;
+    text-align: center;
+
+    a,
+    a:visited {
+      color: currentColor;
+      text-decoration: underline;
+    }
+  }
 }
+
+

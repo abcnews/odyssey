@@ -191,7 +191,7 @@ function getMetadata(videoId, callback) {
       url: `${API_URL_ROOT}${videoId}`
     }, (err, response, body) => {
       if (err || response.statusCode !== 200) {
-        return done(new Error('This video is unpublished and cannot be previewed on the Phase 1 (Mobile) site)'));
+        return done(err || new Error(response.statusCode));
       }
 
       const posterId = body.relatedItems.length > 0 ? body.relatedItems[0].id : null;
