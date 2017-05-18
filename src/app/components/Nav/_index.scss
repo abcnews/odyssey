@@ -1,12 +1,8 @@
-$Nav_height: 44px;
-$Nav-logo_width: 118px;
-$Nav-bar_bg-color: $color-grey-brand;
-
 .Nav {
   z-index: 3;
   position: relative;
-  height: $Nav_height;
-  background-color: $Nav-bar_bg-color;
+  height: $size-bar;
+  background-color:$color-grey-brand;
 }
 
 .Nav-bar {
@@ -15,8 +11,8 @@ $Nav-bar_bg-color: $color-grey-brand;
   box-sizing: border-box;
   padding-right: 6px;
   width: 100%;
-  height: $Nav_height;
-  background-color: $Nav-bar_bg-color;
+  height: $size-bar;
+  background-color: $color-grey-brand;
   will-change: transform;
 
   &.is-fixed {
@@ -37,8 +33,8 @@ $Nav-bar_bg-color: $color-grey-brand;
 .Nav-home {
   flex: 0 0 auto;
   display: block;
-  width: $Nav-logo_width;
-  height: $Nav_height;
+  width: $size-bar * 2.681818182;
+  height: $size-bar;
   background-image: url(nav/news.svg);
   background-position: center right;
   background-repeat: no-repeat;

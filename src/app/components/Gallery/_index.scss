@@ -270,12 +270,12 @@
 .Gallery-index {
   padding: 0 .8rem;
   min-width: 3.5rem;
-  height: 40px;
+  height: $size-control;
   background-color: $color-black-transparent-60;
   color: $color-white;
   font-family: "ABCSans", Arial, Helvetica, sans-serif;
   font-size: .8125rem;
-  line-height: 40px;
+  line-height: $size-control;
   letter-spacing: .05rem;
   text-align: right;
 
@@ -291,8 +291,8 @@
 [class*="Gallery-step-"] {
   padding: 0;
   border: none;
-  width: 40px;
-  height: 40px;
+  width: $size-control;
+  height: $size-control;
   background-color: $color-black-transparent-60;
   background-image: url(gallery/step.svg);
   background-position: center;

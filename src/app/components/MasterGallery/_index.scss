@@ -28,7 +28,7 @@ html.is-master-gallery-open {
   left: 0;
   margin-top: 0;
   margin-bottom: 0;
-  padding-top: 44px;
+  padding-top: $size-bar;
   padding-right: 0;
   padding-left: 0;
   width: 100%;
@@ -104,8 +104,8 @@ html.is-master-gallery-open {
   right: 0;
   padding: 0;
   border: none;
-  width: 40px;
-  height: 40px;
+  width: $size-control;
+  height: $size-control;
   background-color: rgba(0, 0, 0, 0.6);
   background-image: url(master-gallery/close.svg);
   background-position: center;
