@@ -49,7 +49,7 @@ function Cover({
     mediaEl = Picture({
       src,
       alt,
-      smRatio: smRatio || '4x3',
+      smRatio: smRatio || '3x4',
       mdRatio: mdRatio || '1x1',
       lgRatio,
       linkUrl: type === 'caption' ? linkUrl : ''
