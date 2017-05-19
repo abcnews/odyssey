@@ -166,7 +166,6 @@
 }
 
 .VideoPlayer-progress {
-  display: -ms-flex;
   display: flex;
   align-items: flex-start;
   right: 0;
@@ -192,7 +191,6 @@
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  -ms-flex: 1 1 auto;
   flex: 1 1 auto;
   margin-left: 1.25rem;
   border: none;

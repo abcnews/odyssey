@@ -79,7 +79,6 @@
 }
 
 .Gallery-images {
-  display: -ms-flexbox;
   display: flex;
   position: relative;
   transition: transform .125s ease-out;
@@ -97,11 +96,8 @@
 }
 
 .Gallery-image {
-  display: -ms-flexbox;
   display: flex;
-  -ms-flex-direction: column;
   flex-direction: column;
-  -ms-flex: 0 0 100%;
   flex: 0 0 100%;
   overflow: hidden;
   position: relative;
@@ -121,7 +117,6 @@
   }
 
   .Gallery:not(.is-mosaic) & {
-    -ms-flex: 0 0 100% !important;
     flex: 0 0 100% !important;
   }
 
