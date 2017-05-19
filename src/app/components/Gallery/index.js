@@ -270,7 +270,7 @@ function Gallery({
 
     const imageEl = html`
       <div class="Gallery-image"
-        style="flex: 0 0 ${flexBasisPct}%"
+        style="flex: 0 1 ${flexBasisPct}%; max-width: ${flexBasisPct}%"
         data-id="${id}"
         data-index="${index}"
         ondragstart=${returnFalse}
