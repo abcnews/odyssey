@@ -103,11 +103,11 @@ function prepend(parent, node) {
 }
 
 function before(sibling, node) {
-  sibling.parentElement.insertBefore(node, sibling);
+  sibling.parentNode.insertBefore(node, sibling);
 }
 
 function after(sibling, node) {
-  sibling.parentElement.insertBefore(node, sibling.nextSibling);
+  sibling.parentNode.insertBefore(node, sibling.nextSibling);
 }
 
 function toggleAttribute(node, attribute, shouldBeApplied) {
