@@ -34,7 +34,7 @@ html.is-master-gallery-open {
   width: 100%;
   height: 100%;
   background-color: $color-black-transparent-93;
-  transition: .125s opacity;
+  transition: opacity .125s;
   will-change: opacity, transform;
 
   @media #{$mq-not-lg} and #{$mq-gt-4-3} {

@@ -170,7 +170,7 @@
   }
 
   picture {
-    transition: .125s opacity;
+    transition: opacity .125s;
     will-change: opacity;
 
     @media #{$mq-lg} {
@@ -188,7 +188,7 @@
     margin-right: -$layout-fluid-padding;
     background-color: transparent;
     pointer-events: none;
-    transition: .125s opacity;
+    transition: opacity .125s;
     will-change: opacity;
 
     @media #{$mq-lg} {
@@ -298,7 +298,7 @@
   background-position: center;
   background-repeat: no-repeat;
   vertical-align: bottom;
-  transition: .25s opacity;
+  transition: opacity .25s;
   will-change: opacity;
 }
 

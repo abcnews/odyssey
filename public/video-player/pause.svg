@@ -1,3 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="73" height="70" viewBox="0 0 73 70">
-  <path fill="#EEE" fill-rule="evenodd" opacity=".8" d="M41.16 15.56h13.2v38.9h-13.2zM18.64 15.56h13.2v38.9h-13.2z"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
+  <g fill="#EEE" fill-rule="evenodd" opacity=".8">
+    <path d="M22.55 8.9h7.23v22.2h-7.23zM10.2 8.9h7.24v22.2H10.2z"/>
+  </g>
 </svg>

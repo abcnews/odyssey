@@ -34,7 +34,10 @@ function VideoPlayer({
     isMuted = true;
   }
 
-  const videoEl = html`<video poster="${posterURL ? posterURL : ''}" preload="${scrollplayPct ? 'auto' : 'none'}"></video>`;
+  const videoEl = html`<video
+    poster="${posterURL ? posterURL : ''}"
+    preload="${scrollplayPct ? 'auto' : 'none'}"
+    tabindex="-1"></video>`;
 
   const booleanAttributes = {
     autoplay: isAutoplay,
@@ -108,10 +111,10 @@ function VideoPlayer({
       const secondsRemaining = videoEl.duration - videoEl.currentTime;
       const progress = videoEl.currentTime / videoEl.duration;
 
-      timeRemainingEl.textContent = `${
+      timeRemainingEl.textContent = isNaN(secondsRemaining) ? '' : `${
         secondsRemaining > 0 ? '-' : ''
       }${
-        Math.floor(secondsRemaining / 60)
+        twoDigits(Math.floor(secondsRemaining / 60))
       }:${
         twoDigits(Math.round(secondsRemaining % 60))
       }`;
@@ -142,15 +145,34 @@ function VideoPlayer({
       <div class="u-sizer-sm-16x9 u-sizer-md-16x9 u-sizer-lg-16x9"></div>
       ${videoEl}
       ${isAmbient ? null : html`
-        <button class="VideoPlayer-interface" onclick=${player.togglePlay}>
-          <button class="VideoPlayer-mute" title="Mute control" onclick=${player.toggleMute}></button>
-          ${timeRemainingEl}
-          ${progressBarEl}
-        </button>
+        <div role="button"
+          class="VideoPlayer-interface"
+          tabindex="0"
+          onkeydown=${whenActionKey(event => event.preventDefault())}
+          onkeyup=${whenActionKey(player.togglePlay)}
+          onclick=${player.togglePlay}>
+          <button
+            class="VideoPlayer-mute"
+            title="Mute control"
+            onkeyup=${whenActionKey(event => event.stopPropagation())}
+            onclick=${player.toggleMute}></button>
+          <div class="VideoPlayer-progress">
+            ${progressBarEl}
+            ${timeRemainingEl}
+          </div>
+        </div>
       `}
     </div>
   `;
 };
+
+function whenActionKey(fn) {
+  return function (event) {
+     if (event.target === this && (event.keyCode === 32 || event.keyCode === 13)) {
+        fn(event);
+     }
+  };
+}
 
 function getMetadata(videoId, callback) {
   function done(err, metadata) {

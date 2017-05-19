@@ -6,7 +6,7 @@ $ShareLink_width: 38px;
   background-color: $color-grey-100;
   background-position: center;
   background-repeat: no-repeat;
-  transition: .25s filter;
+  transition: filter .25s;
 
   &:hover {
     -webkit-filter: brightness(.95);

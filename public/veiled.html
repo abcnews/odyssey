@@ -5,7 +5,7 @@ html[veiled] {
 }
 html:not([veiled]) > body {
   will-change: opacity;
-  transition: opacity cubic-bezier(.25, .46, .45, .94) 1s;
+  transition: opacity 1s cubic-bezier(.25, .46, .45, .94);
 }
 html[veiled] > body {
   opacity: 0;
