@@ -49,8 +49,8 @@ function Cover({
     mediaEl = Picture({
       src,
       alt,
-      smRatio: smRatio || '3x4',
-      mdRatio: mdRatio || '1x1',
+      smRatio: smRatio || (type === 'heading' ? '3x2' : '3x4'),
+      mdRatio: mdRatio || (type === 'heading' ? '16x9' : type === 'richtext' ? '1x1' : '4x3'),
       lgRatio,
       linkUrl: type === 'caption' ? linkUrl : ''
     });

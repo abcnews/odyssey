@@ -7,11 +7,6 @@
   margin-top: 0;
   line-height: 1.5;
 
-  @media #{$mq-not-sm} {
-    min-height: 100vw;
-    font-size: 1.25rem;
-  }
-
   @media #{$mq-landscape} and #{$mq-not-lg}, #{$mq-lg} {
     min-height: 56.25vw;
 
