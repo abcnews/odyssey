@@ -76,6 +76,8 @@ function onSize() {
     return;
   }
 
+  setCSSCustomProps();
+
   const nextViewport = getViewport();
 
   if (nextViewport.width === previousViewport.width &&
@@ -104,10 +106,17 @@ function frame() {
   raf(frame);
 }
 
+function setCSSCustomProps() {
+  document.documentElement.style.setProperty('--screen-width', `${window.screen.width}px`);
+  document.documentElement.style.setProperty('--screen-height', `${window.screen.height}px`);
+}
+
 function start() {
   window.addEventListener('scroll', onPosition);
   window.addEventListener('resize', onSize);
   window.addEventListener('orientationchange', onSize);
+
+  setCSSCustomProps();
 
   // Main app clock
   raf(frame);
