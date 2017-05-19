@@ -4,6 +4,7 @@ const html = require('bel');
 const url2cmid = require('util-url2cmid');
 
 // Ours
+const {IS_PREVIEW} = require('../../../constants');
 const {before, detach, isElement, select, trim} = require('../../../utils');
 const {subscribe} = require('../../loop');
 const Caption = require('../Caption');
@@ -58,6 +59,11 @@ function Cover({
     mediaEl = html`<div></div>`;
     VideoPlayer.getMetadata(videoId, (err, metadata) => {
       if (err) {
+        if (IS_PREVIEW) {
+          before(mediaEl, VideoPlayer.UnpublishedVideoPlaceholder());
+          detach(mediaEl);
+        }
+      
         return;
       }
 

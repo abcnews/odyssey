@@ -5,7 +5,7 @@ const url2cmid = require('util-url2cmid');
 const xhr = require('xhr');
 
 // Ours
-const {append, selectAll, toggleAttribute, twoDigits} = require('../../../utils');
+const {append, isElement, selectAll, toggleAttribute, twoDigits} = require('../../../utils');
 const {nextFrame, subscribe} = require('../../loop');
 
 const BACKGROUND_IMAGE_PATTERN = /url\(['"]?(.*\.\w*)['"]?\)/;
@@ -174,14 +174,36 @@ function whenActionKey(fn) {
   };
 }
 
-function getMetadata(videoId, callback) {
+function UnpublishedVideoPlaceholder() {
+  return html`
+    <div class="UnpublishedVideoPlaceholder">
+      <div class="u-sizer-sm-16x9 u-sizer-md-16x9 u-sizer-lg-16x9"></div>
+      <p>
+        This video is unpublished and cannot be previewed in Phase 1. Have a look in
+        <a target="_blank" href="${
+          window.location.href.replace('nucwed', 'beta-nucwed')
+        }">Phase 2</a>.
+      </p>
+    </div>
+  `;
+}
+
+function getMetadata(videoElOrId, callback) {
   function done(err, metadata) {
     nextFrame(() => {
       callback(err, metadata);
     });
   }
 
-  if ('WCMS' in window) {
+  if (isElement(videoElOrId)) {
+    done(null, {
+      posterURL: videoElOrId.getAttribute('poster'),
+      sources: selectAll('source', videoElOrId).map(source => ({
+        src: source.getAttribute('src'),
+        type: source.getAttribute('type')
+      }))
+    });
+  } else if ('WCMS' in window) {
     // Phase 2
     // * Sources & poster are nested inside global `WCMS` object
 
@@ -194,11 +216,14 @@ function getMetadata(videoId, callback) {
 
       const config = WCMS.pluginCache.plugins.videoplayer[key][0].videos[0];
 
-      if (config.url.indexOf(videoId) > -1) {
+      if (config.url.indexOf(videoElOrId) > -1) {
         wasConfigFound = true;
 
         const posterURL = config.thumbnail.replace('-thumbnail', '-large');
-        const sources = config.sources.map(source => ({src: source.url, type: source.contentType}));
+        const sources = config.sources.map(source => ({
+          src: source.url,
+          type: source.contentType
+        }));
 
         done(null, {posterURL, sources});
       }
@@ -210,7 +235,7 @@ function getMetadata(videoId, callback) {
 
     xhr({
       json: true,
-      url: `${API_URL_ROOT}${videoId}`
+      url: `${API_URL_ROOT}${videoElOrId}`
     }, (err, response, body) => {
       if (err || response.statusCode !== 200) {
         return done(err || new Error(response.statusCode));
@@ -266,4 +291,5 @@ subscribe({
 });
 
 module.exports = VideoPlayer;
+module.exports.UnpublishedVideoPlaceholder = UnpublishedVideoPlaceholder;
 module.exports.getMetadata = getMetadata;

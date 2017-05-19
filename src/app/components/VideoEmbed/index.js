@@ -39,17 +39,7 @@ function VideoEmbed({
   VideoPlayer.getMetadata(videoId, (err, metadata) => {
     if (err) {
       if (IS_PREVIEW) {
-        prepend(videoEmbedEl, html`
-          <div class="VideoEmbed-unpublished">
-            <div class="u-sizer-sm-16x9 u-sizer-md-16x9 u-sizer-lg-16x9"></div>
-            <p>
-              This video is unpublished and cannot be previewed in Phase 1. Have a look in
-              <a target="_blank" href="${
-                window.location.href.replace('nucwed', 'beta-nucwed')
-              }">Phase 2</a>.
-            </p>
-          </div>
-        `);
+        prepend(videoEmbedEl, VideoPlayer.UnpublishedVideoPlaceholder());
       }
     
       return;

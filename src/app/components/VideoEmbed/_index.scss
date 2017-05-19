@@ -30,26 +30,4 @@
   }
 }
 
-.VideoEmbed-unpublished {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: $color-black;
-
-  p {
-    padding: 1rem;
-    max-width: 24rem;
-    color: $color-white;
-    font-family: $font-sans;
-    font-size: 1rem;
-    text-align: center;
-
-    a,
-    a:visited {
-      color: currentColor;
-      text-decoration: underline;
-    }
-  }
-}
-
 

@@ -109,6 +109,21 @@ function getShareLinks() {
   .sort((a, b) => SHARE_ORDERING.indexOf(a.id) - SHARE_ORDERING.indexOf(b.id));
 }
 
+function getRelatedMedia() {
+  const relatedMediaEl = select(`
+.view-hero-media,
+.content > article > header + figure,
+.attached-content > .inline-content.photo,
+.attached-content > .inline-content.video
+  `);
+
+  if (!relatedMediaEl) {
+    return null;
+  }
+  
+  return detach(relatedMediaEl);
+}
+
 function getMeta() {
   return {
     title: getMetaContent('replacement-title') ||
@@ -118,6 +133,7 @@ function getMeta() {
     bylineNodes: getBylineNodes(),
     infoSource: getInfoSource(),
     shareLinks: getShareLinks(),
+    relatedMedia: getRelatedMedia(),
     hasCaptionAttributions: getMetaContent('hide-caption-attributions') !== 'no'
   };
 }

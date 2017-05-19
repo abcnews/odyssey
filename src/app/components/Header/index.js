@@ -5,15 +5,15 @@ const {formatUIGRelative} = require('inn-abcdatetime-lib');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const {MS_VERSION} = require('../../../constants');
-const {before, detach, isElement, select, slug, trim} = require('../../../utils');
+const {IS_PREVIEW, MS_VERSION} = require('../../../constants');
+const {before, detach, isElement, prepend, select, slug, trim} = require('../../../utils');
 const {subscribe} = require('../../loop');
 const Picture = require('../Picture');
 const VideoPlayer = require('../VideoPlayer');
 
 function Header({
   meta = {},
-  videoId,
+  videoElOrId,
   imgEl,
   smRatio,
   mdRatio,
@@ -24,7 +24,7 @@ function Header({
 }) {
   const className = cn('Header', {
     'is-dark': isDark,
-    'is-layered': isLayered && (imgEl || videoId)
+    'is-layered': isLayered && (imgEl || videoElOrId)
   }, 'u-full');
 
   let mediaEl;
@@ -41,10 +41,15 @@ function Header({
     if (!isLayered) {
       mediaEl.classList.add('u-parallax');
     }
-  } else if (videoId) {
+  } else if (videoElOrId) {
     mediaEl = html`<div></div>`;
-    VideoPlayer.getMetadata(videoId, (err, metadata) => {
+    VideoPlayer.getMetadata(videoElOrId, (err, metadata) => {
       if (err) {
+        if (IS_PREVIEW) {
+          before(mediaEl, VideoPlayer.UnpublishedVideoPlaceholder());
+          detach(mediaEl);
+        }
+      
         return;
       }
 
@@ -143,33 +148,45 @@ function transformSection(section, meta) {
   const [, lgRatio] = section.suffix.match(Picture.LG_RATIO_PATTERN) || [];
   const isDark = section.suffix.indexOf('dark') > -1;
   const isLayered = section.suffix.indexOf('layered') > -1;
+  const isRelated = section.suffix.indexOf('related') > -1;
+
+  if (isRelated && meta.relatedMedia != null) {
+    section.betweenNodes = [meta.relatedMedia.cloneNode(true)].concat(section.betweenNodes);
+  }
 
   const config = section.betweenNodes.reduce((config, node) => {
     let classList;
+    let videoEl;
     let videoId;
     let imgEl;
 
-    if (!config.videoId && !config.imgEl && isElement(node) ) {
+    if (!config.videoElOrId && !config.imgEl && isElement(node) ) {
       classList = node.className.split(' ');
+      videoEl = select('video', node);
 
-      videoId = (
-        (classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
-        (classList.indexOf('view-inlineMediaPlayer') > -1) ||
-        (classList.indexOf('embed-content') > -1 && select('.type-video', node))
-      ) && url2cmid(select('a', node).getAttribute('href'));
-
-      if (videoId) {
-        config.videoId = videoId;
+      if (videoEl) {
+        config.videoElOrId = videoEl;
       } else {
-        imgEl = select('img', node);
+        videoId = (
+          (classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
+          (classList.indexOf('view-inlineMediaPlayer') > -1) ||
+          (classList.indexOf('view-hero-media') > -1 && select('.view-inlineMediaPlayer', node)) ||
+          (classList.indexOf('embed-content') > -1 && select('.type-video', node))
+        ) && url2cmid(select('a', node).getAttribute('href'));
 
-        if (imgEl) {
-          config.imgEl = imgEl;
+        if (videoId) {
+          config.videoElOrId = videoId;
+        } else {
+          imgEl = select('img', node);
+
+          if (imgEl) {
+            config.imgEl = imgEl;
+          }
         }
       }
     }
 
-    if (!videoId && !imgEl && isElement(node) && trim(node.textContent).length > 0) {
+    if (!videoEl && !videoId && !imgEl && isElement(node) && trim(node.textContent).length > 0) {
       config.miscContentEls.push(node);
     }
 
