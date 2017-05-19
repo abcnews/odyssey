@@ -2,22 +2,6 @@
   @media #{$mq-not-sm} {
     clear: both;
   }
-
-  .is-debug & {
-    position: relative;
-  }
-
-  .is-debug &::before {
-    content: attr(class);
-    position: absolute;
-    bottom: 100%;
-    padding: 0 .25rem;
-    background-color: $color-darkTertiary;
-    color: $color-white;
-    font-size: .625rem;
-    font-family: monospace;
-    line-height: 1.5;
-  }
 }
 
 .u-pull {
