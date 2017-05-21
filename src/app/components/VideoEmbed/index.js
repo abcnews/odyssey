@@ -5,7 +5,7 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const {IS_PREVIEW} = require('../../../constants');
-const {before, detachAll, prepend, select, selectAll} = require('../../../utils');
+const {before, detach, prepend, select, selectAll} = require('../../../utils');
 const Caption = require('../Caption');
 const VideoPlayer = require('../VideoPlayer');
 
@@ -62,7 +62,8 @@ function transformEl(el) {
   const videoId = url2cmid(select('a', el).getAttribute('href'));
   const prevEl = el.previousElementSibling;
   const prevElName = (prevEl && el.previousElementSibling.getAttribute('name')) || '';
-  const suffix = (prevElName.indexOf('video') === 0 && prevElName.slice(5)) || '';
+  const prevElIsOptions = prevElName.indexOf('video') === 0;
+  const suffix = (prevElIsOptions && prevElName.slice(5)) || '';
   const [, scrollplayPctString] = suffix.match(SCROLLPLAY_PCT_PATTERN) || [, ''];
 
   if (videoId) {
@@ -79,7 +80,11 @@ function transformEl(el) {
     });
 
     before(el, videoEmbedEl);
-    detachAll([prevEl, el]);
+    detach(el);
+    
+    if (prevElIsOptions) {
+      detach(prevEl);
+    }
   }
 }
 
