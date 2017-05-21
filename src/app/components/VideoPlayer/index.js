@@ -209,7 +209,8 @@ function getMetadata(videoElOrId, callback) {
 
     let wasConfigFound;
 
-    Object.keys(WCMS.pluginCache.plugins.videoplayer).forEach(key => {
+    Object.keys(WCMS.pluginCache.plugins.videoplayer)
+    .forEach(key => {
       if (wasConfigFound) {
         return;
       }
@@ -220,7 +221,9 @@ function getMetadata(videoElOrId, callback) {
         wasConfigFound = true;
 
         const posterURL = config.thumbnail.replace('-thumbnail', '-large');
-        const sources = config.sources.map(source => ({
+        const sources = config.sources
+        .sort((a, b) => a.label < b.label)
+        .map(source => ({
           src: source.url,
           type: source.contentType
         }));
