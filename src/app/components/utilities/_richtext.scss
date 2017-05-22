@@ -87,6 +87,11 @@
     margin-left: auto;
   }
 
+  &:not(.u-layout) > ul,
+  &:not(.u-layout) > ol {
+    padding-left: 0;
+  }
+
   > ul,
   > ul ul,
   > ol ul {
