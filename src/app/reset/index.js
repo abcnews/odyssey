@@ -41,6 +41,9 @@ const WHITESPACE_REMOVABLES = `
   p
 `;
 
+const PREVIEW_CTX_SELECTOR = 'span[id^="CTX"]';
+const PREVIEW_SCRIPT_PATTERN = /(?:coremedia|joo\.classLoader)/;
+
 const P1S_FLOAT = {
   SELECTOR: `
     .inline-content.left,
@@ -90,6 +93,20 @@ function reset(storyEl, meta) {
     if (trim(el.textContent).length === 0) {
       detach(el);
     }
+  });
+
+  selectAll(PREVIEW_CTX_SELECTOR, storyEl).forEach(el => {
+    [].slice.call(el.children).forEach(childEl => {
+      if (
+        childEl.tagName === 'SCRIPT' &&
+        childEl.textContent.match(PREVIEW_SCRIPT_PATTERN)
+      ) {
+        detach(childEl);
+      } else {
+        before(el, childEl);
+      }
+    });
+    detach(el);
   });
 
   selectAll(SELECTORS.WYSIWYG_EMBED, storyEl).forEach(el => {
