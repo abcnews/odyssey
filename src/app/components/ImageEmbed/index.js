@@ -21,6 +21,13 @@ function ImageEmbed({
 
 function transformEl(el, preserveOriginalRatio) {
   const imgEl = select('img', el);
+  const prevEl = el.previousElementSibling;
+  const prevElName = (prevEl && el.previousElementSibling.getAttribute('name')) || '';
+  const prevElIsOptions = prevElName.indexOf('image') === 0;
+  const suffix = (prevElIsOptions && prevElName.slice(5)) || '';
+  const [, smRatio] = suffix.match(Picture.SM_RATIO_PATTERN) || [];
+  const [, mdRatio] = suffix.match(Picture.MD_RATIO_PATTERN) || [];
+  const [, lgRatio] = suffix.match(Picture.LG_RATIO_PATTERN) || [];
 
   if (imgEl) {
     const src = imgEl.src;
@@ -32,8 +39,9 @@ function transformEl(el, preserveOriginalRatio) {
       pictureEl: Picture({
         src,
         alt,
-        smRatio: '3x4',
-        mdRatio: '4x3',
+        smRatio: smRatio || '3x4',
+        mdRatio: mdRatio || '4x3',
+        lgRatio,
         preserveOriginalRatio,
         linkUrl
       }),
@@ -42,6 +50,10 @@ function transformEl(el, preserveOriginalRatio) {
 
     before(el, imageEmbedEl);
     detach(el);
+
+    if (prevElIsOptions) {
+      detach(prevEl);
+    }
   }
 }
 
