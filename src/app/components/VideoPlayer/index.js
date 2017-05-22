@@ -246,7 +246,9 @@ function getMetadata(videoElOrId, callback) {
 
       const posterId = body.relatedItems.length > 0 ? body.relatedItems[0].id : null;
       const posterURL = posterId ? `/news/rimage/${posterId}-16x9-large.jpg` : null; // TODO: Can we always depend on Phase 2 image?
-      const sources = body.renditions.map(rendition => ({src: rendition.url, type: rendition.contentType}));
+      const sources = body.renditions
+      .sort((a, b) => a.fileSize < b.fileSize)
+      .map(rendition => ({src: rendition.url, type: rendition.contentType}));
 
       done(null, {posterURL, sources});
     });
