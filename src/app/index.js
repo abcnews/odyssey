@@ -3,8 +3,9 @@ const html = require('bel');
 
 // Ours
 const {SELECTORS} = require('../constants');
-const {after, append, before, detach, detachAll, getPlaceholders,
-  getSections, isElement, select, selectAll} = require('../utils');
+const {after, append, before, detach, detachAll,
+  getPlaceholders, getSections, isElement, prepend,
+  select, selectAll} = require('../utils');
 const Caption = require('./components/Caption');
 const Cover = require('./components/Cover');
 const Gallery = require('./components/Gallery');
@@ -52,6 +53,8 @@ function app(done) {
     }
   });
 
+  let hasHeader = false;
+
   // Replace sections
   getSections([
     'header',
@@ -62,6 +65,7 @@ function app(done) {
   ]).forEach(section => {
     switch (section.name) {
       case 'header':
+        hasHeader = true;
         Header.transformSection(section, meta);
         break;
       case 'cover':
@@ -78,6 +82,10 @@ function app(done) {
         break;
     }
   });
+
+  if (!hasHeader) {
+    prepend(storyEl, Header({meta}));
+  }
 
   // Enable parallax
   const parallaxes = selectAll('.u-parallax')
