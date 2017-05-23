@@ -57,8 +57,22 @@ function isDocument(node) {
   return node && node.nodeType === Node.DOCUMENT_NODE;
 }
 
-function create(tagName) {
-  return document.createElement(tagName);
+function create(tagName, attributes) {
+  const el = document.createElement(tagName);
+  let name;
+  let value;
+
+  for (key in Object(attributes)) {
+    value = attributes[key];
+
+    if (key in el) {
+      el[key] = value;
+    } else {
+      el.setAttribute(key, value);
+    }
+  }
+
+  return el;
 }
 
 function select(selector, root) {
@@ -99,7 +113,7 @@ function append(parent, node) {
 }
 
 function prepend(parent, node) {
-  before(parent.firstChild, node);
+  parent.insertBefore(node, parent.firstChild);
 }
 
 function before(sibling, node) {
@@ -108,6 +122,16 @@ function before(sibling, node) {
 
 function after(sibling, node) {
   sibling.parentNode.insertBefore(node, sibling.nextSibling);
+}
+
+function setText(el, text) {
+  let node = el.firstChild;
+
+  if (node === null || !isText(node)) {
+    prepend(el, node = document.createTextNode(text));
+  } else {
+    node.nodeValue = text;
+  }
 }
 
 function toggleAttribute(node, attribute, shouldBeApplied) {
@@ -290,6 +314,7 @@ module.exports = {
   prepend,
   before,
   after,
+  setText,
   toggleAttribute,
   getSections,
   getPlaceholders,

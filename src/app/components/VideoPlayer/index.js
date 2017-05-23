@@ -5,7 +5,7 @@ const url2cmid = require('util-url2cmid');
 const xhr = require('xhr');
 
 // Ours
-const {append, isElement, selectAll, toggleAttribute, twoDigits} = require('../../../utils');
+const {append, isElement, selectAll, setText, toggleAttribute, twoDigits} = require('../../../utils');
 const {nextFrame, subscribe} = require('../../loop');
 
 const BACKGROUND_IMAGE_PATTERN = /url\(['"]?(.*\.\w*)['"]?\)/;
@@ -111,13 +111,13 @@ function VideoPlayer({
       const secondsRemaining = videoEl.duration - videoEl.currentTime;
       const progress = videoEl.currentTime / videoEl.duration;
 
-      timeRemainingEl.textContent = isNaN(secondsRemaining) ? '' : `${
+      setText(timeRemainingEl, isNaN(secondsRemaining) ? '' : `${
         secondsRemaining > 0 ? '-' : ''
       }${
         twoDigits(Math.floor(secondsRemaining / 60))
       }:${
         twoDigits(Math.round(secondsRemaining % 60))
-      }`;
+      }`);
 
       progressBarEl.setAttribute('value', progress);
 

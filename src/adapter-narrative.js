@@ -16,12 +16,11 @@ function updateAnchor(pair) {
 selectAll('a[name="title"]')
 .forEach(el => {
   const nextEl = el.nextElementSibling;
-  const metaEl = create('meta');
-
-  metaEl.setAttribute('name', 'replacement-title');
-  metaEl.setAttribute('content', nextEl.textContent);
-
-  append(select('head'), metaEl);
+  
+  append(select('head'), create('meta', {
+    name: 'replacement-title',
+    content: nextEl.textContent
+  }));
   detachAll([el, nextEl]);
 });
 
@@ -33,11 +32,9 @@ selectAll('a[name="subtitle"]')
     nextEl = nextEl.nextElementSibling;
   }
 
-  const endAnchor = create('a');
-
-  endAnchor.setAttribute('name', 'endheader');
-
-  after(nextEl, endAnchor);
+  after(nextEl, create('a', {
+    name: 'endheader'
+  }));
 });
 
 [

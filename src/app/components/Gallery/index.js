@@ -4,7 +4,7 @@ const html = require('bel');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const {detach, isElement, returnFalse, select, selectAll, trim} = require('../../../utils');
+const {detach, isElement, returnFalse, select, selectAll, setText, trim} = require('../../../utils');
 const {nextFrame, subscribe} = require('../../loop');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
@@ -66,7 +66,7 @@ function Gallery({
     galleryEl.classList[index === 0 ? 'add' : 'remove']('is-at-start');
     galleryEl.classList[index === images.length - 1 ? 'add' : 'remove']('is-at-end');
     imageEls[currentIndex].classList.add('is-active');
-    indexEl.textContent = `${currentIndex + 1} / ${images.length}`;
+    setText(indexEl, `${currentIndex + 1} / ${images.length}`);
 
     updateImagesTransform(-currentIndex * 100, isImmediate);
   }
