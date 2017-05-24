@@ -3,7 +3,7 @@ const html = require('bel');
 
 // Ours
 const {SELECTORS} = require('../constants');
-const {after, append, before, detach, detachAll,
+const {after, append, before, create, detach, detachAll,
   getPlaceholders, getSections, isElement, prepend,
   select, selectAll} = require('../utils');
 const Caption = require('./components/Caption');
@@ -42,9 +42,13 @@ function app(done) {
 
   // Replace placeholders
   getPlaceholders([
+    'hr',
     'share'
   ]).forEach(placeholder => {
     switch (placeholder.name) {
+      case 'hr':
+        placeholder.replaceWith(create('hr'));
+        break;
       case 'share':
         Share.transformPlaceholder(placeholder, meta.shareLinks);
         break;
@@ -202,8 +206,8 @@ function app(done) {
     }
   }, 0);
 
-  // Enable drop-caps
-  selectAll('.Header')
+  // Enable drop-caps after headers and horizontal rules
+  selectAll('.Header, hr')
   .forEach(el => {
     let nextEl = el.nextElementSibling;
 
