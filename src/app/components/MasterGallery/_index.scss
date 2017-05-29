@@ -82,7 +82,7 @@ html.is-master-gallery-open {
   .Caption {
     margin: 1rem auto;
     width: 100%;
-    max-width: 952px;
+    max-width: $layout-fixed - $layout-fixed-gutter;
 
     @media #{$mq-lg} {
       font-size: 1rem !important;
@@ -108,7 +108,7 @@ html.is-master-gallery-open {
   border: none;
   width: $size-control;
   height: $size-control;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: $color-black-transparent-60;
   background-image: url(master-gallery/close.svg);
   background-position: center;
   background-repeat: no-repeat;

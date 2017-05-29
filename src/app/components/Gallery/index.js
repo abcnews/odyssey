@@ -4,6 +4,7 @@ const html = require('bel');
 const url2cmid = require('util-url2cmid');
 
 // Ours
+const {REM} = require('../../../constants');
 const {detach, isElement, returnFalse, select, selectAll, setText, trim} = require('../../../utils');
 const {nextFrame, subscribe} = require('../../loop');
 const Caption = require('../Caption');
@@ -212,7 +213,7 @@ function Gallery({
 
   function mutate() {
     if (imageHeight !== previousImageHeight) {
-      controlsEl.style.transform = `translate(0, ${imageHeight}px) translate(0, -100%)`;
+      controlsEl.style.transform = `translate(0, ${imageHeight / REM}rem) translate(0, -100%)`;
       previousImageHeight = imageHeight;
     }
   }

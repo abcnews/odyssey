@@ -25,7 +25,7 @@
   }
 
   @media #{$mq-sm} {
-    width: calc(100% - 45px);
+    width: calc(100% - 2.8125rem);
   }
 
   @media #{$mq-md} {
@@ -55,25 +55,25 @@
 }
 
 .Gallery-pane {
-  margin: 0 -7.5px;
+  margin: 0 -.46875rem;
 
   .is-mosaic & {
-    margin: 0 -2px;
+    margin: 0 -.125rem;
   }
 
   @media #{$mq-md} {
-    margin: 0 -15px;
+    margin: 0 -.9375rem;
 
     .is-mosaic & {
-      margin: 0 -4px;
+      margin: 0 -.25rem;
     }
   }
 
   @media #{$mq-lg} {
-    margin: 0 -20px;
+    margin: 0 -1.25rem;
 
     .is-mosaic & {
-      margin: 0 -5px;
+      margin: 0 -.3125rem;
     }
   }
 }
@@ -101,7 +101,7 @@
   flex: 0 0 100%;
   overflow: hidden;
   position: relative;
-  padding: 0 7.5px;
+  padding: 0 .46875rem;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -112,8 +112,8 @@
 
   .is-mosaic & {
     opacity: 1;
-    margin-bottom: 4px;
-    padding: 0 2px;
+    margin-bottom: .25rem;
+    padding: 0 .125rem;
   }
 
   .Gallery:not(.is-mosaic) & {
@@ -121,20 +121,20 @@
   }
 
   @media #{$mq-md} {
-    padding: 0 15px;
+    padding: 0 .9375rem;
 
     .is-mosaic & {
-      margin-bottom: 8px;
-      padding: 0 4px;
+      margin-bottom: .5rem;
+      padding: 0 .25rem;
     }
   }
 
   @media #{$mq-lg} {
-    padding: 0 20px;
+    padding: 0 1.25rem;
 
     .is-mosaic & {
-      margin-bottom: 10px;
-      padding: 0 5px;
+      margin-bottom: .625rem;
+      padding: 0 .3125rem;
     }
   }
 
@@ -213,7 +213,7 @@
     position: absolute;
     bottom: 0;
     margin-left: 0;
-    max-width: calc(100% - 4px);
+    max-width: calc(100% - .25rem);
     min-height: 0;
     background-color: $color-black-transparent-50;
     color: $color-grey-50;
@@ -224,11 +224,11 @@
     }
 
     @media #{$mq-md} {
-      max-width: calc(100% - 8px);
+      max-width: calc(100% - .5rem);
     }
 
     @media #{$mq-lg} {
-      max-width: calc(100% - 10px);
+      max-width: calc(100% - .625rem);
     }
   }
 
@@ -299,7 +299,7 @@
 
 .Gallery-step-next {
   transform: scale(-1, 1);
-  margin-left: 3px;
+  margin-left: $size-control-margin;
 }
 
 .is-at-start .Gallery-step-prev,

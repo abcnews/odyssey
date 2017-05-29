@@ -2,7 +2,7 @@
 const raf = require('raf');
 
 // Ours
-const {NOEL} = require('../../constants');
+const {NOEL, REM} = require('../../constants');
 
 const nextFrameQueue = [];
 const nextId = -1;
@@ -107,8 +107,8 @@ function frame() {
 }
 
 function setCSSCustomProps() {
-  document.documentElement.style.setProperty('--screen-width', `${window.screen.width}px`);
-  document.documentElement.style.setProperty('--screen-height', `${window.screen.height}px`);
+  document.documentElement.style.setProperty('--screen-width', `${window.screen.width / REM}rem`);
+  document.documentElement.style.setProperty('--screen-height', `${window.screen.height / REM}rem`);
 }
 
 function start() {

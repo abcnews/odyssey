@@ -27,9 +27,9 @@
 
   // Phase 1 (Standard)
   html.fixed & {
-    @media (max-width: 1000px) {
-      min-width: 1000px;
-      margin-left: -10px  !important;
+    @media (max-width: $p1s-fixed-width) {
+      min-width: $p1s-fixed-width;
+      margin-left: -.625rem  !important;
     }
 
     @media #{$mq-not-lg} {

@@ -5,7 +5,7 @@
     margin: 0;
     padding: 0 2rem;
     border-width: 0;
-    border-left: 10px solid $color-grey-200;
+    border-left: .625rem solid $color-grey-200;
     background-color: transparent;
   }
 
@@ -143,8 +143,8 @@
 .Quote-closer::before {
   content: "";
   position: absolute;
-  width: 33px;
-  height: 22px;
+  width: 2.0625rem;
+  height: 1.375rem;
   background-image: url(richtext/quotemarks.svg);
 }
 

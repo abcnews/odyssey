@@ -138,7 +138,7 @@
       left: 50%;
       z-index: -1;
       transform: translateX(-50%);
-      width: calc(#{cells(10)} + 0.75rem);
+      width: calc(#{cells(10)} + .75rem);
       height: 100%;
       background-color: $color-black-transparent-10;
 
@@ -192,14 +192,14 @@
   @media #{$mq-lg} {
     .is-richtext.is-left > &,
     .is-richtext.is-right > & {
-      width: 792px;
+      width: 49.5rem;
     }
 
     .is-richtext.is-left > & {
-      margin-left: calc(30% - 396px);
+      margin-left: calc(30% - 24.75rem);
     }
     .is-richtext.is-right > & {
-      margin-right: calc(30% - 396px);
+      margin-right: calc(30% - 24.75rem);
     }
   }
 

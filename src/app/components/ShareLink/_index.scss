@@ -1,8 +1,6 @@
-$ShareLink_width: 38px;
-
 .ShareLink {
-  flex: 1 1 $ShareLink_width;
-  width: $ShareLink_width;
+  flex: 1 1 ($size-control - $size-control-margin);
+  width: $size-control - $size-control-margin;
   background-color: $color-grey-100;
   background-position: center;
   background-repeat: no-repeat;
@@ -15,11 +13,11 @@ $ShareLink_width: 38px;
 }
 
 .ShareLink + .ShareLink {
-  margin-left: 2px;
+  margin-left: $size-control-margin;
 }
 
 .Nav .ShareLink {
-  flex: 0 1 $ShareLink_width;
+  flex: 0 1 ($size-control - $size-control-margin);
   background-color: transparent;
 }
 

@@ -58,21 +58,26 @@ $gradient-horizontal-45-40-65-0: linear-gradient(to right, $color-black-transpar
 }
 
 $layout-fluid: 100%;
-$layout-fixed: 980px;
-$layout-fluid-gutter: 30px;
-$layout-fixed-gutter: 28px;
+$layout-fixed: 61.25rem;
+$layout-fluid-gutter: 1.875rem;
+$layout-fixed-gutter: 1.75rem;
 $layout-fluid-padding: $layout-fluid-gutter / 2;
 $layout-fixed-padding: $layout-fixed-gutter / 2;
 
-$mq-sm: "(max-width: 699px)";
-$mq-md: "(min-width: 700px) and (max-width: 979px)";
-$mq-lg: "(min-width: 980px)";
-$mq-not-sm: "(min-width: 700px)";
-$mq-not-md: "(max-width: 699px), (min-width: 980px)";
-$mq-not-lg: "(max-width: 979px)";
+$mq-sm: "(max-width: 43.6875rem)";
+$mq-md: "(min-width: 43.75rem) and (max-width: 61.1875rem)";
+$mq-lg: "(min-width: 61.25rem)";
+$mq-not-sm: "(min-width: 43.75rem)";
+$mq-not-md: "(max-width: 43.6875rem), (min-width: 61.25rem)";
+$mq-not-lg: "(max-width: 61.1875rem)";
 $mq-portrait: "(orientation: portrait)";
 $mq-landscape: "(orientation: landscape)";
 $mq-gt-4-3: "(min-aspect-ratio: 4/3)";
 
 $size-bar: 2.75rem;
 $size-control: 2.5rem;
+$size-control-margin: .1875rem;
+
+// Environment measurements
+$abc-nav-height: 2.5rem;   // Global nav
+$p1s-fixed-width: 62.5rem; // Phase 1 (Standard) fixed width

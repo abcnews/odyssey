@@ -9,7 +9,6 @@
   display: flex;
   justify-content: space-between;
   box-sizing: border-box;
-  padding-right: 6px;
   width: 100%;
   height: $size-bar;
   background-color: $color-grey-brand;
@@ -20,7 +19,7 @@
     top: 0;
     transition: transform .25s cubic-bezier(0, 0, .32, 1);
 
-    @media (max-height: 799px) {
+    @media (max-height: 49.9375rem) {
       transform: translateY(-102%);
 
       &.is-peeking {

@@ -22,7 +22,7 @@
   .u-richtext-invert & {
     padding-left: $layout-fluid-padding;
     padding-right: $layout-fluid-padding;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: $color-black-transparent-50;
     color: $color-white;
 
     @media #{$mq-lg} {

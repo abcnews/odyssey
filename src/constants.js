@@ -22,15 +22,17 @@ const EMBED_TAGNAMES = ['ASIDE', 'BLOCKQUOTE', 'DIV', 'FIGURE'];
 
 const NOEL = document.createElement('noscript');
 
+const REM = 16; // (px)
 const MQ = {
-  SM: '(max-width: 699px)',
-  MD: '(min-width: 700px) and (max-width: 979px)',
-  LG: '(min-width: 980px)',
-  NOT_SM: '(min-width: 700px)',
-  NOT_MD: '(max-width: 699px) or (min-width: 980px)',
-  NOT_LG: ' (max-width: 979px)',
+  SM: '(max-width: 43.6875rem)',
+  MD: '(min-width: 43.75rem) and (max-width: 61.1875rem)',
+  LG: '(min-width: 61.25rem)',
+  NOT_SM: '(min-width: 43.75rem)',
+  NOT_MD: '(max-width: 43.6875rem), (min-width: 61.25rem)',
+  NOT_LG: '(max-width: 61.1875rem)',
   PORTRAIT: '(orientation: portrait)',
-  LANDSCAPE: '(orientation: landscape)'
+  LANDSCAPE: '(orientation: landscape)',
+  GT_4_3: '(min-aspect-ratio: 4/3)'
 };
 
 const SMALLEST_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAAAADs=';
@@ -68,6 +70,7 @@ module.exports = {
   SELECTORS,
   EMBED_TAGNAMES,
   NOEL,
+  REM,
   MQ,
   SMALLEST_IMAGE,
   IS_PREVIEW,

@@ -1,11 +1,10 @@
-$ShareLinks_height: 48px;
-
 .ShareLinks {
   display: flex;
   justify-content: flex-end;
-  height: $ShareLinks_height;
+  height: 3rem;
 }
 
 .Nav .ShareLinks {
+  margin-right: .375rem;
   height: auto;
 }

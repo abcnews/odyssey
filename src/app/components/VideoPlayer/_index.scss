@@ -25,7 +25,7 @@
     &.IIV::-webkit-media-controls-play-button,
 		&[autoplay]::-webkit-media-controls-start-playback-button {
 			opacity: 0;
-			width: 5px;
+			width: .3125rem;
 			pointer-events: none;
 		}
   }
@@ -174,7 +174,7 @@
 }
 
 .VideoPlayer-timeRemaining {
-  margin-left: 2px;
+  margin-left: $size-control-margin;
   padding: .25rem;
   min-width: 3.75rem;
   height: 2rem;
@@ -184,7 +184,7 @@
   font-size: .875rem;
   line-height: 1.5rem;
   text-align: center;
-  letter-spacing: 0.0375rem;
+  letter-spacing: .0375rem;
 }
 
 .VideoPlayer-progressBar {
