@@ -4,6 +4,7 @@
   background-color: $color-grey-100;
   background-position: center;
   background-repeat: no-repeat;
+  background-size: auto 100%;
   transition: filter .25s;
 
   &:hover {
@@ -45,8 +46,7 @@
   background-image: url(share-links/reddit.svg);
 
   .Nav & {
-    // background-image: url(share-links/reddit--nav.svg);
-    display: none;
+    background-image: url(share-links/reddit--nav.svg);
   }
 
   @media #{$mq-sm} {

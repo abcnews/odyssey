@@ -32,11 +32,12 @@
 .Nav-home {
   flex: 0 0 auto;
   display: block;
-  width: $size-bar * 2.681818182;
+  width: $size-bar * 2.9090909091;
   height: $size-bar;
   background-image: url(nav/news.svg);
   background-position: center right;
   background-repeat: no-repeat;
+  background-size: 100%;
   text-decoration: none;
   text-indent: -100%;
 }
