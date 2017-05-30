@@ -27,6 +27,7 @@ function Cover({
   contentEls = []
 }) {
   const className = cn('Cover', `is-${type}`, {
+    'is-piecemeal': type === 'richtext' && isPiecemeal,
     [`is-${alignment}`]: alignment
   }, 'u-full');
   const mediaClassName = cn('Cover-media', {
@@ -35,8 +36,7 @@ function Cover({
   });
   const contentClassName = cn('Cover-content', {
     'u-layout': type !== 'caption',
-    'u-richtext-invert': type !== 'caption',
-    'is-piecemeal': type === 'richtext' && isPiecemeal,
+    'u-richtext-invert': type !== 'caption'
   });
 
   let mediaEl;
