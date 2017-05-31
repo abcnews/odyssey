@@ -32,9 +32,7 @@ html.is-master-gallery-open {
   padding-right: 0;
   padding-left: 0;
   width: 100%;
-  width: var(--screen-width);
   height: 100%;
-  height: var(--screen-height);
   background-color: $color-black-transparent-93;
   transition: opacity .125s;
   will-change: opacity, transform;
