@@ -18,7 +18,8 @@ html {
 
 body {
   min-height: 102vh;
-  width:  100vw;
+  width: 100vw;
+  width: var(--root-width);
   background-color: #f9f9f9;
 }
 

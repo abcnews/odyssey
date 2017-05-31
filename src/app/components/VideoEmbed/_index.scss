@@ -2,6 +2,7 @@
   &.u-full {
     height: 100vh;
     min-height: 56.25vw;
+    min-height: calc(var(--root-width) * .5625);
   }
 
   &:not(.u-pull):not(.u-full) {

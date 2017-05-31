@@ -4,16 +4,44 @@ const raf = require('raf');
 // Ours
 const {NOEL, REM} = require('../../constants');
 
+const SUPPORTS_CSS_CUSTOM_PROPS = 'CSS' in window && 'supports' in CSS && CSS.supports('(--foo: bar)');
+
 const nextFrameQueue = [];
-const nextId = -1;
-const wasMeasured = false;
 const subscribers = {};
 
-function getViewport() {
+let wasMeasured = false;
+let nextId = -1;
+let previousViewport = measureViewport();
+let viewport = previousViewport;
+let previousCustomProps = {};
+let customProps = previousCustomProps;
+
+const setCustomProp = document.documentElement.style.setProperty.bind(document.documentElement.style);
+
+function measureViewport() {
   return {
     width: window.innerWidth,
     height: window.innerHeight
   };
+}
+
+function measureCustomProps() {
+  return SUPPORTS_CSS_CUSTOM_PROPS ? {
+    // '--screen-height': `${window.screen.height / REM}rem`,
+    // '--screen-width': `${window.screen.width / REM}rem`,
+    // '--root-height': `${document.documentElement.clientHeight / REM}rem`,
+    '--root-width': `${document.documentElement.clientWidth / REM}rem`
+  } : {};
+}
+
+function setCustomProps() {
+  Object.keys(customProps).forEach(prop => {
+    if (customProps[prop] !== previousCustomProps[prop]) {
+      setCustomProp(prop, customProps[prop]);
+    }
+  });
+
+  previousCustomProps = customProps;
 }
 
 function subscribe(hooks) {
@@ -58,16 +86,12 @@ function callSubscribersHooks(hookLabel, viewport) {
   });
 }
 
-let previousViewport = getViewport();
-let viewport = previousViewport;
-
 function onPosition() {
   if (wasMeasured) {
     return;
   }
 
   wasMeasured = true;
-
   callSubscribersHooks('measure', viewport);
 }
 
@@ -76,9 +100,7 @@ function onSize() {
     return;
   }
 
-  setCSSCustomProps();
-
-  const nextViewport = getViewport();
+  const nextViewport = measureViewport();
 
   if (nextViewport.width === previousViewport.width &&
       nextViewport.height === previousViewport.height) {
@@ -87,7 +109,7 @@ function onSize() {
 
   wasMeasured = true;
   viewport = nextViewport;
-
+  customProps = measureCustomProps();
   callSubscribersHooks('measure', viewport);
 }
 
@@ -99,27 +121,25 @@ function frame() {
   if (wasMeasured) {
     wasMeasured = false;
     previousViewport = viewport;
-
+    setCustomProps();
     callSubscribersHooks('mutate');
   }
 
   raf(frame);
 }
 
-function setCSSCustomProps() {
-  document.documentElement.style.setProperty('--screen-width', `${window.screen.width / REM}rem`);
-  document.documentElement.style.setProperty('--screen-height', `${window.screen.height / REM}rem`);
-}
-
 function start() {
+  // Bind event listeners that trigger measurements
   window.addEventListener('scroll', onPosition);
   window.addEventListener('resize', onSize);
   window.addEventListener('orientationchange', onSize);
 
-  setCSSCustomProps();
-
-  // Main app clock
-  raf(frame);
+  // Measure & set initial custom props, then kick off the mutation loop
+  raf(() => {
+    customProps = measureCustomProps();
+    setCustomProps();
+    frame();
+  });
 }
 
 module.exports = {

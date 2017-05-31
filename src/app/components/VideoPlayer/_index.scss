@@ -39,6 +39,7 @@
   outline: none;
   width: 100%;
   max-width: 100vw;
+  max-width: var(--root-width);
   height: 100%;
   cursor: pointer;
   -webkit-tap-highlight-color: $color-black-transparent;
