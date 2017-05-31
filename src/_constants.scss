@@ -53,6 +53,8 @@ $gradient-horizontal-grey-50-0-0-75-100: linear-gradient(to right, $color-grey-5
 $gradient-horizontal-grey-100-0-0-75-100: linear-gradient(to right, $color-grey-100-transparent 0%, $color-grey-100 75%);
 $gradient-horizontal-45-40-65-0: linear-gradient(to right, $color-black-transparent-40 45%, $color-black-transparent 65%);
 
+$gradient-radial-0-0-100-60: radial-gradient(circle, $color-black-transparent 0%, $color-black-transparent-60 100%);
+
 @function cells($numColumns, $totalColumns: 12) {
   @return $numColumns / $totalColumns * 100%;
 }

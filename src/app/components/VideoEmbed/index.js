@@ -39,7 +39,7 @@ function VideoEmbed({
   VideoPlayer.getMetadata(videoId, (err, metadata) => {
     if (err) {
       if (IS_PREVIEW) {
-        prepend(videoEmbedEl, VideoPlayer.UnpublishedVideoPlaceholder());
+        prepend(videoEmbedEl, VideoPlayer.UnpublishedVideoPlaceholder(videoId));
       }
     
       return;

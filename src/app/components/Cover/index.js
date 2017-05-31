@@ -60,7 +60,7 @@ function Cover({
     VideoPlayer.getMetadata(videoId, (err, metadata) => {
       if (err) {
         if (IS_PREVIEW) {
-          before(mediaEl, VideoPlayer.UnpublishedVideoPlaceholder());
+          before(mediaEl, VideoPlayer.UnpublishedVideoPlaceholder(videoId));
           detach(mediaEl);
         }
       
@@ -142,6 +142,7 @@ function transformSection(section) {
   const [, smRatio] = section.suffix.match(Picture.SM_RATIO_PATTERN) || [];
   const [, mdRatio] = section.suffix.match(Picture.MD_RATIO_PATTERN) || [];
   const [, lgRatio] = section.suffix.match(Picture.LG_RATIO_PATTERN) || [];
+  let sourceMediaEl;
 
   const nodes = [].concat(section.betweenNodes);
 
@@ -171,7 +172,7 @@ function transformSection(section) {
 
       if (videoId || imgEl) {
         config.mediaCaptionEl = Caption.createFromEl(node);
-        detach(node);
+        sourceMediaEl = node;
       }
     }
 
@@ -199,6 +200,10 @@ function transformSection(section) {
   section.betweenNodes = [];
 
   section.replaceWith(Cover(config));
+
+  if (sourceMediaEl) {
+    detach(sourceMediaEl);
+  }
 }
 
 module.exports = Cover;

@@ -5,7 +5,7 @@ const url2cmid = require('util-url2cmid');
 const xhr = require('xhr');
 
 // Ours
-const {append, isElement, selectAll, setText, toggleAttribute, twoDigits} = require('../../../utils');
+const {append, isElement, select, selectAll, setText, toggleAttribute, twoDigits} = require('../../../utils');
 const {nextFrame, subscribe} = require('../../loop');
 
 const BACKGROUND_IMAGE_PATTERN = /url\(['"]?(.*\.\w*)['"]?\)/;
@@ -174,15 +174,15 @@ function whenActionKey(fn) {
   };
 }
 
-function UnpublishedVideoPlaceholder() {
+function UnpublishedVideoPlaceholder(title) {
   return html`
-    <div class="UnpublishedVideoPlaceholder">
+    <div class="UnpublishedVideoPlaceholder" title="Video ID: ${title}">
       <div class="u-sizer-sm-16x9 u-sizer-md-16x9 u-sizer-lg-16x9"></div>
       <p>
-        This video is unpublished and cannot be previewed in Phase 1. Have a look in
+        Unpublished videos cannot be previewed on the mobile site. Try the
         <a target="_blank" href="${
-          window.location.href.replace('nucwed', 'beta-nucwed')
-        }">Phase 2</a>.
+          window.location.href.replace('/mobile/', '/')
+        }">standard site</a>.
       </p>
     </div>
   `;
@@ -197,42 +197,43 @@ function getMetadata(videoElOrId, callback) {
 
   if (isElement(videoElOrId)) {
     done(null, {
-      posterURL: videoElOrId.getAttribute('poster'),
-      sources: selectAll('source', videoElOrId).map(source => ({
-        src: source.getAttribute('src'),
-        type: source.getAttribute('type')
-      }))
+      posterURL: videoElOrId.poster,
+      sources: formatSources(selectAll('source', videoElOrId))
     });
   } else if ('WCMS' in window) {
     // Phase 2
     // * Sources & poster are nested inside global `WCMS` object
 
-    let wasConfigFound;
-
     Object.keys(WCMS.pluginCache.plugins.videoplayer)
-    .forEach(key => {
-      if (wasConfigFound) {
-        return;
-      }
-
+    .some(key => {
       const config = WCMS.pluginCache.plugins.videoplayer[key][0].videos[0];
 
       if (config.url.indexOf(videoElOrId) > -1) {
-        wasConfigFound = true;
+        return done(null, {
+          posterURL: config.thumbnail.replace('-thumbnail', '-large'),
+          sources: formatSources(config.sources, 'label')
+        });
+      }
+    });
+  } else if ('inlineVideoData' in window) {
+    // Phase 1 (Standard)
+    // * Sources are nested inside global `inlineVideoData` object
+    // * Poster may be inferred from original embed's partial jwplayer transform
+    
+    selectAll('.inline-content.video[data-inline-video-data-index]')
+    .some(el => {
+      if (select(`[href*="/${videoElOrId}"]`, el)) {
+        const posterEl = select('img, .inline-video', el);
 
-        const posterURL = config.thumbnail.replace('-thumbnail', '-large');
-        const sources = config.sources
-        .sort((a, b) => a.label < b.label)
-        .map(source => ({
-          src: source.url,
-          type: source.contentType
-        }));
-
-        done(null, {posterURL, sources});
+        return done(null, {
+          posterURL: posterEl ? (posterEl.src || posterEl.style.backgroundImage.slice(5, -2)) : null,
+          sources: formatSources(window.inlineVideoData[el.getAttribute('data-inline-video-data-index')])
+        });
       }
     });
   } else {
-    // Phase 1
+    // Phase 1 (Mobile):
+    // * Doesn't embed video; only teases to it.
     // * Video must be published because...
     // * Sources and poster must be fetched from live Content API
 
@@ -245,14 +246,22 @@ function getMetadata(videoElOrId, callback) {
       }
 
       const posterId = body.relatedItems.length > 0 ? body.relatedItems[0].id : null;
-      const posterURL = posterId ? `/news/rimage/${posterId}-16x9-large.jpg` : null; // TODO: Can we always depend on Phase 2 image?
-      const sources = body.renditions
-      .sort((a, b) => a.fileSize < b.fileSize)
-      .map(rendition => ({src: rendition.url, type: rendition.contentType}));
 
-      done(null, {posterURL, sources});
+      done(null, {
+        posterURL: posterId ? `/news/image/${posterId}-16x9-940x529.jpg` : null,
+        sources: formatSources(body.renditions)
+      });
     });
   }
+}
+
+function formatSources(sources, sortProp = 'bitrate') {
+  return sources
+  .sort((a, b) => +a[sortProp] < +b[sortProp])
+  .map(source => ({
+    src: source.src || source.url,
+    type: source.type || source.contentType
+  }));
 }
 
 function measure(viewport) {

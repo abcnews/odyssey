@@ -81,6 +81,10 @@ function promoteToMain(storyEl, meta) {
 }
 
 function reset(storyEl, meta) {
+  // Tag indices of Phase 1 (Standard) video embeds, so we can resolve them later
+  selectAll('.inline-content.video:not(.expired)')
+  .forEach((el, index) => el.setAttribute('data-inline-video-data-index', index));
+
   storyEl = promoteToMain(storyEl, meta);
 
   Object.keys(TEMPLATE_REMOVABLES).forEach(templateBodySelector => {

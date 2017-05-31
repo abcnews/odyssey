@@ -46,7 +46,7 @@ function Header({
     VideoPlayer.getMetadata(videoElOrId, (err, metadata) => {
       if (err) {
         if (IS_PREVIEW) {
-          before(mediaEl, VideoPlayer.UnpublishedVideoPlaceholder());
+          before(mediaEl, VideoPlayer.UnpublishedVideoPlaceholder(videoElOrId));
           detach(mediaEl);
         }
       
