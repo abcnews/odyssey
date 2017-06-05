@@ -99,23 +99,9 @@ function reset(storyEl, meta) {
     }
   });
 
-  selectAll(PREVIEW_CTX_SELECTOR, storyEl).forEach(el => {
-    [].slice.call(el.children).forEach(childEl => {
-      if (
-        childEl.tagName === 'SCRIPT' &&
-        childEl.textContent.match(PREVIEW_SCRIPT_PATTERN)
-      ) {
-        detach(childEl);
-      } else {
-        before(el, childEl);
-      }
-    });
-    detach(el);
-  });
-
   selectAll(SELECTORS.WYSIWYG_EMBED, storyEl).forEach(el => {
     dewysiwyg.normalise(el);
-    el.className = 'u-richtext';
+    el.className = `${el.className} u-richtext`;
   });
 
   selectAll(P1S_FLOAT.SELECTOR, storyEl).forEach(el => {
@@ -142,11 +128,19 @@ function reset(storyEl, meta) {
     }
   });
 
-  // selectAll(SELECTORS.WYSIWYG_EMBED, storyEl)
-  // .forEach(el => console.log(el));
-  //
-  // selectAll(SELECTORS.EMBED, storyEl)
-  // .forEach(el => console.log(el));
+  selectAll(PREVIEW_CTX_SELECTOR, storyEl).forEach(el => {
+    [].slice.call(el.children).forEach(childEl => {
+      if (
+        childEl.tagName === 'SCRIPT' &&
+        childEl.textContent.match(PREVIEW_SCRIPT_PATTERN)
+      ) {
+        detach(childEl);
+      } else {
+        before(el, childEl);
+      }
+    });
+    detach(el);
+  });
 
   return storyEl;
 }
