@@ -8,10 +8,9 @@ $color-white-transparent-60: rgba(255, 255, 255, .6);
 
 $color-black: #000;
 $color-black-transparent: rgba(0, 0, 0, 0);
-$color-black-transparent-10: rgba(0, 0, 0, .1);
-$color-black-transparent-40: rgba(0, 0, 0, .4);
-$color-black-transparent-43: rgba(0, 0, 0, .43);
-$color-black-transparent-50: rgba(0, 0, 0, .5);
+$color-black-transparent-15: rgba(0, 0, 0, .15);
+$color-black-transparent-30: rgba(0, 0, 0, .3);
+$color-black-transparent-45: rgba(0, 0, 0, .45);
 $color-black-transparent-60: rgba(0, 0, 0, .6);
 $color-black-transparent-75: rgba(0, 0, 0, .75);
 $color-black-transparent-93: rgba(0, 0, 0, .93);
@@ -45,13 +44,13 @@ $color-tertiary: #ffbf00;
 $color-darkTertiary: #7b3b3b;
 
 $gradient-vertical-0-0-100-60: linear-gradient(to bottom, $color-black-transparent 0%, $color-black-transparent-60 100%);
-$gradient-vertical-0-43-100-75: linear-gradient(to bottom, $color-black-transparent-43 0%, $color-black-transparent-75 100%);
+$gradient-vertical-50-0-100-60: linear-gradient(to bottom, $color-black-transparent 50%, $color-black-transparent-60 100%);
+$gradient-vertical-0-45-100-75: linear-gradient(to bottom, $color-black-transparent-45 0%, $color-black-transparent-75 100%);
 $gradient-vertical-40-0-80-60: linear-gradient(to bottom, $color-black-transparent 40%, $color-black-transparent-60 80%);
-$gradient-vertical-50-0-100-50: linear-gradient(to bottom, $color-black-transparent 50%, $color-black-transparent-50 100%);
 
-$gradient-horizontal-grey-50-0-0-75-100: linear-gradient(to right, $color-grey-50-transparent 0%, $color-grey-50 75%);
-$gradient-horizontal-grey-100-0-0-75-100: linear-gradient(to right, $color-grey-100-transparent 0%, $color-grey-100 75%);
-$gradient-horizontal-45-40-65-0: linear-gradient(to right, $color-black-transparent-40 45%, $color-black-transparent 65%);
+$gradient-horizontal-grey-50-0-75-100: linear-gradient(to right, $color-grey-50-transparent 0%, $color-grey-50 75%);
+$gradient-horizontal-grey-100-0-75-100: linear-gradient(to right, $color-grey-100-transparent 0%, $color-grey-100 75%);
+$gradient-horizontal-40-45-65-0: linear-gradient(to right, $color-black-transparent-45 40%, $color-black-transparent 65%);
 
 $gradient-radial-0-0-100-60: radial-gradient(circle, $color-black-transparent 0%, $color-black-transparent-60 100%);
 
