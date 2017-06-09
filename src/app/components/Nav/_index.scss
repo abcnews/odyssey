@@ -12,20 +12,16 @@
   width: 100%;
   height: $size-bar;
   background-color: $color-grey-brand;
+  transition: transform .25s cubic-bezier(0, 0, .32, 1);
   will-change: transform;
 
-  &.is-fixed {
+  .is-above & {
     position: fixed;
     top: 0;
-    transition: transform .25s cubic-bezier(0, 0, .32, 1);
+  }
 
-    @media (max-height: 49.9375rem) {
-      transform: translate3d(0, -102%, 0);
-
-      &.is-peeking {
-        transform: none;
-      }
-    }
+  .is-above &.is-hiding {
+    transform: translate3d(0, -102%, 0);
   }
 }
 
