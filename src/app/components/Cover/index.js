@@ -6,7 +6,7 @@ const url2cmid = require('util-url2cmid');
 // Ours
 const {IS_PREVIEW} = require('../../../constants');
 const {before, detach, isElement, select, trim} = require('../../../utils');
-const {subscribe} = require('../../loop');
+const {enqueue, subscribe} = require('../../scheduler');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
 const VideoPlayer = require('../VideoPlayer');
@@ -99,36 +99,21 @@ function Cover({
   `;
 
   if (mediaContainerEl && type === 'richtext' && isDocked) {
-    let listener = null;
-    let previousState = {};
     let state = {};
 
-    function measure(viewport) {
+    subscribe(function _checkIfCoverPropertiesShouldBeUpdated(client) {
       const rect = coverEl.getBoundingClientRect();
-      const isBeyond = viewport.height >= rect.bottom;
+      const isBeyond = client.height >= rect.bottom;
       const isFixed = !isBeyond && rect.top <= 0;
 
-      state = {
-        isFixed,
-        isBeyond
-      };
-    }
+      if (isFixed !== state.isFixed || isBeyond !== state.isBeyond) {
+        enqueue(function _updateCoverProperties() {
+          mediaContainerEl.classList[isFixed ? 'add' : 'remove']('is-fixed');
+          mediaContainerEl.classList[isBeyond ? 'add' : 'remove']('is-beyond');
+        });
 
-    function mutate() {
-      if (state.isFixed !== previousState.isFixed) {
-        mediaContainerEl.classList[state.isFixed ? 'add' : 'remove']('is-fixed');
+        state = {isFixed, isBeyond};
       }
-
-      if (state.isBeyond !== previousState.isBeyond) {
-        mediaContainerEl.classList[state.isBeyond ? 'add' : 'remove']('is-beyond');
-      }
-
-      previousState = state;
-    }
-
-    subscribe({
-      measure,
-      mutate
     });
   }
 

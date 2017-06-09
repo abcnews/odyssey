@@ -274,13 +274,6 @@ function dePx(px) {
   return +px.replace('px', '');
 }
 
-function triggerScroll() {
-  const evt = document.createEvent('HTMLEvents');
-  
-  evt.initEvent('scroll', true, false);
-  window.dispatchEvent(evt);
-}
-
 module.exports = {
   returnFalse,
   trim,
@@ -304,6 +297,5 @@ module.exports = {
   getSections,
   getPlaceholders,
   linebreaksToParagraphs,
-  dePx,
-  triggerScroll
+  dePx
 };

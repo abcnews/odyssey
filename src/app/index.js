@@ -3,7 +3,7 @@ const html = require('bel');
 
 // Ours
 const {SELECTORS} = require('../constants');
-const {after, append, before, create, detach, detachAll,
+const {after, append, before, detach, detachAll,
   getPlaceholders, getSections, isElement, prepend,
   select, selectAll} = require('../utils');
 const Caption = require('./components/Caption');
@@ -17,7 +17,7 @@ const Quote = require('./components/Quote');
 const Share = require('./components/Share');
 const UPull = require('./components/UPull');
 const VideoEmbed = require('./components/VideoEmbed');
-const {start, subscribe} = require('./loop');
+const {enqueue, start, subscribe} = require('./scheduler');
 const {getMeta} = require('./meta');
 const reset = require('./reset');
 
@@ -47,7 +47,7 @@ function app(done) {
   ]).forEach(placeholder => {
     switch (placeholder.name) {
       case 'hr':
-        placeholder.replaceWith(create('hr'));
+        placeholder.replaceWith(html`<hr>`);
         break;
       case 'share':
         Share.transformPlaceholder(placeholder, meta.shareLinks);
@@ -96,13 +96,11 @@ function app(done) {
   .map(el => ({
     el,
     nextEl: el.nextElementSibling,
-    previousState: {},
     state: {}
   }));
 
   if (parallaxes.length > 0) {
-
-    function measure() {
+    subscribe(function _checkIfParallaxesPropertiesNeedToBeUpdated() {
       parallaxes.forEach(parallax => {
         const rect = parallax.el.getBoundingClientRect();
 
@@ -114,27 +112,17 @@ function app(done) {
         const opacityExtent = parallax.nextEl ?
           parallax.nextEl.getBoundingClientRect().top - top :
           rect.height;
+        const opacity = 1 + top / opacityExtent;
+        const yOffset = -33.33 * (top / rect.height);
 
-        parallax.state = {
-          opacity: 1 + top / opacityExtent,
-          translateY: -33.33 * (top / rect.height),
-        };
-      });
-    }
-
-    function mutate() {
-      parallaxes.forEach(parallax => {
-        if (parallax.state.translateY !== parallax.previousState.translateY) {
-          parallax.el.style.opacity = parallax.state.opacity;
-          parallax.el.style.transform = `translateY(${parallax.state.translateY}%)`;
-          parallax.previousState = parallax.state;
+        if (opacity !== parallax.state.opacity) {
+          enqueue(function _updateParallaxProperties() {
+            parallax.el.style.opacity = opacity;
+            parallax.el.style.transform = `translate3d(0, ${yOffset}%, 0)`;
+          });
+          parallax.state = {opacity, yOffset};
         }
       });
-    }
-
-    subscribe({
-      measure,
-      mutate
     });
   }
 

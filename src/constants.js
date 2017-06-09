@@ -3,6 +3,7 @@ const ns = require('util-news-selectors');
 
 const NEWLINE = '\n';
 const HYPHEN = '-';
+const CSS_URL = /url\('?"?(.*?)"?'?\)/;
 
 const SELECTORS = {
   GLOBAL_NAV: '#abcHeader.global',
@@ -63,10 +64,24 @@ const MS_VERSION = (ua => {
   }
 })(window.navigator.userAgent);
 
+const SUPPORTS_PASSIVE = (isSupported => {
+  try {
+    const options = Object.defineProperty({}, 'passive', {
+      get: function () {
+        isSupported = true;
+      }
+    });
+
+    window.addEventListener("test", null, options);
+  } catch(err) {}
+
+  return isSupported;
+})(false);
 
 module.exports = {
   NEWLINE,
   HYPHEN,
+  CSS_URL,
   SELECTORS,
   EMBED_TAGNAMES,
   NOEL,
@@ -74,5 +89,6 @@ module.exports = {
   MQ,
   SMALLEST_IMAGE,
   IS_PREVIEW,
-  MS_VERSION
+  MS_VERSION,
+  SUPPORTS_PASSIVE
 };

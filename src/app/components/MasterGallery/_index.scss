@@ -22,7 +22,7 @@ html.is-master-gallery-open {
   justify-content: center;
   position: fixed;
   opacity: 0;
-  transform: translate(0, 102%);
+  transform: translate(0, 200%); // Out of picture loader range
   z-index: 2;
   top: 0;
   left: 0;
@@ -62,18 +62,6 @@ html.is-master-gallery-open {
 
   .Picture {
     max-width: 100%;
-    height: auto;
-  }
-
-  [class*="u-sizer"] {
-    background-color: $color-black;
-  }
-
-  img {
-    transform: translate(-50%, -50%);
-    top: 50%;
-    left: 50%;
-    width: auto;
     height: auto;
   }
 

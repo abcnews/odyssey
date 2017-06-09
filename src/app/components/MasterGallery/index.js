@@ -4,7 +4,8 @@ const screenfull = require('screenfull');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const {append, select, triggerScroll} = require('../../../utils');
+const {append, select} = require('../../../utils');
+const {invalidateSize} = require('../../scheduler');
 const Caption = require('../Caption');
 const Gallery = require('../Gallery');
 const Picture = require('../Picture');
@@ -18,6 +19,10 @@ function MasterGallery() {
     return masterGalleryEl;
   }
 
+  if (images.length === 0) {
+    return html`<div class="MasterGallery is-empty"></div>`;
+  }
+
   const galleryEl = Gallery({images});
 
   galleryEl.classList.remove('u-full');
@@ -29,7 +34,6 @@ function MasterGallery() {
     if (index != null) {
       galleryEl.api.goToImage(+index, true);
       open(galleryEl);
-      triggerScroll();
     }
   }
 
@@ -103,6 +107,7 @@ let lastKnownScrollY;
 function open(el) {
   lastKnownScrollY = window.scrollY;
   document.documentElement.classList.add('is-master-gallery-open');
+  invalidateSize();
 
   if (screenfull.enabled) {
     screenfull.request();
@@ -121,7 +126,8 @@ if (screenfull) {
   screenfull.onchange(() => {
     if (screenfull.isFullscreen) {
       window.scrollTo(0, lastKnownScrollY);
-      // ...because window scrolls to y=0 while fullscreen is active 
+      // ...because window scrolls to y=0 while fullscreen is active
+      setTimeout(invalidateSize, 1000);
     } else {
       close();
     }

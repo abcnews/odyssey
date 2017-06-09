@@ -1,8 +1,16 @@
-// This follows the same logic as Picture components:
+// This follows the same rules as Picture components:
 // all devices use the large aspect ratio when in landscape orientation
 
 [class*="u-sizer"] {
   display: block;
+  overflow: hidden;
+  position: relative;
+  min-height: 100%;
+  background-image: var(--placeholder-image);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-size: cover;
 }
 
 @media #{$mq-sm} {

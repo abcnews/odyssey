@@ -143,6 +143,12 @@
     cursor: -webkit-grab;
     cursor: -moz-grab;
     cursor: grab;
+    transition: opacity .125s;
+    will-change: opacity;
+
+    @media #{$mq-lg} {
+      transition-duration: .25s;
+    }
 
     .is-mosaic & {
       display: none;
@@ -152,6 +158,7 @@
       cursor: -webkit-grabbing;
       cursor: -moz-grabbing;
       cursor: grabbing;
+      transition-duration: 0s;
     }
   }
 
@@ -161,19 +168,6 @@
 
     .is-mosaic & {
       display: block;
-    }
-  }
-
-  picture {
-    transition: opacity .125s;
-    will-change: opacity;
-
-    @media #{$mq-lg} {
-      transition-duration: .25s;
-    }
-
-    .is-moving & {
-      transition-duration: 0s;
     }
   }
 

@@ -20,7 +20,7 @@
     transition: transform .25s cubic-bezier(0, 0, .32, 1);
 
     @media (max-height: 49.9375rem) {
-      transform: translateY(-102%);
+      transform: translate3d(0, -102%, 0);
 
       &.is-peeking {
         transform: none;

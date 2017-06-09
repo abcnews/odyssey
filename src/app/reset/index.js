@@ -63,6 +63,14 @@ const P2_FLOAT = {
   REPLACEMENT: 'u-pull-$2'
 };
 
+function resetMetaViewport() {
+  const el = select('meta[name="viewport"]');
+
+  if (el) {
+    el.setAttribute('content', 'width=device-width, initial-scale=1, minimum-scale=1');
+  }
+}
+
 function promoteToMain(storyEl, meta) {
   const existingMainEl = select(SELECTORS.MAIN);
   const id = existingMainEl.getAttribute('id');
@@ -81,6 +89,9 @@ function promoteToMain(storyEl, meta) {
 }
 
 function reset(storyEl, meta) {
+  // Update (or add) the meta viewport tag so that touch devices don't introduce a click delay
+  resetMetaViewport();
+
   // Tag indices of Phase 1 (Standard) video embeds, so we can resolve them later
   selectAll('.inline-content.video:not(.expired)')
   .forEach((el, index) => el.setAttribute('data-inline-video-data-index', index));

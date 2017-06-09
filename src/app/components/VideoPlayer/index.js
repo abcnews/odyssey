@@ -1,14 +1,15 @@
 // External
 const html = require('bel');
 const playInline = require('iphone-inline-video');
+const raf = require('raf');
 const url2cmid = require('util-url2cmid');
 const xhr = require('xhr');
 
 // Ours
+const {CSS_URL} = require('../../../constants');
 const {append, isElement, select, selectAll, setText, toggleAttribute, twoDigits} = require('../../../utils');
-const {nextFrame, subscribe} = require('../../loop');
+const {enqueue, subscribe} = require('../../scheduler');
 
-const BACKGROUND_IMAGE_PATTERN = /url\(['"]?(.*\.\w*)['"]?\)/;
 const API_URL_ROOT = 'https://content-gateway.abc-prod.net.au/api/v1/content/id/';
 
 const players = [];
@@ -58,7 +59,7 @@ function VideoPlayer({
 
   // iOS8-9 inline video (muted only)
   if (scrollplayPct || isAutoplay) {
-    nextFrame(() => {
+    raf(() => {
       playInline(videoEl, !isMuted);
     });
   }
@@ -189,10 +190,15 @@ function UnpublishedVideoPlaceholder(title) {
 }
 
 function getMetadata(videoElOrId, callback) {
+  let wasCalled;
+
   function done(err, metadata) {
-    nextFrame(() => {
-      callback(err, metadata);
-    });
+    if (!wasCalled) {
+      wasCalled = true;
+      raf(() => {
+        callback(err, metadata);
+      });
+    }
   }
 
   if (isElement(videoElOrId)) {
@@ -209,10 +215,12 @@ function getMetadata(videoElOrId, callback) {
       const config = WCMS.pluginCache.plugins.videoplayer[key][0].videos[0];
 
       if (config.url.indexOf(videoElOrId) > -1) {
-        return done(null, {
+        done(null, {
           posterURL: config.thumbnail.replace('-thumbnail', '-large'),
           sources: formatSources(config.sources, 'label')
         });
+
+        return true;
       }
     });
   } else if ('inlineVideoData' in window) {
@@ -225,10 +233,12 @@ function getMetadata(videoElOrId, callback) {
       if (select(`[href*="/${videoElOrId}"]`, el)) {
         const posterEl = select('img, .inline-video', el);
 
-        return done(null, {
-          posterURL: posterEl ? (posterEl.src || posterEl.style.backgroundImage.slice(5, -2)) : null,
+        done(null, {
+          posterURL: posterEl ? (posterEl.style.backgroundImage.match(CSS_URL) || [, posterEl.src])[1] : null,
           sources: formatSources(window.inlineVideoData[el.getAttribute('data-inline-video-data-index')])
         });
+
+        return true;
       }
     });
   } else {
@@ -264,26 +274,22 @@ function formatSources(sources, sortProp = 'bitrate') {
   }));
 }
 
-function measure(viewport) {
+subscribe(function _checkIfVideoPlayersNeedToBeToggled(client) {
   players.forEach(player => {
     const rect = player.getRect();
-    const scrollplayExtent = (viewport.height / 100 * (player.scrollplayPct || 0));
+    const scrollplayExtent = (client.height / 100 * (player.scrollplayPct || 0));
 
     player.isVisible = (
-      // Fully inside viewport
-      (rect.top >= 0 && rect.bottom <= viewport.height) ||
-      // Fully covering viewport
-      (rect.top <= 0 && rect.bottom >= viewport.height) ||
+      // Fully inside client
+      (rect.top >= 0 && rect.bottom <= client.height) ||
+      // Fully covering client
+      (rect.top <= 0 && rect.bottom >= client.height) ||
       // Top within scrollplay range
-      (rect.top >= 0 && rect.top <= (viewport.height - scrollplayExtent)) ||
+      (rect.top >= 0 && rect.top <= (client.height - scrollplayExtent)) ||
       // Bottom within scrollplay range
-      (rect.bottom >= scrollplayExtent && (rect.bottom <= viewport.height))
+      (rect.bottom >= scrollplayExtent && (rect.bottom <= client.height))
     );
-  });
-}
 
-function mutate() {
-  players.forEach(player => {
     if (player.isUserInControl || player.isAutoplay || !player.scrollplayPct) {
       return;
     }
@@ -292,16 +298,13 @@ function mutate() {
       (typeof player.wasVisible === 'undefined' && player.isVisible) ||
       (typeof player.wasVisible !== 'undefined' && player.isVisible !== player.wasVisible)
     ) {
-      player.togglePlay(null, true);
+      enqueue(function _toggleVideoPlay() {
+        player.togglePlay(null, true);
+      })
     }
 
     player.wasVisible = player.isVisible;
   });
-}
-
-subscribe({
-  measure,
-  mutate
 });
 
 module.exports = VideoPlayer;

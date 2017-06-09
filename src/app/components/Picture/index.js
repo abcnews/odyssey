@@ -1,8 +1,12 @@
 // External
 const html = require('bel');
+const picturefill = require('picturefill');
 
 // Ours
-const {MQ, SMALLEST_IMAGE} = require('../../../constants');
+const {MQ, SMALLEST_IMAGE, MS_VERSION} = require('../../../constants');
+const {select, selectAll} = require('../../../utils');
+const {enqueue, subscribe} = require('../../scheduler');
+const {blurImage} = require('./blur');
 
 const SIZES = {
   '16x9': {sm: '700x394', md: '940x529', lg: '2150x1210'},
@@ -22,6 +26,9 @@ const DEFAULTS = {
   MD_RATIO: '3x2',
   LG_RATIO: '16x9'
 };
+const LOAD_RANGE = .5;
+
+const pictures = [];
 
 function Picture({
   src = SMALLEST_IMAGE,
@@ -57,24 +64,18 @@ function Picture({
     .replace(RATIO_PATTERN, lgRatio)
     .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[lgRatio].md}`);
 
-  // const currentSrc = SMALLEST_IMAGE;
+  const imgEl = html`<img alt="${alt}" data-object-fit="" />`;
 
-  // const imgEl = html`<img src="${currentSrc}" alt="${alt}" />`;
-  const imgEl = html`<img alt="${alt}" loading="" />`;
-
-  const loadListener = imgEl.addEventListener('load', () => {
-    imgEl.removeEventListener('load', loadListener);
-    imgEl.removeAttribute('loading');
-  }, false);
+  const placeholderEl = html`<div class="${sizerClassName}"></div>`;
 
   const pictureEl = html`
     <a class="Picture">
-      <div class="${sizerClassName}"></div>
+      ${placeholderEl}
       <picture>
-        <source srcset="${lgImageURL}" media="${MQ.LG}" />
-        <source srcset="${lansdcapeNotLgImageURL}" media="${MQ.LANDSCAPE} and ${MQ.NOT_LG}" />
-        <source srcset="${mdImageURL}" media="${MQ.MD}" />
-        <source srcset="${smImageURL}" media="${MQ.SM}" />
+        <source data-srcset="${lgImageURL}" media="${MQ.LG}" />
+        <source data-srcset="${lansdcapeNotLgImageURL}" media="${MQ.LANDSCAPE} and ${MQ.NOT_LG}" />
+        <source data-srcset="${mdImageURL}" media="${MQ.MD}" />
+        <source data-srcset="${smImageURL}" media="${MQ.SM}" />
         ${imgEl}
       </picture>
     </a>
@@ -84,8 +85,76 @@ function Picture({
     pictureEl.href = linkUrl;
   }
 
+  const picture = {
+    getRect: () => {
+      // Fixed images should use their parent's rect, as they're always in the viewport
+      const position = window.getComputedStyle(pictureEl).position;
+      const el = (position === 'fixed' ? pictureEl.parentElement : pictureEl);
+
+      return el.getBoundingClientRect();
+    },
+    load: () => {
+      picture.isLoading = true;
+      imgEl.addEventListener('load', picture.loaded, false);
+      selectAll('source', pictureEl).forEach(sourceEl => {
+        sourceEl.setAttribute('srcset', sourceEl.getAttribute('data-srcset'));
+      });
+      imgEl.setAttribute('loading', '');
+
+      if (!MS_VERSION || MS_VERSION < 13) {
+        picturefill({reevaluate: true, elements: [imgEl]});
+      }
+    },
+    loaded: () => {
+      picture.isLoaded = true;
+      picture.isLoading = false;
+      imgEl.removeEventListener('load', picture.loaded);
+      imgEl.removeAttribute('loading', '');
+      imgEl.setAttribute('loaded', '');
+
+      if (window.objectFitPolyfill) {
+        window.objectFitPolyfill();
+      }
+    }
+  };
+
+  pictures.push(picture);
+
+  enqueue(function _blurPlaceholderImage() {
+    blurImage(src, blurredImageURL => {
+      placeholderEl.style.setProperty('--placeholder-image', `url("${blurredImageURL}")`);
+    });
+  });
+
   return pictureEl;
 };
+
+subscribe(function _checkIfPicturesNeedToBeLoaded(client) {
+  pictures.forEach(picture => {
+    if (picture.isLoaded || picture.isLoading) {
+      return;
+    }
+
+    const rect = picture.getRect();
+
+    if (rect.width === 0 && rect.height === 0) {
+      return;
+    }
+
+    if (
+      // Fully covering client
+      (rect.top <= 0 && rect.bottom >= client.height) ||
+      // Top within load range
+      (rect.top >= 0 && rect.top <= client.height * (1 + LOAD_RANGE)) ||
+      // Bottom within load range
+      (rect.bottom >= client.height * -LOAD_RANGE && rect.bottom <= client.height)
+    ) {
+      enqueue(function _loadPicture() {
+        picture.load();
+      });
+    }
+  });
+});
 
 module.exports = Picture;
 module.exports.SIZES = SIZES
