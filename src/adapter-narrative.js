@@ -1,7 +1,7 @@
 require('./polyfills');
 
 // Ours
-const {after, append, create, detachAll, select, selectAll} = require('./utils');
+const {after, append, detachAll, select, selectAll} = require('./utils');
 
 function updateAnchor(pair) {
   selectAll(`a[name^="${pair[0]}"]`)
@@ -16,11 +16,11 @@ function updateAnchor(pair) {
 selectAll('a[name="title"]')
 .forEach(el => {
   const nextEl = el.nextElementSibling;
-  
-  append(select('head'), create('meta', {
-    name: 'replacement-title',
-    content: nextEl.textContent
-  }));
+  const metaEl = document.createElement('meta');
+
+  metaEl.setAttribute('name', 'replacement-title');
+  metaEl.setAttribute('content', nextEl.textContent);
+  append(select('head'), metaEl);
   detachAll([el, nextEl]);
 });
 
@@ -32,9 +32,10 @@ selectAll('a[name="subtitle"]')
     nextEl = nextEl.nextElementSibling;
   }
 
-  after(nextEl, create('a', {
-    name: 'endheader'
-  }));
+  const endTagEl = document.createElement('a');
+
+  endTagEl.setAttribute('name', 'endheader');
+  after(nextEl, endTagEl);
 });
 
 [

@@ -57,24 +57,6 @@ function isDocument(node) {
   return node && node.nodeType === Node.DOCUMENT_NODE;
 }
 
-function create(tagName, attributes) {
-  const el = document.createElement(tagName);
-  let name;
-  let value;
-
-  for (key in Object(attributes)) {
-    value = attributes[key];
-
-    if (key in el) {
-      el[key] = value;
-    } else {
-      el.setAttribute(key, value);
-    }
-  }
-
-  return el;
-}
-
 function select(selector, root) {
   root = isElement(root) ? root : document;
 
@@ -220,7 +202,7 @@ function _linebreaksToParagraphsAppender(state) {
     return state;
   }
 
-  const pEl = create('p');
+  const pEl = document.createElement('p');
 
   while (state.stack.length) {
     append(pEl, state.stack.shift());
@@ -234,7 +216,7 @@ function _linebreaksToParagraphsAppender(state) {
 function _linebreaksToParagraphsReducer(state, node, index, nodes) {
   // On the first iteration, initialise the state
   if (index === 0) {
-    state.cEl = create('div');
+    state.cEl = document.createElement('div');
     state.stack = [];
   }
 
@@ -288,6 +270,10 @@ function linebreaksToParagraphs(el) {
   return el;
 }
 
+function dePx(px) {
+  return +px.replace('px', '');
+}
+
 function triggerScroll() {
   const evt = document.createEvent('HTMLEvents');
   
@@ -305,7 +291,6 @@ module.exports = {
   isText,
   isElement,
   isDocument,
-  create,
   select,
   selectAll,
   detach,
@@ -319,5 +304,6 @@ module.exports = {
   getSections,
   getPlaceholders,
   linebreaksToParagraphs,
+  dePx,
   triggerScroll
 };
