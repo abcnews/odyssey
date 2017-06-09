@@ -33,8 +33,9 @@ function blurImage(url, done) {
 		const blurredURL = cache[url] = canvasEl.toDataURL();
 
 		done(blurredURL);
-	}
+	};
 
+	imgEl.crossOrigin = '';
 	imgEl.src = url;
 }
 
