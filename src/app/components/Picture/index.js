@@ -112,6 +112,12 @@ function Picture({
       imgEl.removeAttribute('loading', '');
       imgEl.setAttribute('loaded', '');
 
+      setTimeout(() => {
+        enqueue(function _removePlaceholderImage() {
+          placeholderEl.style.removeProperty('--placeholder-image');
+        });
+      }, 1000);
+
       if (window.objectFitPolyfill) {
         window.objectFitPolyfill();
       }
@@ -120,7 +126,7 @@ function Picture({
 
   pictures.push(picture);
 
-  enqueue(function _blurPlaceholderImage() {
+  enqueue(function _createAndAddPlaceholderImage() {
     blurImage(src, blurredImageURL => {
       placeholderEl.style.setProperty('--placeholder-image', `url("${blurredImageURL}")`);
     });
