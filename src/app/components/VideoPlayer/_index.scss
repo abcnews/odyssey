@@ -209,7 +209,7 @@
     transition: width 1s linear;
 
     [ended][playing] + .VideoPlayer-interface & {
-      transition: none;
+      transition-duration: 0s;
     }
 	}
 
@@ -218,7 +218,7 @@
     transition: width 1s linear;
 
     [ended][playing] + .VideoPlayer-interface & {
-      transition: none;
+      transition-duration: 0s;
     }
 	}
 
@@ -227,7 +227,7 @@
     transition: width 1s linear;
 
     [ended][playing] + .VideoPlayer-interface & {
-      transition: none;
+      transition-duration: 0s;
     }
 	}
 }
