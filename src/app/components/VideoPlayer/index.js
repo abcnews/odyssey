@@ -6,7 +6,7 @@ const url2cmid = require('util-url2cmid');
 const xhr = require('xhr');
 
 // Ours
-const {CSS_URL} = require('../../../constants');
+const {CSS_URL, MQ} = require('../../../constants');
 const {append, isElement, select, selectAll, setText, toggleAttribute, twoDigits} = require('../../../utils');
 const {enqueue, subscribe} = require('../../scheduler');
 
@@ -52,9 +52,11 @@ function VideoPlayer({
     toggleAttribute(videoEl, attributeName, booleanAttributes[attributeName]);
   });
 
-  sources.forEach(source => {
-    append(videoEl, html`<source src="${source.src}" type="${source.type}" />`);
-  });
+  const source = sources[sources.length > 1 && window.matchMedia(MQ.SM).matches ? 1 : 0];
+
+  if (source) {
+    videoEl.src = source.src;
+  }
 
   // iOS8-9 inline video (muted only)
   if (isScrollplay) {
