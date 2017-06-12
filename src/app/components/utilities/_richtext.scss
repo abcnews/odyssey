@@ -164,7 +164,8 @@
   }
 }
 
-[class*="u-pull"] [class*="u-richtext"] {
+[class*="u-richtext"] > [class*="u-richtext"],
+[class*="u-pull"] > [class*="u-richtext"] {
   margin-top: .375rem;
   margin-bottom: .375rem;
   border-top: .0625rem solid $color-grey-400;
