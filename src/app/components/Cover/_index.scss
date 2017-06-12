@@ -134,16 +134,6 @@
   z-index: 1;
 
   .is-richtext > & {
-
-    &:nth-child(2):last-child {
-      padding-top: 5rem;
-      padding-bottom: 5rem;
-
-      & > :last-child {
-        margin-bottom: 0;
-      }
-    }
-
     &::before {
       content: "";
       position: absolute;
@@ -169,6 +159,15 @@
         width: cells(10);
       }
     }
+
+    &:last-child > :last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .is-richtext:not(.is-piecemeal) > &:last-child {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
   }
 
   .is-piecemeal > & {
@@ -183,11 +182,11 @@
     }
 
     &:nth-child(2) {
-      margin-top: 80vh;
+      margin-top: 100vh;
     }
 
     &:last-child {
-      margin-bottom: 80vh;
+      margin-bottom: 50vh;
     }
 
     &::before {
