@@ -436,8 +436,8 @@ function stackBlurCanvasRGB( context, top_x, top_y, width, height, radius )
 		// so it might be okay to remove the whole try/catch block and just use
 		// imageData = context.getImageData( top_x, top_y, width, height );
 		try {
-			if (netscape && netscape.security) {
-				netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead");
+			if (window.netscape) {
+				window.netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead");
 			}
 
 			imageData = context.getImageData( top_x, top_y, width, height );
