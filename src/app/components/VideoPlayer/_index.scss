@@ -131,6 +131,7 @@
 }
 
 .VideoPlayer-mute {
+  display: none;
   top: 0;
   right: 0;
   margin: 0;
@@ -146,6 +147,18 @@
   background-size: 100%;
   cursor: pointer;
 
+  [audio] + .VideoPlayer-interface & {
+    display: block;
+  }
+
+  [muted] + .VideoPlayer-interface & {
+    opacity: 1;
+  }
+
+  [muted] + .VideoPlayer-interface & {
+    background-image: url(video-player/mute.svg);
+  }
+
   &:focus {
     opacity: 1;
     outline-color: Highlight;
@@ -157,13 +170,6 @@
     }
   }
 
-  [muted] + .VideoPlayer-interface & {
-    opacity: 1;
-  }
-
-  [muted] + .VideoPlayer-interface & {
-    background-image: url(video-player/mute.svg);
-  }
 }
 
 .VideoPlayer-progress {

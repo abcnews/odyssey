@@ -15,6 +15,12 @@ const API_URL_ROOT = 'https://content-gateway.abc-prod.net.au/api/v1/content/id/
 const players = [];
 let phase1InlineVideoConfig;
 
+function hasAudio(el) {
+  return el.mozHasAudio ||
+    !!el.webkitAudioDecodedByteCount ||
+    !!(el.audioTracks && el.audioTracks.length);
+}
+
 function VideoPlayer({
   posterURL,
   sources = [],
@@ -51,6 +57,11 @@ function VideoPlayer({
   Object.keys(booleanAttributes).forEach(attributeName => {
     toggleAttribute(videoEl, attributeName, booleanAttributes[attributeName]);
   });
+
+  if (isMuted && !videoEl.muted) {
+    // Firefox doesn't respect the muted attribute initially.
+    videoEl.muted = true;
+  }
 
   const source = sources[sources.length > 1 && window.matchMedia(MQ.SM).matches ? 1 : 0];
 
@@ -143,6 +154,12 @@ function VideoPlayer({
       player.updatePlaybackPosition();
     }
   }, 1000);
+
+  videoEl.addEventListener('canplay', () => {
+    if (hasAudio(videoEl)) {
+      videoEl.classList.add('has-audio');
+    }
+  });
 
   videoEl.addEventListener('ended', () => {
     player.isUserInControl = true;
