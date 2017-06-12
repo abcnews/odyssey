@@ -111,12 +111,12 @@
     display: block;
     margin: 1.25rem auto;
     width: 9rem;
-    height: .0625rem;
-    background-color: $color-grey-400;
+    height: .125rem;
+    background-color: $color-grey-300;
 
     .is-layered &,
     .is-dark & {
-      background-color: $color-grey-500;
+      background-color: $color-grey-600;
     }
 
     @media #{$mq-not-sm} {
