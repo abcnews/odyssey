@@ -6,7 +6,7 @@ const url2cmid = require('util-url2cmid');
 // Ours
 const {IS_PREVIEW} = require('../../../constants');
 const {before, detach, isElement, select, trim} = require('../../../utils');
-const {enqueue, subscribe} = require('../../scheduler');
+const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
 const VideoPlayer = require('../VideoPlayer');
@@ -71,6 +71,7 @@ function Cover({
 
       before(mediaEl, replacementMediaEl);
       detach(mediaEl);
+      invalidateClient();
     });
   }
 

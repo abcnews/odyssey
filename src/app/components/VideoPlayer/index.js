@@ -8,7 +8,7 @@ const xhr = require('xhr');
 // Ours
 const {CSS_URL, MQ} = require('../../../constants');
 const {append, isElement, select, selectAll, setText, toggleAttribute, twoDigits} = require('../../../utils');
-const {enqueue, subscribe} = require('../../scheduler');
+const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
 
 const API_URL_ROOT = 'https://content-gateway.abc-prod.net.au/api/v1/content/id/';
 
@@ -27,7 +27,7 @@ function VideoPlayer({
   if (isAmbient) {
     isFullscreen = true;
     isLoop = true;
-    scrollplayPct = -25;
+    scrollplayPct = 0;
   }
 
   const isScrollplay = typeof scrollplayPct === 'number';
@@ -292,8 +292,6 @@ subscribe(function _checkIfVideoPlayersNeedToBeToggled(client) {
     const scrollplayExtent = (client.height / 100 * (player.scrollplayPct || 0));
 
     player.isVisible = (
-      // Fully inside client
-      (rect.top >= 0 && rect.bottom <= client.height) ||
       // Fully covering client
       (rect.top <= 0 && rect.bottom >= client.height) ||
       // Top within scrollplay range

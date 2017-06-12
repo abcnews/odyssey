@@ -5,7 +5,7 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const {append, select} = require('../../../utils');
-const {invalidateSize} = require('../../scheduler');
+const {invalidateClient} = require('../../scheduler');
 const Caption = require('../Caption');
 const Gallery = require('../Gallery');
 const Picture = require('../Picture');
@@ -107,7 +107,7 @@ let lastKnownScrollY;
 function open(el) {
   lastKnownScrollY = window.scrollY;
   document.documentElement.classList.add('is-master-gallery-open');
-  invalidateSize();
+  invalidateClient();
 
   if (screenfull.enabled) {
     screenfull.request();
@@ -127,7 +127,7 @@ if (screenfull) {
     if (screenfull.isFullscreen) {
       window.scrollTo(0, lastKnownScrollY);
       // ...because window scrolls to y=0 while fullscreen is active
-      setTimeout(invalidateSize, 1000);
+      setTimeout(invalidateClient, 1000);
     } else {
       close();
     }

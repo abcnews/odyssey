@@ -7,7 +7,7 @@ const url2cmid = require('util-url2cmid');
 // Ours
 const {IS_PREVIEW, MS_VERSION} = require('../../../constants');
 const {before, detach, dePx, isElement, prepend, select, slug, trim} = require('../../../utils');
-const {enqueue, subscribe} = require('../../scheduler');
+const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
 const Picture = require('../Picture');
 const VideoPlayer = require('../VideoPlayer');
 
@@ -61,6 +61,7 @@ function Header({
 
       before(mediaEl, replacementMediaEl);
       detach(mediaEl);
+      invalidateClient();
     });
   }
 

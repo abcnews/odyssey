@@ -6,6 +6,7 @@ const url2cmid = require('util-url2cmid');
 // Ours
 const {IS_PREVIEW} = require('../../../constants');
 const {before, detach, prepend, select, selectAll} = require('../../../utils');
+const {invalidateClient} = require('../../scheduler');
 const Caption = require('../Caption');
 const VideoPlayer = require('../VideoPlayer');
 
@@ -15,7 +16,6 @@ function VideoEmbed({
   videoId,
   captionEl,
   isAmbient,
-  isAutoplay,
   isFullscreen,
   isLoop,
   isMuted,
@@ -47,12 +47,12 @@ function VideoEmbed({
 
     prepend(videoEmbedEl, VideoPlayer(Object.assign(metadata, {
       isAmbient,
-      isAutoplay,
       isFullscreen,
       isLoop,
       isMuted,
       scrollplayPct,
     })));
+    invalidateClient();
   });
 
   return videoEmbedEl;

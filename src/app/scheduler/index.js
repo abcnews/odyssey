@@ -74,8 +74,8 @@ function onResize(isInitial) {
   }
 }
 
-function invalidateSize() {
-  enqueue(function _invalidateSize() {
+function invalidateClient() {
+  enqueue(function _invalidateClient() {
     onResize(true);
   });
 }
@@ -88,18 +88,18 @@ function start() {
   hasStarted = true;
   window.addEventListener('scroll', onScroll, false);
   window.addEventListener('resize', onResize, false);
-  invalidateSize();
+  invalidateClient();
 }
 
 function subscribe(subscriber) {
   subscribers.push(subscriber);
 
   if (hasStarted) {
-    invalidateSize();
+    invalidateClient();
   }
 }
 
 module.exports.enqueue = enqueue;
-module.exports.invalidateSize = invalidateSize;
+module.exports.invalidateClient = invalidateClient;
 module.exports.start = start;
 module.exports.subscribe = subscribe;
