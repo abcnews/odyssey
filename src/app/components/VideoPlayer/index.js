@@ -19,33 +19,32 @@ function VideoPlayer({
   posterURL,
   sources = [],
   isAmbient,
-  isAutoplay,
   isFullscreen,
   isLoop,
   isMuted,
   scrollplayPct
 }) {
   if (isAmbient) {
-    isAutoplay = true;
     isFullscreen = true;
     isLoop = true;
+    scrollplayPct = -25;
   }
 
-  if (isAutoplay || scrollplayPct) {
+  const isScrollplay = typeof scrollplayPct === 'number';
+
+  if (isScrollplay) {
     isMuted = true;
   }
 
   const videoEl = html`<video
     poster="${posterURL ? posterURL : ''}"
-    preload="${scrollplayPct ? 'auto' : 'none'}"
+    preload="${isScrollplay ? 'auto' : 'none'}"
     tabindex="-1"></video>`;
 
   const booleanAttributes = {
-    autoplay: isAutoplay,
     loop: isLoop,
     muted: isMuted,
     playsinline: true,
-    scrollplay: !!scrollplayPct,
     'webkit-playsinline': true
   };
 
@@ -58,7 +57,7 @@ function VideoPlayer({
   });
 
   // iOS8-9 inline video (muted only)
-  if (scrollplayPct || isAutoplay) {
+  if (isScrollplay) {
     raf(() => {
       playInline(videoEl, !isMuted);
     });
@@ -68,10 +67,15 @@ function VideoPlayer({
   const progressBarEl = html`<progress class="VideoPlayer-progressBar" value="0"></progress>`;
 
   const player = {
-    isAutoplay,
+    isAmbient,
+    isScrollplay,
     scrollplayPct,
     getRect: () => {
-      return videoEl.getBoundingClientRect();
+      // Fixed players should use their parent's rect, as they're always in the viewport
+      const position = window.getComputedStyle(playerEl).position;
+      const el = (position === 'fixed' ? playerEl.parentElement : playerEl);
+
+      return el.getBoundingClientRect();
     },
     toggleMute: event => {
       event.stopPropagation();
@@ -82,13 +86,17 @@ function VideoPlayer({
     togglePlay: (event, wasScrollBased) => {
       const wasPaused = videoEl.paused;
       
-      if (!wasScrollBased) {
+      if (!wasScrollBased && !player.isAmbient) {
         player.isUserInControl = true;
       }
 
-      if (wasPaused) {
-        selectAll('video').forEach(otherVideoEl => {
-          if (otherVideoEl !== videoEl && !otherVideoEl.paused && !otherVideoEl.hasAttribute('autoplay')) {
+      if (wasPaused && !player.isAmbient) {
+        selectAll('video')
+        .forEach(otherVideoEl => {
+          if (
+            otherVideoEl !== videoEl &&
+            !otherVideoEl.paused
+          ) {
             otherVideoEl.pause();
             otherVideoEl.removeAttribute('playing');
           }
@@ -141,7 +149,7 @@ function VideoPlayer({
     videoEl.setAttribute('ended', '');
   });
 
-  return html`
+  const playerEl = html`
     <div class="VideoPlayer">
       <div class="u-sizer-sm-16x9 u-sizer-md-16x9 u-sizer-lg-16x9"></div>
       ${videoEl}
@@ -165,6 +173,8 @@ function VideoPlayer({
       `}
     </div>
   `;
+
+  return playerEl;
 };
 
 function whenActionKey(fn) {
@@ -290,7 +300,7 @@ subscribe(function _checkIfVideoPlayersNeedToBeToggled(client) {
       (rect.bottom >= scrollplayExtent && (rect.bottom <= client.height))
     );
 
-    if (player.isUserInControl || player.isAutoplay || !player.scrollplayPct) {
+    if (player.isUserInControl || !player.isScrollplay) {
       return;
     }
 
