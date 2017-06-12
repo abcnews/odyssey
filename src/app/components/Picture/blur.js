@@ -39,7 +39,7 @@ function blurImage(url, done) {
 		}
 	};
 
-	imgEl.crossOrigin = '';
+	imgEl.crossOrigin = 'Anonymous';
 	imgEl.src = url;
 }
 
