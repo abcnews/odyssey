@@ -64,14 +64,13 @@ function transformEl(el) {
   const prevElName = (prevEl && el.previousElementSibling.getAttribute('name')) || '';
   const prevElIsOptions = prevElName.indexOf('video') === 0;
   const suffix = (prevElIsOptions && prevElName.slice(5)) || '';
-  const [, scrollplayPctString] = suffix.match(SCROLLPLAY_PCT_PATTERN) || [, ''];
+  const [, scrollplayPctString] = suffix.match(SCROLLPLAY_PCT_PATTERN) || [, suffix.indexOf('autoplay') > -1 ? '0' : ''];
 
   if (videoId) {
     const videoEmbedEl = VideoEmbed({
       videoId,
       captionEl: Caption.createFromEl(el),
       isAmbient: suffix.indexOf('ambient') > -1,
-      isAutoplay: suffix.indexOf('autoplay') > -1,
       isFullscreen: suffix.indexOf('fullscreen') > -1,
       isLoop: suffix.indexOf('loop') > -1,
       isMuted: suffix.indexOf('muted') > -1,
