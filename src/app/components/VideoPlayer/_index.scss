@@ -147,7 +147,7 @@
   background-size: 100%;
   cursor: pointer;
 
-  [audio] + .VideoPlayer-interface & {
+  .has-audio + .VideoPlayer-interface & {
     display: block;
   }
 
