@@ -5,7 +5,7 @@ const cache = {};
 
 function blurImage(url, done) {
 	if (cache[url]) {
-		done(cache[url]);
+		done(null, cache[url]);
 	}
 
 	const canvasEl = document.createElement('canvas');
@@ -28,11 +28,15 @@ function blurImage(url, done) {
     context.clearRect(0, 0, canvasWidth, canvasHeight);
     context.drawImage(imgEl, 0, 0, imgWidth, imgHeight, 0, 0, canvasWidth, canvasHeight);
 
-		stackBlurCanvasRGB(context, 0, 0, canvasWidth, canvasHeight, BLUR_RADIUS);
+		try {
+			stackBlurCanvasRGB(context, 0, 0, canvasWidth, canvasHeight, BLUR_RADIUS);
 
-		const blurredURL = cache[url] = canvasEl.toDataURL();
+			const blurredURL = cache[url] = canvasEl.toDataURL();
 
-		done(blurredURL);
+			done(null, blurredURL);
+		} catch (err) {
+			done(err);
+		}
 	};
 
 	imgEl.crossOrigin = '';
@@ -432,16 +436,19 @@ function stackBlurCanvasRGB( context, top_x, top_y, width, height, radius )
 		// so it might be okay to remove the whole try/catch block and just use
 		// imageData = context.getImageData( top_x, top_y, width, height );
 		try {
-			netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead");
+			if (netscape && netscape.security) {
+				netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead");
+			}
+
 			imageData = context.getImageData( top_x, top_y, width, height );
 		} catch(e) {
-			alert("Cannot access local image");
+			// alert("Cannot access local image");
 			throw new Error("unable to access local image data: " + e);
 			return;
 		}
 	  }
 	} catch(e) {
-	  alert("Cannot access image");
+	  // alert("Cannot access image");
 	  throw new Error("unable to access image data: " + e);
 	}
 			

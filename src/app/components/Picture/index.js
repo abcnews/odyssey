@@ -127,7 +127,13 @@ function Picture({
   pictures.push(picture);
 
   enqueue(function _createAndAddPlaceholderImage() {
-    blurImage(src, blurredImageURL => {
+    blurImage(src, (err, blurredImageURL) => {
+      if (err) {
+        console.error(err);
+        
+        return;
+      }
+
       placeholderEl.style.setProperty('--placeholder-image', `url("${blurredImageURL}")`);
     });
   });
