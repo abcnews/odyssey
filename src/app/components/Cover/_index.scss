@@ -41,7 +41,7 @@
 
     & > * {
       position: fixed;
-      transform: translateZ(0);
+      transform: translate3d(0, 0, 0);
       -webkit-backface-visibility: hidden;
       backface-visibility: hidden;
       top: 0;
@@ -140,7 +140,7 @@
       top: 0;
       left: 50%;
       z-index: -1;
-      transform: translateX(-50%);
+      transform: translate3d(-50%, 0, 0);
       width: calc(#{cells(10)} + .75rem);
       height: 100%;
       background-color: $color-black-transparent-30;

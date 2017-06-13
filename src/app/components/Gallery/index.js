@@ -216,7 +216,7 @@ function Gallery({
       imageHeight = nextImageHeight;
 
       enqueue(function _updateControlsPosition() {
-        controlsEl.style.transform = `translate(0, ${imageHeight / REM}rem) translate(0, -100%)`;
+        controlsEl.style.transform = `translate3d(0, ${imageHeight / REM}rem, 0) translate3d(0, -100%, 0)`;
       });
     }
   }
