@@ -3,7 +3,7 @@ const html = require('bel');
 const {parseDate} = require('inn-abcdatetime-lib');
 
 // Ours
-const {SELECTORS, NOEL} = require('../../constants');
+const {MOCK_ELEMENT, SELECTORS} = require('../../constants');
 const {detach, isText, trim, select, selectAll} = require('../../utils');
 
 const EMPHASISABLE_BYLINE_TEXT_PATTERN = /^(?:by|,|and)$/;
@@ -37,7 +37,7 @@ function getDate(metaElName, timeElClassName) {
     return parseDate(datetime);
   }
 
-  datetime = (select(`time.${timeElClassName}`) || NOEL)
+  datetime = (select(`time.${timeElClassName}`) || MOCK_ELEMENT)
     .getAttribute('datetime') || '';
   
   if (STARTS_WITH_YEAR_PATTERN.test(datetime)) {

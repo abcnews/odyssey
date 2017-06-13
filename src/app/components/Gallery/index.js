@@ -260,9 +260,21 @@ function Gallery({
     images.forEach(image => {
       image.rowLength = images.length;
       image.flexBasisPct = 100 / image.rowLength;
-      image.mosaicPictureEl = image.mosaicPictureEls ?
-        image.mosaicPictureEls[image.rowLength  - 1] :
-        image.pictureEl.cloneNode(true);
+
+      if (image.mosaicPictureEls) {
+        image.mosaicPictureEls.forEach((el, index) => {
+          if (index === image.rowLength  - 1) {
+            image.mosaicPictureEl = el;
+          } else {
+            el.__Picture__.forget();
+          }
+        });
+        
+      } else {
+        image.mosaicPictureEl = image.pictureEl.cloneNode(true);
+      }
+
+      delete image.mosaicPictureEls;
     });
   });
 
@@ -288,13 +300,13 @@ function Gallery({
         onclick=${stopIfIgnoringClicks}>
         ${pictureEl}
         ${mosaicPictureEl}
-        ${masterCaptionEl ? null : captionEl}
+        ${captionEl}
       </div>
     `;
 
     imageEl.addEventListener('touchend', swipeIntent, false);
 
-    const captionLinkEl = masterCaptionEl ? null : select('a', captionEl);
+    const captionLinkEl = select('a', captionEl);
 
     if (captionLinkEl) {
       captionLinkEl.addEventListener('focus', () => {

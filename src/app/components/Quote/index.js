@@ -3,7 +3,7 @@ const cn = require('classnames');
 const html = require('bel');
 
 // Ours
-const {NOEL} = require('../../../constants');
+const {MOCK_NODE} = require('../../../constants');
 const {append, before, detach, isElement, isText, linebreaksToParagraphs, prepend, select, selectAll, trim} = require('../../../utils');
 
 function Quote({
@@ -48,14 +48,14 @@ function createFromEl(el) {
       // P2-B
       config = {
         parEls: selectAll('p', clone),
-        attributionNodes: (select('footer', clone) || NOEL.cloneNode()).childNodes
+        attributionNodes: (select('footer', clone) || MOCK_NODE).childNodes
       };
     } else {
       // P1S-B, P1M-B, P1S-P, P1M-P
       config = {
         isPullquote: clone.className.indexOf('quote--pullquote') > -1,
         parEls: selectAll('p:not([class])', clone),
-        attributionNodes: (select('.p--pullquote-byline', clone) || NOEL.cloneNode()).childNodes
+        attributionNodes: (select('.p--pullquote-byline', clone) || MOCK_NODE).childNodes
       };
     }
   } else if (clone.tagName === 'ASIDE') {
@@ -63,14 +63,14 @@ function createFromEl(el) {
     config = {
       isPullquote: true,
       parEls: selectAll('p', clone),
-      attributionNodes: (select('footer', clone) || NOEL.cloneNode()).childNodes
+      attributionNodes: (select('footer', clone) || MOCK_NODE).childNodes
     };
   } else if (clone.tagName === 'FIGURE') {
     // P1M-E
     config = {
       isPullquote: true,
-      parEls: Array.from(linebreaksToParagraphs(select('blockquote', clone) || NOEL.cloneNode()).childNodes),
-      attributionNodes: (select('figcaption', clone) || NOEL.cloneNode()).childNodes
+      parEls: Array.from(linebreaksToParagraphs(select('blockquote', clone) || MOCK_NODE).childNodes),
+      attributionNodes: (select('figcaption', clone) || MOCK_NODE).childNodes
     };
   } else if (clone.className.indexOf('inline-content quote') > -1 ||
       clone.className.indexOf('view-inline-pullquote') > -1) {
@@ -78,7 +78,7 @@ function createFromEl(el) {
     config = {
       isPullquote: true,
       parEls: selectAll('p', clone),
-      attributionNodes: (select('.cite', clone) || NOEL.cloneNode()).childNodes
+      attributionNodes: (select('.cite', clone) || MOCK_NODE).childNodes
     };
   }
 

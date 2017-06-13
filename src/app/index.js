@@ -219,6 +219,9 @@ function app(done) {
   // Embed master gallery
   append(storyEl, MasterGallery());
 
+  // Allow garbage collection
+  delete meta.bylineNodes;
+
   if (typeof done === 'function') {
     done();
   }

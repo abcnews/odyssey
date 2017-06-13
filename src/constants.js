@@ -21,7 +21,33 @@ const SELECTORS = {
 
 const EMBED_TAGNAMES = ['ASIDE', 'BLOCKQUOTE', 'DIV', 'FIGURE'];
 
-const NOEL = document.createElement('noscript');
+const MOCK_NODE = {
+  parentNode: null,
+  parentElement: null,
+  previousSibling: null,
+  nextSibling: null,
+  childNodes: [],
+  firstChild: null,
+  lastChild: null,
+  textContent: ''
+};
+
+const MOCK_ELEMENT = Object.assign({
+  tagName: 'MOCK-ELEMENT',
+  attributes: [],
+  name: '',
+  className: '',
+  classList: [],
+  previousElementSibling: null,
+  nextElementSibling: null,
+  children: [],
+  childElementCount: 0,
+  firstElementChild: null,
+  lastElementChild: null,
+  innerHTML: '',
+  getAttribute: _ => '',
+  hasAttribute: _ => false,
+}, MOCK_NODE);
 
 const REM = 16; // (px)
 const MQ = {
@@ -84,7 +110,8 @@ module.exports = {
   CSS_URL,
   SELECTORS,
   EMBED_TAGNAMES,
-  NOEL,
+  MOCK_NODE,
+  MOCK_ELEMENT,
   REM,
   MQ,
   SMALLEST_IMAGE,
