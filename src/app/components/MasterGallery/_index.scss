@@ -17,12 +17,10 @@ html.is-master-gallery-open {
 }
 
 .MasterGallery {
-  display: flex;
+  display: none;
   flex-direction: column;
   justify-content: center;
   position: fixed;
-  opacity: 0;
-  transform: translate(0, 200%); // Out of picture loader range
   z-index: 2;
   top: 0;
   left: 0;
@@ -34,20 +32,24 @@ html.is-master-gallery-open {
   width: 100%;
   height: 100%;
   background-color: $color-black-transparent-93;
-  transition: opacity .125s;
-  will-change: opacity, transform;
 
   @media #{$mq-not-lg} and #{$mq-gt-4-3} {
     padding-top: 0;
   }
 
   html.is-master-gallery-open & {
-    opacity: 1;
-    transform: none;
+    display: flex;
   }
 
   .Gallery {
+    opacity: 0;
     margin: 0 auto;
+    will-change: opacity;
+
+    html.is-master-gallery-open & {
+      opacity: 1;
+      animation: fadeIn;
+    }
   }
 
   .Gallery-layout {
