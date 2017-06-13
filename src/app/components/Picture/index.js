@@ -101,7 +101,7 @@ function Picture({
       });
       imgEl.setAttribute('loading', '');
 
-      if (!MS_VERSION || MS_VERSION < 13) {
+      if (MS_VERSION && MS_VERSION < 13) {
         picturefill({reevaluate: true, elements: [imgEl]});
       }
     },
@@ -121,6 +121,9 @@ function Picture({
       if (window.objectFitPolyfill) {
         window.objectFitPolyfill();
       }
+    },
+    forget: () => {
+      pictures.splice(pictures.indexOf(picture), 1);
     }
   };
 
@@ -137,6 +140,8 @@ function Picture({
       placeholderEl.style.setProperty('--placeholder-image', `url("${blurredImageURL}")`);
     });
   });
+
+  pictureEl.__Picture__ = picture;
 
   return pictureEl;
 };
