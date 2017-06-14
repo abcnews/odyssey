@@ -163,7 +163,7 @@
 .Quote-closer::before {
   top: .5em;
   left: calc(100% + .33em);
-  transform: rotate(180deg);
+  transform: scale(-1);
 
   @media #{$mq-sm} {
     left: calc(100% - .166666667em);
