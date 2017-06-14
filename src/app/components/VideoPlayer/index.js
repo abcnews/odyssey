@@ -6,7 +6,7 @@ const url2cmid = require('util-url2cmid');
 const xhr = require('xhr');
 
 // Ours
-const {CSS_URL, MQ} = require('../../../constants');
+const {CSS_URL, IS_IOS, MQ} = require('../../../constants');
 const {append, isElement, select, selectAll, setText, toggleAttribute, twoDigits} = require('../../../utils');
 const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
 
@@ -42,10 +42,7 @@ function VideoPlayer({
     isMuted = true;
   }
 
-  const videoEl = html`<video
-    poster="${posterURL ? posterURL : ''}"
-    preload="${isScrollplay ? 'auto' : 'none'}"
-    tabindex="-1"></video>`;
+  const videoEl = html`<video poster="${posterURL ? posterURL : ''}" tabindex="-1"></video>`;
 
   const booleanAttributes = {
     loop: isLoop,
@@ -63,22 +60,27 @@ function VideoPlayer({
     videoEl.muted = true;
   }
 
-  const source = sources[sources.length > 1 && window.matchMedia(MQ.SM).matches ? 1 : 0];
+  const source = sources[!isFullscreen && sources.length > 1 && window.matchMedia(MQ.SM).matches ? 1 : 0];
 
   if (source) {
     videoEl.src = source.src;
   }
 
   // iOS8-9 inline video (muted only)
-  if (isScrollplay) {
+  if (IS_IOS) {
     raf(() => {
       playInline(videoEl, !isMuted);
     });
   }
 
-  const timeRemainingEl = html`<time class="VideoPlayer-timeRemaining"></time>`;
-  const progressBarEl = html`<progress class="VideoPlayer-progressBar" value="0"></progress>`;
+  let timeRemainingEl;
+  let progressBarEl;
 
+  if (!isAmbient) {
+    timeRemainingEl = html`<time class="VideoPlayer-timeRemaining"></time>`;
+    progressBarEl = html`<progress class="VideoPlayer-progressBar" value="0"></progress>`;
+  }
+  
   const player = {
     isAmbient,
     isScrollplay,
@@ -149,11 +151,13 @@ function VideoPlayer({
 
   players.push(player);
 
-  const playbackUpdateInterval = setInterval(() => {
-	  if (videoEl.readyState > 0 && Math.floor(videoEl.currentTime) !== player.previousTime) {
-      player.updatePlaybackPosition();
-    }
-  }, 1000);
+  if (!isAmbient) {
+    setInterval(() => {
+      if (videoEl.readyState > 0 && Math.floor(videoEl.currentTime) !== player.previousTime) {
+        player.updatePlaybackPosition();
+      }
+    }, 1000);
+  }
 
   videoEl.addEventListener('canplay', () => {
     if (hasAudio(videoEl)) {
@@ -162,6 +166,11 @@ function VideoPlayer({
   });
 
   videoEl.addEventListener('ended', () => {
+    if (MS_VERSION === 11) {
+      // IE11 mistakenly loops videos
+      videoEl.pause();
+    }
+
     player.isUserInControl = true;
     videoEl.currentTime = 0;
     videoEl.removeAttribute('playing', '');
@@ -296,7 +305,7 @@ function getMetadata(videoElOrId, callback) {
 
 function formatSources(sources, sortProp = 'bitrate') {
   return sources
-  .sort((a, b) => +a[sortProp] < +b[sortProp])
+  .sort((a, b) => +b[sortProp] - +a[sortProp])
   .map(source => ({
     src: source.src || source.url,
     type: source.type || source.contentType
