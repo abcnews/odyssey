@@ -22,8 +22,8 @@
     vertical-align: top;
     object-fit: cover;
 
-    &.IIV::-webkit-media-controls-play-button,
-		&[autoplay]::-webkit-media-controls-start-playback-button {
+    &::-webkit-media-controls-play-button,
+		&::-webkit-media-controls-start-playback-button {
 			opacity: 0;
 			width: .3125rem;
 			pointer-events: none;
