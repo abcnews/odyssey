@@ -169,6 +169,7 @@
 
 // .Header-infoSource--<slug>,
 .Header-infoSource--730,
+.Header-infoSource--australian-story,
 .Header-infoSource--four-corners {
   height: 3.125rem;
   background-repeat: no-repeat;
@@ -180,12 +181,17 @@
   background-image: url(info-sources/730.png);
 }
 
+.Header-infoSource--australian-story {
+  background-image: url(info-sources/australian-story.png);
+}
+
 .Header-infoSource--four-corners {
   background-image: url(info-sources/four-corners.png);
 }
 
 // .Header-infoSource--<slug> a,
 .Header-infoSource--730 a,
+.Header-infoSource--australian-story a,
 .Header-infoSource--four-corners a {
   display: none;
 }
