@@ -5,9 +5,9 @@ const raf = require('raf');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const {REM, SUPPORTS_PASSIVE} = require('../../../constants');
-const {detach, isElement, returnFalse, select, selectAll, setText, trim} = require('../../../utils');
-const {enqueue, subscribe} = require('../../scheduler');
+const {IS_IOS, REM, SUPPORTS_PASSIVE} = require('../../../constants');
+const {dePx, detach, isElement, returnFalse, select, selectAll, setText, trim} = require('../../../utils');
+const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
 
@@ -35,24 +35,36 @@ function Gallery({
   let imageHeight;
 
   function updateImagesAppearance(xPct, isImmediate) {
+    let wasOnEndCalled = false;
+
     if (isImmediate) {
       const onEnd = () => {
-        enqueue(function _updateImagesAppearance_immediatePost() {
-          imagesEl.removeEventListener('transitionend', onEnd);
-          imagesEl.style.transitionDuration = '';
-          pictureEls.forEach(pictureEl => pictureEl.style.transitionDuration = '');
-        });
+        if (!wasOnEndCalled) {
+          enqueue(function _updateImagesAppearance_immediatePost() {
+            imagesEl.removeEventListener('transitionend', onEnd);
+            imagesEl.style.transitionDuration = '';
+            pictureEls.forEach(pictureEl => pictureEl.style.transitionDuration = '');
+          });  
+        }
+
+        wasOnEndCalled = true;
       };
 
       enqueue(function _updateImagesAppearance_immediatePre() {
-        imagesEl.style.transitionDuration = '0s';
+        imagesEl.style.transitionDuration = '0s, 0s';
         pictureEls.forEach(pictureEl => pictureEl.style.transitionDuration = '0s');
         imagesEl.addEventListener('transitionend', onEnd, false);
+        setTimeout(onEnd, 500); // In case no transition is required
       });
     }
 
     enqueue(function _updateImagesAppearance() {
-      imagesEl.style.transform = `translate3d(${xPct}%, 0, 0)`;
+      if (IS_IOS) {
+        imagesEl.style.left = `${xPct / 100 * paneWidth}px`;
+      } else {
+        imagesEl.style.transform = `translate3d(${xPct}%, 0, 0)`;
+      }
+
       pictureEls.forEach((pictureEl, index) => {
         pictureEl.style.opacity = offsetBasedOpacity(index, xPct);
       });
@@ -74,6 +86,7 @@ function Gallery({
     setText(indexEl, `${currentIndex + 1} / ${images.length}`);
 
     updateImagesAppearance(-currentIndex * 100, isImmediate);
+    setTimeout(invalidateClient, 1000);
   }
 
   function pointerHandler(fn) {
@@ -101,7 +114,8 @@ function Gallery({
       return;
     }
 
-    const [, xPct] = imagesEl.style.transform.match(PCT_PATTERN) || [, 0];
+    const [, xPct] = imagesEl.style.transform.match(PCT_PATTERN) ||
+      [, dePx(imagesEl.style.left || '0') / paneWidth * 100];
 
     startImagesTransformXPct = parseInt(xPct, 10);
     startX = event.clientX;
@@ -110,7 +124,7 @@ function Gallery({
     diffY = 0;
     swipeAxis = null;
 
-    imagesEl.style.transition = 'transform 0s';
+    imagesEl.style.transitionDuration = '0s, 0s';
   }
 
   function swipeUpdate(event) {
@@ -196,7 +210,7 @@ function Gallery({
     diffY = null;
     swipeAxis = null;
 
-    imagesEl.style.transition = '';
+    imagesEl.style.transitionDuration = '';
 
     imagesEl.classList.remove('is-moving');
 
@@ -216,7 +230,7 @@ function Gallery({
       imageHeight = nextImageHeight;
 
       enqueue(function _updateControlsPosition() {
-        controlsEl.style.transform = `translate3d(0, ${imageHeight / REM}rem, 0) translate3d(0, -100%, 0)`;
+        controlsEl.style.transform = `translateY(${imageHeight / REM}rem) translateY(-100%)`;
       });
     }
   }
@@ -266,7 +280,7 @@ function Gallery({
           if (index === image.rowLength  - 1) {
             image.mosaicPictureEl = el;
           } else {
-            el.__Picture__.forget();
+            el.api.forget();
           }
         });
         
@@ -285,10 +299,10 @@ function Gallery({
     captionEl,
     flexBasisPct
   }, index) => {
-    const imgEl = select('img', pictureEl);
-    
-    imgEl.onload = measureDimensions;
-    imgEl.setAttribute('draggable', 'false');
+    pictureEl.api.loadedHook = imgEl => {
+      imgEl.onload = measureDimensions;
+      imgEl.setAttribute('draggable', 'false');
+    };
 
     const imageEl = html`
       <div class="Gallery-image"
