@@ -10,7 +10,7 @@ const BUDGETED_MILLISECONDS_PER_FRAME = 12;
 
 const subscribers = [];
 const queue = [];
-let client = {};
+let client = null
 let hasStarted;
 
 function flush() {
@@ -38,14 +38,14 @@ function enqueue(task) {
 }
 
 function notifySubscribers(hasChanged) {
-  const state = Object.assign({hasChanged: !!hasChanged}, client);
+  const state = Object.assign({hasChanged}, client);
   
   subscribers.forEach((subscriber, index) => enqueue(subscriber.bind(null, state)));
 }
 
 function onScroll() {
   if (queue.length === 0) {
-    enqueue(notifySubscribers);
+    enqueue(notifySubscribers, false);
   }
 }
 
@@ -53,31 +53,35 @@ function setCSSCustomProperties() {
   document.documentElement.style.setProperty('--root-width', `${client.width / REM}rem`);
 }
 
-function onResize(isInitial) {
-  if (!isInitial && queue.length !== 0) {
+function onResize(event) {
+  let nextClient;
+
+  if (event && queue.length !== 0) {
     return;
   }
 
-  const nextClient = {
-    width: document.documentElement.clientWidth,
-    height: document.documentElement.clientHeight
-  };
+  if (client === null || event) {
+    nextClient = {
+      width: document.documentElement.clientWidth,
+      height: document.documentElement.clientHeight
+    };
 
-  if (nextClient.width !== client.width || nextClient.h !== client.h) {
-    client = nextClient;
+    if (client === null || nextClient.width !== client.width || nextClient.h !== client.h) {
+      client = nextClient;
+    }
   }
 
-  enqueue(notifySubscribers.bind(null, client === nextClient));
+  const hasChanged = nextClient && client === nextClient;
 
-  if (client === nextClient) {
+  enqueue(notifySubscribers.bind(null, hasChanged));
+
+  if (hasChanged) {
     enqueue(setCSSCustomProperties);
   }
 }
 
 function invalidateClient() {
-  enqueue(function _invalidateClient() {
-    onResize(true);
-  });
+  enqueue(onResize.bind(null, null, true));
 }
 
 function start() {
@@ -88,6 +92,7 @@ function start() {
   hasStarted = true;
   window.addEventListener('scroll', onScroll, false);
   window.addEventListener('resize', onResize, false);
+  window.addEventListener('orientationchange', onResize, false);
   invalidateClient();
 }
 
