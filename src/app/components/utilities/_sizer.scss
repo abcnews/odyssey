@@ -11,6 +11,17 @@
   background-repeat: no-repeat;
   background-size: 100%;
   background-size: cover;
+
+  .Picture & {
+    background-color: $color-grey-100;
+
+    .Header.is-dark &,
+    .Header.is-layered &,
+    .Cover &,
+    .MasterGallery & {
+      background-color: $color-black;
+    }
+  }
 }
 
 @media #{$mq-sm} {
