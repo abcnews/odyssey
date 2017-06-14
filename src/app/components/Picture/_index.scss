@@ -3,15 +3,12 @@
   position: relative;
   font-family: $font-sans;
 
-  [class*="u-sizer"] {
-    background-color: $color-grey-100;
-  }
-
   picture.object-fit-polyfill {
     position: static !important;
   }
 
   img {
+    opacity: 0;
     position: absolute;
     top: 0;
     left: 0;
@@ -23,11 +20,7 @@
     will-change: opacity;
   }
 
-  img[loading] {
-    opacity: 0;
-  }
-
-  img[loaded] {
+  &[loaded] img {
     opacity: 1;
     animation: fadeIn .5s;
   }

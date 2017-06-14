@@ -4,7 +4,7 @@ const picturefill = require('picturefill');
 
 // Ours
 const {MQ, SMALLEST_IMAGE, MS_VERSION} = require('../../../constants');
-const {select, selectAll} = require('../../../utils');
+const {append, detach, select, selectAll} = require('../../../utils');
 const {enqueue, subscribe} = require('../../scheduler');
 const {blurImage} = require('./blur');
 
@@ -26,7 +26,8 @@ const DEFAULTS = {
   MD_RATIO: '3x2',
   LG_RATIO: '16x9'
 };
-const LOAD_RANGE = .5;
+const LOAD_RANGE = .75; // % of screen dimensions
+const PLACEHOLDER_PROPERTY = '--placeholder-image';
 
 const pictures = [];
 
@@ -64,26 +65,29 @@ function Picture({
     .replace(RATIO_PATTERN, lgRatio)
     .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[lgRatio].md}`);
 
-  const imgEl = html`<img alt="${alt}" data-object-fit="" />`;
-
   const placeholderEl = html`<div class="${sizerClassName}"></div>`;
+
+  const picturePictureEl = html`
+    <picture>
+      <source srcset="${lgImageURL}" media="${MQ.LG}" />
+      <source srcset="${lansdcapeNotLgImageURL}" media="${MQ.LANDSCAPE} and ${MQ.NOT_LG}" />
+      <source srcset="${mdImageURL}" media="${MQ.MD}" />
+      <source srcset="${smImageURL}" media="${MQ.SM}" />
+    </picture>
+  `;
 
   const pictureEl = html`
     <a class="Picture">
       ${placeholderEl}
-      <picture>
-        <source data-srcset="${lgImageURL}" media="${MQ.LG}" />
-        <source data-srcset="${lansdcapeNotLgImageURL}" media="${MQ.LANDSCAPE} and ${MQ.NOT_LG}" />
-        <source data-srcset="${mdImageURL}" media="${MQ.MD}" />
-        <source data-srcset="${smImageURL}" media="${MQ.SM}" />
-        ${imgEl}
-      </picture>
+      ${picturePictureEl}
     </a>
   `;
 
   if (linkUrl) {
     pictureEl.href = linkUrl;
   }
+
+  let imgEl = null;
 
   const picture = {
     getRect: () => {
@@ -93,30 +97,53 @@ function Picture({
 
       return el.getBoundingClientRect();
     },
+    unload: () => {
+      picture.isLoaded = false;
+      picture.isLoading = false;
+      pictureEl.removeAttribute('loaded', '');
+      detach(imgEl);
+      imgEl = null;
+    },
     load: () => {
+      if (imgEl) {
+        picture.unload();
+      }
+
       picture.isLoading = true;
+      imgEl = html`<img alt="${alt}" data-object-fit="" />`;
       imgEl.addEventListener('load', picture.loaded, false);
-      selectAll('source', pictureEl).forEach(sourceEl => {
-        sourceEl.setAttribute('srcset', sourceEl.getAttribute('data-srcset'));
-      });
-      imgEl.setAttribute('loading', '');
+      append(picturePictureEl, imgEl);
 
       if (MS_VERSION && MS_VERSION < 13) {
-        picturefill({reevaluate: true, elements: [imgEl]});
+        picturefill({elements: [imgEl]});
+      }
+
+      if (!picture.hasPlaceholder) {
+        enqueue(function _createAndAddPlaceholderImage() {
+          blurImage(src, (err, blurredImageURL) => {
+            if (err) {
+              return;
+            }
+
+            picture.hasPlaceholder = true;
+            placeholderEl.style.setProperty(PLACEHOLDER_PROPERTY, `url("${blurredImageURL}")`);
+          });
+        });
       }
     },
     loaded: () => {
-      picture.isLoaded = true;
+      if (!imgEl) {
+        return;
+      }
+      
       picture.isLoading = false;
+      picture.isLoaded = true;
+      pictureEl.setAttribute('loaded', '');
       imgEl.removeEventListener('load', picture.loaded);
-      imgEl.removeAttribute('loading', '');
-      imgEl.setAttribute('loaded', '');
 
-      setTimeout(() => {
-        enqueue(function _removePlaceholderImage() {
-          placeholderEl.style.removeProperty('--placeholder-image');
-        });
-      }, 1000);
+      if (picture.loadedHook) {
+        picture.loadedHook(imgEl);
+      }
 
       if (window.objectFitPolyfill) {
         window.objectFitPolyfill();
@@ -129,45 +156,43 @@ function Picture({
 
   pictures.push(picture);
 
-  enqueue(function _createAndAddPlaceholderImage() {
-    blurImage(src, (err, blurredImageURL) => {
-      if (err) {
-        console.error(err);
-        
-        return;
-      }
-
-      placeholderEl.style.setProperty('--placeholder-image', `url("${blurredImageURL}")`);
-    });
-  });
-
-  pictureEl.__Picture__ = picture;
+  pictureEl.api = picture;
 
   return pictureEl;
 };
 
 subscribe(function _checkIfPicturesNeedToBeLoaded(client) {
   pictures.forEach(picture => {
-    if (picture.isLoaded || picture.isLoading) {
-      return;
-    }
-
     const rect = picture.getRect();
 
-    if (rect.width === 0 && rect.height === 0) {
-      return;
-    }
+    const isInLoadRange = (
+      rect.width > 0 &&
+      rect.height > 0 &&
+      (
+        // Fully covering client on Y-axis
+        (rect.top <= 0 && rect.bottom >= client.height) ||
+        // Top within load range
+        (rect.top >= 0 && rect.top <= client.height * (1 + LOAD_RANGE)) ||
+        // Bottom within load range
+        (rect.bottom >= client.height * -LOAD_RANGE && rect.bottom <= client.height)
+      ) &&
+      (
+        // Fully covering client on X-axis
+        (rect.left <= 0 && rect.right >= client.width) ||
+        // Left within load range
+        (rect.left >= 0 && rect.left <= client.width * (1 + LOAD_RANGE)) ||
+        // Right within load range
+        (rect.right >= client.width * -LOAD_RANGE && rect.right <= client.width)
+      )
+    );
 
-    if (
-      // Fully covering client
-      (rect.top <= 0 && rect.bottom >= client.height) ||
-      // Top within load range
-      (rect.top >= 0 && rect.top <= client.height * (1 + LOAD_RANGE)) ||
-      // Bottom within load range
-      (rect.bottom >= client.height * -LOAD_RANGE && rect.bottom <= client.height)
-    ) {
+    if (isInLoadRange && !picture.isLoading && !picture.isLoaded) {
       enqueue(function _loadPicture() {
         picture.load();
+      });
+    } else if (!isInLoadRange && (picture.isLoading || picture.isLoaded)) {
+      enqueue(function _loadPicture() {
+        picture.unload();
       });
     }
   });
