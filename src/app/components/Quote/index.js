@@ -4,7 +4,10 @@ const html = require('bel');
 
 // Ours
 const {MOCK_NODE} = require('../../../constants');
-const {append, before, detach, isElement, isText, linebreaksToParagraphs, prepend, select, selectAll, trim} = require('../../../utils');
+const {append, before, detach, getDescendantTextNodes, isElement, isText,
+  linebreaksToParagraphs, prepend, select, selectAll, trim} = require('../../../utils');
+
+const DOUBLE_QUOTE_PATTERN = /\"/g; 
 
 function Quote({
   isPullquote = false,
@@ -20,10 +23,22 @@ function Quote({
     })}</footer>
   ` : null;
 
-  if (isPullquote && parEls.length) {
-    prepend(parEls[0], html`<span class="Quote-opener"></span>`);
-    append(parEls[parEls.length - 1], html`<span class="Quote-closer"></span>`);
-  }
+  // TODO: Needs work - some lines are not paragraphs and screw up the toggle
+
+  // if (isPullquote && parEls.length) {
+  //   parEls.forEach(parEl => {
+  //     let toggle = false;
+      
+  //     getDescendantTextNodes(parEl)
+  //     .forEach(node => {
+  //       if (DOUBLE_QUOTE_PATTERN.test(node.nodeValue)) {
+  //         node.nodeValue = node.nodeValue.replace(DOUBLE_QUOTE_PATTERN, () => {
+  //           return (toggle = !toggle) ? '“' : '”';
+  //         });
+  //       }
+  //     });
+  //   });
+  // }
 
   return html`
     <div class="${className}">
