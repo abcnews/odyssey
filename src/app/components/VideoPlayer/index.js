@@ -43,7 +43,10 @@ function VideoPlayer({
     isMuted = true;
   }
 
-  const videoEl = html`<video poster="${posterURL ? posterURL : ''}" tabindex="-1"></video>`;
+  const videoEl = html`<video
+    poster="${posterURL ? posterURL : ''}"
+    preload="none"
+    tabindex="-1"></video>`;
 
   const booleanAttributes = {
     loop: isLoop,
@@ -83,6 +86,7 @@ function VideoPlayer({
   }
   
   const player = {
+    videoEl,
     isAmbient,
     isScrollplay,
     scrollplayPct,
@@ -104,19 +108,20 @@ function VideoPlayer({
       
       if (!wasScrollBased && !player.isAmbient) {
         player.isUserInControl = true;
-      }
-
-      if (wasPaused && !player.isAmbient) {
-        selectAll('video')
-        .forEach(otherVideoEl => {
-          if (
-            otherVideoEl !== videoEl &&
-            !otherVideoEl.paused
-          ) {
-            otherVideoEl.pause();
-            otherVideoEl.removeAttribute('playing');
-          }
-        });
+        
+        if (wasPaused) {
+          players
+          .forEach(_player => {
+            if (
+              _player !== player &&
+              !_player.isAmbient &&
+              !_player.videoEl.paused
+            ) {
+              otherVideoEl.pause();
+              otherVideoEl.removeAttribute('playing');
+            }
+          });
+        }
       }
 
       const attrToggle = toggleAttribute.bind(null, videoEl, 'playing', wasPaused);
