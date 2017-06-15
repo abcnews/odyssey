@@ -4,7 +4,7 @@ const picturefill = require('picturefill');
 
 // Ours
 const {MQ, SMALLEST_IMAGE, MS_VERSION} = require('../../../constants');
-const {append, detach, select, selectAll} = require('../../../utils');
+const {append, detach, proximityCheck, select, selectAll} = require('../../../utils');
 const {enqueue, subscribe} = require('../../scheduler');
 const {blurImage} = require('./blur');
 
@@ -26,8 +26,8 @@ const DEFAULTS = {
   MD_RATIO: '3x2',
   LG_RATIO: '16x9'
 };
-const LOAD_RANGE = .75; // % of screen dimensions
 const PLACEHOLDER_PROPERTY = '--placeholder-image';
+const IMAGE_LOAD_RANGE = 1;
 
 const pictures = [];
 
@@ -164,27 +164,7 @@ function Picture({
 subscribe(function _checkIfPicturesNeedToBeLoaded(client) {
   pictures.forEach(picture => {
     const rect = picture.getRect();
-
-    const isInLoadRange = (
-      rect.width > 0 &&
-      rect.height > 0 &&
-      (
-        // Fully covering client on Y-axis
-        (rect.top <= 0 && rect.bottom >= client.height) ||
-        // Top within load range
-        (rect.top >= 0 && rect.top <= client.height * (1 + LOAD_RANGE)) ||
-        // Bottom within load range
-        (rect.bottom >= client.height * -LOAD_RANGE && rect.bottom <= client.height)
-      ) &&
-      (
-        // Fully covering client on X-axis
-        (rect.left <= 0 && rect.right >= client.width) ||
-        // Left within load range
-        (rect.left >= 0 && rect.left <= client.width * (1 + LOAD_RANGE)) ||
-        // Right within load range
-        (rect.right >= client.width * -LOAD_RANGE && rect.right <= client.width)
-      )
-    );
+    const isInLoadRange = proximityCheck(rect, client, IMAGE_LOAD_RANGE);
 
     if (isInLoadRange && !picture.isLoading && !picture.isLoaded) {
       enqueue(function _loadPicture() {

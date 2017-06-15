@@ -274,6 +274,34 @@ function dePx(px) {
   return +px.replace('px', '');
 }
 
+function proximityCheck(rect, client, range = 0) {
+  // `rect` is #getBoundingClientRect of element
+  // `client` is visible width & height dimensions
+  // `range` is amount extend (or reduce) the perimeter as a multiple of each dimension
+
+  return (
+    // Has size
+    rect.width > 0 &&
+    rect.height > 0 &&
+    (
+      // Fully covering client on Y-axis
+      (rect.top <= 0 && rect.bottom >= client.height) ||
+      // Top within load range
+      (rect.top >= 0 && rect.top <= client.height * (1 + range)) ||
+      // Bottom within load range
+      (rect.bottom >= client.height * -range && rect.bottom <= client.height)
+    ) &&
+    (
+      // Fully covering client on X-axis
+      (rect.left <= 0 && rect.right >= client.width) ||
+      // Left within load range
+      (rect.left >= 0 && rect.left <= client.width * (1 + range)) ||
+      // Right within load range
+      (rect.right >= client.width * -range && rect.right <= client.width)
+    )
+  );
+}
+
 module.exports = {
   returnFalse,
   trim,
@@ -297,5 +325,6 @@ module.exports = {
   getSections,
   getPlaceholders,
   linebreaksToParagraphs,
-  dePx
+  dePx,
+  proximityCheck
 };

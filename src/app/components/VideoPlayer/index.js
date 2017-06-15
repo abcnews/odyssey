@@ -6,11 +6,12 @@ const url2cmid = require('util-url2cmid');
 const xhr = require('xhr');
 
 // Ours
-const {CSS_URL, IS_IOS, MQ} = require('../../../constants');
-const {append, isElement, select, selectAll, setText, toggleAttribute, twoDigits} = require('../../../utils');
+const {CSS_URL, IS_IOS, MQ, MS_VERSION} = require('../../../constants');
+const {append, isElement, proximityCheck, select, selectAll, setText, toggleAttribute, twoDigits} = require('../../../utils');
 const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
 
 const API_URL_ROOT = 'https://content-gateway.abc-prod.net.au/api/v1/content/id/';
+const AMBIENT_PLAYABLE_RANGE = .5;
 
 const players = [];
 let phase1InlineVideoConfig;
@@ -314,32 +315,25 @@ function formatSources(sources, sortProp = 'bitrate') {
 
 subscribe(function _checkIfVideoPlayersNeedToBeToggled(client) {
   players.forEach(player => {
-    const rect = player.getRect();
-    const scrollplayExtent = (client.height / 100 * (player.scrollplayPct || 0));
-
-    player.isVisible = (
-      // Fully covering client
-      (rect.top <= 0 && rect.bottom >= client.height) ||
-      // Top within scrollplay range
-      (rect.top >= 0 && rect.top <= (client.height - scrollplayExtent)) ||
-      // Bottom within scrollplay range
-      (rect.bottom >= scrollplayExtent && (rect.bottom <= client.height))
-    );
-
-    if (player.isUserInControl || !player.isScrollplay) {
+    if (player.isUserInControl || (!player.isAmbient && !player.isScrollplay)) {
       return;
     }
 
+    const rect = player.getRect();
+    const isInPlayableRange = player.isAmbient ?
+      proximityCheck(rect, client, AMBIENT_PLAYABLE_RANGE) :
+      proximityCheck(rect, client, (player.scrollplayPct || 0) / -100);
+
     if (
-      (typeof player.wasVisible === 'undefined' && player.isVisible) ||
-      (typeof player.wasVisible !== 'undefined' && player.isVisible !== player.wasVisible)
+      (typeof player.isInPlayableRange === 'undefined' && isInPlayableRange) ||
+      (typeof player.isInPlayableRange !== 'undefined' && isInPlayableRange !== player.isInPlayableRange)
     ) {
       enqueue(function _toggleVideoPlay() {
         player.togglePlay(null, true);
       })
     }
 
-    player.wasVisible = player.isVisible;
+    player.isInPlayableRange = isInPlayableRange;
   });
 });
 
