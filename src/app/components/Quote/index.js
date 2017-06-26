@@ -19,7 +19,7 @@ function Quote({
   });
   const attributionEl = attributionNodes.length ? html`
     <footer>${Array.from(attributionNodes).map(node => {
-      return isText(node) ? trim(node.textContent) : node;
+      return node.tagName === 'A' ? html`<cite>${node}</cite>` : node;
     })}</footer>
   ` : null;
 
