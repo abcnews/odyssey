@@ -23,22 +23,22 @@ function Quote({
     })}</footer>
   ` : null;
 
-  // TODO: Needs work - some lines are not paragraphs and screw up the toggle
 
-  // if (isPullquote && parEls.length) {
-  //   parEls.forEach(parEl => {
-  //     let toggle = false;
-      
-  //     getDescendantTextNodes(parEl)
-  //     .forEach(node => {
-  //       if (DOUBLE_QUOTE_PATTERN.test(node.nodeValue)) {
-  //         node.nodeValue = node.nodeValue.replace(DOUBLE_QUOTE_PATTERN, () => {
-  //           return (toggle = !toggle) ? '“' : '”';
-  //         });
-  //       }
-  //     });
-  //   });
-  // }
+  // Smart double quotes
+  if (parEls.length) {
+    parEls.forEach(parEl => {
+      let toggle = false;
+
+      getDescendantTextNodes(parEl)
+      .forEach(node => {
+        if (DOUBLE_QUOTE_PATTERN.test(node.nodeValue)) {
+          node.nodeValue = node.nodeValue.replace(DOUBLE_QUOTE_PATTERN, () => {
+            return (toggle = !toggle) ?  '“' : '”'
+          });
+        }
+      });
+    });
+  }
 
   return html`
     <div class="${className}">
@@ -97,6 +97,44 @@ function createFromEl(el) {
     };
   }
 
+  // Split paragraphs on <br>s
+  config.parEls = config.parEls.reduce((memo, parEl) => {
+    const stack = [];
+    let nextNode;
+
+    function addStackAsPar() {
+      if (stack.length === 0) {
+        return;
+      }
+
+      const parEl =  html`<p></p>`;
+
+      while (stack.length > 0) {
+        parEl.insertBefore(stack.pop(), parEl.firstChild);
+      }
+
+      memo.push(parEl);
+    }
+
+    if (select('br', parEl)) {
+      while (parEl.firstChild !== null) {
+        nextNode = detach(parEl.childNodes[0]);
+
+        if (isBr(nextNode)) {
+          addStackAsPar();
+        } else {
+          stack.push(nextNode);
+        }
+      }
+
+      addStackAsPar();
+    } else {
+      memo.push(parEl);
+    }
+
+    return memo;
+  }, []);
+
   if (config) {
     return Quote(config);
   }
@@ -107,6 +145,10 @@ function createFromEl(el) {
 function transformEl(el) {
   before(el, createFromEl(el));
   detach(el);
+}
+
+function isBr(node) {
+  return isElement(node) && node.tagName === 'BR';
 }
 
 module.exports = Quote;
