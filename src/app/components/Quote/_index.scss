@@ -69,6 +69,10 @@
     font-size: 1.625rem;
     line-height: 1.4;
 
+    &:last-child {
+      margin-bottom: 0;
+    }
+
     @media #{$mq-sm} {
       position: relative;
       z-index: 1;
