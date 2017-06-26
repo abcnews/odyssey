@@ -78,22 +78,16 @@ function selectAll(selector, roots) {
   }, []);
 }
 
-function getDescendantTextNodes(elem) {
-  let textNodes = [];
-
-  if (elem) {
-    for (let nodes = elem.childNodes, i = nodes.length; i--;) {
-      var node = nodes[i], nodeType = node.nodeType;
-      if (isText(node)) {
-        textNodes.push(node);
-      }
-      else if (isElement(node)) {
-        textNodes = textNodes.concat(getDescendantTextNodes(node));
-      }
+function getDescendantTextNodes(el) {
+  return Array.from(el.childNodes).reduce((memo, node) => {
+    if (isText(node)) {
+      memo.push(node);
+    } else if (isElement(node)) {
+      memo = memo.concat(getDescendantTextNodes(node));
     }
-  }
 
-  return textNodes;
+    return memo;
+  }, []);
 }
 
 function detach(node = {}) {
