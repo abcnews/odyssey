@@ -299,7 +299,8 @@ function getMetadata(videoElOrId, callback) {
         return done(err || new Error(response.statusCode));
       }
 
-      const posterId = body.relatedItems.length > 0 ? body.relatedItems[0].id : null;
+      const posterId = (body.relatedItems && body.relatedItems.length > 0) ?
+        body.relatedItems[0].id : null;
 
       done(null, {
         posterURL: posterId ? `/news/image/${posterId}-16x9-940x529.jpg` : null,
