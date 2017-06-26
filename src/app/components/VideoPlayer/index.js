@@ -10,7 +10,7 @@ const {CSS_URL, IS_IOS, MQ, MS_VERSION} = require('../../../constants');
 const {append, isElement, proximityCheck, select, selectAll, setText, toggleAttribute, twoDigits} = require('../../../utils');
 const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
 
-const API_URL_ROOT = 'https://content-gateway.abc-prod.net.au/api/v1/content/id/';
+const API_URL_ROOT = 'https://content-gateway.abc-prod.net.au/api/v2/content/id/';
 const AMBIENT_PLAYABLE_RANGE = .5;
 
 const players = [];
