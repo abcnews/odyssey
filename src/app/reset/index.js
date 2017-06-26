@@ -140,7 +140,7 @@ function reset(storyEl, meta) {
   });
 
   selectAll(PREVIEW_CTX_SELECTOR, storyEl).forEach(el => {
-    [].slice.call(el.children).forEach(childEl => {
+    Array.from(el.children).forEach(childEl => {
       if (
         childEl.tagName === 'SCRIPT' &&
         childEl.textContent.match(PREVIEW_SCRIPT_PATTERN)
