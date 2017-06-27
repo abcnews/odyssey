@@ -19,11 +19,13 @@ const UPull = require('./components/UPull');
 const VideoEmbed = require('./components/VideoEmbed');
 const {enqueue, start, subscribe} = require('./scheduler');
 const {getMeta} = require('./meta');
-const reset = require('./reset');
+const {prepare, reset} = require('./reset');
 
 const BEGINS_WITH_ALPHANUMERIC_PATTERN = /^\w/;
 
 function app(done) {
+  prepare();
+
   const meta = getMeta();
   const storyEl = reset(select(SELECTORS.STORY), meta);
 
