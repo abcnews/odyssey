@@ -9,7 +9,9 @@ const {IS_PREVIEW, MS_VERSION} = require('../../../constants');
 const {before, detach, dePx, isElement, prepend, select, slug, trim} = require('../../../utils');
 const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
 const Picture = require('../Picture');
+const UParallax = require('../UParallax');
 const VideoPlayer = require('../VideoPlayer');
+
 
 function Header({
   meta = {},
@@ -55,12 +57,14 @@ function Header({
 
       const replacementMediaEl = VideoPlayer(Object.assign(metadata, {isAmbient: true}));
 
-      if (!isLayered) {
-        replacementMediaEl.classList.add('u-parallax');
-      }
-
       before(mediaEl, replacementMediaEl);
       detach(mediaEl);
+
+      if (!isLayered) {
+        replacementMediaEl.classList.add('u-parallax');
+        UParallax.activate(replacementMediaEl);
+      }
+
       invalidateClient();
     });
   }

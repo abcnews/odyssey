@@ -15,6 +15,7 @@ const MasterGallery = require('./components/MasterGallery');
 const Nav = require('./components/Nav');
 const Quote = require('./components/Quote');
 const Share = require('./components/Share');
+const UParallax = require('./components/UParallax');
 const UPull = require('./components/UPull');
 const VideoEmbed = require('./components/VideoEmbed');
 const {enqueue, start, subscribe} = require('./scheduler');
@@ -93,40 +94,8 @@ function app(done) {
     prepend(storyEl, Header({meta}));
   }
 
-  // Enable parallax
-  const parallaxes = selectAll('.u-parallax')
-  .map(el => ({
-    el,
-    nextEl: el.nextElementSibling,
-    state: {}
-  }));
-
-  if (parallaxes.length > 0) {
-    subscribe(function _checkIfParallaxesPropertiesNeedToBeUpdated() {
-      parallaxes.forEach(parallax => {
-        const rect = parallax.el.getBoundingClientRect();
-
-        if (rect.bottom < 0 || rect.top > rect.height) {
-          return;
-        }
-
-        const top = Math.min(0, rect.top);
-        const opacityExtent = parallax.nextEl ?
-          parallax.nextEl.getBoundingClientRect().top - top :
-          rect.height;
-        const opacity = 1 + top / opacityExtent;
-        const yOffset = -33.33 * (top / rect.height);
-
-        if (opacity !== parallax.state.opacity) {
-          enqueue(function _updateParallaxProperties() {
-            parallax.el.style.opacity = opacity;
-            parallax.el.style.transform = `translate3d(0, ${yOffset}%, 0)`;
-          });
-          parallax.state = {opacity, yOffset};
-        }
-      });
-    });
-  }
+  // Activate existing parallaxes
+  selectAll('.u-parallax').forEach(UParallax.activate);
 
   // Transform image embeds
   const sidePulls = selectAll('.u-pull-left, .u-pull-right');
