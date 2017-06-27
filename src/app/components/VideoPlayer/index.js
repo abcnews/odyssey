@@ -8,6 +8,7 @@ const xhr = require('xhr');
 // Ours
 const {CSS_URL, IS_IOS, MQ, MS_VERSION} = require('../../../constants');
 const {append, isElement, proximityCheck, select, selectAll, setText, toggleAttribute, twoDigits} = require('../../../utils');
+const {getMeta} = require('../../meta');
 const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
 
 const API_URL_ROOT = 'https://content-gateway.abc-prod.net.au/api/v2/content/id/';
@@ -271,8 +272,11 @@ function getMetadata(videoElOrId, callback) {
     // Phase 1 (Standard)
     // * Sources are nested inside global `inlineVideoData` object
     // * Poster may be inferred from original embed's partial jwplayer transform
-    
+
+    const relatedMedia = getMeta().relatedMedia;
+
     selectAll('.inline-content.video[data-inline-video-data-index]')
+    .concat(relatedMedia ? [relatedMedia] : [])
     .some(el => {
       if (select(`[href*="/${videoElOrId}"]`, el)) {
         const posterEl = select('img, .inline-video', el);
