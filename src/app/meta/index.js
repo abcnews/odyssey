@@ -24,6 +24,8 @@ const SHARE_ORDERING = [
   'email'
 ];
 
+let meta = null; // singleton
+
 function getMetaContent(name) {
   const el = select(`meta[name="${name}"]`);
 
@@ -125,17 +127,21 @@ function getRelatedMedia() {
 }
 
 function getMeta() {
-  return {
-    title: getMetaContent('replacement-title') ||
-      select('h1').textContent,
-    published: getDate('DCTERMS.issued', 'original'),
-    updated: getDate('DCTERMS.modified', 'updated'),
-    bylineNodes: getBylineNodes(),
-    infoSource: getInfoSource(),
-    shareLinks: getShareLinks(),
-    relatedMedia: getRelatedMedia(),
-    hasCaptionAttributions: getMetaContent('hide-caption-attributions') !== 'no'
-  };
+  if (!meta) {
+    meta = {
+      title: getMetaContent('replacement-title') ||
+        select('h1').textContent,
+      published: getDate('DCTERMS.issued', 'original'),
+      updated: getDate('DCTERMS.modified', 'updated'),
+      bylineNodes: getBylineNodes(),
+      infoSource: getInfoSource(),
+      shareLinks: getShareLinks(),
+      relatedMedia: getRelatedMedia(),
+      hasCaptionAttributions: getMetaContent('hide-caption-attributions') !== 'no'
+    };
+  }
+
+  return meta;
 }
 
 module.exports = {
