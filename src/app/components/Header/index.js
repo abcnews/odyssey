@@ -156,9 +156,8 @@ function transformSection(section, meta) {
   const [, lgRatio] = section.suffix.match(Picture.LG_RATIO_PATTERN) || [];
   const isDark = section.suffix.indexOf('dark') > -1;
   const isLayered = section.suffix.indexOf('layered') > -1;
-  const isRelated = section.suffix.indexOf('related') > -1;
 
-  if (isRelated && meta.relatedMedia != null) {
+  if (meta.relatedMedia != null) {
     section.betweenNodes = [meta.relatedMedia.cloneNode(true)].concat(section.betweenNodes);
   }
 
