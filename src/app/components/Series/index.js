@@ -20,10 +20,12 @@ function Series({
   return html`
     <div class="${className}">
       ${stories.map(story => html`
-        <a href="${story.url}">
+        <div class="${story.url ? '' : 'is-current'}">
           ${story.kicker ? html`<label>${story.kicker}</label>` : null}
-          <h4>${story.title}</h4>
-        </a>
+          <h3>
+            ${story.url ? html`<a href="${story.url}">${story.title}</a>` : story.title}
+          </h3>
+        </div>
       `)}
     </div>
   `;

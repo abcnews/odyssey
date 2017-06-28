@@ -16,15 +16,6 @@
 .Series > * {
   padding: .75rem;
 
-  &[href=""] {
-    background-color: $color-grey-100;
-    cursor: default;
-  }
-
-  &:hover {
-    text-decoration: none;
-  }
-
   label,
   &::after {
     display: block;
@@ -40,27 +31,26 @@
     font-size: .8125rem;
   }
 
-  h4 {
+  h3 {
     margin-bottom: .375rem;
     font-size: .9375rem;
-    font-weight: normal;
     line-height: 1.4;
   }
 
-  &[href=""]> h4 {
-    color: $color-black;
-    font-weight: bold;
-    cursor: default;
+  &:not(.is-current) {
+    a {
+      font-weight: normal;
+    }
   }
 
-  &:not([href=""]):hover > h4 {
-    text-decoration: underline;
-  }
+  &.is-current {
+    background-color: $color-grey-100;
 
-  &[href=""]::after {
-    content: "Now reading";
-    font-size: .75rem;
-    color: $color-tertiary;
+    &::after {
+      content: "Now reading";
+      font-size: .75rem;
+      color: $color-tertiary;
+    }
   }
 }
 
