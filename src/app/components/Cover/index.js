@@ -162,7 +162,12 @@ function transformSection(section) {
       }
     }
 
-    if (!videoId && !imgEl && isElement(node) && trim(node.textContent).length > 0) {
+    if (
+      !videoId &&
+      !imgEl &&
+      isElement(node) &&
+      (node.hasAttribute('name') || trim(node.textContent).length > 0)
+    ) {
       config.contentEls.push(node);
     }
 
