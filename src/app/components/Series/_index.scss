@@ -1,0 +1,85 @@
+.Series {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -.5rem; 
+  margin-right: -.5rem;
+  font-family: $font-sans;
+}
+
+.Series > *,
+.Series::after {
+  flex: 1 0 17.5rem;
+  margin: 0 .5rem;
+  max-width: calc(100% - 1rem);
+}
+
+.Series > * {
+  padding: .75rem;
+
+  &[href=""] {
+    background-color: $color-grey-100;
+    cursor: default;
+  }
+
+  &:hover {
+    text-decoration: none;
+  }
+
+  label,
+  &::after {
+    display: block;
+    font-weight: bold;
+    line-height: 1;
+    text-transform: uppercase;
+    cursor: inherit;
+  }
+
+  label {
+    margin-bottom: .125rem;
+    color: $color-grey-600;
+    font-size: .8125rem;
+  }
+
+  h4 {
+    margin-bottom: .375rem;
+    font-size: .9375rem;
+    font-weight: normal;
+    line-height: 1.4;
+  }
+
+  &[href=""]> h4 {
+    color: $color-black;
+    font-weight: bold;
+    cursor: default;
+  }
+
+  &:not([href=""]):hover > h4 {
+    text-decoration: underline;
+  }
+
+  &[href=""]::after {
+    content: "Now reading";
+    font-size: .75rem;
+    color: $color-tertiary;
+  }
+}
+
+.Series.has-m2r1::after {
+  content: "";
+}
+
+@media (min-width: 56.375rem) { 
+  .u-pull {
+    .Series.has-m2r1::after {
+      content: none;
+    }
+
+    .Series[class*="has-m3r"]::after {
+      content: "";
+    }
+
+    .Series.has-m3r1::after {
+      flex: 2 0 36rem;
+    }
+  }
+}

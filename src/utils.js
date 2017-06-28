@@ -178,35 +178,32 @@ function getSections(names) {
   return sections;
 }
 
-function _replacePlaceholderWith(el) {
+function _replaceMarkerWith(el) {
   before(this.node, el);
 
   return detach(this.node);
 }
 
-function getPlaceholders(names) {
+function getMarkers(names) {
   if (typeof names === 'string') {
     names = [names];
   }
 
-  const placeholders = [];
-
-  names.forEach(name => {
-    selectAll(`a[name^="${name}"]`).forEach(node => {
+  return names.reduce((memo, name) => {
+    return memo.concat(selectAll(`a[name^="${name}"]`).map(node => {
       const suffix = node.getAttribute('name').slice(name.length);
 
-      const placeholder = {
+      const marker = {
         name,
         suffix,
     		node
     	};
 
-      placeholder.replaceWith = _replacePlaceholderWith.bind(placeholder);
-    	placeholders.push(placeholder);
-    });
-  });
-
-  return placeholders;
+      marker.replaceWith = _replaceMarkerWith.bind(marker);
+    	
+      return marker;
+    }));
+  }, []);
 }
 
 function _linebreaksToParagraphsAppender(state) {
@@ -336,7 +333,7 @@ module.exports = {
   setText,
   toggleAttribute,
   getSections,
-  getPlaceholders,
+  getMarkers,
   linebreaksToParagraphs,
   dePx,
   proximityCheck

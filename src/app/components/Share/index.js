@@ -19,9 +19,9 @@ function Share({type, links}) {
   `;
 }
 
-function transformPlaceholder(placeholder, links) {
-  placeholder.replaceWith(Share({type: placeholder.suffix, links}));
+function transformMarker(marker, links) {
+  marker.replaceWith(Share({type: marker.suffix, links}));
 }
 
 module.exports = Share;
-module.exports.transformPlaceholder = transformPlaceholder;
+module.exports.transformMarker = transformMarker;

@@ -4,7 +4,7 @@ const html = require('bel');
 // Ours
 const {SELECTORS} = require('../constants');
 const {after, append, before, detach, detachAll,
-  getPlaceholders, getSections, isElement, prepend,
+  getMarkers, getSections, isElement, prepend,
   select, selectAll} = require('../utils');
 const Caption = require('./components/Caption');
 const Cover = require('./components/Cover');
@@ -14,15 +14,15 @@ const ImageEmbed = require('./components/ImageEmbed');
 const MasterGallery = require('./components/MasterGallery');
 const Nav = require('./components/Nav');
 const Quote = require('./components/Quote');
+const Series = require('./components/Series');
 const Share = require('./components/Share');
+const UDropcap = require('./components/UDropcap');
 const UParallax = require('./components/UParallax');
 const UPull = require('./components/UPull');
 const VideoEmbed = require('./components/VideoEmbed');
 const {enqueue, start, subscribe} = require('./scheduler');
 const {getMeta} = require('./meta');
 const {prepare, reset} = require('./reset');
-
-const BEGINS_WITH_ALPHANUMERIC_PATTERN = /^\w/;
 
 function app(done) {
   prepare();
@@ -43,26 +43,9 @@ function app(done) {
     .filter(el => select('.type-photo', el)))
   .forEach(MasterGallery.register);
 
-  // Replace placeholders
-  getPlaceholders([
-    'hr',
-    'share'
-  ]).forEach(placeholder => {
-    switch (placeholder.name) {
-      case 'hr':
-        placeholder.replaceWith(html`<hr>`);
-        break;
-      case 'share':
-        Share.transformPlaceholder(placeholder, meta.shareLinks);
-        break;
-      default:
-        break;
-    }
-  });
-
   let hasHeader = false;
 
-  // Replace sections
+  // Transform sections
   getSections([
     'header',
     'cover',
@@ -93,6 +76,47 @@ function app(done) {
   if (!hasHeader) {
     prepend(storyEl, Header({meta}));
   }
+
+  // Enable drop-caps after headers
+  selectAll('.Header')
+  .forEach(el => {
+    let nextEl = el.nextElementSibling;
+
+    if (
+      nextEl !== null &&
+      nextEl.tagName !== 'P'
+    ) {
+      nextEl = nextEl.nextElementSibling;
+    }
+
+    UDropcap.conditionallyApply(nextEl);
+  });
+
+  // Transform markers
+  getMarkers([
+    'hr',
+    'series',
+    'share'
+  ]).forEach(marker => {
+    let el;
+
+    switch (marker.name) {
+      case 'hr':
+        el = html`<hr>`;
+        marker.replaceWith(el);
+        UDropcap.conditionallyApply(el.nextElementSibling);
+        break;
+      case 'series':
+        Series.transformEl(select('ol, ul', marker.node.nextElementSibling));
+        detach(marker.node);
+        break;
+      case 'share':
+        Share.transformMarker(marker, meta.shareLinks);
+        break;
+      default:
+        break;
+    }
+  });
 
   // Activate existing parallaxes
   selectAll('.u-parallax').forEach(UParallax.activate);
@@ -164,28 +188,6 @@ function app(done) {
       setTimeout(transformRemainingEELs, 500);
     }
   }, 0);
-
-  // Enable drop-caps after headers and horizontal rules
-  selectAll('.Header, hr')
-  .forEach(el => {
-    let nextEl = el.nextElementSibling;
-
-    if (
-      nextEl !== null &&
-      nextEl.tagName !== 'P'
-    ) {
-      nextEl = nextEl.nextElementSibling;
-    }
-
-    if (
-      nextEl !== null &&
-      nextEl.tagName === 'P' &&
-      nextEl.textContent.length > 80 &&
-      BEGINS_WITH_ALPHANUMERIC_PATTERN.test(nextEl.textContent)
-    ) {
-      nextEl.classList.add('u-dropcap');
-    }
-  });
 
   // Embed master gallery
   append(storyEl, MasterGallery());

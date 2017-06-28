@@ -245,7 +245,7 @@
   background-image: $gradient-radial-0-0-100-60;
   outline: dashed .125rem $color-white;
   outline-offset: -.5rem;
-  border: solid .125rem $color-tertiary;
+  border: solid .125rem $color-lightTertiary;
   
   .u-full > & {
     height: 100%;
@@ -254,7 +254,7 @@
   p {
     padding: 1rem;
     max-width: 24rem;
-    color: $color-tertiary;
+    color: $color-lightTertiary;
     font-family: $font-sans;
     font-size: 1rem;
     text-align: center;
