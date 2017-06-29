@@ -1,4 +1,4 @@
-[class*="u-cta"] {
+.u-cta {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -17,7 +17,6 @@
     line-height: 1.33;
     text-align: center;
     text-transform: uppercase;
-    text-decoration: none;
     transition: filter .25s;
     will-change: opacity; // create stacking context
             
@@ -29,7 +28,9 @@
       color: $color-white;
     }
 
-    &:hover {
+    &:hover,
+    &:focus {
+      text-decoration: none;
       -webkit-filter: brightness(1.2);
       filter: brightness(1.2);
     }
