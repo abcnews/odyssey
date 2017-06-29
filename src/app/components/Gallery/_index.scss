@@ -212,6 +212,7 @@
     background-color: $color-black-transparent-60;
     color: $color-grey-50;
     pointer-events: none;
+    transition-delay: 0s;
 
     @media #{$mq-sm} {
       display: none;
