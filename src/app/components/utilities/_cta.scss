@@ -1,0 +1,41 @@
+[class*="u-cta"] {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-family: $font-sans;
+
+  a {
+    flex: 0 1 auto;
+    margin: .5rem;
+    padding: .5rem 2rem;
+    max-width: calc(100% - 1rem);
+    background-color: $color-black-transparent-30;
+    color: $color-white;
+    font-family: $font-sans;
+    font-size: 1.375rem;
+    font-weight: bold;
+    line-height: 1.33;
+    text-align: center;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: filter .25s;
+            
+    .u-richtext-invert & {
+      background-color: $color-white-transparent-30;
+    }
+
+    &:visited {
+      color: $color-white;
+    }
+
+    &:hover {
+      -webkit-filter: brightness(1.2);
+      filter: brightness(1.2);
+
+      .u-richtext-invert & {
+        -webkit-filter: brightness(1.05);
+        filter: brightness(1.05);
+      }
+    }
+  }
+}

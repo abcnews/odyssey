@@ -94,6 +94,7 @@ function app(done) {
 
   // Transform markers
   getMarkers([
+    'cta',
     'hr',
     'series',
     'share'
@@ -101,6 +102,10 @@ function app(done) {
     let el;
 
     switch (marker.name) {
+      case 'cta':
+        marker.node.nextElementSibling.classList.add('u-cta');
+        detach(marker.node);
+        break;
       case 'hr':
         el = html`<hr>`;
         marker.replaceWith(el);
