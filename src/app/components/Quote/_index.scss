@@ -15,6 +15,10 @@
     color: $color-darkerPrimary;
     font-size: 1.125rem;
     line-height: 1.66;
+
+    &.has-double-quotes {
+      text-indent: -.4em;
+    }
   }
 
   footer {

@@ -8,6 +8,9 @@ const {append, before, detach, getDescendantTextNodes, isElement, isText,
   linebreaksToParagraphs, prepend, select, selectAll, trim} = require('../../../utils');
 
 const DOUBLE_QUOTE_PATTERN = /\"/g; 
+const OPENING_DOUBLE_QUOTE = '“';
+const CLOSING_DOUBLE_QUOTE = '”';
+const HAIR_SPACE = ' ';
 
 function Quote({
   isPullquote = false,
@@ -28,15 +31,24 @@ function Quote({
   if (parEls.length) {
     parEls.forEach(parEl => {
       let toggle = false;
+      let hasDoubleQuotes = false;
 
       getDescendantTextNodes(parEl)
       .forEach(node => {
         if (DOUBLE_QUOTE_PATTERN.test(node.nodeValue)) {
           node.nodeValue = node.nodeValue.replace(DOUBLE_QUOTE_PATTERN, () => {
-            return (toggle = !toggle) ?  '“' : '”'
+            hasDoubleQuotes = true;
+
+            return (toggle = !toggle) ?
+              OPENING_DOUBLE_QUOTE + HAIR_SPACE :
+              HAIR_SPACE + CLOSING_DOUBLE_QUOTE;
           });
         }
       });
+
+      if (hasDoubleQuotes) {
+        parEl.classList.add('has-double-quotes');
+      }
     });
   }
 
