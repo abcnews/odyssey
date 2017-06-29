@@ -80,7 +80,7 @@
   }
 
   .is-richtext:not(.is-piecemeal) &.is-fixed > *::after {
-    transform: translateZ(0);
+    will-change: opacity; // create stacking context
   }
 
   .is-heading &::after {
