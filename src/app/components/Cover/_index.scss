@@ -40,11 +40,15 @@
 
     & > * {
       position: fixed;
-      -webkit-transform: translateZ(0); // Mobile Safari needs this
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
+
+      // Safari (7.1+)
+      _::-webkit-full-page-media, _:future, :root & {
+        -webkit-transform: translateZ(0);
+      }
     }
   }
 
