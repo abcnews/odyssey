@@ -19,6 +19,7 @@
     text-transform: uppercase;
     text-decoration: none;
     transition: filter .25s;
+    will-change: opacity; // create stacking context
             
     .u-richtext-invert & {
       background-color: $color-white-transparent-30;
@@ -31,11 +32,6 @@
     &:hover {
       -webkit-filter: brightness(1.2);
       filter: brightness(1.2);
-
-      .u-richtext-invert & {
-        -webkit-filter: brightness(1.05);
-        filter: brightness(1.05);
-      }
     }
   }
 }
