@@ -5,7 +5,7 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const {IS_PREVIEW} = require('../../../constants');
-const {grabConfig, prepend, $, $$, substitute} = require('../../../utils');
+const {grabConfig, $, $$, substitute} = require('../../../utils');
 const {invalidateClient} = require('../../scheduler');
 const Caption = require('../Caption');
 const VideoPlayer = require('../VideoPlayer');
@@ -13,49 +13,29 @@ const VideoPlayer = require('../VideoPlayer');
 const SCROLLPLAY_PCT_PATTERN = /scrollplay(\d+)/;
 
 function VideoEmbed({
-  videoId,
+  videoPlayerEl,
   captionEl,
-  isAmbient,
-  isFullscreen,
-  isLoop,
-  isMuted,
-  scrollplayPct
+  isFull,
+  isCover,
+  isAnon
 }) {
-  if (isAmbient) {
-    isFullscreen = true;
+  if (isCover) {
+    isFull = true;
+    isAnon = true;
   }
 
   const className = cn('VideoEmbed', {
-    'u-pull': !isFullscreen,
-    'u-full': isFullscreen
+    'u-pull': !isFull,
+    'u-full': isFull,
+    'is-cover': isCover
   });
 
-  const videoEmbedEl = html`
+  return html`
     <div class="${className}">
-      ${captionEl}
+      ${videoPlayerEl}
+      ${isAnon ? null : captionEl}
     </div>
   `;
-
-  VideoPlayer.getMetadata(videoId, (err, metadata) => {
-    if (err) {
-      if (IS_PREVIEW) {
-        prepend(videoEmbedEl, VideoPlayer.UnpublishedVideoPlaceholder(videoId));
-      }
-    
-      return;
-    }
-
-    prepend(videoEmbedEl, VideoPlayer(Object.assign(metadata, {
-      isAmbient,
-      isFullscreen,
-      isLoop,
-      isMuted,
-      scrollplayPct,
-    })));
-    invalidateClient();
-  });
-
-  return videoEmbedEl;
 };
 
 function transformEl(el) {
@@ -66,20 +46,45 @@ function transformEl(el) {
   }
 
   const suffix = grabConfig(el);
-  const [, scrollplayPctString] = suffix.match(SCROLLPLAY_PCT_PATTERN) || [, suffix.indexOf('autoplay') > -1 ? '0' : ''];
 
-  const videoEmbedEl = VideoEmbed({
-    videoId,
-    captionEl: Caption.createFromEl(el),
+  const options = {
+    isFull: suffix.indexOf('full') > -1,
+    isCover: suffix.indexOf('cover') > -1,
+    isAnon: suffix.indexOf('anon') > -1
+  };
+
+  const [, scrollplayPctString] = suffix.match(SCROLLPLAY_PCT_PATTERN) ||
+    [, suffix.indexOf('autoplay') > -1 ? '0' : ''];
+  const scrollplayPct = scrollplayPctString.length > 0 &&
+      Math.max(0, Math.min(100, +scrollplayPctString));
+
+  const videoPlayerOptions = {
+    isAlwaysHQ: options.isCover || options.isFull,
     isAmbient: suffix.indexOf('ambient') > -1,
-    isFullscreen: suffix.indexOf('fullscreen') > -1,
     isLoop: suffix.indexOf('loop') > -1,
     isMuted: suffix.indexOf('muted') > -1,
-    scrollplayPct: scrollplayPctString.length > 0 &&
-      Math.max(0, Math.min(100, +scrollplayPctString))
+    scrollplayPct
+  };
+
+  const videoPlayerPlaceholderEl = html`<div></div>`;
+
+  VideoPlayer.getMetadata(videoId, (err, metadata) => {
+    if (err) {
+      if (IS_PREVIEW) {
+        substitute(videoPlayerPlaceholderEl, VideoPlayer.UnpublishedVideoPlaceholder(videoId));
+      }
+    
+      return;
+    }
+
+    substitute(videoPlayerPlaceholderEl, VideoPlayer(Object.assign(videoPlayerOptions, metadata)));
+    invalidateClient();
   });
 
-  substitute(el, videoEmbedEl);
+  substitute(el, VideoEmbed(Object.assign(options, {
+    videoPlayerEl: videoPlayerPlaceholderEl,
+    captionEl: Caption.createFromEl(el)
+  })));
 }
 
 module.exports = VideoEmbed;

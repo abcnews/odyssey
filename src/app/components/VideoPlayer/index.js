@@ -27,13 +27,12 @@ function VideoPlayer({
   posterURL,
   sources = [],
   isAmbient,
-  isFullscreen,
+  isAlwaysHQ,
   isLoop,
   isMuted,
   scrollplayPct
 }) {
   if (isAmbient) {
-    isFullscreen = true;
     isLoop = true;
     scrollplayPct = 0;
   }
@@ -56,7 +55,8 @@ function VideoPlayer({
     'webkit-playsinline': true
   };
 
-  Object.keys(booleanAttributes).forEach(attributeName => {
+  Object.keys(booleanAttributes)
+  .forEach(attributeName => {
     toggleAttribute(videoEl, attributeName, booleanAttributes[attributeName]);
   });
 
@@ -65,7 +65,7 @@ function VideoPlayer({
     videoEl.muted = true;
   }
 
-  const source = sources[!isFullscreen && sources.length > 1 && window.matchMedia(MQ.SM).matches ? 1 : 0];
+  const source = sources[!isAlwaysHQ && sources.length > 1 && window.matchMedia(MQ.SM).matches ? 1 : 0];
 
   if (source) {
     videoEl.src = source.src;

@@ -1,4 +1,7 @@
 .ImageEmbed {
+  &.u-full.is-cover {
+    height: 100vh;
+  }
 
   @media #{$mq-sm} {
     .Main > [class*="u-pull"] > & {
@@ -13,10 +16,5 @@
       padding-right: 0;
       width: 100%;
     }
-  }
-
-  img {
-    width: 100%;
-    vertical-align: top;
   }
 }

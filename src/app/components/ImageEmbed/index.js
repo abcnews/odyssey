@@ -1,4 +1,5 @@
 // External
+const cn = require('classnames');
 const html = require('bel');
 const url2cmid = require('util-url2cmid');
 
@@ -9,12 +10,26 @@ const Picture = require('../Picture');
 
 function ImageEmbed({
   pictureEl,
-  captionEl
+  captionEl,
+  isFull,
+  isCover,
+  isAnon
 }) {
+  if (isCover) {
+    isFull = true;
+    isAnon = true;
+  }
+
+  const className = cn('ImageEmbed', {
+    'u-pull': !isFull,
+    'u-full': isFull,
+    'is-cover': isCover
+  });
+
   return html`
-    <div class="ImageEmbed u-pull">
+    <div class="${className}">
       ${pictureEl}
-      ${captionEl}
+      ${isAnon ? null : captionEl}
     </div>
   `;
 };
@@ -46,7 +61,10 @@ function transformEl(el, preserveOriginalRatio) {
       preserveOriginalRatio,
       linkUrl
     }),
-    captionEl: Caption.createFromEl(el)
+    captionEl: Caption.createFromEl(el),
+    isFull: suffix.indexOf('full') > -1,
+    isCover: suffix.indexOf('cover') > -1,
+    isAnon: suffix.indexOf('anon') > -1
   });
 
   substitute(el, imageEmbedEl);

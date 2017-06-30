@@ -1,8 +1,11 @@
 .VideoEmbed {
   &.u-full {
-    height: 100vh;
     min-height: 56.25vw;
     min-height: calc(var(--root-width) * .5625);
+
+    &.is-cover {
+      height: 100vh;
+    }
   }
 
   &:not(.u-pull):not(.u-full) {
@@ -21,12 +24,6 @@
       padding-left: 0;
       padding-right: 0;
       width: 100%;
-    }
-  }
-
-  &.u-full {
-    > .Caption {
-      display: none;
     }
   }
 }
