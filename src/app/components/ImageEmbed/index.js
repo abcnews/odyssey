@@ -4,6 +4,7 @@ const html = require('bel');
 const url2cmid = require('util-url2cmid');
 
 // Ours
+const {ALIGNMENT_PATTERN} = require('../../../constants');
 const {grabConfig, $, substitute} = require('../../../utils');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
@@ -11,6 +12,7 @@ const Picture = require('../Picture');
 function ImageEmbed({
   pictureEl,
   captionEl,
+  alignment,
   isFull,
   isCover,
   isAnon
@@ -21,7 +23,8 @@ function ImageEmbed({
   }
 
   const className = cn('ImageEmbed', {
-    'u-pull': !isFull,
+    [`u-pull-${alignment}`]: !isFull && alignment,
+    'u-pull': !isFull && !alignment,
     'u-full': isFull,
     'is-cover': isCover
   });
@@ -42,6 +45,7 @@ function transformEl(el, preserveOriginalRatio) {
   }
 
   const suffix = grabConfig(el);
+  const [, alignment] = suffix.match(ALIGNMENT_PATTERN) || [];
   const [, smRatio] = suffix.match(Picture.SM_RATIO_PATTERN) || [];
   const [, mdRatio] = suffix.match(Picture.MD_RATIO_PATTERN) || [];
   const [, lgRatio] = suffix.match(Picture.LG_RATIO_PATTERN) || [];
@@ -62,6 +66,7 @@ function transformEl(el, preserveOriginalRatio) {
       linkUrl
     }),
     captionEl: Caption.createFromEl(el),
+    alignment,
     isFull: suffix.indexOf('full') > -1,
     isCover: suffix.indexOf('cover') > -1,
     isAnon: suffix.indexOf('anon') > -1

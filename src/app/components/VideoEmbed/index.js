@@ -4,7 +4,7 @@ const html = require('bel');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const {IS_PREVIEW} = require('../../../constants');
+const {IS_PREVIEW, ALIGNMENT_PATTERN} = require('../../../constants');
 const {grabConfig, $, $$, substitute} = require('../../../utils');
 const {invalidateClient} = require('../../scheduler');
 const Caption = require('../Caption');
@@ -15,6 +15,7 @@ const SCROLLPLAY_PCT_PATTERN = /scrollplay(\d+)/;
 function VideoEmbed({
   videoPlayerEl,
   captionEl,
+  alignment,
   isFull,
   isCover,
   isAnon
@@ -25,7 +26,8 @@ function VideoEmbed({
   }
 
   const className = cn('VideoEmbed', {
-    'u-pull': !isFull,
+    [`u-pull-${alignment}`]: !isFull && alignment,
+    'u-pull': !isFull && !alignment,
     'u-full': isFull,
     'is-cover': isCover
   });
@@ -46,8 +48,10 @@ function transformEl(el) {
   }
 
   const suffix = grabConfig(el);
+  const [, alignment] = suffix.match(ALIGNMENT_PATTERN) || [];
 
   const options = {
+    alignment,
     isFull: suffix.indexOf('full') > -1,
     isCover: suffix.indexOf('cover') > -1,
     isAnon: suffix.indexOf('anon') > -1

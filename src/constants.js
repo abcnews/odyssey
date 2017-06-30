@@ -4,6 +4,7 @@ const ns = require('util-news-selectors');
 const NEWLINE = '\n';
 const HYPHEN = '-';
 const CSS_URL = /url\('?"?(.*?)"?'?\)/;
+const ALIGNMENT_PATTERN = /(left|right)/;
 
 const SELECTORS = {
   GLOBAL_NAV: '#abcHeader.global',
@@ -110,6 +111,7 @@ module.exports = {
   NEWLINE,
   HYPHEN,
   CSS_URL,
+  ALIGNMENT_PATTERN,
   SELECTORS,
   EMBED_TAGNAMES,
   MOCK_NODE,

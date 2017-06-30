@@ -4,14 +4,12 @@ const html = require('bel');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const {IS_PREVIEW} = require('../../../constants');
+const {ALIGNMENT_PATTERN, IS_PREVIEW} = require('../../../constants');
 const {detach, isElement, $, substitute, trim} = require('../../../utils');
 const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
 const VideoPlayer = require('../VideoPlayer');
-
-const ALIGNMENT_PATTERN = /(left|right)/;
 
 function Cover({
   type = 'richtext',
