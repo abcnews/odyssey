@@ -7,7 +7,7 @@ const xhr = require('xhr');
 
 // Ours
 const {CSS_URL, IS_IOS, MQ, MS_VERSION} = require('../../../constants');
-const {append, isElement, proximityCheck, select, selectAll, setText, toggleAttribute, twoDigits} = require('../../../utils');
+const {append, isElement, proximityCheck, $, $$, setText, toggleAttribute, twoDigits} = require('../../../utils');
 const {getMeta} = require('../../meta');
 const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
 
@@ -249,7 +249,7 @@ function getMetadata(videoElOrId, callback) {
   if (isElement(videoElOrId)) {
     done(null, {
       posterURL: videoElOrId.poster,
-      sources: formatSources(selectAll('source', videoElOrId))
+      sources: formatSources($$('source', videoElOrId))
     });
   } else if ('WCMS' in window) {
     // Phase 2
@@ -275,11 +275,11 @@ function getMetadata(videoElOrId, callback) {
 
     const relatedMedia = getMeta().relatedMedia;
 
-    selectAll('.inline-content.video[data-inline-video-data-index]')
+    $$('.inline-content.video[data-inline-video-data-index]')
     .concat(relatedMedia ? [relatedMedia] : [])
     .some(el => {
-      if (select(`[href*="/${videoElOrId}"]`, el)) {
-        const posterEl = select('img, .inline-video', el);
+      if ($(`[href*="/${videoElOrId}"]`, el)) {
+        const posterEl = $('img, .inline-video', el);
 
         done(null, {
           posterURL: posterEl ? (posterEl.style.backgroundImage.match(CSS_URL) || [, posterEl.src])[1] : null,

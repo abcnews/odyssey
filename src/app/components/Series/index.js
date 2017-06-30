@@ -4,7 +4,7 @@ const html = require('bel');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const {before, detach, isElement, selectAll} = require('../../../utils');
+const {isElement, $$, substitute} = require('../../../utils');
 
 const CURRENT_STORY_ID = url2cmid(window.location.href);
 
@@ -32,7 +32,7 @@ function Series({
 }
 
 function transformEl(el) {
-  const stories = selectAll('a', el).map(linkEl => {
+  const stories = $$('a', el).map(linkEl => {
     const linkTextParts = linkEl.textContent.split(': ');
 
     return {
@@ -42,8 +42,7 @@ function transformEl(el) {
     };
   });
 
-  before(el, Series({stories}));
-  detach(el);
+  substitute(el, Series({stories}));
 }
 
 module.exports = Series;

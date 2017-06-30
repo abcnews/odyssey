@@ -3,7 +3,7 @@ const html = require('bel');
 
 // Ours
 const {MOCK_ELEMENT} = require('../../../constants');
-const {detach, isElement, select, trim} = require('../../../utils');
+const {detach, isElement, $, trim} = require('../../../utils');
 
 function Caption({
   url,
@@ -35,11 +35,11 @@ function createFromEl(el) {
   ) {
     // P2 (external)
     config = {
-      url: (select('.embed-caption a', clone) || MOCK_ELEMENT).getAttribute('href'),
+      url: ($('.embed-caption a', clone) || MOCK_ELEMENT).getAttribute('href'),
       text: [
-        trim((select('.embed-label', clone) || MOCK_ELEMENT).textContent),
-        trim((select('.embed-caption a span', clone) || MOCK_ELEMENT).textContent),
-        trim((select('.inline-caption span', clone) || MOCK_ELEMENT).textContent)
+        trim(($('.embed-label', clone) || MOCK_ELEMENT).textContent),
+        trim(($('.embed-caption a span', clone) || MOCK_ELEMENT).textContent),
+        trim(($('.inline-caption span', clone) || MOCK_ELEMENT).textContent)
       ].join(' '),
       attribution: ''
     };
@@ -50,42 +50,42 @@ function createFromEl(el) {
   ) {
     // P1S
     config = {
-      url: (select('a', clone) || MOCK_ELEMENT).getAttribute('href'),
-      attribution: trim(detach(select('.source', clone) || MOCK_ELEMENT).textContent.slice(1, -1))
+      url: ($('a', clone) || MOCK_ELEMENT).getAttribute('href'),
+      attribution: trim(detach($('.source', clone) || MOCK_ELEMENT).textContent.slice(1, -1))
     };
     if (clone.className.indexOf(' embedded') === -1) {
-      detach(select('.inline-caption strong', clone));
+      detach($('.inline-caption strong', clone));
     }
-    config.text = trim((select('.inline-caption', clone) || MOCK_ELEMENT).textContent);
+    config.text = trim(($('.inline-caption', clone) || MOCK_ELEMENT).textContent);
   } else if (
-    select('.type-photo, .type-video, .type-external', clone)
+    $('.type-photo, .type-video, .type-external', clone)
   ) {
     // P1M
-    if (!select('.type-external', clone)) {
-      detach(select('h3 strong', clone));
+    if (!$('.type-external', clone)) {
+      detach($('h3 strong', clone));
     }
     config = {
-      url: (select('a', clone) || MOCK_ELEMENT).getAttribute('href'),
-      text: trim((select('h3', clone) || MOCK_ELEMENT).textContent),
-      attribution: trim((select('.attribution', clone) || MOCK_ELEMENT).textContent)
+      url: ($('a', clone) || MOCK_ELEMENT).getAttribute('href'),
+      text: trim(($('h3', clone) || MOCK_ELEMENT).textContent),
+      attribution: trim(($('.attribution', clone) || MOCK_ELEMENT).textContent)
     };
   } else if (
-    select('figcaption', clone)
+    $('figcaption', clone)
   ) {
     // P2 (image)
     config = {
-      url: `/news/${(select('[data-contentidshared]', clone) || MOCK_ELEMENT).getAttribute('data-contentidshared')}`,
-      text: trim((select('figcaption .lightbox-trigger', clone) || MOCK_ELEMENT).textContent),
-      attribution: trim((select('figcaption .byline', clone) || MOCK_ELEMENT).textContent.slice(1, -1))
+      url: `/news/${($('[data-contentidshared]', clone) || MOCK_ELEMENT).getAttribute('data-contentidshared')}`,
+      text: trim(($('figcaption .lightbox-trigger', clone) || MOCK_ELEMENT).textContent),
+      attribution: trim(($('figcaption .byline', clone) || MOCK_ELEMENT).textContent.slice(1, -1))
     };
   } else if (
-    select('.comp-video-player', clone)
+    $('.comp-video-player', clone)
   ) {
     // P2 (video)
     config = {
-      url: (select('.comp-video-player ~ .caption a', clone) || MOCK_ELEMENT).getAttribute('href'),
-      text: trim((select('.comp-video-player ~ .caption a', clone) || MOCK_ELEMENT).textContent),
-      attribution: trim((select('.comp-video-player ~ .caption .byline', clone) || MOCK_ELEMENT).textContent.slice(1, -1))
+      url: ($('.comp-video-player ~ .caption a', clone) || MOCK_ELEMENT).getAttribute('href'),
+      text: trim(($('.comp-video-player ~ .caption a', clone) || MOCK_ELEMENT).textContent),
+      attribution: trim(($('.comp-video-player ~ .caption .byline', clone) || MOCK_ELEMENT).textContent.slice(1, -1))
     };
   }
 

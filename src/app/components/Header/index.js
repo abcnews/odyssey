@@ -6,7 +6,7 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const {IS_PREVIEW, MS_VERSION} = require('../../../constants');
-const {before, detach, dePx, isElement, prepend, select, slug, trim} = require('../../../utils');
+const {dePx, isElement, prepend, $, slug, substitute, trim} = require('../../../utils');
 const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
 const Picture = require('../Picture');
 const UParallax = require('../UParallax');
@@ -48,8 +48,7 @@ function Header({
     VideoPlayer.getMetadata(videoElOrId, (err, metadata) => {
       if (err) {
         if (IS_PREVIEW) {
-          before(mediaEl, VideoPlayer.UnpublishedVideoPlaceholder(videoElOrId));
-          detach(mediaEl);
+          substitute(mediaEl, VideoPlayer.UnpublishedVideoPlaceholder(videoElOrId));
         }
       
         return;
@@ -57,8 +56,7 @@ function Header({
 
       const replacementMediaEl = VideoPlayer(Object.assign(metadata, {isAmbient: true}));
 
-      before(mediaEl, replacementMediaEl);
-      detach(mediaEl);
+      substitute(mediaEl, replacementMediaEl);
 
       if (!isLayered) {
         replacementMediaEl.classList.add('u-parallax');
@@ -161,11 +159,13 @@ function transformSection(section, meta) {
   const isDark = section.suffix.indexOf('dark') > -1;
   const isLayered = section.suffix.indexOf('layered') > -1;
 
+  let candidateNodes = section.betweenNodes;
+
   if (meta.relatedMedia != null) {
-    section.betweenNodes = [meta.relatedMedia.cloneNode(true)].concat(section.betweenNodes);
+    candidateNodes = [meta.relatedMedia.cloneNode(true)].concat(candidateNodes);
   }
 
-  const config = section.betweenNodes.reduce((config, node) => {
+  const config = candidateNodes.reduce((config, node) => {
     let classList;
     let videoEl;
     let videoId;
@@ -173,7 +173,7 @@ function transformSection(section, meta) {
 
     if (!config.videoElOrId && !config.imgEl && isElement(node) ) {
       classList = node.className.split(' ');
-      videoEl = select('video', node);
+      videoEl = $('video', node);
 
       if (videoEl) {
         config.videoElOrId = videoEl;
@@ -181,14 +181,14 @@ function transformSection(section, meta) {
         videoId = (
           (classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
           (classList.indexOf('view-inlineMediaPlayer') > -1) ||
-          (classList.indexOf('view-hero-media') > -1 && select('.view-inlineMediaPlayer', node)) ||
-          (classList.indexOf('embed-content') > -1 && select('.type-video', node))
-        ) && url2cmid(select('a', node).getAttribute('href'));
+          (classList.indexOf('view-hero-media') > -1 && $('.view-inlineMediaPlayer', node)) ||
+          (classList.indexOf('embed-content') > -1 && $('.type-video', node))
+        ) && url2cmid($('a', node).getAttribute('href'));
 
         if (videoId) {
           config.videoElOrId = videoId;
         } else {
-          imgEl = select('img', node);
+          imgEl = $('img', node);
 
           if (imgEl) {
             config.imgEl = imgEl;
@@ -212,7 +212,7 @@ function transformSection(section, meta) {
     miscContentEls: []
   });
 
-  section.replaceWith(Header(config));
+  section.substituteWith(Header(config));
 }
 
 module.exports = Header;

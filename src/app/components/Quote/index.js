@@ -4,8 +4,8 @@ const html = require('bel');
 
 // Ours
 const {MOCK_NODE} = require('../../../constants');
-const {append, before, detach, getDescendantTextNodes, isElement, isText,
-  linebreaksToParagraphs, prepend, select, selectAll, trim} = require('../../../utils');
+const {append, detach, getDescendantTextNodes, isElement, isText,
+  linebreaksToParagraphs, prepend, $, $$, substitute, trim} = require('../../../utils');
 
 const DOUBLE_QUOTE_PATTERN = /\"/g; 
 const OPENING_DOUBLE_QUOTE = '“';
@@ -74,38 +74,38 @@ function createFromEl(el) {
     if (clone.className.indexOf('source-blockquote') > -1) {
       // P2-B
       config = {
-        parEls: selectAll('p', clone),
-        attributionNodes: (select('footer', clone) || MOCK_NODE).childNodes
+        parEls: $$('p', clone),
+        attributionNodes: ($('footer', clone) || MOCK_NODE).childNodes
       };
     } else {
       // P1S-B, P1M-B, P1S-P, P1M-P
       config = {
         isPullquote: clone.className.indexOf('quote--pullquote') > -1,
-        parEls: selectAll('p:not([class])', clone),
-        attributionNodes: (select('.p--pullquote-byline', clone) || MOCK_NODE).childNodes
+        parEls: $$('p:not([class])', clone),
+        attributionNodes: ($('.p--pullquote-byline', clone) || MOCK_NODE).childNodes
       };
     }
   } else if (clone.tagName === 'ASIDE') {
     // P2-P
     config = {
       isPullquote: true,
-      parEls: selectAll('p', clone),
-      attributionNodes: (select('footer', clone) || MOCK_NODE).childNodes
+      parEls: $$('p', clone),
+      attributionNodes: ($('footer', clone) || MOCK_NODE).childNodes
     };
   } else if (clone.tagName === 'FIGURE') {
     // P1M-E
     config = {
       isPullquote: true,
-      parEls: Array.from(linebreaksToParagraphs(select('blockquote', clone) || MOCK_NODE).childNodes),
-      attributionNodes: (select('figcaption', clone) || MOCK_NODE).childNodes
+      parEls: Array.from(linebreaksToParagraphs($('blockquote', clone) || MOCK_NODE).childNodes),
+      attributionNodes: ($('figcaption', clone) || MOCK_NODE).childNodes
     };
   } else if (clone.className.indexOf('inline-content quote') > -1 ||
       clone.className.indexOf('view-inline-pullquote') > -1) {
     // P1S-E, P2-E
     config = {
       isPullquote: true,
-      parEls: selectAll('p', clone),
-      attributionNodes: (select('.cite', clone) || MOCK_NODE).childNodes
+      parEls: $$('p', clone),
+      attributionNodes: ($('.cite', clone) || MOCK_NODE).childNodes
     };
   }
 
@@ -122,13 +122,13 @@ function createFromEl(el) {
       const parEl =  html`<p></p>`;
 
       while (stack.length > 0) {
-        parEl.insertBefore(stack.pop(), parEl.firstChild);
+        prepend(stack.pop(), parEl)
       }
 
       memo.push(parEl);
     }
 
-    if (select('br', parEl)) {
+    if ($('br', parEl)) {
       while (parEl.firstChild !== null) {
         nextNode = detach(parEl.childNodes[0]);
 
@@ -155,8 +155,7 @@ function createFromEl(el) {
 }
 
 function transformEl(el) {
-  before(el, createFromEl(el));
-  detach(el);
+  substitute(el, createFromEl(el));
 }
 
 function isBr(node) {

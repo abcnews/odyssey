@@ -4,7 +4,7 @@ const dewysiwyg = require('util-dewysiwyg');
 
 // Ours
 const {SELECTORS} = require('../../constants');
-const {append, before, detach, detachAll, literalList, select, selectAll, trim} = require('../../utils');
+const {append, before, detach, detachAll, literalList, $, $$, trim} = require('../../utils');
 const Main = require('../components/Main');
 
 const TEMPLATE_REMOVABLES = {
@@ -64,7 +64,7 @@ const P2_FLOAT = {
 };
 
 function resetMetaViewport() {
-  const el = select('meta[name="viewport"]');
+  const el = $('meta[name="viewport"]');
 
   if (el) {
     el.setAttribute('content', 'width=device-width, initial-scale=1, minimum-scale=1');
@@ -72,7 +72,7 @@ function resetMetaViewport() {
 }
 
 function promoteToMain(storyEl, meta) {
-  const existingMainEl = select(SELECTORS.MAIN);
+  const existingMainEl = $(SELECTORS.MAIN);
   const id = existingMainEl.getAttribute('id');
   const mainEl = Main(Array.from(storyEl.childNodes), meta);
 
@@ -90,7 +90,7 @@ function promoteToMain(storyEl, meta) {
 
 function prepare() {
   // Tag indices of Phase 1 (Standard) video embeds, so we can resolve them later
-  selectAll('.inline-content.video:not(.expired)')
+  $$('.inline-content.video:not(.expired)')
   .forEach((el, index) => el.setAttribute('data-inline-video-data-index', index));
 }
 
@@ -100,24 +100,28 @@ function reset(storyEl, meta) {
 
   storyEl = promoteToMain(storyEl, meta);
 
-  Object.keys(TEMPLATE_REMOVABLES).forEach(templateBodySelector => {
-    if (select(templateBodySelector)) {
-      detachAll(selectAll(TEMPLATE_REMOVABLES[templateBodySelector]));
+  Object.keys(TEMPLATE_REMOVABLES)
+  .forEach(templateBodySelector => {
+    if ($(templateBodySelector)) {
+      detachAll($$(TEMPLATE_REMOVABLES[templateBodySelector]));
     }
   });
 
-  selectAll(WHITESPACE_REMOVABLES, storyEl).forEach(el => {
+  $$(WHITESPACE_REMOVABLES, storyEl)
+  .forEach(el => {
     if (trim(el.textContent).length === 0) {
       detach(el);
     }
   });
 
-  selectAll(SELECTORS.WYSIWYG_EMBED, storyEl).forEach(el => {
+  $$(SELECTORS.WYSIWYG_EMBED, storyEl)
+  .forEach(el => {
     dewysiwyg.normalise(el);
     el.className = `${el.className} u-richtext`;
   });
 
-  selectAll(P1S_FLOAT.SELECTOR, storyEl).forEach(el => {
+  $$(P1S_FLOAT.SELECTOR, storyEl)
+  .forEach(el => {
     const [, side] = el.className.match(P1S_FLOAT.PATTERN);
     const pullEl = html`<div class="u-pull-${side}"></div>`;
 
@@ -127,7 +131,8 @@ function reset(storyEl, meta) {
     append(pullEl, el);
   });
 
-  selectAll(P2_FLOAT.SELECTOR, storyEl).forEach(el => {
+  $$(P2_FLOAT.SELECTOR, storyEl)
+  .forEach(el => {
     if (el.className.indexOf('view-') > -1) {
       const [, , side] = el.className.match(P2_FLOAT.PATTERN);
       const pullEl = html`<div class="u-pull-${side}"></div>`;
@@ -141,7 +146,8 @@ function reset(storyEl, meta) {
     }
   });
 
-  selectAll(PREVIEW_CTX_SELECTOR, storyEl).forEach(el => {
+  $$(PREVIEW_CTX_SELECTOR, storyEl)
+  .forEach(el => {
     Array.from(el.children).forEach(childEl => {
       if (
         childEl.tagName === 'SCRIPT' &&

@@ -4,7 +4,7 @@ const screenfull = require('screenfull');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const {append, select} = require('../../../utils');
+const {append, $} = require('../../../utils');
 const {invalidateClient} = require('../../scheduler');
 const Caption = require('../Caption');
 const Gallery = require('../Gallery');
@@ -28,7 +28,7 @@ function MasterGallery() {
   galleryEl.classList.remove('u-full');
 
   function goToId(id) {
-    const imageEl = select(`[data-id="${id}"]`, galleryEl);
+    const imageEl = $(`[data-id="${id}"]`, galleryEl);
     const index = imageEl.dataset['index'];
 
     if (index != null) {
@@ -79,7 +79,7 @@ function MasterGallery() {
     goToId(id);
   });
 
-  append(select('.Gallery-layout', galleryEl), html`
+  append($('.Gallery-layout', galleryEl), html`
     <button class="MasterGallery-close"
       title="Close the gallery"
       onclick=${close}></button>
@@ -139,7 +139,7 @@ function has(id) {
 }
 
 function register(el) {
-  const imgEl = select('img', el);
+  const imgEl = $('img', el);
 
   if (!imgEl) {
     return;

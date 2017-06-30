@@ -5,7 +5,7 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const {IS_PREVIEW} = require('../../../constants');
-const {before, detach, grabConfig, prepend, select, selectAll} = require('../../../utils');
+const {grabConfig, prepend, $, $$, substitute} = require('../../../utils');
 const {invalidateClient} = require('../../scheduler');
 const Caption = require('../Caption');
 const VideoPlayer = require('../VideoPlayer');
@@ -59,7 +59,7 @@ function VideoEmbed({
 };
 
 function transformEl(el) {
-  const videoId = url2cmid(select('a', el).getAttribute('href'));
+  const videoId = url2cmid($('a', el).getAttribute('href'));
 
   if (!videoId) {
     return;
@@ -79,8 +79,7 @@ function transformEl(el) {
       Math.max(0, Math.min(100, +scrollplayPctString))
   });
 
-  before(el, videoEmbedEl);
-  detach(el);
+  substitute(el, videoEmbedEl);
 }
 
 module.exports = VideoEmbed;

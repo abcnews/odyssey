@@ -1,4 +1,4 @@
-const {HYPHEN, MOCK_NODE, NEWLINE} = require('./constants');
+const {HYPHEN, MOCK_ELEMENT, NEWLINE} = require('./constants');
 
 const TRIM_PATTERN = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
 const SLUG_ALLOWED_PATTERN = /[^\w\s\-\_]/g;
@@ -57,13 +57,13 @@ function isDocument(node) {
   return node && node.nodeType === Node.DOCUMENT_NODE;
 }
 
-function select(selector, root) {
+function $(selector, root) {
   root = isElement(root) ? root : document;
 
   return root.querySelector(selector);
 }
 
-function selectAll(selector, roots) {
+function $$(selector, roots) {
   roots = Array.isArray(roots) ? roots : [roots];
   roots = isElement(roots[0]) ? roots : [document];
 
@@ -118,6 +118,12 @@ function after(sibling, node) {
   sibling.parentNode.insertBefore(node, sibling.nextSibling);
 }
 
+function substitute(node, replacementNode) {
+  before(node, replacementNode);
+
+  return detach(node);
+}
+
 function setText(el, text) {
   let node = el.firstChild;
 
@@ -132,10 +138,13 @@ function toggleAttribute(node, attribute, shouldBeApplied) {
   node[`${shouldBeApplied ? 'set' : 'remove'}Attribute`](attribute, '');
 }
 
-function _replaceSectionWith(el) {
-  before(this.startNode, el);
+function _substituteSectionWith(el, remainingBetweenNodes) {
+  remainingBetweenNodes = Array.isArray(remainingBetweenNodes) ?
+    remainingBetweenNodes : this.betweenNodes;
 
-  return detachAll(this.betweenNodes.concat([this.startNode, this.endNode]));
+  detachAll(remainingBetweenNodes.concat([this.endNode]));
+
+  return substitute(this.startNode, el);
 }
 
 function getSections(names) {
@@ -148,7 +157,7 @@ function getSections(names) {
   names.forEach(name => {
     const endName = `end${name}`;
 
-    selectAll(`a[name^="${name}"]`).forEach(startNode => {
+    $$(`a[name^="${name}"]`).forEach(startNode => {
       let nextNode = startNode;
     	let isMoreContent = true;
     	const betweenNodes = [];
@@ -170,18 +179,12 @@ function getSections(names) {
         endNode: nextNode
     	};
 
-      section.replaceWith = _replaceSectionWith.bind(section);
+      section.substituteWith = _substituteSectionWith.bind(section);
     	sections.push(section);
     });
   });
 
   return sections;
-}
-
-function _replaceMarkerWith(el) {
-  before(this.node, el);
-
-  return detach(this.node);
 }
 
 function getMarkers(names) {
@@ -190,7 +193,7 @@ function getMarkers(names) {
   }
 
   return names.reduce((memo, name) => {
-    return memo.concat(selectAll(`a[name^="${name}"]`).map(node => {
+    return memo.concat($$(`a[name^="${name}"]`).map(node => {
       const suffix = node.getAttribute('name').slice(name.length);
 
       const marker = {
@@ -199,7 +202,7 @@ function getMarkers(names) {
     		node
     	};
 
-      marker.replaceWith = _replaceMarkerWith.bind(marker);
+      marker.substituteWith = substitute.bind(null, marker.node);
     	
       return marker;
     }));
@@ -207,7 +210,7 @@ function getMarkers(names) {
 }
 
 function grabConfig(el) {
-  const prevEl = el.previousElementSibling || MOCK_NODE;
+  const prevEl = el.previousElementSibling || MOCK_ELEMENT;
   const prevElName = prevEl.getAttribute('name') || '';
   let config = '';
 
@@ -338,8 +341,8 @@ module.exports = {
   isText,
   isElement,
   isDocument,
-  select,
-  selectAll,
+  $,
+  $$,
   getDescendantTextNodes,
   detach,
   detachAll,
@@ -347,6 +350,7 @@ module.exports = {
   prepend,
   before,
   after,
+  substitute,
   setText,
   toggleAttribute,
   getSections,
@@ -354,5 +358,8 @@ module.exports = {
   grabConfig,
   linebreaksToParagraphs,
   dePx,
-  proximityCheck
+  proximityCheck,
+  // Deprecated API
+  select: $,
+  selectAll: $$
 };

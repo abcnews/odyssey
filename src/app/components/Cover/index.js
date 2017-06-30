@@ -5,7 +5,7 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const {IS_PREVIEW} = require('../../../constants');
-const {before, detach, isElement, select, trim} = require('../../../utils');
+const {detach, isElement, $, substitute, trim} = require('../../../utils');
 const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
@@ -60,8 +60,7 @@ function Cover({
     VideoPlayer.getMetadata(videoId, (err, metadata) => {
       if (err) {
         if (IS_PREVIEW) {
-          before(mediaEl, VideoPlayer.UnpublishedVideoPlaceholder(videoId));
-          detach(mediaEl);
+          substitute(mediaEl, VideoPlayer.UnpublishedVideoPlaceholder(videoId));
         }
       
         return;
@@ -69,8 +68,7 @@ function Cover({
 
       const replacementMediaEl = VideoPlayer(Object.assign(metadata, {isAmbient: true}));
 
-      before(mediaEl, replacementMediaEl);
-      detach(mediaEl);
+      substitute(mediaEl, replacementMediaEl);
       invalidateClient();
     });
   }
@@ -143,13 +141,13 @@ function transformSection(section) {
       videoId = (
         (classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
         (classList.indexOf('view-inlineMediaPlayer') > -1) ||
-        (classList.indexOf('embed-content') > -1 && select('.type-video', node))
-      ) && url2cmid(select('a', node).getAttribute('href'));
+        (classList.indexOf('embed-content') > -1 && $('.type-video', node))
+      ) && url2cmid($('a', node).getAttribute('href'));
 
       if (videoId) {
         config.videoId = videoId;
       } else {
-        imgEl = select('img', node);
+        imgEl = $('img', node);
 
         if (imgEl) {
           config.imgEl = imgEl;
@@ -188,9 +186,7 @@ function transformSection(section) {
     config.type = 'heading';
   }
 
-  section.betweenNodes = [];
-
-  section.replaceWith(Cover(config));
+  section.substituteWith(Cover(config), []);
 
   if (sourceMediaEl) {
     detach(sourceMediaEl);

@@ -5,7 +5,7 @@ const html = require('bel');
 const {SELECTORS} = require('../constants');
 const {after, append, before, detach, detachAll,
   getMarkers, getSections, isElement, prepend,
-  select, selectAll} = require('../utils');
+  $, $$} = require('../utils');
 const Caption = require('./components/Caption');
 const Cover = require('./components/Cover');
 const Gallery = require('./components/Gallery');
@@ -28,19 +28,19 @@ function app(done) {
   prepare();
 
   const meta = getMeta();
-  const storyEl = reset(select(SELECTORS.STORY), meta);
+  const storyEl = reset($(SELECTORS.STORY), meta);
 
-  after(select(SELECTORS.GLOBAL_NAV), Nav({shareLinks: meta.shareLinks}));
+  after($(SELECTORS.GLOBAL_NAV), Nav({shareLinks: meta.shareLinks}));
 
   start(); // loop
 
   // Register all embedded images with MasterGallery 
-  selectAll(`
+  $$(`
     .inline-content.photo,
     [class*="view-image-embed"]
   `, storyEl)
-  .concat(selectAll('.embed-content', storyEl)
-    .filter(el => select('.type-photo', el)))
+  .concat($$('.embed-content', storyEl)
+    .filter(el => $('.type-photo', el)))
   .forEach(MasterGallery.register);
 
   let hasHeader = false;
@@ -78,7 +78,7 @@ function app(done) {
   }
 
   // Enable drop-caps after headers
-  selectAll('.Header')
+  $$('.Header')
   .forEach(el => {
     let nextEl = el.nextElementSibling;
 
@@ -108,11 +108,11 @@ function app(done) {
         break;
       case 'hr':
         el = html`<hr>`;
-        marker.replaceWith(el);
+        marker.substituteWith(el);
         UDropcap.conditionallyApply(el.nextElementSibling);
         break;
       case 'series':
-        Series.transformEl(select('ol, ul', marker.node.nextElementSibling));
+        Series.transformEl($('ol, ul', marker.node.nextElementSibling));
         detach(marker.node);
         break;
       case 'share':
@@ -124,17 +124,17 @@ function app(done) {
   });
 
   // Activate existing parallaxes
-  selectAll('.u-parallax').forEach(UParallax.activate);
+  $$('.u-parallax').forEach(UParallax.activate);
 
   // Transform image embeds
-  const sidePulls = selectAll('.u-pull-left, .u-pull-right');
+  const sidePulls = $$('.u-pull-left, .u-pull-right');
 
-  selectAll(`
+  $$(`
     .inline-content.photo,
     [class*="view-image-embed"]
   `, storyEl)
-  .concat(selectAll('.embed-content', storyEl)
-    .filter(el => select('.type-photo', el)))
+  .concat($$('.embed-content', storyEl)
+    .filter(el => $('.type-photo', el)))
   .forEach(el => {
     const isSidePulled = sidePulls.filter(pEl => pEl.contains(el)).length > 0;
 
@@ -142,16 +142,16 @@ function app(done) {
   });
 
   // Transform video embeds
-  selectAll(`
+  $$(`
     .inline-content.video,
     .view-inlineMediaPlayer
   `, storyEl)
-  .concat(selectAll('.embed-content', storyEl)
-    .filter(el => select('.type-video', el)))
+  .concat($$('.embed-content', storyEl)
+    .filter(el => $('.type-video', el)))
   .forEach(VideoEmbed.transformEl);
 
   // Transform quotes (native and embedded)
-  selectAll(`
+  $$(`
     blockquote:not([class]),
     .quote--pullquote,
     .inline-content.quote,
@@ -162,26 +162,25 @@ function app(done) {
   .forEach(Quote.transformEl);
 
   // Nullify nested pulls (outer always wins)
-  selectAll('[class*="u-pull"] [class*="u-pull"]')
+  $$('[class*="u-pull"] [class*="u-pull"]')
   .forEach(el => el.className = el.className.replace(/u-pull(-\w+)?/, 'n-pull$1'));
 
   // Transform embedded external link captions
-  let eels = selectAll('.inline-content[class*="embed"]', storyEl)
-    .concat(selectAll('.embed-content', storyEl)
-      .filter(el => select('.type-external', el)));
+  let eels = $$('.inline-content[class*="embed"]', storyEl)
+    .concat($$('.embed-content', storyEl)
+      .filter(el => $('.type-external', el)));
 
   setTimeout(function transformRemainingEELs() {
     eels = eels.reduce((memo, el) => {
-      if (el.className.indexOf(' embedded') > -1 || select('.embedded', el)) {
+      if (el.className.indexOf(' embedded') > -1 || $('.embedded', el)) {
         const captionEl = Caption.createFromEl(el);
 
-        const oldCaptionEl = select(`
+        const oldCaptionEl = $(`
           .embed-caption,
           .inline-caption
         `);
 
-        before(oldCaptionEl, captionEl);
-        detach(oldCaptionEl);
+        substitute(oldCaptionEl, captionEl);
       } else {
         memo.push(el);
       }

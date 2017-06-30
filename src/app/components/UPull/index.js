@@ -20,14 +20,10 @@ function UPull({
 };
 
 function transformSection(section) {
-  const nodes = [].concat(section.betweenNodes);
-
-  section.betweenNodes = [];
-
-  section.replaceWith(UPull({
+  section.substituteWith(UPull({
     type: section.suffix,
-    nodes
-  }));
+    nodes: section.betweenNodes
+  }), []);
 }
 
 module.exports = UPull;

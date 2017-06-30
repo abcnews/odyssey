@@ -3,7 +3,7 @@ const html = require('bel');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const {before, detach, grabConfig, select} = require('../../../utils');
+const {grabConfig, $, substitute} = require('../../../utils');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
 
@@ -20,7 +20,7 @@ function ImageEmbed({
 };
 
 function transformEl(el, preserveOriginalRatio) {
-  const imgEl = select('img', el);
+  const imgEl = $('img', el);
 
   if (!imgEl) {
     return;
@@ -49,8 +49,7 @@ function transformEl(el, preserveOriginalRatio) {
     captionEl: Caption.createFromEl(el)
   });
 
-  before(el, imageEmbedEl);
-  detach(el);
+  substitute(el, imageEmbedEl);
 }
 
 module.exports = ImageEmbed;

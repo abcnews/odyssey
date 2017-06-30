@@ -1,10 +1,10 @@
 require('./polyfills');
 
 // Ours
-const {after, append, detachAll, select, selectAll} = require('./utils');
+const {after, append, detachAll, $, $$} = require('./utils');
 
 function updateAnchor(pair) {
-  selectAll(`a[name^="${pair[0]}"]`)
+  $$(`a[name^="${pair[0]}"]`)
   .forEach(el => {
     el.setAttribute(
       'name',
@@ -13,22 +13,22 @@ function updateAnchor(pair) {
   });
 }
 
-selectAll('a[name="title"]')
+$$('a[name="title"]')
 .forEach(el => {
   const nextEl = el.nextElementSibling;
   const metaEl = document.createElement('meta');
 
   metaEl.setAttribute('name', 'replacement-title');
   metaEl.setAttribute('content', nextEl.textContent);
-  append(select('head'), metaEl);
+  append($('head'), metaEl);
   detachAll([el, nextEl]);
 });
 
-selectAll('a[name="subtitle"]')
+$$('a[name="subtitle"]')
 .forEach(el => {
   let nextEl = el.nextElementSibling;
 
-  if (select('img', nextEl) !== null || select('img', nextEl.nextElementSibling) !== null) {
+  if ($('img', nextEl) !== null || $('img', nextEl.nextElementSibling) !== null) {
     nextEl = nextEl.nextElementSibling;
   }
 

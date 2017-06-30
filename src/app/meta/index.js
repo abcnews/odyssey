@@ -4,7 +4,7 @@ const {parseDate} = require('inn-abcdatetime-lib');
 
 // Ours
 const {MOCK_ELEMENT, SELECTORS} = require('../../constants');
-const {detach, isText, trim, select, selectAll} = require('../../utils');
+const {detach, isText, trim, $, $$} = require('../../utils');
 
 const EMPHASISABLE_BYLINE_TEXT_PATTERN = /^(?:by|,|and)$/;
 const STARTS_WITH_YEAR_PATTERN = /^\d{4}-/;
@@ -27,7 +27,7 @@ const SHARE_ORDERING = [
 let meta = null; // singleton
 
 function getMetaContent(name) {
-  const el = select(`meta[name="${name}"]`);
+  const el = $(`meta[name="${name}"]`);
 
   return el ? el.getAttribute('content') : null;
 }
@@ -39,7 +39,7 @@ function getDate(metaElName, timeElClassName) {
     return parseDate(datetime);
   }
 
-  datetime = (select(`time.${timeElClassName}`) || MOCK_ELEMENT)
+  datetime = ($(`time.${timeElClassName}`) || MOCK_ELEMENT)
     .getAttribute('datetime') || '';
   
   if (STARTS_WITH_YEAR_PATTERN.test(datetime)) {
@@ -50,14 +50,14 @@ function getDate(metaElName, timeElClassName) {
 }
 
 function getBylineNodes() {
-  const infoSourceEl = select(SELECTORS.INFO_SOURCE);
-  const bylineEl = select(SELECTORS.BYLINE);
+  const infoSourceEl = $(SELECTORS.INFO_SOURCE);
+  const bylineEl = $(SELECTORS.BYLINE);
 
   if (!bylineEl) {
     return [];
   }
 
-  const bylineSubEl = select('p', bylineEl);
+  const bylineSubEl = $('p', bylineEl);
 
   return Array.from((bylineSubEl || bylineEl).childNodes)
   .filter(node => node !== infoSourceEl && trim(node.textContent).length > -1)
@@ -65,13 +65,13 @@ function getBylineNodes() {
 }
 
 function getInfoSource() {
-  let infoSourceLinkEl = select(SELECTORS.INFO_SOURCE_LINK);
+  let infoSourceLinkEl = $(SELECTORS.INFO_SOURCE_LINK);
 
   if (!infoSourceLinkEl) {
     const infoSourceMetaContent = getMetaContent('ABC.infoSource');
 
     if (infoSourceMetaContent) {
-      infoSourceLinkEl = select(`a[title="${infoSourceMetaContent}"]`);
+      infoSourceLinkEl = $(`a[title="${infoSourceMetaContent}"]`);
     }
   }
 
@@ -82,7 +82,7 @@ function getInfoSource() {
 }
 
 function getShareLinks() {
-  return selectAll('a', select(SELECTORS.SHARE_TOOLS))
+  return $$('a', $(SELECTORS.SHARE_TOOLS))
   .reduce((links, linkEl) => {
     const href = linkEl.href;
 
@@ -112,7 +112,7 @@ function getShareLinks() {
 }
 
 function getRelatedMedia() {
-  const relatedMediaEl = select(`
+  const relatedMediaEl = $(`
 .view-hero-media,
 .content > article > header + figure,
 .attached-content > .inline-content.photo,
@@ -129,8 +129,7 @@ function getRelatedMedia() {
 function getMeta() {
   if (!meta) {
     meta = {
-      title: getMetaContent('replacement-title') ||
-        select('h1').textContent,
+      title: getMetaContent('replacement-title') || $('h1').textContent,
       published: getDate('DCTERMS.issued', 'original'),
       updated: getDate('DCTERMS.modified', 'updated'),
       bylineNodes: getBylineNodes(),

@@ -6,7 +6,7 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const {IS_IOS, REM, SUPPORTS_PASSIVE} = require('../../../constants');
-const {dePx, detach, isElement, returnFalse, select, selectAll, setText, trim} = require('../../../utils');
+const {dePx, detach, isElement, returnFalse, $, $$, setText, trim} = require('../../../utils');
 const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
@@ -224,7 +224,7 @@ function Gallery({
 
     paneWidth = paneEl.getBoundingClientRect().width;
 
-    const nextImageHeight = select('[class^=u-sizer]', imageEls[currentIndex]).getBoundingClientRect().height;
+    const nextImageHeight = $('[class^=u-sizer]', imageEls[currentIndex]).getBoundingClientRect().height;
 
     if (nextImageHeight !== imageHeight) {
       imageHeight = nextImageHeight;
@@ -320,7 +320,7 @@ function Gallery({
 
     imageEl.addEventListener('touchend', swipeIntent, false);
 
-    const captionLinkEl = select('a', captionEl);
+    const captionLinkEl = $('a', captionEl);
 
     if (captionLinkEl) {
       captionLinkEl.addEventListener('focus', () => {
@@ -332,7 +332,7 @@ function Gallery({
     return imageEl;
   });
 
-  const pictureEls = imageEls.map(imageEl => select('.Picture', imageEl));
+  const pictureEls = imageEls.map(imageEl => $('.Picture', imageEl));
 
   const imagesEl = html`
     <div class="Gallery-images"
@@ -414,7 +414,7 @@ function transformSection(section) {
   const nodes = [].concat(section.betweenNodes);
 
   const config = nodes.reduce((config, node) => {
-    const imgEl = isElement(node) && select('img', node);
+    const imgEl = isElement(node) && $('img', node);
 
     if (imgEl) {
       const src = imgEl.src;
@@ -489,9 +489,7 @@ function transformSection(section) {
   delete config.masterCaptionText;
   delete config.masterCaptionAttribution;
 
-  section.betweenNodes = [];
-
-  section.replaceWith(Gallery(config));
+  section.substituteWith(Gallery(config), []);
 }
 
 module.exports = Gallery;
