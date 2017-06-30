@@ -168,6 +168,11 @@
   padding-top: 2rem;
   padding-bottom: .75rem;
 
+  & + [class*="u-richtext"] {
+    border-top: none;
+    padding-top: 1rem;
+  }
+
   > * {
     margin-bottom: 1.25rem;
 
