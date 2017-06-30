@@ -20,7 +20,6 @@ function Cover({
   alignment,
   videoId,
   imgEl,
-  mediaCaptionEl,
   smRatio,
   mdRatio,
   lgRatio,
@@ -34,10 +33,7 @@ function Cover({
     'u-parallax': type === 'heading',
     'is-fixed': type === 'richtext' && !isDocked
   });
-  const contentClassName = cn('Cover-content', {
-    'u-layout': type !== 'caption',
-    'u-richtext-invert': type !== 'caption'
-  });
+  const contentClassName = 'Cover-content u-layout u-richtext-invert';
 
   let mediaEl;
 
@@ -45,15 +41,13 @@ function Cover({
     const src = imgEl.src;
     const alt = imgEl.getAttribute('alt');
     const id = url2cmid(src);
-    const linkUrl = `/news/${id}`;
 
     mediaEl = Picture({
       src,
       alt,
       smRatio: smRatio || (type === 'heading' ? '3x2' : '3x4'),
       mdRatio: mdRatio || (type === 'heading' ? '16x9' : type === 'richtext' ? '1x1' : '4x3'),
-      lgRatio,
-      linkUrl: type === 'caption' ? linkUrl : ''
+      lgRatio
     });
   } else if (videoId) {
     mediaEl = html`<div></div>`;
@@ -88,11 +82,12 @@ function Cover({
             ${contentEl}
           </div>
         `) :
-        html`
+        contentEls.length > 0 ? html`
           <div class="${contentClassName}">
-            ${contentEls.length > 0 ? contentEls : mediaCaptionEl}
+            ${contentEls}
           </div>
-        `
+        ` :
+        null
       }
     </div>
   `;
@@ -128,9 +123,7 @@ function transformSection(section) {
   const [, lgRatio] = section.suffix.match(Picture.LG_RATIO_PATTERN) || [];
   let sourceMediaEl;
 
-  const nodes = [].concat(section.betweenNodes);
-
-  const config = nodes.reduce((config, node) => {
+  const config = section.betweenNodes.reduce((config, node) => {
     let classList;
     let videoId;
     let imgEl;
@@ -155,7 +148,6 @@ function transformSection(section) {
       }
 
       if (videoId || imgEl) {
-        config.mediaCaptionEl = Caption.createFromEl(node);
         sourceMediaEl = node;
       }
     }
@@ -180,17 +172,14 @@ function transformSection(section) {
     contentEls: []
   });
 
-  if (config.contentEls.length === 0) {
-    config.type = 'caption';
-  } else if (config.contentEls.length === 1 && config.contentEls[0].tagName === 'H2') {
+  if (
+    config.contentEls.length === 1 &&
+    config.contentEls[0].tagName === 'H2'
+  ) {
     config.type = 'heading';
   }
 
-  section.substituteWith(Cover(config), []);
-
-  if (sourceMediaEl) {
-    detach(sourceMediaEl);
-  }
+  section.substituteWith(Cover(config), sourceMediaEl ? [sourceMediaEl] : []);
 }
 
 module.exports = Cover;
