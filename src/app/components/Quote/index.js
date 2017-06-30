@@ -3,8 +3,8 @@ const cn = require('classnames');
 const html = require('bel');
 
 // Ours
-const {MOCK_NODE} = require('../../../constants');
-const {append, detach, getDescendantTextNodes, isElement, isText,
+const {ALIGNMENT_PATTERN, MOCK_NODE} = require('../../../constants');
+const {append, detach, getDescendantTextNodes, grabConfig, isElement, isText,
   linebreaksToParagraphs, prepend, $, $$, substitute, trim} = require('../../../utils');
 
 const DOUBLE_QUOTE_PATTERN = /\"/g; 
@@ -14,11 +14,13 @@ const HAIR_SPACE = ' ';
 
 function Quote({
   isPullquote = false,
+  alignment,
   parEls = [],
   attributionNodes = []
 }) {
   const className = cn('Quote', {
-    'is-pullquote': isPullquote
+    'is-pullquote': isPullquote,
+    [`u-pull-${alignment}`]: alignment
   });
   const attributionEl = attributionNodes.length ? html`
     <footer>${Array.from(attributionNodes).map(node => {
@@ -108,6 +110,11 @@ function createFromEl(el) {
       attributionNodes: ($('.cite', clone) || MOCK_NODE).childNodes
     };
   }
+
+  const suffix = grabConfig(el);
+  const [, alignment] = suffix.match(ALIGNMENT_PATTERN) || [];
+
+  config.alignment = alignment;
 
   // Split paragraphs on <br>s
   config.parEls = config.parEls.reduce((memo, parEl) => {

@@ -34,7 +34,8 @@
 
 .Quote:not(.is-pullquote) {
   @media #{$mq-sm} {
-    .Main > [class*="u-pull"] > & {
+    .Main > [class*="u-pull"] > &,
+    &[class*="u-pull"] {
       margin-left: -$layout-fluid-padding;
       margin-right: -$layout-fluid-padding;
     }
@@ -51,13 +52,15 @@
 
   @media #{$mq-not-sm} {
     .u-pull-left &,
-    .u-pull-right & {
+    .u-pull-right &,
+    &.u-pull-left,
+    &.u-pull-right {
       text-align: left;
     }
 
-    .u-richtext > &,
-    .u-pull-out > &,
-    .u-pull > & {
+    .u-richtext > &:not([class*="u-pull"]),
+    .u-pull-out > &:not([class*="u-pull"]),
+    .u-pull > &:not([class*="u-pull"]) {
       padding-left: cells(1);
       padding-right: cells(1);
     }
