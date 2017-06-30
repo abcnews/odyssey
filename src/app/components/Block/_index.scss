@@ -1,4 +1,4 @@
-.Cover {
+.Block {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -26,7 +26,7 @@
   }
 }
 
-.Cover-media {
+.Block-media {
   overflow: hidden;
   position: absolute;
   top: 0;
@@ -124,7 +124,7 @@
   }
 }
 
-.Cover-content {
+.Block-content {
   position: relative;
   z-index: 1;
 
@@ -243,7 +243,7 @@
   }
 }
 
-.Cover-content > h2 {
+.Block-content > h2 {
   .is-heading & {
     margin-top: 3rem;
     margin-right: auto;

@@ -11,7 +11,7 @@ const Caption = require('../Caption');
 const Picture = require('../Picture');
 const VideoPlayer = require('../VideoPlayer');
 
-function Cover({
+function Block({
   type = 'richtext',
   isDocked,
   isPiecemeal,
@@ -23,15 +23,15 @@ function Cover({
   lgRatio,
   contentEls = []
 }) {
-  const className = cn('Cover', `is-${type}`, {
+  const className = cn('Block', `is-${type}`, {
     'is-piecemeal': type === 'richtext' && isPiecemeal,
     [`is-${alignment}`]: alignment
   }, 'u-full');
-  const mediaClassName = cn('Cover-media', {
+  const mediaClassName = cn('Block-media', {
     'u-parallax': type === 'heading',
     'is-fixed': type === 'richtext' && !isDocked
   });
-  const contentClassName = 'Cover-content u-layout u-richtext-invert';
+  const contentClassName = 'Block-content u-layout u-richtext-invert';
 
   let mediaEl;
 
@@ -71,7 +71,7 @@ function Cover({
     </div>
   ` : null;
 
-  const coverEl = html`
+  const blockEl = html`
     <div class="${className}">
       ${mediaContainerEl}
       ${isPiecemeal ?
@@ -93,13 +93,13 @@ function Cover({
   if (mediaContainerEl && type === 'richtext' && isDocked) {
     let state = {};
 
-    subscribe(function _checkIfCoverPropertiesShouldBeUpdated(client) {
-      const rect = coverEl.getBoundingClientRect();
+    subscribe(function _checkIfBlockPropertiesShouldBeUpdated(client) {
+      const rect = blockEl.getBoundingClientRect();
       const isBeyond = client.height >= rect.bottom;
       const isFixed = !isBeyond && rect.top <= 0;
 
       if (isFixed !== state.isFixed || isBeyond !== state.isBeyond) {
-        enqueue(function _updateCoverProperties() {
+        enqueue(function _updateBlockProperties() {
           mediaContainerEl.classList[isFixed ? 'add' : 'remove']('is-fixed');
           mediaContainerEl.classList[isBeyond ? 'add' : 'remove']('is-beyond');
         });
@@ -109,7 +109,7 @@ function Cover({
     });
   }
 
-  return coverEl;
+  return blockEl;
 };
 
 function transformSection(section) {
@@ -177,8 +177,8 @@ function transformSection(section) {
     config.type = 'heading';
   }
 
-  section.substituteWith(Cover(config), sourceMediaEl ? [sourceMediaEl] : []);
+  section.substituteWith(Block(config), sourceMediaEl ? [sourceMediaEl] : []);
 }
 
-module.exports = Cover;
+module.exports = Block;
 module.exports.transformSection = transformSection;

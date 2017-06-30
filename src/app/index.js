@@ -7,7 +7,7 @@ const {after, append, before, detach, detachAll,
   getMarkers, getSections, isElement, prepend,
   $, $$} = require('../utils');
 const Caption = require('./components/Caption');
-const Cover = require('./components/Cover');
+const Block = require('./components/Block');
 const Gallery = require('./components/Gallery');
 const Header = require('./components/Header');
 const ImageEmbed = require('./components/ImageEmbed');
@@ -48,7 +48,8 @@ function app(done) {
   // Transform sections
   getSections([
     'header',
-    'cover',
+    'block',
+    'cover', // deprecated - use 'block'
     'gallery',
     'mosaic',
     'pull'
@@ -58,8 +59,9 @@ function app(done) {
         hasHeader = true;
         Header.transformSection(section, meta);
         break;
+      case 'block':
       case 'cover':
-        Cover.transformSection(section);
+        Block.transformSection(section);
         break;
       case 'gallery':
       case 'mosaic':
