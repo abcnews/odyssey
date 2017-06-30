@@ -3,6 +3,10 @@
   position: relative;
   font-family: $font-sans;
 
+  .u-full > & {
+    height: 100%;
+  }
+
   picture.object-fit-polyfill {
     position: static !important;
   }
