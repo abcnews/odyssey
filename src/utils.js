@@ -1,4 +1,4 @@
-const {HYPHEN, NEWLINE} = require('./constants');
+const {HYPHEN, MOCK_NODE, NEWLINE} = require('./constants');
 
 const TRIM_PATTERN = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
 const SLUG_ALLOWED_PATTERN = /[^\w\s\-\_]/g;
@@ -206,6 +206,23 @@ function getMarkers(names) {
   }, []);
 }
 
+function grabConfig(el) {
+  const prevEl = el.previousElementSibling || MOCK_NODE;
+  const prevElName = prevEl.getAttribute('name') || '';
+  let config = '';
+
+  // TODO: Convert #image and #video in all stories to #config
+  ['config', 'image', 'video']
+  .some(name => {
+    if (prevElName.indexOf(name) === 0) {
+      config = prevElName.slice(name.length);
+      detach(prevEl);
+    }
+  });
+
+  return config;
+}
+
 function _linebreaksToParagraphsAppender(state) {
   if (!state.stack.length) {
     return state;
@@ -334,6 +351,7 @@ module.exports = {
   toggleAttribute,
   getSections,
   getMarkers,
+  grabConfig,
   linebreaksToParagraphs,
   dePx,
   proximityCheck
