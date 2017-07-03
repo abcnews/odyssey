@@ -6,7 +6,7 @@ const url2cmid = require('util-url2cmid');
 const xhr = require('xhr');
 
 // Ours
-const {CSS_URL, IS_IOS, MQ, MS_VERSION} = require('../../../constants');
+const {CSS_URL, IS_IOS, MQ, MS_VERSION, SMALLEST_IMAGE} = require('../../../constants');
 const {append, isElement, proximityCheck, $, $$, setText, toggleAttribute, twoDigits} = require('../../../utils');
 const {getMeta} = require('../../meta');
 const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
@@ -44,9 +44,13 @@ function VideoPlayer({
   }
 
   const videoEl = html`<video
-    poster="${posterURL ? posterURL : ''}"
+    poster="${posterURL ? SMALLEST_IMAGE : ''}"
     preload="none"
     tabindex="-1"></video>`;
+
+  if (posterURL) {
+    videoEl.style.backgroundImage = `url("${posterURL}")`;
+  }
 
   const booleanAttributes = {
     loop: isLoop,
