@@ -4,14 +4,20 @@
   }
 
   @media #{$mq-sm} {
+    .Main > & {
+      padding-left: 0;
+      padding-right: 0;
+      width: 100%;
+    }
+
     .Main > [class*="u-pull"] > & {
       margin-left: -$layout-fluid-padding;
       margin-right: -$layout-fluid-padding;
     }
   }
 
-  @media #{$mq-not-lg} {
-    .Main > & {
+  @media #{$mq-md} {
+    .Main > &:not([class*="u-pull-"]) {
       padding-left: 0;
       padding-right: 0;
       width: 100%;
