@@ -5,7 +5,7 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const {ALIGNMENT_PATTERN} = require('../../../constants');
-const {grabConfig, $, substitute} = require('../../../utils');
+const {grabConfigSC, $, substitute} = require('../../../utils');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
 
@@ -44,11 +44,11 @@ function transformEl(el, preserveOriginalRatio) {
     return;
   }
 
-  const suffix = grabConfig(el);
-  const [, alignment] = suffix.match(ALIGNMENT_PATTERN) || [];
-  const [, smRatio] = suffix.match(Picture.SM_RATIO_PATTERN) || [];
-  const [, mdRatio] = suffix.match(Picture.MD_RATIO_PATTERN) || [];
-  const [, lgRatio] = suffix.match(Picture.LG_RATIO_PATTERN) || [];
+  const configSC = grabConfigSC(el);
+  const [, alignment] = configSC.match(ALIGNMENT_PATTERN) || [];
+  const [, smRatio] = configSC.match(Picture.SM_RATIO_PATTERN) || [];
+  const [, mdRatio] = configSC.match(Picture.MD_RATIO_PATTERN) || [];
+  const [, lgRatio] = configSC.match(Picture.LG_RATIO_PATTERN) || [];
 
   const src = imgEl.src;
   const alt = imgEl.getAttribute('alt');
@@ -67,9 +67,9 @@ function transformEl(el, preserveOriginalRatio) {
     }),
     captionEl: Caption.createFromEl(el),
     alignment,
-    isFull: suffix.indexOf('full') > -1,
-    isCover: suffix.indexOf('cover') > -1,
-    isAnon: suffix.indexOf('anon') > -1
+    isFull: configSC.indexOf('full') > -1,
+    isCover: configSC.indexOf('cover') > -1,
+    isAnon: configSC.indexOf('anon') > -1
   });
 
   substitute(el, imageEmbedEl);

@@ -21,7 +21,7 @@ function UPull({
 
 function transformSection(section) {
   section.substituteWith(UPull({
-    type: section.suffix,
+    type: section.configSC,
     nodes: section.betweenNodes
   }), []);
 }

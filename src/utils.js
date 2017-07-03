@@ -161,7 +161,7 @@ function getSections(names) {
       let nextNode = startNode;
     	let isMoreContent = true;
     	const betweenNodes = [];
-      const suffix = startNode.getAttribute('name').slice(name.length);
+      const configSC = startNode.getAttribute('name').slice(name.length);
 
     	while(isMoreContent && (nextNode = nextNode.nextSibling) !== null) {
     		if (isElement(nextNode) && (nextNode.getAttribute('name') || '').indexOf(endName) === 0) {
@@ -173,7 +173,7 @@ function getSections(names) {
 
       const section = {
         name,
-        suffix,
+        configSC,
     		startNode,
         betweenNodes,
         endNode: nextNode
@@ -194,11 +194,11 @@ function getMarkers(names) {
 
   return names.reduce((memo, name) => {
     return memo.concat($$(`a[name^="${name}"]`).map(node => {
-      const suffix = node.getAttribute('name').slice(name.length);
+      const configSC = node.getAttribute('name').slice(name.length);
 
       const marker = {
         name,
-        suffix,
+        configSC,
     		node
     	};
 
@@ -209,21 +209,21 @@ function getMarkers(names) {
   }, []);
 }
 
-function grabConfig(el) {
+function grabConfigSC(el) {
   const prevEl = el.previousElementSibling || MOCK_ELEMENT;
   const prevElName = prevEl.getAttribute('name') || '';
-  let config = '';
+  let configSC;
 
   // TODO: Convert #image and #video in all stories to #config
   ['config', 'image', 'video']
   .some(name => {
     if (prevElName.indexOf(name) === 0) {
-      config = prevElName.slice(name.length);
+      configSC = prevElName.slice(name.length);
       detach(prevEl);
     }
   });
 
-  return config;
+  return configSC || '';
 }
 
 function _linebreaksToParagraphsAppender(state) {
@@ -355,7 +355,7 @@ module.exports = {
   toggleAttribute,
   getSections,
   getMarkers,
-  grabConfig,
+  grabConfigSC,
   linebreaksToParagraphs,
   dePx,
   proximityCheck,

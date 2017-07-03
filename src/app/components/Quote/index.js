@@ -4,7 +4,7 @@ const html = require('bel');
 
 // Ours
 const {ALIGNMENT_PATTERN, MOCK_NODE} = require('../../../constants');
-const {append, detach, getDescendantTextNodes, grabConfig, isElement, isText,
+const {append, detach, getDescendantTextNodes, grabConfigSC, isElement, isText,
   linebreaksToParagraphs, prepend, $, $$, substitute, trim} = require('../../../utils');
 
 const DOUBLE_QUOTE_PATTERN = /\"/g; 
@@ -111,8 +111,8 @@ function createFromEl(el) {
     };
   }
 
-  const suffix = grabConfig(el);
-  const [, alignment] = suffix.match(ALIGNMENT_PATTERN) || [];
+  const configSC = grabConfigSC(el);
+  const [, alignment] = configSC.match(ALIGNMENT_PATTERN) || [];
 
   config.alignment = alignment;
 

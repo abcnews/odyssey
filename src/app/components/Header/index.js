@@ -153,11 +153,11 @@ function Header({
 };
 
 function transformSection(section, meta) {
-  const [, smRatio] = section.suffix.match(Picture.SM_RATIO_PATTERN) || [];
-  const [, mdRatio] = section.suffix.match(Picture.MD_RATIO_PATTERN) || [];
-  const [, lgRatio] = section.suffix.match(Picture.LG_RATIO_PATTERN) || [];
-  const isDark = section.suffix.indexOf('dark') > -1;
-  const isLayered = section.suffix.indexOf('layered') > -1;
+  const [, smRatio] = section.configSC.match(Picture.SM_RATIO_PATTERN) || [];
+  const [, mdRatio] = section.configSC.match(Picture.MD_RATIO_PATTERN) || [];
+  const [, lgRatio] = section.configSC.match(Picture.LG_RATIO_PATTERN) || [];
+  const isDark = section.configSC.indexOf('dark') > -1;
+  const isLayered = section.configSC.indexOf('layered') > -1;
 
   let candidateNodes = section.betweenNodes;
 

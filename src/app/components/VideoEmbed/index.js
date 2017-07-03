@@ -5,7 +5,7 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const {IS_PREVIEW, ALIGNMENT_PATTERN} = require('../../../constants');
-const {grabConfig, $, $$, substitute} = require('../../../utils');
+const {grabConfigSC, $, $$, substitute} = require('../../../utils');
 const {invalidateClient} = require('../../scheduler');
 const Caption = require('../Caption');
 const VideoPlayer = require('../VideoPlayer');
@@ -47,26 +47,26 @@ function transformEl(el) {
     return;
   }
 
-  const suffix = grabConfig(el);
-  const [, alignment] = suffix.match(ALIGNMENT_PATTERN) || [];
+  const configSC = grabConfigSC(el);
+  const [, alignment] = configSC.match(ALIGNMENT_PATTERN) || [];
 
   const options = {
     alignment,
-    isFull: suffix.indexOf('full') > -1,
-    isCover: suffix.indexOf('cover') > -1,
-    isAnon: suffix.indexOf('anon') > -1
+    isFull: configSC.indexOf('full') > -1,
+    isCover: configSC.indexOf('cover') > -1,
+    isAnon: configSC.indexOf('anon') > -1
   };
 
-  const [, scrollplayPctString] = suffix.match(SCROLLPLAY_PCT_PATTERN) ||
-    [, suffix.indexOf('autoplay') > -1 ? '0' : ''];
+  const [, scrollplayPctString] = configSC.match(SCROLLPLAY_PCT_PATTERN) ||
+    [, configSC.indexOf('autoplay') > -1 ? '0' : ''];
   const scrollplayPct = scrollplayPctString.length > 0 &&
       Math.max(0, Math.min(100, +scrollplayPctString));
 
   const videoPlayerOptions = {
     isAlwaysHQ: options.isCover || options.isFull,
-    isAmbient: suffix.indexOf('ambient') > -1,
-    isLoop: suffix.indexOf('loop') > -1,
-    isMuted: suffix.indexOf('muted') > -1,
+    isAmbient: configSC.indexOf('ambient') > -1,
+    isLoop: configSC.indexOf('loop') > -1,
+    isMuted: configSC.indexOf('muted') > -1,
     scrollplayPct
   };
 

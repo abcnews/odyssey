@@ -113,12 +113,12 @@ function Block({
 };
 
 function transformSection(section) {
-  const isDocked = section.suffix.indexOf('docked') > -1;
-  const isPiecemeal = section.suffix.indexOf('piecemeal') > -1;
-  const [, alignment] = section.suffix.match(ALIGNMENT_PATTERN) || [];
-  const [, smRatio] = section.suffix.match(Picture.SM_RATIO_PATTERN) || [];
-  const [, mdRatio] = section.suffix.match(Picture.MD_RATIO_PATTERN) || [];
-  const [, lgRatio] = section.suffix.match(Picture.LG_RATIO_PATTERN) || [];
+  const isDocked = section.configSC.indexOf('docked') > -1;
+  const isPiecemeal = section.configSC.indexOf('piecemeal') > -1;
+  const [, alignment] = section.configSC.match(ALIGNMENT_PATTERN) || [];
+  const [, smRatio] = section.configSC.match(Picture.SM_RATIO_PATTERN) || [];
+  const [, mdRatio] = section.configSC.match(Picture.MD_RATIO_PATTERN) || [];
+  const [, lgRatio] = section.configSC.match(Picture.LG_RATIO_PATTERN) || [];
   let sourceMediaEl;
 
   const config = section.betweenNodes.reduce((config, node) => {

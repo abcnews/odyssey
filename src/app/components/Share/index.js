@@ -20,7 +20,7 @@ function Share({type, links}) {
 }
 
 function transformMarker(marker, links) {
-  marker.substituteWith(Share({type: marker.suffix, links}));
+  marker.substituteWith(Share({type: marker.configSC, links}));
 }
 
 module.exports = Share;

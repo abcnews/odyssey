@@ -406,10 +406,10 @@ function offsetBasedOpacity(imageIndex, imagesTransformXPct) {
 }
 
 function transformSection(section) {
-  const [, mosaicRowLengthsString] = (`${section.name}${section.suffix}`).match(MOSAIC_ROW_LENGTHS_PATTERN) || [null, ''];
-  const [, smRatio] = section.suffix.match(Picture.SM_RATIO_PATTERN) || [];
-  const [, mdRatio] = section.suffix.match(Picture.MD_RATIO_PATTERN) || [];
-  const [, lgRatio] = section.suffix.match(Picture.LG_RATIO_PATTERN) || [];
+  const [, mosaicRowLengthsString] = (`${section.name}${section.configSC}`).match(MOSAIC_ROW_LENGTHS_PATTERN) || [null, ''];
+  const [, smRatio] = section.configSC.match(Picture.SM_RATIO_PATTERN) || [];
+  const [, mdRatio] = section.configSC.match(Picture.MD_RATIO_PATTERN) || [];
+  const [, lgRatio] = section.configSC.match(Picture.LG_RATIO_PATTERN) || [];
 
   const nodes = [].concat(section.betweenNodes);
 
