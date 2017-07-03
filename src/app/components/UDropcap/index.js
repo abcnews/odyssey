@@ -1,6 +1,6 @@
 const BEGINS_WITH_ALPHANUMERIC_PATTERN = /^\w/;
 
-function conditionallyApply(el, ) {
+function conditionallyApply(el) {
   if (
     el !== null &&
     el.tagName === 'P' &&
