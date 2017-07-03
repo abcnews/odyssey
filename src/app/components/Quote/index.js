@@ -4,13 +4,9 @@ const html = require('bel');
 
 // Ours
 const {ALIGNMENT_PATTERN, MOCK_NODE} = require('../../../constants');
-const {append, detach, getDescendantTextNodes, grabConfigSC, isElement, isText,
-  linebreaksToParagraphs, prepend, $, $$, substitute, trim} = require('../../../utils');
-
-const DOUBLE_QUOTE_PATTERN = /\"/g; 
-const OPENING_DOUBLE_QUOTE = '“';
-const CLOSING_DOUBLE_QUOTE = '”';
-const HAIR_SPACE = ' ';
+const {append, detach, grabConfigSC, isElement, isText,
+  linebreaksToParagraphs, prepend, $, $$, substitute} = require('../../../utils');
+const UQuote = require('../UQuote');
 
 function Quote({
   isPullquote = false,
@@ -29,29 +25,9 @@ function Quote({
   ` : null;
 
 
-  // Smart double quotes
+  // Smart double quotes & indentation
   if (parEls.length) {
-    parEls.forEach(parEl => {
-      let toggle = false;
-      let hasDoubleQuotes = false;
-
-      getDescendantTextNodes(parEl)
-      .forEach(node => {
-        if (DOUBLE_QUOTE_PATTERN.test(node.nodeValue)) {
-          node.nodeValue = node.nodeValue.replace(DOUBLE_QUOTE_PATTERN, () => {
-            hasDoubleQuotes = true;
-
-            return (toggle = !toggle) ?
-              OPENING_DOUBLE_QUOTE + HAIR_SPACE :
-              HAIR_SPACE + CLOSING_DOUBLE_QUOTE;
-          });
-        }
-      });
-
-      if (hasDoubleQuotes) {
-        parEl.classList.add('has-double-quotes');
-      }
-    });
+    parEls.forEach(UQuote.conditionallyApply);
   }
 
   return html`

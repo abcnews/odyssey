@@ -17,6 +17,7 @@ const Quote = require('./components/Quote');
 const Series = require('./components/Series');
 const Share = require('./components/Share');
 const UDropcap = require('./components/UDropcap');
+const UQuote = require('./components/UQuote');
 const UParallax = require('./components/UParallax');
 const UPull = require('./components/UPull');
 const VideoEmbed = require('./components/VideoEmbed');
@@ -93,6 +94,9 @@ function app(done) {
 
     UDropcap.conditionallyApply(nextEl);
   });
+
+  // Enable outdented quotes on direct descendants of richtext elements
+  $$('[class*="u-richtext"] > p').forEach(UQuote.conditionallyApply);
 
   // Transform markers
   getMarkers([
