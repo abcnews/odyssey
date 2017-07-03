@@ -34,36 +34,38 @@ const pictures = [];
 function Picture({
   src = SMALLEST_IMAGE,
   alt = '',
-  smRatio = DEFAULTS.SM_RATIO,
-  mdRatio = DEFAULTS.MD_RATIO,
-  lgRatio = DEFAULTS.LG_RATIO,
+  ratios = {},
   preserveOriginalRatio = false,
   linkUrl = ''
 }) {
   const [, originalRatio] = src.match(RATIO_PATTERN) || [, null];
 
-  if (preserveOriginalRatio && originalRatio) {
-    smRatio = originalRatio;
-    mdRatio = originalRatio;
-    lgRatio = originalRatio;
-  }
+  ratios = preserveOriginalRatio && originalRatio ? {
+    sm: originalRatio,
+    md: originalRatio,
+    lg: originalRatio
+  } : {
+    sm: ratios.sm || DEFAULTS.SM_RATIO,
+    md: ratios.md || DEFAULTS.MD_RATIO,
+    lg: ratios.lg || DEFAULTS.LG_RATIO
+  };
 
-  const sizerClassName = `u-sizer-sm-${smRatio} u-sizer-md-${mdRatio} u-sizer-lg-${lgRatio}`;
+  const sizerClassName = `u-sizer-sm-${ratios.sm} u-sizer-md-${ratios.md} u-sizer-lg-${ratios.lg}`;
 
   const imageURL = src
     .replace(P2_RATIO_SIZE_PATTERN, '$1-large');
   const smImageURL = imageURL
-    .replace(RATIO_PATTERN, smRatio)
-    .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[smRatio].sm}`);
+    .replace(RATIO_PATTERN, ratios.sm)
+    .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratios.sm].sm}`);
   const mdImageURL = imageURL
-    .replace(RATIO_PATTERN, mdRatio)
-    .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[mdRatio].md}`);
+    .replace(RATIO_PATTERN, ratios.md)
+    .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratios.md].md}`);
   const lgImageURL = imageURL
-    .replace(RATIO_PATTERN, lgRatio)
-    .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[lgRatio].lg}`);
+    .replace(RATIO_PATTERN, ratios.lg)
+    .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratios.lg].lg}`);
   const lansdcapeNotLgImageURL = imageURL
-    .replace(RATIO_PATTERN, lgRatio)
-    .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[lgRatio].md}`);
+    .replace(RATIO_PATTERN, ratios.lg)
+    .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratios.lg].md}`);
 
   const placeholderEl = html`<div class="${sizerClassName}"></div>`;
 
@@ -161,6 +163,14 @@ function Picture({
   return pictureEl;
 };
 
+function getRatios(configSC) {
+  const [, sm] = configSC.match(SM_RATIO_PATTERN) || [];
+  const [, md] = configSC.match(MD_RATIO_PATTERN) || [];
+  const [, lg] = configSC.match(LG_RATIO_PATTERN) || [];
+
+  return {sm, md, lg};
+}
+
 subscribe(function _checkIfPicturesNeedToBeLoaded(client) {
   pictures.forEach(picture => {
     const rect = picture.getRect();
@@ -179,7 +189,4 @@ subscribe(function _checkIfPicturesNeedToBeLoaded(client) {
 });
 
 module.exports = Picture;
-module.exports.SIZES = SIZES
-module.exports.SM_RATIO_PATTERN = SM_RATIO_PATTERN;
-module.exports.MD_RATIO_PATTERN = MD_RATIO_PATTERN;
-module.exports.LG_RATIO_PATTERN = LG_RATIO_PATTERN;
+module.exports.getRatios = getRatios;

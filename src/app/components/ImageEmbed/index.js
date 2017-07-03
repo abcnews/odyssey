@@ -46,9 +46,7 @@ function transformEl(el, preserveOriginalRatio) {
 
   const configSC = grabConfigSC(el);
   const [, alignment] = configSC.match(ALIGNMENT_PATTERN) || [];
-  const [, smRatio] = configSC.match(Picture.SM_RATIO_PATTERN) || [];
-  const [, mdRatio] = configSC.match(Picture.MD_RATIO_PATTERN) || [];
-  const [, lgRatio] = configSC.match(Picture.LG_RATIO_PATTERN) || [];
+  const ratios = Picture.getRatios(configSC);
 
   const src = imgEl.src;
   const alt = imgEl.getAttribute('alt');
@@ -59,9 +57,11 @@ function transformEl(el, preserveOriginalRatio) {
     pictureEl: Picture({
       src,
       alt,
-      smRatio: smRatio || '3x4',
-      mdRatio: mdRatio || '4x3',
-      lgRatio,
+      ratios: {
+        sm: ratios.sm || '3x4',
+        md: ratios.md || '4x3',
+        lg: ratios.lg
+      },
       preserveOriginalRatio,
       linkUrl
     }),

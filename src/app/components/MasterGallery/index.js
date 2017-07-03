@@ -159,8 +159,10 @@ function register(el) {
     pictureEl: Picture({
       src: src,
       alt: imgEl.getAttribute('alt'),
-      smRatio: '1x1',
-      mdRatio: '4x3',
+      ratios: {
+        sm: '1x1',
+        md: '4x3'
+      }
     }),
     captionEl: Caption.createFromEl(el)
   });

@@ -18,9 +18,7 @@ function Block({
   alignment,
   videoId,
   imgEl,
-  smRatio,
-  mdRatio,
-  lgRatio,
+  ratios = {},
   contentEls = []
 }) {
   const className = cn('Block', `is-${type}`, {
@@ -43,9 +41,11 @@ function Block({
     mediaEl = Picture({
       src,
       alt,
-      smRatio: smRatio || (type === 'heading' ? '3x2' : '3x4'),
-      mdRatio: mdRatio || (type === 'heading' ? '16x9' : type === 'richtext' ? '1x1' : '4x3'),
-      lgRatio
+      ratios: {
+        sm: ratios.sm || (type === 'heading' ? '3x2' : '3x4'),
+        md: ratios.md || (type === 'heading' ? '16x9' : '1x1'),
+        lg: ratios.lg
+      }
     });
   } else if (videoId) {
     mediaEl = html`<div></div>`;
@@ -116,9 +116,6 @@ function transformSection(section) {
   const isDocked = section.configSC.indexOf('docked') > -1;
   const isPiecemeal = section.configSC.indexOf('piecemeal') > -1;
   const [, alignment] = section.configSC.match(ALIGNMENT_PATTERN) || [];
-  const [, smRatio] = section.configSC.match(Picture.SM_RATIO_PATTERN) || [];
-  const [, mdRatio] = section.configSC.match(Picture.MD_RATIO_PATTERN) || [];
-  const [, lgRatio] = section.configSC.match(Picture.LG_RATIO_PATTERN) || [];
   let sourceMediaEl;
 
   const config = section.betweenNodes.reduce((config, node) => {
@@ -142,6 +139,7 @@ function transformSection(section) {
 
         if (imgEl) {
           config.imgEl = imgEl;
+          config.ratios = Picture.getRatios(section.configSC);
         }
       }
 
@@ -164,9 +162,6 @@ function transformSection(section) {
     isDocked,
     isPiecemeal,
     alignment,
-    smRatio,
-    mdRatio,
-    lgRatio,
     contentEls: []
   });
 

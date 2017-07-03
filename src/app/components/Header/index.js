@@ -17,9 +17,7 @@ function Header({
   meta = {},
   videoElOrId,
   imgEl,
-  smRatio,
-  mdRatio,
-  lgRatio,
+  ratios = {},
   isDark,
   isLayered,
   miscContentEls = []
@@ -35,9 +33,11 @@ function Header({
     mediaEl = Picture({
       src: imgEl.src,
       alt: imgEl.getAttribute('alt'),
-      smRatio: smRatio || isLayered ? '3x4' : undefined,
-      mdRatio: mdRatio || isLayered ? '1x1' : undefined,
-      lgRatio
+      ratios: {
+        sm: ratios.sm || isLayered ? '3x4' : undefined,
+        md: ratios.md || isLayered ? '1x1' : undefined,
+        lg: ratios.lg
+      }
     });
     
     if (!isLayered) {
@@ -153,9 +153,7 @@ function Header({
 };
 
 function transformSection(section, meta) {
-  const [, smRatio] = section.configSC.match(Picture.SM_RATIO_PATTERN) || [];
-  const [, mdRatio] = section.configSC.match(Picture.MD_RATIO_PATTERN) || [];
-  const [, lgRatio] = section.configSC.match(Picture.LG_RATIO_PATTERN) || [];
+  const ratios = Picture.getRatios(section.configSC);
   const isDark = section.configSC.indexOf('dark') > -1;
   const isLayered = section.configSC.indexOf('layered') > -1;
 
@@ -204,9 +202,7 @@ function transformSection(section, meta) {
     return config;
   }, {
     meta,
-    smRatio,
-    mdRatio,
-    lgRatio,
+    ratios,
     isDark,
     isLayered,
     miscContentEls: []

@@ -407,9 +407,7 @@ function offsetBasedOpacity(imageIndex, imagesTransformXPct) {
 
 function transformSection(section) {
   const [, mosaicRowLengthsString] = (`${section.name}${section.configSC}`).match(MOSAIC_ROW_LENGTHS_PATTERN) || [null, ''];
-  const [, smRatio] = section.configSC.match(Picture.SM_RATIO_PATTERN) || [];
-  const [, mdRatio] = section.configSC.match(Picture.MD_RATIO_PATTERN) || [];
-  const [, lgRatio] = section.configSC.match(Picture.LG_RATIO_PATTERN) || [];
+  const ratios = Picture.getRatios(section.configSC);
 
   const nodes = [].concat(section.betweenNodes);
 
@@ -427,34 +425,42 @@ function transformSection(section) {
         pictureEl: Picture({
           src,
           alt,
-          smRatio: smRatio || '3x4',
-          mdRatio,
-          lgRatio,
+          ratios: {
+            sm: ratios.sm || '3x4',
+            md: ratios.md,
+            lg: ratios.lg,
+          },
           linkUrl
         }),
         mosaicPictureEls: [
           Picture({
             src,
             alt,
-            smRatio: smRatio || '3x2',
-            mdRatio: mdRatio || '16x9',
-            lgRatio,
+            ratios: {
+              sm: ratios.sm || '3x2',
+              md: ratios.md || '16x9',
+              lg: ratios.lg,
+            },
             linkUrl
           }),
           Picture({
             src,
             alt,
-            smRatio: smRatio || '1x1',
-            mdRatio,
-            lgRatio: lgRatio || '3x2',
+            ratios: {
+              sm: ratios.sm || '1x1',
+              md: ratios.md,
+              lg: ratios.lg || '3x2',
+            },
             linkUrl
           }),
           Picture({
             src,
             alt,
-            smRatio: smRatio || '3x4',
-            mdRatio: mdRatio || '4x3',
-            lgRatio: lgRatio || '4x3',
+            ratios: {
+              sm: ratios.sm || '3x4',
+              md: ratios.md || '4x3',
+              lg: ratios.lg || '4x3',
+            },
             linkUrl
           })
         ],
