@@ -31,6 +31,14 @@
     }
   }
 
+  .u-pull-left &,
+  .u-pull-right & {
+    @media #{$mq-not-sm} {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+
   * > & {
     font-size: .8125rem !important;
     line-height: 1.25rem;
