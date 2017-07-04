@@ -1,6 +1,12 @@
 /*
 smartquotes.js by Kelly Martin
-Edited to only expose the `element` function and remove the UMD wrapper.
+https://github.com/kellym/smartquotesjs
+
+Edits: by Colin Gourlay
+* Make regexes constants
+* Beginning double quotes can appear before periods and ellipses
+* Only expose the `element` function
+* Remove the UMD wrapper.
 
 The MIT License (MIT)
 
@@ -24,20 +30,33 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+const TO_TRIPLE_PRIME = /'''/g;
+const TO_BEGINNING_DOUBLE_QUOTE = /(\W|^)"([\w\u2026\.])/g;
+const TO_ENDING_DOUBLE_QUOTE = /(\u201c[^"]*)"([^"]*$|[^\u201c"]*\u201c)/g;
+const TO_ENDING_DOUBLE_QUOTE_FROM_END_OF_WORD = /([^0-9])"/g;
+const TO_DOUBLE_PRIME_FROM_TWO_SINGLE_QUOTES = /''/g;
+const TO_BEGINNING_SINGLE_QUOTE = /(\W|^)'(\S)/g;
+const TO_CONJUNCTIONS_POSSESSION = /([a-z])'([a-z])/ig;
+const TO_ABBREVIATED_YEAR = /(\u2018)([0-9]{2}[^\u2019]*)(\u2018([^0-9]|$)|$|\u2019[a-z])/ig;
+const TO_ENDING_SINGLE_QUOTE = /((\u2018[^']*)|[a-z])'([^0-9]|$)/ig;
+const TO_BACKWARDS_APOSTROPHE = /(\B|^)\u2018(?=([^\u2018\u2019]*\u2019\b)*([^\u2018\u2019]*\B\W[\u2018\u2019]\b|[^\u2018\u2019]*$))/ig;
+const TO_DOUBLE_PRIME = /"/g;
+const TO_PRIME = /'/g;
+
 function format(str, retainLength) {
   return str
-    .replace(/'''/g, '\u2034' + (retainLength ? '\u2063\u2063' : ''))            // triple prime
-    .replace(/(\W|^)"(\w)/g, '$1\u201c$2')                                       // beginning "
-    .replace(/(\u201c[^"]*)"([^"]*$|[^\u201c"]*\u201c)/g, '$1\u201d$2')          // ending "
-    .replace(/([^0-9])"/g,'$1\u201d')                                            // remaining " at end of word
-    .replace(/''/g, '\u2033' + (retainLength ? '\u2063' : ''))                   // double prime as two single quotes
-    .replace(/(\W|^)'(\S)/g, '$1\u2018$2')                                       // beginning '
-    .replace(/([a-z])'([a-z])/ig, '$1\u2019$2')                                  // conjunction's possession
-    .replace(/(\u2018)([0-9]{2}[^\u2019]*)(\u2018([^0-9]|$)|$|\u2019[a-z])/ig, '\u2019$2$3')     // abbrev. years like '93
-    .replace(/((\u2018[^']*)|[a-z])'([^0-9]|$)/ig, '$1\u2019$3')                 // ending '
-    .replace(/(\B|^)\u2018(?=([^\u2018\u2019]*\u2019\b)*([^\u2018\u2019]*\B\W[\u2018\u2019]\b|[^\u2018\u2019]*$))/ig, '$1\u2019') // backwards apostrophe
-    .replace(/"/g, '\u2033')                                                     // double prime
-    .replace(/'/g, '\u2032');                                                    // prime
+    .replace(TO_TRIPLE_PRIME, '\u2034' + (retainLength ? '\u2063\u2063' : ''))
+    .replace(TO_BEGINNING_DOUBLE_QUOTE, '$1\u201c$2')
+    .replace(TO_ENDING_DOUBLE_QUOTE, '$1\u201d$2')
+    .replace(TO_ENDING_DOUBLE_QUOTE_FROM_END_OF_WORD, '$1\u201d')
+    .replace(TO_DOUBLE_PRIME_FROM_TWO_SINGLE_QUOTES, '\u2033' + (retainLength ? '\u2063' : ''))
+    .replace(TO_BEGINNING_SINGLE_QUOTE, '$1\u2018$2')
+    .replace(TO_CONJUNCTIONS_POSSESSION, '$1\u2019$2') 
+    .replace(TO_ABBREVIATED_YEAR, '\u2019$2$3') 
+    .replace(TO_ENDING_SINGLE_QUOTE, '$1\u2019$3')
+    .replace(TO_BACKWARDS_APOSTROPHE, '$1\u2019')
+    .replace(TO_DOUBLE_PRIME, '\u2033')
+    .replace(TO_PRIME, '\u2032');
 };
 
 function smartquotes(root) {
