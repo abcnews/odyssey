@@ -78,18 +78,6 @@ function $$(selector, roots) {
   }, []);
 }
 
-function getDescendantTextNodes(el) {
-  return Array.from(el.childNodes).reduce((memo, node) => {
-    if (isText(node)) {
-      memo.push(node);
-    } else if (isElement(node)) {
-      memo = memo.concat(getDescendantTextNodes(node));
-    }
-
-    return memo;
-  }, []);
-}
-
 function detach(node = {}) {
   if (node != null && node.parentNode) {
     node.parentNode.removeChild(node);
@@ -343,7 +331,6 @@ module.exports = {
   isDocument,
   $,
   $$,
-  getDescendantTextNodes,
   detach,
   detachAll,
   append,

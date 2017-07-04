@@ -12,3 +12,13 @@
     line-height: .74; // Gecko ignores this
   }
 }
+
+.u-dropcap.u-quote {
+  text-indent: 0;
+
+  &::first-letter {
+    @media #{$mq-not-sm} {
+      margin-left: -.4em;
+    }
+  }
+}

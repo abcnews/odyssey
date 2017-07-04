@@ -2,7 +2,7 @@
 const html = require('bel');
 
 // Ours
-const {SELECTORS} = require('../constants');
+const {SELECTORS, RICHTEXT_BLOCK_TAGNAMES} = require('../constants');
 const {after, append, before, detach, detachAll,
   getMarkers, getSections, isElement, prepend,
   $, $$} = require('../utils');
@@ -96,7 +96,9 @@ function app(done) {
   });
 
   // Enable outdented quotes on direct descendants of richtext elements
-  $$('[class*="u-richtext"] > p').forEach(UQuote.conditionallyApply);
+  $$('[class*="u-richtext"] > *')
+  .filter(el => RICHTEXT_BLOCK_TAGNAMES.indexOf(el.tagName) > -1)
+  .forEach(UQuote.conditionallyApply);
 
   // Transform markers
   getMarkers([

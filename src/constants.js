@@ -20,6 +20,7 @@ const SELECTORS = {
   WYSIWYG_EMBED: ns('embed:wysiwyg')
 };
 
+const RICHTEXT_BLOCK_TAGNAMES = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'OL', 'UL'];
 const EMBED_TAGNAMES = ['ASIDE', 'BLOCKQUOTE', 'DIV', 'FIGURE'];
 
 const MOCK_NODE = {
@@ -113,6 +114,7 @@ module.exports = {
   CSS_URL,
   ALIGNMENT_PATTERN,
   SELECTORS,
+  RICHTEXT_BLOCK_TAGNAMES,
   EMBED_TAGNAMES,
   MOCK_NODE,
   MOCK_ELEMENT,
