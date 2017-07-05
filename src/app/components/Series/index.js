@@ -18,14 +18,12 @@ function Series({
   });
 
   return html`
-    <div class="${className}">
+    <div role="navigation" class="${className}">
       ${stories.map(story => html`
-        <div class="${story.url ? '' : 'is-current'}">
+        <a href="${story.url}" aria-current="${story.url ? 'false' : 'page'}">
           ${story.kicker ? html`<label>${story.kicker}</label>` : null}
-          <h3>
-            ${story.url ? html`<a href="${story.url}">${story.title}</a>` : story.title}
-          </h3>
-        </div>
+          <span>${story.title}</span>
+        </a>
       `)}
     </div>
   `;
