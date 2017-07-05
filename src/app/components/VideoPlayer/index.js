@@ -11,7 +11,8 @@ const {append, isElement, proximityCheck, $, $$, setText, toggleAttribute, twoDi
 const {getMeta} = require('../../meta');
 const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
 
-const API_URL_ROOT = 'https://content-gateway.abc-prod.net.au/api/v2/content/id/';
+const API_URL_ROOT = 'https://api.abc.net.au/cgapi/api/v2/content/id/';
+const API_HEADERS = {'x-api-key': '***REMOVED***'};
 const AMBIENT_PLAYABLE_RANGE = .5;
 
 const players = [];
@@ -301,6 +302,7 @@ function getMetadata(videoElOrId, callback) {
 
     xhr({
       json: true,
+      headers: API_HEADERS,
       url: `${API_URL_ROOT}${videoElOrId}`
     }, (err, response, body) => {
       if (err || response.statusCode !== 200) {
