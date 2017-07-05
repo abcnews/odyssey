@@ -227,7 +227,8 @@
     }
   }
 
-  .is-mosaic &:hover .Caption {
+  .is-mosaic &:hover .Caption,
+  .is-mosaic & .Picture:focus + .Caption {
     opacity: 1;
     pointer-events: all;
   }

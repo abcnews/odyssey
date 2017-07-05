@@ -4,11 +4,13 @@ const screenfull = require('screenfull');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const {append, $} = require('../../../utils');
-const {invalidateClient} = require('../../scheduler');
+const {$, $$, prepend} = require('../../../utils');
+const {enqueue, invalidateClient} = require('../../scheduler');
 const Caption = require('../Caption');
 const Gallery = require('../Gallery');
 const Picture = require('../Picture');
+
+const TAB_KEY = 9;
 
 const registeredImageIds = {};
 const images = [];
@@ -79,15 +81,36 @@ function MasterGallery() {
     goToId(id);
   });
 
-  append($('.Gallery-layout', galleryEl), html`
+  const captionLinkEls = $$('.Caption a', galleryEl);
+  const lastCaptionLinkEl = captionLinkEls[captionLinkEls.length - 1];
+
+  lastCaptionLinkEl.onkeydown = event => {
+    if (!event.shiftKey && event.keyCode === TAB_KEY) {
+      event.preventDefault();
+      closeEl.focus();
+    }
+  };
+
+  const closeEl = html`
     <button class="MasterGallery-close"
       title="Close the gallery"
+      onkeydown=${event => {
+        if (event.shiftKey && event.keyCode === TAB_KEY) {
+          event.preventDefault();
+          lastCaptionLinkEl.focus();
+        }
+      }}
       onclick=${close}></button>
-  `);
+  `;
+
+  prepend($('.Gallery-layout', galleryEl),closeEl);
 
   masterGalleryEl = html`
     <div
       class="MasterGallery"
+      role="dialog"
+      aria-label="Gallery of all photos in this story"
+      tabindex="-1"
       onclick=${function (event) {
         if (this === event.target) {
           close();
@@ -103,10 +126,15 @@ function MasterGallery() {
 }
 
 let lastKnownScrollY;
+let externalActiveElement;
 
 function open(el) {
   lastKnownScrollY = window.scrollY;
   document.documentElement.classList.add('is-master-gallery-open');
+  externalActiveElement = document.activeElement;
+  enqueue(() => {
+    $('.is-active', masterGalleryEl).focus();
+  });
   invalidateClient();
 
   if (screenfull.enabled) {
@@ -116,6 +144,7 @@ function open(el) {
 
 function close() {
   document.documentElement.classList.remove('is-master-gallery-open');
+  externalActiveElement.focus();
 
   if (screenfull.isFullscreen) {
     screenfull.exit();

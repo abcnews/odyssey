@@ -72,6 +72,9 @@ function Gallery({
   }
 
   function goToImage(index, isImmediate) {
+    // Reset scroll position in case it was changed by browser focus() side-effect
+    galleryEl.scrollLeft = 0;
+
     if (index < 0 || index >= images.length) {
       index = currentIndex;
     }
@@ -309,6 +312,7 @@ function Gallery({
         style="flex: 0 1 ${flexBasisPct}%; max-width: ${flexBasisPct}%"
         data-id="${id}"
         data-index="${index}"
+        tabindex="-1"
         ondragstart=${returnFalse}
         onmouseup=${swipeIntent}
         onclick=${stopIfIgnoringClicks}>
@@ -320,13 +324,22 @@ function Gallery({
 
     imageEl.addEventListener('touchend', swipeIntent, false);
 
+    if (pictureEl.hasAttribute('href')) {
+       pictureEl.addEventListener('focus', () => {
+        goToImage(index);
+      }, false);
+    }
+
     const captionLinkEl = $('a', captionEl);
 
     if (captionLinkEl) {
-      captionLinkEl.addEventListener('focus', () => {
-        galleryEl.scrollLeft = 0;
-        goToImage(index);
-      }, false);
+      if (isMosaic) {
+        captionLinkEl.setAttribute('tabindex', '-1')
+      } else {
+        captionLinkEl.addEventListener('focus', () => {
+          goToImage(index);
+        }, false);
+      }
     }
 
     return imageEl;
@@ -362,12 +375,14 @@ function Gallery({
   const prevEl = html`
     <button class="Gallery-step-prev"
       title="View the previous image"
+      onfocus=${() => goToImage(currentIndex)}
       onclick=${() => goToImage(currentIndex - 1)}></button>
   `;
 
   const nextEl = html`
     <button class="Gallery-step-next"
       title="View the next image"
+      onfocus=${() => goToImage(currentIndex)}
       onclick=${() => goToImage(currentIndex + 1)}></button>
   `;
 
