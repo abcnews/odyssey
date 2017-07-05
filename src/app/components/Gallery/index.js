@@ -374,14 +374,14 @@ function Gallery({
 
   const prevEl = html`
     <button class="Gallery-step-prev"
-      title="View the previous image"
+      aria-label="View the previous image"
       onfocus=${() => goToImage(currentIndex)}
       onclick=${() => goToImage(currentIndex - 1)}></button>
   `;
 
   const nextEl = html`
     <button class="Gallery-step-next"
-      title="View the next image"
+      aria-label="View the next image"
       onfocus=${() => goToImage(currentIndex)}
       onclick=${() => goToImage(currentIndex + 1)}></button>
   `;

@@ -93,7 +93,7 @@ function MasterGallery() {
 
   const closeEl = html`
     <button class="MasterGallery-close"
-      title="Close the gallery"
+      aria-label="Close the gallery"
       onkeydown=${event => {
         if (event.shiftKey && event.keyCode === TAB_KEY) {
           event.preventDefault();
