@@ -7,13 +7,16 @@ const xhr = require('xhr');
 
 // Ours
 const {CSS_URL, IS_IOS, MQ, MS_VERSION, SMALLEST_IMAGE} = require('../../../constants');
-const {append, isElement, proximityCheck, $, $$, setText, toggleAttribute, twoDigits} = require('../../../utils');
+const {append, isElement, proximityCheck, $, $$, setText,
+  toggleAttribute, toggleBooleanAttributes, twoDigits} = require('../../../utils');
 const {getMeta} = require('../../meta');
 const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
 
 const API_URL_ROOT = 'https://api.abc.net.au/cgapi/api/v2/content/id/';
 const API_HEADERS = {'x-api-key': '***REMOVED***'};
 const AMBIENT_PLAYABLE_RANGE = .5;
+const FUZZY_INCREMENT_FPS = 30;
+const FUZZY_INCREMENT_INTERVAL = 1000 / FUZZY_INCREMENT_FPS;
 
 const players = [];
 let phase1InlineVideoConfig;
@@ -44,30 +47,24 @@ function VideoPlayer({
     isMuted = true;
   }
 
-  const videoEl = html`<video
-    poster="${posterURL ? SMALLEST_IMAGE : ''}"
-    preload="none"
-    tabindex="-1"></video>`;
+  const videoEl = html`<video preload="none" tabindex="-1"></video>`;
 
-  if (posterURL) {
-    videoEl.style.backgroundImage = `url("${posterURL}")`;
-  }
-
-  const booleanAttributes = {
+  toggleBooleanAttributes(videoEl, {
     loop: isLoop,
     muted: isMuted,
+    paused: true,
     playsinline: true,
     'webkit-playsinline': true
-  };
-
-  Object.keys(booleanAttributes)
-  .forEach(attributeName => {
-    toggleAttribute(videoEl, attributeName, booleanAttributes[attributeName]);
   });
 
+   // Firefox doesn't respect the muted attribute initially.
   if (isMuted && !videoEl.muted) {
-    // Firefox doesn't respect the muted attribute initially.
     videoEl.muted = true;
+  }
+
+  if (posterURL) {
+    videoEl.poster = SMALLEST_IMAGE;
+    videoEl.style.backgroundImage = `url("${posterURL}")`;
   }
 
   const source = sources[!isAlwaysHQ && sources.length > 1 && window.matchMedia(MQ.SM).matches ? 1 : 0];
@@ -82,93 +79,35 @@ function VideoPlayer({
       playInline(videoEl, !isMuted);
     });
   }
-
-  let timeRemainingEl;
-  let progressBarEl;
-
-  if (!isAmbient) {
-    timeRemainingEl = html`<time class="VideoPlayer-timeRemaining"></time>`;
-    progressBarEl = html`<progress class="VideoPlayer-progressBar" value="0"></progress>`;
-  }
   
-  const player = {
-    videoEl,
-    isAmbient,
-    isScrollplay,
-    scrollplayPct,
-    getRect: () => {
-      // Fixed players should use their parent's rect, as they're always in the viewport
-      const position = window.getComputedStyle(playerEl).position;
-      const el = (position === 'fixed' ? playerEl.parentElement : playerEl);
+  function toggleMute(event) {
+    event.stopPropagation();
+    player.isUserInControl = true;
+    videoEl.muted = !videoEl.muted;
+    toggleAttribute(videoEl, 'muted', videoEl.muted);
 
-      return el.getBoundingClientRect();
-    },
-    toggleMute: event => {
-      event.stopPropagation();
-      player.isUserInControl = true;
-      videoEl.muted = !videoEl.muted;
-      toggleAttribute(videoEl, 'muted', videoEl.muted);
-    },
-    togglePlay: (event, wasScrollBased) => {
-      const wasPaused = videoEl.paused;
-      
-      if (!wasScrollBased && !player.isAmbient) {
-        player.isUserInControl = true;
-        
-        if (wasPaused) {
-          players
-          .forEach(_player => {
-            if (
-              _player !== player &&
-              !_player.isAmbient &&
-              !_player.videoEl.paused
-            ) {
-              otherVideoEl.pause();
-              otherVideoEl.removeAttribute('playing');
-            }
-          });
-        }
-      }
-
-      const attrToggle = toggleAttribute.bind(null, videoEl, 'playing', wasPaused);
-      const promise = videoEl[wasPaused ? 'play' : 'pause']();
-
-      if (promise) {
-        promise.then(attrToggle);
-      } else {
-        attrToggle();
-      }
-
-      setTimeout(() => {
-        videoEl.removeAttribute('ended');
-      }, 300);
-    },
-    updatePlaybackPosition: () => {
-      const secondsRemaining = videoEl.duration - videoEl.currentTime;
-      const progress = videoEl.currentTime / videoEl.duration;
-
-      setText(timeRemainingEl, isNaN(secondsRemaining) ? '' : `${
-        secondsRemaining > 0 ? '-' : ''
-      }${
-        twoDigits(Math.floor(secondsRemaining / 60))
-      }:${
-        twoDigits(Math.round(secondsRemaining % 60))
-      }`);
-
-      progressBarEl.setAttribute('value', progress);
-
-      player.previousTime = Math.floor(videoEl.currentTime);
+    if (muteEl) {
+      muteEl.setAttribute('aria-label', videoEl.muted ? 'Unmute' : 'Mute');
     }
   };
 
-  players.push(player);
+  let fuzzyCurrentTime = 0;
 
-  if (!isAmbient) {
-    setInterval(() => {
-      if (videoEl.readyState > 0 && Math.floor(videoEl.currentTime) !== player.previousTime) {
-        player.updatePlaybackPosition();
-      }
-    }, 1000);
+  function nextFuzzyIncrement() {
+    if (videoEl.paused || !videoEl.duration) {
+      return;
+    }
+
+    fuzzyCurrentTime = (fuzzyCurrentTime + FUZZY_INCREMENT_INTERVAL / 1000) % videoEl.duration;
+    
+    const progress = fuzzyCurrentTime / videoEl.duration;
+
+    enqueue(function _setProgressBarValue() {
+      progressBarEl.style.transform = `scaleX(${progress})`;
+      progressBarEl.setAttribute('aria-valuenow', (progress * 100).toFixed(2));
+    });
+
+    setTimeout(nextFuzzyIncrement, FUZZY_INCREMENT_INTERVAL);
   }
 
   videoEl.addEventListener('canplay', () => {
@@ -184,37 +123,162 @@ function VideoPlayer({
     }
 
     player.isUserInControl = true;
-    videoEl.currentTime = 0;
-    videoEl.removeAttribute('playing', '');
     videoEl.setAttribute('ended', '');
+    videoEl.setAttribute('paused', '');
+
+    if (controlsEl) {
+      controlsEl.setAttribute('aria-label', 'Replay');
+    }
   });
 
-  const playerEl = html`
+  const player = {
+    isAmbient,
+    isScrollplay,
+    scrollplayPct,
+    getRect: () => {
+      // Fixed players should use their parent's rect, as they're always in the viewport
+      const playerEl = videoEl.parentElement;
+      const position = window.getComputedStyle(playerEl).position;
+      const el = (position === 'fixed' ? playerEl.parentElement : playerEl);
+
+      return el.getBoundingClientRect();
+    },
+    play: () => {
+      if (!videoEl.paused) {
+        return;
+      }
+      
+      // Stop all other non-ambient videos
+      if (!player.isAmbient) {
+        players.forEach(_player => {
+          if (_player !== player && !_player.isAmbient) {
+            _player.pause();
+          }
+        });
+      }
+
+      // Reset video if it had ended
+      if (videoEl.hasAttribute('ended')) {
+        videoEl.removeAttribute('ended');
+        videoEl.currentTime = 0;
+      }
+
+      // Play and update attributes
+      (videoEl.play() || {then: x => x()})
+      .then(() => {
+        videoEl.removeAttribute('paused');
+
+        if (controlsEl) {
+          controlsEl.setAttribute('aria-label', 'Pause');
+          
+          // Allow fuzzy increment to continue
+          nextFuzzyIncrement();
+        }
+      });
+    },
+    pause: () => {
+      if (videoEl.paused) {
+        return;
+      }
+      
+      videoEl.pause();
+      videoEl.setAttribute('paused', '');
+
+      if (controlsEl) {
+        controlsEl.setAttribute('aria-label', 'Play');
+      }
+    },
+    togglePlayback: (event, wasScrollBased) => {
+      if (!wasScrollBased && !player.isAmbient) {
+        player.isUserInControl = true;
+      }
+
+      player[videoEl.paused ? 'play' : 'pause']();
+    }
+  };
+
+  players.push(player);
+
+  let muteEl;
+  let timeRemainingEl;
+  let progressBarEl;
+  let controlsEl = null; 
+  let formattedDuration = '';
+
+  if (!isAmbient) {
+    muteEl = html`<button
+      class="VideoPlayer-mute"
+      aria-label="${isMuted ? 'Unmute' : 'Mute'}"
+      onkeyup=${whenActionKey(event => event.stopPropagation())}
+      onclick=${toggleMute}
+    ></button>`;
+    timeRemainingEl = html`<time
+      class="VideoPlayer-timeRemaining"
+      aria-label="Time Remaining"
+    ></time>`;
+    progressBarEl = html`<div role="progressbar"
+      class="VideoPlayer-progressBar"
+      aria-label="Percentage Complete"
+      aria-valuemin="0"
+      aria-valuemax="100"
+    ></div>`;
+    controlsEl = html`
+      <div role="button"
+        class="VideoPlayer-interface"
+        tabindex="0"
+        aria-label="Play"
+        onkeydown=${whenActionKey(event => event.preventDefault())}
+        onkeyup=${whenActionKey(player.togglePlayback)}
+        onclick=${player.togglePlayback}>
+        ${muteEl}
+        <div class="VideoPlayer-progress">
+          <div class="VideoPlayer-progressBarContainer">
+            ${progressBarEl}
+          </div>
+          ${timeRemainingEl}
+        </div>
+      </div>
+    `;
+
+    videoEl.addEventListener('durationchange', () => {
+      formattedDuration = `${
+        twoDigits(Math.floor(videoEl.duration / 60))
+      }:${
+        twoDigits(Math.round(videoEl.duration % 60))
+      }`;
+    });
+
+    videoEl.addEventListener('timeupdate', () => {
+      if (videoEl.readyState > 0) {
+        const secondsRemaining = videoEl.duration - videoEl.currentTime;
+        const formattedTimeFromStart = isNaN(videoEl.currentTime) ? '' : `${
+          twoDigits(Math.floor(videoEl.currentTime / 60))
+        }:${
+          twoDigits(Math.round(videoEl.currentTime % 60))
+        }`;
+        const formattedNegativeTimeFromEnd = isNaN(secondsRemaining) ? '' : `${
+          secondsRemaining > 0 ? '-' : ''
+        }${
+          twoDigits(Math.floor(secondsRemaining / 60))
+        }:${
+          twoDigits(Math.round(secondsRemaining % 60))
+        }`;
+
+        setText(timeRemainingEl, formattedNegativeTimeFromEnd);
+        progressBarEl.setAttribute('aria-valuetext', `${formattedTimeFromStart} / ${formattedDuration}`);
+
+        player.currentFuzzyTime = videoEl.currentTime;
+      }
+    });
+  }
+
+  return html`
     <div class="VideoPlayer">
       <div class="u-sizer-sm-16x9 u-sizer-md-16x9 u-sizer-lg-16x9"></div>
       ${videoEl}
-      ${isAmbient ? null : html`
-        <div role="button"
-          class="VideoPlayer-interface"
-          tabindex="0"
-          onkeydown=${whenActionKey(event => event.preventDefault())}
-          onkeyup=${whenActionKey(player.togglePlay)}
-          onclick=${player.togglePlay}>
-          <button
-            class="VideoPlayer-mute"
-            title="Mute control"
-            onkeyup=${whenActionKey(event => event.stopPropagation())}
-            onclick=${player.toggleMute}></button>
-          <div class="VideoPlayer-progress">
-            ${progressBarEl}
-            ${timeRemainingEl}
-          </div>
-        </div>
-      `}
+      ${controlsEl}
     </div>
   `;
-
-  return playerEl;
 };
 
 function whenActionKey(fn) {
@@ -345,7 +409,7 @@ subscribe(function _checkIfVideoPlayersNeedToBeToggled(client) {
       (typeof player.isInPlayableRange !== 'undefined' && isInPlayableRange !== player.isInPlayableRange)
     ) {
       enqueue(function _toggleVideoPlay() {
-        player.togglePlay(null, true);
+        player.togglePlayback(null, true);
       })
     }
 

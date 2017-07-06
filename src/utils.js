@@ -126,6 +126,12 @@ function toggleAttribute(node, attribute, shouldBeApplied) {
   node[`${shouldBeApplied ? 'set' : 'remove'}Attribute`](attribute, '');
 }
 
+function toggleBooleanAttributes(node, map) {
+  Object.keys(map).forEach(name => {
+    toggleAttribute(node, name, map[name]);
+  });
+}
+
 function _substituteSectionWith(el, remainingBetweenNodes) {
   remainingBetweenNodes = Array.isArray(remainingBetweenNodes) ?
     remainingBetweenNodes : this.betweenNodes;
@@ -340,6 +346,7 @@ module.exports = {
   substitute,
   setText,
   toggleAttribute,
+  toggleBooleanAttributes,
   getSections,
   getMarkers,
   grabConfigSC,
