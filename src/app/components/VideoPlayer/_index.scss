@@ -182,18 +182,33 @@
   left: 0;
 }
 
-.VideoPlayer-progressBarContainer {
+.VideoPlayer-progressBar {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
   flex: 1 1 auto;
   margin-left: 1.25rem;
+  border: none;
   padding: .125rem;
+  height: .75rem;
   background-color: $color-black-transparent-60;
-}
+  color: $color-white-transparent-60;
 
-.VideoPlayer-progressBar {
-  height: .5rem;
-  background-color: $color-white-transparent-60;
-  transform: scaleX(0);
-  transform-origin: 0 0;
+  &::-webkit-progress-bar {
+		background: none;
+	}
+
+	&::-webkit-progress-value {
+		background: $color-white-transparent-60;
+	}
+
+  &::-moz-progress-bar {
+		background: $color-white-transparent-60;
+	}
+
+  &::-ms-fill {
+		background: $color-white-transparent-60;
+	}
 }
 
 .VideoPlayer-timeRemaining {

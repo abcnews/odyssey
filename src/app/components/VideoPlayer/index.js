@@ -92,23 +92,23 @@ function VideoPlayer({
   };
 
   let fuzzyCurrentTime = 0;
+  let fuzzyTimeout;
 
   function nextFuzzyIncrement() {
-    if (videoEl.paused || !videoEl.duration) {
+    if (!controlsEl || videoEl.paused || !videoEl.duration) {
       return;
     }
 
     fuzzyCurrentTime = (fuzzyCurrentTime + FUZZY_INCREMENT_INTERVAL / 1000) % videoEl.duration;
-    
-    const progress = fuzzyCurrentTime / videoEl.duration;
-
-    enqueue(function _setProgressBarValue() {
-      progressBarEl.style.transform = `scaleX(${progress})`;
-      progressBarEl.setAttribute('aria-valuenow', (progress * 100).toFixed(2));
-    });
-
-    setTimeout(nextFuzzyIncrement, FUZZY_INCREMENT_INTERVAL);
+    progressBarEl.value = fuzzyCurrentTime / videoEl.duration * 100;
+    clearTimeout(fuzzyTimeout);
+    fuzzyTimeout = setTimeout(nextFuzzyIncrement, FUZZY_INCREMENT_INTERVAL);
   }
+
+  videoEl.addEventListener('play', nextFuzzyIncrement);
+  videoEl.addEventListener('playing', nextFuzzyIncrement);
+  videoEl.addEventListener('stalled', clearTimeout(fuzzyTimeout));
+  videoEl.addEventListener('waiting', clearTimeout(fuzzyTimeout));
 
   videoEl.addEventListener('canplay', () => {
     if (hasAudio(videoEl)) {
@@ -170,9 +170,6 @@ function VideoPlayer({
 
         if (controlsEl) {
           controlsEl.setAttribute('aria-label', 'Pause');
-          
-          // Allow fuzzy increment to continue
-          nextFuzzyIncrement();
         }
       });
     },
@@ -203,7 +200,6 @@ function VideoPlayer({
   let timeRemainingEl;
   let progressBarEl;
   let controlsEl = null; 
-  let formattedDuration = '';
 
   if (!isAmbient) {
     muteEl = html`<button
@@ -216,12 +212,11 @@ function VideoPlayer({
       class="VideoPlayer-timeRemaining"
       aria-label="Time Remaining"
     ></time>`;
-    progressBarEl = html`<div role="progressbar"
+    progressBarEl = html`<progress
       class="VideoPlayer-progressBar"
       aria-label="Percentage Complete"
-      aria-valuemin="0"
-      aria-valuemax="100"
-    ></div>`;
+      max="100"
+    ></progress>`;
     controlsEl = html`
       <div role="button"
         class="VideoPlayer-interface"
@@ -232,30 +227,15 @@ function VideoPlayer({
         onclick=${player.togglePlayback}>
         ${muteEl}
         <div class="VideoPlayer-progress">
-          <div class="VideoPlayer-progressBarContainer">
-            ${progressBarEl}
-          </div>
+          ${progressBarEl}
           ${timeRemainingEl}
         </div>
       </div>
     `;
 
-    videoEl.addEventListener('durationchange', () => {
-      formattedDuration = `${
-        twoDigits(Math.floor(videoEl.duration / 60))
-      }:${
-        twoDigits(Math.round(videoEl.duration % 60))
-      }`;
-    });
-
     videoEl.addEventListener('timeupdate', () => {
       if (videoEl.readyState > 0) {
         const secondsRemaining = videoEl.duration - videoEl.currentTime;
-        const formattedTimeFromStart = isNaN(videoEl.currentTime) ? '' : `${
-          twoDigits(Math.floor(videoEl.currentTime / 60))
-        }:${
-          twoDigits(Math.round(videoEl.currentTime % 60))
-        }`;
         const formattedNegativeTimeFromEnd = isNaN(secondsRemaining) ? '' : `${
           secondsRemaining > 0 ? '-' : ''
         }${
@@ -265,8 +245,6 @@ function VideoPlayer({
         }`;
 
         setText(timeRemainingEl, formattedNegativeTimeFromEnd);
-        progressBarEl.setAttribute('aria-valuetext', `${formattedTimeFromStart} / ${formattedDuration}`);
-
         player.currentFuzzyTime = videoEl.currentTime;
       }
     });
