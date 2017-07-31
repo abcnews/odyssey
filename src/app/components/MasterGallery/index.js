@@ -84,12 +84,14 @@ function MasterGallery() {
   const captionLinkEls = $$('.Caption a', galleryEl);
   const lastCaptionLinkEl = captionLinkEls[captionLinkEls.length - 1];
 
-  lastCaptionLinkEl.onkeydown = event => {
-    if (!event.shiftKey && event.keyCode === TAB_KEY) {
-      event.preventDefault();
-      closeEl.focus();
-    }
-  };
+  if (lastCaptionLinkEl) {
+    lastCaptionLinkEl.onkeydown = event => {
+      if (!event.shiftKey && event.keyCode === TAB_KEY) {
+        event.preventDefault();
+        closeEl.focus();
+      }
+    };
+  }
 
   const closeEl = html`
     <button class="MasterGallery-close"
@@ -97,13 +99,16 @@ function MasterGallery() {
       onkeydown=${event => {
         if (event.shiftKey && event.keyCode === TAB_KEY) {
           event.preventDefault();
-          lastCaptionLinkEl.focus();
+
+          if (lastCaptionLinkEl) {
+            lastCaptionLinkEl.focus();
+          }
         }
       }}
       onclick=${close}></button>
   `;
 
-  prepend($('.Gallery-layout', galleryEl),closeEl);
+  prepend($('.Gallery-layout', galleryEl), closeEl);
 
   masterGalleryEl = html`
     <div
