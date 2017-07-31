@@ -140,6 +140,28 @@
     background: none;
   }
 
+  > table {
+    border-collapse: separate;
+    border-spacing: 0;
+    font-family: $font-sans;
+    font-size: 1rem;
+
+    td,
+    th {
+      padding: .625rem .75rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    tr > * {
+      border-bottom: .0625rem solid $color-grey-300;
+    }
+
+    th {
+      background-color: $color-grey-100;
+    }
+  }
+
   a,
   a > * {
     color: $color-darkPrimary;
