@@ -123,8 +123,8 @@ function VideoPlayer({
     videoEl.setAttribute('ended', '');
     videoEl.setAttribute('paused', '');
 
-    if (controlsEl) {
-      controlsEl.setAttribute('aria-label', 'Replay');
+    if (playbackEl) {
+      playbackEl.setAttribute('aria-label', 'Replay');
     }
   });
 
@@ -165,8 +165,8 @@ function VideoPlayer({
       .then(() => {
         videoEl.removeAttribute('paused');
 
-        if (controlsEl) {
-          controlsEl.setAttribute('aria-label', 'Pause');
+        if (playbackEl) {
+          playbackEl.setAttribute('aria-label', 'Pause');
         }
       });
     },
@@ -178,8 +178,8 @@ function VideoPlayer({
       videoEl.pause();
       videoEl.setAttribute('paused', '');
 
-      if (controlsEl) {
-        controlsEl.setAttribute('aria-label', 'Play');
+      if (playbackEl) {
+        playbackEl.setAttribute('aria-label', 'Play');
       }
     },
     togglePlayback: (event, wasScrollBased) => {
@@ -193,12 +193,22 @@ function VideoPlayer({
 
   players.push(player);
 
+  let playbackEl;
   let muteEl;
   let timeRemainingEl;
   let progressBarEl;
   let controlsEl = null; 
 
   if (!isAmbient) {
+    playbackEl = html`
+      <button
+        class="VideoPlayer-playback"
+        aria-label="Play"
+        onkeydown=${whenActionKey(event => event.preventDefault())}
+        onkeyup=${whenActionKey(player.togglePlayback)}
+        onclick=${player.togglePlayback}
+      ></button>
+    `;
     muteEl = html`<button
       class="VideoPlayer-mute"
       aria-label="${isMuted ? 'Unmute' : 'Mute'}"
@@ -215,13 +225,8 @@ function VideoPlayer({
       max="100"
     ></progress>`;
     controlsEl = html`
-      <div role="button"
-        class="VideoPlayer-interface"
-        tabindex="0"
-        aria-label="Play"
-        onkeydown=${whenActionKey(event => event.preventDefault())}
-        onkeyup=${whenActionKey(player.togglePlayback)}
-        onclick=${player.togglePlayback}>
+      <div class="VideoPlayer-controls">
+        ${playbackEl}
         ${muteEl}
         <div class="VideoPlayer-progress">
           ${progressBarEl}
