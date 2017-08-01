@@ -8,13 +8,14 @@ const xhr = require('xhr');
 // Ours
 const {CSS_URL, IS_IOS, MQ, MS_VERSION, SMALLEST_IMAGE} = require('../../../constants');
 const {append, isElement, proximityCheck, $, $$, setText,
-  toggleAttribute, toggleBooleanAttributes, twoDigits} = require('../../../utils');
+  toggleAttribute, toggleBooleanAttributes, twoDigits, whenKeyIn} = require('../../../utils');
 const {getMeta} = require('../../meta');
 const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
 
 const AMBIENT_PLAYABLE_RANGE = .5;
 const FUZZY_INCREMENT_FPS = 30;
 const FUZZY_INCREMENT_INTERVAL = 1000 / FUZZY_INCREMENT_FPS;
+const STEP_SECONDS = 5;
 
 const players = [];
 
@@ -76,7 +77,7 @@ function VideoPlayer({
       playInline(videoEl, !isMuted);
     });
   }
-  
+
   function toggleMute(event) {
     event.stopPropagation();
     player.isUserInControl = true;
@@ -197,22 +198,94 @@ function VideoPlayer({
   let muteEl;
   let timeRemainingEl;
   let progressBarEl;
-  let controlsEl = null; 
+  let progressEl;
+  let controlsEl = null;
+  let steppingKeysHeldDown = {};
+  let wasPlayingBeforeStepping;
+  let isScrubbing;
+  let wasPlayingBeforeScrubbing;
+
+  function jumpTo(time) {
+    videoEl.currentTime = Math.max(Math.min(time, videoEl.duration - 0.01), 0);
+    fuzzyCurrentTime = videoEl.currentTime;
+    progressBarEl.value = videoEl.currentTime / videoEl.duration * 100;
+  }
+
+  function steppingKeyDown(event) {
+    event.preventDefault();
+
+    if (Object.keys(steppingKeysHeldDown).length === 0) {
+      wasPlayingBeforeStepping = !videoEl.paused;
+
+      if (wasPlayingBeforeStepping) {
+        videoEl.pause();
+      }
+    }
+
+    steppingKeysHeldDown[event.keyCode] = true;
+
+    const isSteppingForwards = steppingKeysHeldDown[38] || steppingKeysHeldDown[39];
+    
+    jumpTo(videoEl.currentTime + STEP_SECONDS * (isSteppingForwards ? 1 : -1));
+  }
+
+  function steppingKeyUp(event) {
+    delete steppingKeysHeldDown[event.keyCode];
+
+    if (Object.keys(steppingKeysHeldDown).length > 0) {
+      return;
+    }
+        
+    if (wasPlayingBeforeStepping) {
+      videoEl.play();
+    }
+  }
+
+  function scrubStart(event) {
+    isScrubbing = true;
+    wasPlayingBeforeScrubbing = !videoEl.paused;
+    videoEl.pause();
+    scrub(event, !!event.touches);
+  }
+
+  function scrub(event, isPassive) {
+    if (!isScrubbing) {
+      return;
+    }
+    
+    if (!isPassive) {
+      event.preventDefault();
+    }
+    
+    const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+    const rect = progressEl.getBoundingClientRect();
+
+    jumpTo((clientX - rect.left) / rect.width * videoEl.duration);
+  }
+
+  function scrubEnd() {
+    if (!isScrubbing) {
+      return;
+    }
+        
+    if (wasPlayingBeforeScrubbing) {
+      videoEl.play();
+    }
+    
+    isScrubbing = false;
+  }
 
   if (!isAmbient) {
-    playbackEl = html`
-      <button
-        class="VideoPlayer-playback"
-        aria-label="Play"
-        onkeydown=${whenActionKey(event => event.preventDefault())}
-        onkeyup=${whenActionKey(player.togglePlayback)}
-        onclick=${player.togglePlayback}
-      ></button>
-    `;
+    playbackEl = html`<button
+      class="VideoPlayer-playback"
+      aria-label="Play"
+      onkeydown=${whenKeyIn([37, 38, 39, 40], steppingKeyDown)}
+      onkeyup=${whenKeyIn([37, 38, 39, 40], steppingKeyUp)}
+      onclick=${player.togglePlayback}
+    ></button>`;
     muteEl = html`<button
       class="VideoPlayer-mute"
       aria-label="${isMuted ? 'Unmute' : 'Mute'}"
-      onkeyup=${whenActionKey(event => event.stopPropagation())}
       onclick=${toggleMute}
     ></button>`;
     timeRemainingEl = html`<time
@@ -223,17 +296,17 @@ function VideoPlayer({
       class="VideoPlayer-progressBar"
       aria-label="Percentage Complete"
       max="100"
+      draggable="false"
     ></progress>`;
-    controlsEl = html`
-      <div class="VideoPlayer-controls">
-        ${playbackEl}
-        ${muteEl}
-        <div class="VideoPlayer-progress">
-          ${progressBarEl}
-          ${timeRemainingEl}
-        </div>
-      </div>
-    `;
+    progressEl = html`<div class="VideoPlayer-progress">
+      ${progressBarEl}
+    </div>`
+    controlsEl = html`<div class="VideoPlayer-controls">
+      ${playbackEl}
+      ${muteEl}
+      ${progressEl}
+      ${timeRemainingEl}
+    </div>`;
 
     videoEl.addEventListener('timeupdate', () => {
       if (videoEl.readyState > 0) {
@@ -250,6 +323,14 @@ function VideoPlayer({
         player.currentFuzzyTime = videoEl.currentTime;
       }
     });
+
+    progressEl.addEventListener('mousedown', scrubStart);
+    progressEl.addEventListener('touchstart', scrubStart, {passive: true});
+    document.addEventListener('mousemove', scrub);
+    document.addEventListener('touchmove', scrub, {passive: true});
+    document.addEventListener('mouseup', scrubEnd);
+    document.addEventListener('touchend', scrubEnd);
+    document.addEventListener('touchcancel', scrubEnd);
   }
 
   return html`
@@ -260,14 +341,6 @@ function VideoPlayer({
     </div>
   `;
 };
-
-function whenActionKey(fn) {
-  return function (event) {
-     if (event.target === this && (event.keyCode === 32 || event.keyCode === 13)) {
-        fn(event);
-     }
-  };
-}
 
 function getMetadata(videoElOrId, callback) {
   let wasCalled;

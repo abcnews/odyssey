@@ -35,6 +35,8 @@
 }
 
 .VideoPlayer-controls {
+  display: flex;
+  align-items: flex-end;
   position: absolute;
   top: 0;
   left: 0;
@@ -42,10 +44,6 @@
   max-width: 100vw;
   max-width: var(--root-width);
   height: 100%;
-
-  & > * {
-    position: absolute;
-  }
 
   & > :not(.VideoPlayer-playback) {
     opacity: 0;
@@ -76,6 +74,7 @@
 }
 
 .VideoPlayer-playback {
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -138,6 +137,7 @@
 
 .VideoPlayer-mute {
   display: none;
+  position: absolute;
   top: 0;
   right: 0;
   width: $size-control;
@@ -164,21 +164,23 @@
 }
 
 .VideoPlayer-progress {
-  display: flex;
-  align-items: flex-start;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  flex: 1 1 auto;
+  z-index: 1;
+  margin-left: 1.25rem;
+  margin-bottom: .625rem;
+  padding: .625rem 0;
+  line-height: .5rem;
+  cursor: pointer;
 }
 
 .VideoPlayer-progressBar {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  flex: 1 1 auto;
-  margin-left: 1.25rem;
+  margin: 0;
   border: none;
   padding: .125rem;
+  width: 100%;
   height: .75rem;
   background-color: $color-black-transparent-60;
   color: $color-white-transparent-60;

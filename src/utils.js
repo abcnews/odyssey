@@ -325,6 +325,17 @@ function proximityCheck(rect, client, range = 0) {
   );
 }
 
+function whenKeyIn(keys, fn) {
+  return function (event) {
+     if (
+       event.target === this &&
+       keys.indexOf(event.keyCode) > -1
+      ) {
+        fn(event);
+     }
+  };
+}
+
 module.exports = {
   returnFalse,
   trim,
@@ -353,6 +364,7 @@ module.exports = {
   linebreaksToParagraphs,
   dePx,
   proximityCheck,
+  whenKeyIn,
   // Deprecated API
   select: $,
   selectAll: $$
