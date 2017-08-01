@@ -12,14 +12,11 @@ const {append, isElement, proximityCheck, $, $$, setText,
 const {getMeta} = require('../../meta');
 const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
 
-const API_URL_ROOT = 'https://content-gateway.abc-prod.net.au/api/v2/content/id/';
-const API_HEADERS = {'x-api-key': '***REMOVED***'};
 const AMBIENT_PLAYABLE_RANGE = .5;
 const FUZZY_INCREMENT_FPS = 30;
 const FUZZY_INCREMENT_INTERVAL = 1000 / FUZZY_INCREMENT_FPS;
 
 const players = [];
-let phase1InlineVideoConfig;
 
 function hasAudio(el) {
   return el.mozHasAudio ||
@@ -267,20 +264,6 @@ function whenActionKey(fn) {
   };
 }
 
-function UnpublishedVideoPlaceholder(title) {
-  return html`
-    <div class="UnpublishedVideoPlaceholder" title="Video ID: ${title}">
-      <div class="u-sizer-sm-16x9 u-sizer-md-16x9 u-sizer-lg-16x9"></div>
-      <p>
-        Unpublished videos cannot be previewed on the mobile site. Try the
-        <a target="_blank" href="${
-          window.location.href.replace('/mobile/', '/')
-        }">standard site</a>.
-      </p>
-    </div>
-  `;
-}
-
 function getMetadata(videoElOrId, callback) {
   let wasCalled;
 
@@ -339,24 +322,25 @@ function getMetadata(videoElOrId, callback) {
   } else {
     // Phase 1 (Mobile):
     // * Doesn't embed video; only teases to it.
-    // * Video must be published because...
-    // * Sources and poster must be fetched from live Content API
-
+    // * Must fetch Phase 1 (Standard) video detail page markup...
+    // * ...then parse posterURL with DOMParser and sources with RegExp+JSON
+    
     xhr({
-      json: true,
-    //   headers: API_HEADERS,
-      url: `${API_URL_ROOT}${videoElOrId}`
+      url: `http://${window.location.hostname.replace('mobile', 'www')}/news/${videoElOrId}`
     }, (err, response, body) => {
-      if (err || response.statusCode !== 200) {
-        return done(err || new Error(response.statusCode));
+      if (err || response.statusCode !== 200 || body.indexOf('inlineVideoData') < 0) {
+        return done(err || new Error(response.statusCode || 'No inlineVideoData'));
       }
 
-      const posterId = (body.relatedItems && body.relatedItems.length > 0) ?
-        body.relatedItems[0].id : null;
-
       done(null, {
-        posterURL: posterId ? `/news/image/${posterId}-16x9-940x529.jpg` : null,
-        sources: formatSources(body.renditions)
+        posterURL: (new DOMParser())
+          .parseFromString(body, 'text/html')
+          .querySelector('.inline-video img')
+          .getAttribute('src'),
+        sources: formatSources(JSON.parse(body
+          .replace(/[\n\r\s]/g, '')
+          .match(/inlineVideoData\.push\((\[.*\])\)/)[1]
+          .replace(/'/g, '"')))
       });
     });
   }
@@ -396,5 +380,4 @@ subscribe(function _checkIfVideoPlayersNeedToBeToggled(client) {
 });
 
 module.exports = VideoPlayer;
-module.exports.UnpublishedVideoPlaceholder = UnpublishedVideoPlaceholder;
 module.exports.getMetadata = getMetadata;

@@ -74,10 +74,6 @@ function transformEl(el) {
 
   VideoPlayer.getMetadata(videoId, (err, metadata) => {
     if (err) {
-      if (IS_PREVIEW) {
-        substitute(videoPlayerPlaceholderEl, VideoPlayer.UnpublishedVideoPlaceholder(videoId));
-      }
-    
       return;
     }
 

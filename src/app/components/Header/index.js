@@ -47,10 +47,6 @@ function Header({
     mediaEl = html`<div></div>`;
     VideoPlayer.getMetadata(videoElOrId, (err, metadata) => {
       if (err) {
-        if (IS_PREVIEW) {
-          substitute(mediaEl, VideoPlayer.UnpublishedVideoPlaceholder(videoElOrId));
-        }
-      
         return;
       }
 

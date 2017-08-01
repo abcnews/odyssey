@@ -224,33 +224,3 @@
   text-align: center;
   letter-spacing: .0375rem;
 }
-
-.UnpublishedVideoPlaceholder {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: $color-grey-800;
-  background-image: $gradient-radial-0-0-100-60;
-  outline: dashed .125rem $color-white;
-  outline-offset: -.5rem;
-  border: solid .125rem $color-lightTertiary;
-  
-  .u-full > & {
-    height: 100%;
-  }
-
-  p {
-    padding: 1rem;
-    max-width: 24rem;
-    color: $color-lightTertiary;
-    font-family: $font-sans;
-    font-size: 1rem;
-    text-align: center;
-
-    a,
-    a:visited {
-      color: currentColor;
-      text-decoration: underline;
-    }
-  }
-}

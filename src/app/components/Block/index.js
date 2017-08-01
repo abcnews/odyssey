@@ -51,10 +51,6 @@ function Block({
     mediaEl = html`<div></div>`;
     VideoPlayer.getMetadata(videoId, (err, metadata) => {
       if (err) {
-        if (IS_PREVIEW) {
-          substitute(mediaEl, VideoPlayer.UnpublishedVideoPlaceholder(videoId));
-        }
-      
         return;
       }
 
