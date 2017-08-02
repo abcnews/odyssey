@@ -445,7 +445,7 @@ function getMetadata(videoElOrId, callback) {
 
         done(null, {
           posterURL: doc.querySelector('.media video').poster,
-          sources: formatSources(doc.querySelectorAll('.media source'))
+          sources: formatSources(Array.from(doc.querySelectorAll('.media source')))
         });
       }
     });
