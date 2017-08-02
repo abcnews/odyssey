@@ -12,6 +12,7 @@ const {append, isElement, proximityCheck, $, $$, setText,
 const {getMeta} = require('../../meta');
 const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
 
+const WHITESPACE_PATTERN = /[\n\r\s]/g;
 const AMBIENT_PLAYABLE_RANGE = .5;
 const FUZZY_INCREMENT_FPS = 30;
 const FUZZY_INCREMENT_INTERVAL = 1000 / FUZZY_INCREMENT_FPS;
@@ -365,7 +366,7 @@ function getMetadata(videoElOrId, callback) {
     });
   } else if ('WCMS' in window) {
     // Phase 2
-    // * Sources & poster are nested inside global `WCMS` object
+    // * Poster & sources are nested inside global `WCMS` object
 
     Object.keys(WCMS.pluginCache.plugins.videoplayer)
     .some(key => {
@@ -382,8 +383,8 @@ function getMetadata(videoElOrId, callback) {
     });
   } else if ('inlineVideoData' in window) {
     // Phase 1 (Standard)
-    // * Sources are nested inside global `inlineVideoData` object
     // * Poster may be inferred from original embed's partial jwplayer transform
+    // * Sources are nested inside global `inlineVideoData` object
 
     const relatedMedia = getMeta().relatedMedia;
 
@@ -404,26 +405,49 @@ function getMetadata(videoElOrId, callback) {
   } else {
     // Phase 1 (Mobile):
     // * Doesn't embed video; only teases to it.
-    // * Must fetch Phase 1 (Standard) video detail page markup...
-    // * ...then parse posterURL with DOMParser and sources with RegExp+JSON
+    // * Must fetch video detail page...
+    // * ...then parse posterURL and sources, based on the page template
     
-    xhr({
-      url: `http://${window.location.hostname.replace('mobile', 'www')}/news/${videoElOrId}`
-    }, (err, response, body) => {
-      if (err || response.statusCode !== 200 || body.indexOf('inlineVideoData') < 0) {
-        return done(err || new Error(response.statusCode || 'No inlineVideoData'));
+    xhr({url: `/news/${videoElOrId}`}, (err, response, body) => {
+      if (err || response.statusCode !== 200) {
+        return done(err || new Error(response.statusCode));
       }
 
-      done(null, {
-        posterURL: (new DOMParser())
-          .parseFromString(body, 'text/html')
-          .querySelector('.inline-video img')
-          .getAttribute('src'),
-        sources: formatSources(JSON.parse(body
-          .replace(/[\n\r\s]/g, '')
-          .match(/inlineVideoData\.push\((\[.*\])\)/)[1]
-          .replace(/'/g, '"')))
-      });
+      const doc = (new DOMParser()).parseFromString(body, 'text/html');
+
+      if (body.indexOf('WCMS.pluginCache') > -1) {
+        // Phase 2
+        // * Poster can be selected from the DOM
+        // * Sources can be parsed from JS that would nest them under the global `WCMS` object
+
+        done(null, {
+          posterURL: doc.querySelector('.view-inlineMediaPlayer img')
+            .getAttribute('src').replace('-thumbnail', '-large'),
+          sources: formatSources(JSON.parse(body
+            .replace(WHITESPACE_PATTERN, '')
+            .match(/"sources":(\[.*\]),"addDownload"/)[1]))
+        });
+      } else if (body.indexOf('inlineVideoData') > -1) {
+        // Phase 1 (Standard)
+        // * Poster can be selected from the DOM
+        // * Sources can be parsed from JS that would nest them under the global `inlineVideoData` object
+
+        done(null, {
+          posterURL: doc.querySelector('.inline-video img').getAttribute('src'),
+          sources: formatSources(JSON.parse(body
+            .replace(WHITESPACE_PATTERN, '')
+            .match(/inlineVideoData\.push\((\[.*\])\)/)[1]
+            .replace(/'/g, '"')))
+        });
+      } else {
+        // Phase 1 (Mobile)
+        // * Poster & sources can be selected from the DOM
+
+        done(null, {
+          posterURL: doc.querySelector('.media video').poster,
+          sources: formatSources(doc.querySelectorAll('.media source'))
+        });
+      }
     });
   }
 }
