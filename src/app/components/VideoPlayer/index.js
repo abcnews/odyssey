@@ -200,12 +200,16 @@ function VideoPlayer({
   let progressBarEl;
   let progressEl;
   let controlsEl = null;
-  let steppingKeysHeldDown = {};
+  let steppingKeysHeldDown = [];
   let wasPlayingBeforeStepping;
   let isScrubbing;
   let wasPlayingBeforeScrubbing;
 
   function jumpTo(time) {
+    if (isNaN(videoEl.duration) || videoEl.duration === videoEl.currentTime) {
+      return;
+    }
+
     videoEl.currentTime = Math.max(Math.min(time, videoEl.duration - 0.01), 0);
     fuzzyCurrentTime = videoEl.currentTime;
     progressBarEl.value = videoEl.currentTime / videoEl.duration * 100;
@@ -214,7 +218,7 @@ function VideoPlayer({
   function steppingKeyDown(event) {
     event.preventDefault();
 
-    if (Object.keys(steppingKeysHeldDown).length === 0) {
+    if (steppingKeysHeldDown.length === 0) {
       wasPlayingBeforeStepping = !videoEl.paused;
 
       if (wasPlayingBeforeStepping) {
@@ -222,21 +226,21 @@ function VideoPlayer({
       }
     }
 
-    steppingKeysHeldDown[event.keyCode] = true;
+    if (steppingKeysHeldDown.indexOf(event.keyCode) < 0) {
+      steppingKeysHeldDown.push(event.keyCode);
+    }
 
-    const isSteppingForwards = steppingKeysHeldDown[38] || steppingKeysHeldDown[39];
+    if (steppingKeysHeldDown.indexOf(event.keyCode) === steppingKeysHeldDown.length - 1) {
+      const isSteppingForwards = event.keyCode === 38 || event.keyCode === 39;
     
-    jumpTo(videoEl.currentTime + STEP_SECONDS * (isSteppingForwards ? 1 : -1));
+      jumpTo(videoEl.currentTime + STEP_SECONDS * (isSteppingForwards ? 1 : -1));
+    }
   }
 
   function steppingKeyUp(event) {
-    delete steppingKeysHeldDown[event.keyCode];
+    steppingKeysHeldDown.splice(steppingKeysHeldDown.indexOf(event.keyCode), 1);
 
-    if (Object.keys(steppingKeysHeldDown).length > 0) {
-      return;
-    }
-        
-    if (wasPlayingBeforeStepping) {
+    if (steppingKeysHeldDown.length === 0 && wasPlayingBeforeStepping) {
       videoEl.play();
     }
   }
