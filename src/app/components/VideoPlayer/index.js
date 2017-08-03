@@ -17,6 +17,7 @@ const AMBIENT_PLAYABLE_RANGE = .5;
 const FUZZY_INCREMENT_FPS = 30;
 const FUZZY_INCREMENT_INTERVAL = 1000 / FUZZY_INCREMENT_FPS;
 const STEP_SECONDS = 5;
+const DEFAULT_RATIO = '16x9';
 
 const players = [];
 
@@ -27,6 +28,7 @@ function hasAudio(el) {
 }
 
 function VideoPlayer({
+  ratios = {},
   posterURL,
   sources = [],
   isAmbient,
@@ -35,6 +37,12 @@ function VideoPlayer({
   isMuted,
   scrollplayPct
 }) {
+  ratios = {
+    sm: ratios.sm || DEFAULT_RATIO,
+    md: ratios.md || DEFAULT_RATIO,
+    lg: ratios.lg || DEFAULT_RATIO
+  };
+
   if (isAmbient) {
     isLoop = true;
     scrollplayPct = 0;
@@ -340,7 +348,7 @@ function VideoPlayer({
 
   return html`
     <div class="VideoPlayer">
-      <div class="u-sizer-sm-16x9 u-sizer-md-16x9 u-sizer-lg-16x9"></div>
+      <div class="u-sizer-sm-${ratios.sm} u-sizer-md-${ratios.md} u-sizer-lg-${ratios.lg}"></div>
       ${videoEl}
       ${controlsEl}
     </div>
