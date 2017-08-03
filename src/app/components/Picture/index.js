@@ -3,7 +3,7 @@ const html = require('bel');
 const picturefill = require('picturefill');
 
 // Ours
-const {MQ, SMALLEST_IMAGE, MS_VERSION} = require('../../../constants');
+const {MQ, RATIO_PATTERN, SMALLEST_IMAGE, MS_VERSION} = require('../../../constants');
 const {append, detach, proximityCheck, $, $$} = require('../../../utils');
 const {enqueue, subscribe} = require('../../scheduler');
 const {blurImage} = require('./blur');
@@ -15,10 +15,7 @@ const SIZES = {
 	'1x1': {sm: '700x700', md: '940x940', lg: '1400x1400'},
 	'3x4': {sm: '700x933', md: '940x1253', lg: '940x1253'}
 };
-const RATIO_PATTERN = /(\d+x\d+)/;
-const SM_RATIO_PATTERN = /sm(\d+x\d+)/;
-const MD_RATIO_PATTERN = /md(\d+x\d+)/;
-const LG_RATIO_PATTERN = /lg(\d+x\d+)/;
+
 const P1_RATIO_SIZE_PATTERN = /(\d+x\d+)-(\d+x\d+)/;
 const P2_RATIO_SIZE_PATTERN = /(\d+x\d+)-([a-z]+)/;
 const DEFAULTS = {
@@ -163,14 +160,6 @@ function Picture({
   return pictureEl;
 };
 
-function getRatios(configSC) {
-  const [, sm] = configSC.match(SM_RATIO_PATTERN) || [];
-  const [, md] = configSC.match(MD_RATIO_PATTERN) || [];
-  const [, lg] = configSC.match(LG_RATIO_PATTERN) || [];
-
-  return {sm, md, lg};
-}
-
 subscribe(function _checkIfPicturesNeedToBeLoaded(client) {
   pictures.forEach(picture => {
     const rect = picture.getRect();
@@ -189,4 +178,3 @@ subscribe(function _checkIfPicturesNeedToBeLoaded(client) {
 });
 
 module.exports = Picture;
-module.exports.getRatios = getRatios;

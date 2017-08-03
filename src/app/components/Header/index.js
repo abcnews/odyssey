@@ -6,7 +6,7 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const {IS_PREVIEW, MS_VERSION} = require('../../../constants');
-const {dePx, isElement, prepend, $, slug, substitute, trim} = require('../../../utils');
+const {dePx, getRatios, isElement, prepend, $, slug, substitute, trim} = require('../../../utils');
 const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
 const Picture = require('../Picture');
 const UParallax = require('../UParallax');
@@ -149,7 +149,7 @@ function Header({
 };
 
 function transformSection(section, meta) {
-  const ratios = Picture.getRatios(section.configSC);
+  const ratios = getRatios(section.configSC);
   const isDark = section.configSC.indexOf('dark') > -1;
   const isLayered = section.configSC.indexOf('layered') > -1;
 

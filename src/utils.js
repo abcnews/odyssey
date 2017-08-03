@@ -1,4 +1,7 @@
-const {HYPHEN, MOCK_ELEMENT, NEWLINE} = require('./constants');
+const {
+  SM_RATIO_PATTERN, MD_RATIO_PATTERN, LG_RATIO_PATTERN,
+  HYPHEN, MOCK_ELEMENT, NEWLINE
+} = require('./constants');
 
 const TRIM_PATTERN = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
 const SLUG_ALLOWED_PATTERN = /[^\w\s\-\_]/g;
@@ -220,6 +223,14 @@ function grabConfigSC(el) {
   return configSC || '';
 }
 
+function getRatios(configSC) {
+  const [, sm] = configSC.match(SM_RATIO_PATTERN) || [];
+  const [, md] = configSC.match(MD_RATIO_PATTERN) || [];
+  const [, lg] = configSC.match(LG_RATIO_PATTERN) || [];
+
+  return {sm, md, lg};
+}
+
 function _linebreaksToParagraphsAppender(state) {
   if (!state.stack.length) {
     return state;
@@ -361,6 +372,7 @@ module.exports = {
   getSections,
   getMarkers,
   grabConfigSC,
+  getRatios,
   linebreaksToParagraphs,
   dePx,
   proximityCheck,

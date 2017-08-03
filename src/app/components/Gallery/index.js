@@ -6,7 +6,9 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const {IS_IOS, REM, SUPPORTS_PASSIVE} = require('../../../constants');
-const {dePx, detach, isElement, returnFalse, $, $$, setText, trim} = require('../../../utils');
+const {
+  dePx, detach, isElement, getRatios, returnFalse, $, $$, setText, trim
+} = require('../../../utils');
 const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
@@ -422,7 +424,7 @@ function offsetBasedOpacity(imageIndex, imagesTransformXPct) {
 
 function transformSection(section) {
   const [, mosaicRowLengthsString] = (`${section.name}${section.configSC}`).match(MOSAIC_ROW_LENGTHS_PATTERN) || [null, ''];
-  const ratios = Picture.getRatios(section.configSC);
+  const ratios = getRatios(section.configSC);
 
   const nodes = [].concat(section.betweenNodes);
 

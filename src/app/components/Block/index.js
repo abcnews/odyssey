@@ -5,7 +5,7 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const {ALIGNMENT_PATTERN, IS_PREVIEW} = require('../../../constants');
-const {detach, isElement, $, substitute, trim} = require('../../../utils');
+const {detach, isElement, getRatios, $, substitute, trim} = require('../../../utils');
 const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
@@ -135,7 +135,7 @@ function transformSection(section) {
 
         if (imgEl) {
           config.imgEl = imgEl;
-          config.ratios = Picture.getRatios(section.configSC);
+          config.ratios = getRatios(section.configSC);
         }
       }
 

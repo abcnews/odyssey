@@ -5,6 +5,10 @@ const NEWLINE = '\n';
 const HYPHEN = '-';
 const CSS_URL = /url\('?"?(.*?)"?'?\)/;
 const ALIGNMENT_PATTERN = /(left|right)/;
+const RATIO_PATTERN = /(\d+x\d+)/;
+const SM_RATIO_PATTERN = /sm(\d+x\d+)/;
+const MD_RATIO_PATTERN = /md(\d+x\d+)/;
+const LG_RATIO_PATTERN = /lg(\d+x\d+)/;
 
 const SELECTORS = {
   GLOBAL_NAV: '#abcHeader.global',
@@ -113,6 +117,10 @@ module.exports = {
   HYPHEN,
   CSS_URL,
   ALIGNMENT_PATTERN,
+  RATIO_PATTERN,
+  SM_RATIO_PATTERN,
+  MD_RATIO_PATTERN,
+  LG_RATIO_PATTERN,
   SELECTORS,
   RICHTEXT_BLOCK_TAGNAMES,
   EMBED_TAGNAMES,

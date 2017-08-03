@@ -5,7 +5,7 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const {ALIGNMENT_PATTERN} = require('../../../constants');
-const {grabConfigSC, $, substitute} = require('../../../utils');
+const {getRatios, grabConfigSC, $, substitute} = require('../../../utils');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
 
@@ -46,7 +46,7 @@ function transformEl(el, preserveOriginalRatio) {
 
   const configSC = grabConfigSC(el);
   const [, alignment] = configSC.match(ALIGNMENT_PATTERN) || [];
-  const ratios = Picture.getRatios(configSC);
+  const ratios = getRatios(configSC);
 
   const src = imgEl.src;
   const alt = imgEl.getAttribute('alt');
