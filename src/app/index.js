@@ -49,6 +49,7 @@ function app(done) {
   // Transform sections
   getSections([
     'header',
+    'remove',
     'block',
     'cover', // deprecated - use 'block'
     'gallery',
@@ -59,6 +60,9 @@ function app(done) {
       case 'header':
         hasHeader = true;
         Header.transformSection(section, meta);
+        break;
+      case 'remove':
+        detachAll([section.startNode, section.endNode].concat(section.betweenNodes));
         break;
       case 'block':
       case 'cover':
