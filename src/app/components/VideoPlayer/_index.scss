@@ -1,5 +1,6 @@
 .VideoPlayer {
   position: relative;
+  overflow: hidden;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -54,6 +55,7 @@
     margin: 0;
     border: none;
     padding: 0;
+    outline-offset: -3px;
   }
 
   &:hover > * {
@@ -171,6 +173,7 @@
   padding: .625rem 0;
   line-height: .5rem;
   cursor: pointer;
+  -webkit-tap-highlight-color: $color-black-transparent;
 }
 
 .VideoPlayer-progressBar {
