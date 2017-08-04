@@ -27,17 +27,19 @@ function Header({
     'is-layered': isLayered && (imgEl || videoElOrId)
   }, 'u-full');
 
+  ratios = {
+    sm: ratios.sm || (isLayered ? '3x4' : undefined),
+    md: ratios.md || (isLayered ? '1x1' : undefined),
+    lg: ratios.lg
+  };
+
   let mediaEl;
 
   if (imgEl) {
     mediaEl = Picture({
       src: imgEl.src,
       alt: imgEl.getAttribute('alt'),
-      ratios: {
-        sm: ratios.sm || isLayered ? '3x4' : undefined,
-        md: ratios.md || isLayered ? '1x1' : undefined,
-        lg: ratios.lg
-      }
+      ratios
     });
     
     if (!isLayered) {
@@ -50,7 +52,10 @@ function Header({
         return;
       }
 
-      const replacementMediaEl = VideoPlayer(Object.assign(metadata, {isAmbient: true}));
+      const replacementMediaEl = VideoPlayer(Object.assign(metadata, {
+        ratios,
+        isAmbient: true
+      }));
 
       substitute(mediaEl, replacementMediaEl);
 

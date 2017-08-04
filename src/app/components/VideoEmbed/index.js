@@ -5,7 +5,7 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const {IS_PREVIEW, ALIGNMENT_PATTERN} = require('../../../constants');
-const {grabConfigSC, $, $$, substitute} = require('../../../utils');
+const {getRatios, grabConfigSC, $, $$, substitute} = require('../../../utils');
 const {invalidateClient} = require('../../scheduler');
 const Caption = require('../Caption');
 const VideoPlayer = require('../VideoPlayer');
@@ -63,6 +63,7 @@ function transformEl(el) {
       Math.max(0, Math.min(100, +scrollplayPctString));
 
   const videoPlayerOptions = {
+    ratios: getRatios(configSC),
     isAlwaysHQ: options.isCover || options.isFull,
     isAmbient: configSC.indexOf('ambient') > -1,
     isLoop: configSC.indexOf('loop') > -1,

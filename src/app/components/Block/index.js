@@ -31,6 +31,12 @@ function Block({
   });
   const contentClassName = 'Block-content u-layout u-richtext-invert';
 
+  ratios = {
+    sm: ratios.sm || (type === 'heading' ? '3x2' : '3x4'),
+    md: ratios.md || (type === 'heading' ? '16x9' : '1x1'),
+    lg: ratios.lg
+  };
+
   let mediaEl;
 
   if (imgEl) {
@@ -41,11 +47,7 @@ function Block({
     mediaEl = Picture({
       src,
       alt,
-      ratios: {
-        sm: ratios.sm || (type === 'heading' ? '3x2' : '3x4'),
-        md: ratios.md || (type === 'heading' ? '16x9' : '1x1'),
-        lg: ratios.lg
-      }
+      ratios
     });
   } else if (videoId) {
     mediaEl = html`<div></div>`;
@@ -54,7 +56,10 @@ function Block({
         return;
       }
 
-      const replacementMediaEl = VideoPlayer(Object.assign(metadata, {isAmbient: true}));
+      const replacementMediaEl = VideoPlayer(Object.assign(metadata, {
+        ratios,
+        isAmbient: true
+      }));
 
       substitute(mediaEl, replacementMediaEl);
       invalidateClient();
