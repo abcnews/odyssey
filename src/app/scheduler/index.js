@@ -2,7 +2,7 @@
 const raf = require('raf');
 
 // Ours
-const {REM} = require('../../constants');
+const { REM } = require('../../constants');
 
 const now = window.performance ? performance.now.bind(performance) : Date.now;
 
@@ -38,8 +38,8 @@ function enqueue(task) {
 }
 
 function notifySubscribers(hasChanged) {
-  const state = Object.assign({hasChanged}, client);
-  
+  const state = Object.assign({ hasChanged }, client);
+
   subscribers.forEach((subscriber, index) => enqueue(subscriber.bind(null, state)));
 }
 
@@ -102,6 +102,10 @@ function subscribe(subscriber) {
   if (hasStarted) {
     invalidateClient();
   }
+}
+
+function unsubscribe(subscriber) {
+  return subscribers.splice(subscribers.indexOf(subscriber), 1);
 }
 
 module.exports.enqueue = enqueue;
