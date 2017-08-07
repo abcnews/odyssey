@@ -6,8 +6,9 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const {IS_PREVIEW, MS_VERSION} = require('../../../constants');
-const {dePx, getRatios, isElement, prepend, $, slug, substitute, trim} = require('../../../utils');
 const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
+const {$, isElement, prepend, substitute} = require('../../utils/dom');
+const {dePx, getRatios, slug, trim} = require('../../utils/misc');
 const Picture = require('../Picture');
 const UParallax = require('../UParallax');
 const VideoPlayer = require('../VideoPlayer');

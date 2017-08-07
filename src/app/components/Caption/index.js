@@ -3,7 +3,8 @@ const html = require('bel');
 
 // Ours
 const {MOCK_ELEMENT} = require('../../../constants');
-const {detach, isElement, $, trim} = require('../../../utils');
+const {$, detach, isElement} = require('../../utils/dom');
+const {trim} = require('../../utils/misc');
 
 function Caption({
   url,

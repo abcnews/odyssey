@@ -1,7 +1,7 @@
 require('./polyfills');
 
 // Ours
-const {after, append, detachAll, $, $$} = require('./utils');
+const {$, $$, after, append, detachAll} = require('./app/utils/dom');
 
 function updateAnchor(pair) {
   $$(`a[name^="${pair[0]}"]`)

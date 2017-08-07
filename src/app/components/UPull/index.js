@@ -3,7 +3,7 @@ const html = require('bel');
 
 // Ours
 const {EMBED_TAGNAMES} = require('../../../constants');
-const {isElement} = require('../../../utils');
+const {isElement} = require('../../utils/dom');
 
 function UPull({
   type,

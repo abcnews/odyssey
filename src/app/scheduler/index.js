@@ -112,3 +112,4 @@ module.exports.enqueue = enqueue;
 module.exports.invalidateClient = invalidateClient;
 module.exports.start = start;
 module.exports.subscribe = subscribe;
+module.exports.unsubscribe = unsubscribe;

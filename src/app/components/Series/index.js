@@ -4,7 +4,7 @@ const html = require('bel');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const {isElement, $$, substitute} = require('../../../utils');
+const {$$, isElement, substitute} = require('../../utils/dom');
 
 const CURRENT_STORY_ID = url2cmid(window.location.href);
 

@@ -5,8 +5,9 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const {ALIGNMENT_PATTERN, IS_PREVIEW} = require('../../../constants');
-const {detach, isElement, getRatios, $, substitute, trim} = require('../../../utils');
 const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
+const {$, detach, isElement, substitute} = require('../../utils/dom');
+const {getRatios, trim} = require('../../utils/misc');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
 const VideoPlayer = require('../VideoPlayer');

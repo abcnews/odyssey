@@ -4,8 +4,9 @@ const picturefill = require('picturefill');
 
 // Ours
 const {MQ, RATIO_PATTERN, SMALLEST_IMAGE, MS_VERSION} = require('../../../constants');
-const {append, detach, proximityCheck, $, $$} = require('../../../utils');
 const {enqueue, subscribe} = require('../../scheduler');
+const {$, $$, append, detach} = require('../../utils/dom');
+const {proximityCheck} = require('../../utils/misc');
 const {blurImage} = require('./blur');
 
 const SIZES = {

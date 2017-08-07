@@ -6,10 +6,9 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const {IS_IOS, REM, SUPPORTS_PASSIVE} = require('../../../constants');
-const {
-  dePx, detach, isElement, getRatios, returnFalse, $, $$, setText, trim
-} = require('../../../utils');
 const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
+const {$, $$, detach, isElement, setText} = require('../../utils/dom');
+const {dePx, getRatios, returnFalse, trim} = require('../../utils/misc');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
 

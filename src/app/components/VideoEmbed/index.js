@@ -5,8 +5,10 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const {IS_PREVIEW, ALIGNMENT_PATTERN} = require('../../../constants');
-const {getRatios, grabConfigSC, $, $$, substitute} = require('../../../utils');
 const {invalidateClient} = require('../../scheduler');
+const {grabConfigSC} = require('../../utils/anchors');
+const {$, $$, substitute} = require('../../utils/dom');
+const {getRatios} = require('../../utils/misc');
 const Caption = require('../Caption');
 const VideoPlayer = require('../VideoPlayer');
 

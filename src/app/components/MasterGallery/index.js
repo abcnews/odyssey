@@ -4,8 +4,8 @@ const screenfull = require('screenfull');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const {$, $$, prepend} = require('../../../utils');
 const {enqueue, invalidateClient} = require('../../scheduler');
+const {$, $$, prepend} = require('../../utils/dom');
 const Caption = require('../Caption');
 const Gallery = require('../Gallery');
 const Picture = require('../Picture');

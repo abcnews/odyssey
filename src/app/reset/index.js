@@ -4,8 +4,9 @@ const dewysiwyg = require('util-dewysiwyg');
 
 // Ours
 const {SELECTORS} = require('../../constants');
-const {append, before, detach, detachAll, literalList, $, $$, trim} = require('../../utils');
 const Main = require('../components/Main');
+const {$, $$, append, before, detach, detachAll} = require('../utils/dom');
+const {literalList, trim} = require('../utils/misc');
 
 const TEMPLATE_REMOVABLES = {
   '.platform-standard:not(.platform-mobile)': literalList(`

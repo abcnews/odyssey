@@ -1,5 +1,32 @@
-<link rel="stylesheet" href="index.css" />
-<div class="article-detail-page">
-  <div class="article-text"></div>
-</div>
-<script src="index.js"></script>
+<style>
+html[veiled] {
+  overflow: hidden;
+  max-height: 100%;
+}
+html:not([veiled]) > body {
+  will-change: opacity;
+  transition: opacity 1s cubic-bezier(.25, .46, .45, .94);
+}
+html[veiled] > body {
+  opacity: 0;
+  pointer-events: none;
+}
+</style>
+<script>
+(function () {
+  var html = document.documentElement;
+  var timeout;
+
+  window.unveil = function () {
+    clearTimeout(timeout);
+    html.removeAttribute('veiled');
+  };
+  html.setAttribute('veiled', '');
+  timeout = setTimeout(window.unveil, 2000);
+  window.addEventListener('odyssey:api', unveil);
+})();
+</script>
+<div class="init-interactive"
+  data-no-support-msg="true"
+  data-scripts="index.js"
+  data-styles="index.css" ></div>

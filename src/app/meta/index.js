@@ -4,7 +4,8 @@ const {parseDate} = require('inn-abcdatetime-lib');
 
 // Ours
 const {MOCK_ELEMENT, SELECTORS} = require('../../constants');
-const {detach, isText, trim, $, $$} = require('../../utils');
+const {$, $$, detach, isText} = require('../utils/dom');
+const {trim} = require('../utils/misc');
 
 const EMPHASISABLE_BYLINE_TEXT_PATTERN = /^(?:by|,|and)$/;
 const STARTS_WITH_YEAR_PATTERN = /^\d{4}-/;

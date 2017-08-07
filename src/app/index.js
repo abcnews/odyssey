@@ -3,9 +3,7 @@ const html = require('bel');
 
 // Ours
 const {SELECTORS, RICHTEXT_BLOCK_TAGNAMES} = require('../constants');
-const {after, append, before, detach, detachAll,
-  getMarkers, getSections, isElement, prepend,
-  $, $$} = require('../utils');
+const api = require('./api');
 const Caption = require('./components/Caption');
 const Block = require('./components/Block');
 const Gallery = require('./components/Gallery');
@@ -24,8 +22,10 @@ const VideoEmbed = require('./components/VideoEmbed');
 const {enqueue, start, subscribe} = require('./scheduler');
 const {getMeta} = require('./meta');
 const {prepare, reset} = require('./reset');
+const {getMarkers, getSections} = require('./utils/anchors');
+const {$, $$, after, append, before, detach, detachAll, isElement, prepend} = require('./utils/dom');
 
-function app(done) {
+function app() {
   prepare();
 
   const meta = getMeta();
@@ -211,9 +211,9 @@ function app(done) {
   // Allow garbage collection
   delete meta.bylineNodes;
 
-  if (typeof done === 'function') {
-    done();
-  }
+  // Expose API, then notify interested parties
+  window.__ODYSSEY__ = api;
+  window.dispatchEvent(new CustomEvent('odyssey:api', {detail: api}));
 };
 
 module.exports = app;
