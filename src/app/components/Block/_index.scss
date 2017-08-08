@@ -188,7 +188,7 @@
       background-color: $color-black-transparent-60;
     }
 
-    & > * {
+    & > :last-child {
       margin-bottom: 0;
     }
 
