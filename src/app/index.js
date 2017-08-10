@@ -23,7 +23,7 @@ const {enqueue, start, subscribe} = require('./scheduler');
 const {getMeta} = require('./meta');
 const {prepare, reset} = require('./reset');
 const {getMarkers, getSections} = require('./utils/anchors');
-const {$, $$, after, append, before, detach, detachAll, isElement, prepend} = require('./utils/dom');
+const {$, $$, after, append, before, detach, detachAll, isElement, prepend, substitute} = require('./utils/dom');
 
 function app() {
   prepare();
