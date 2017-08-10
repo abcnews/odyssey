@@ -187,7 +187,7 @@ function app() {
       if (el.className.indexOf(' embedded') > -1 || $('.embedded', el)) {
         const captionEl = Caption.createFromEl(el);
 
-        if (captionEL) {
+        if (captionEl) {
           substitute($('.embed-caption, .inline-caption', el), captionEl);
         }
       } else {
