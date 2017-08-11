@@ -4,7 +4,7 @@ const {parseDate} = require('inn-abcdatetime-lib');
 
 // Ours
 const {MOCK_ELEMENT, SELECTORS} = require('../../constants');
-const {$, $$, detach, isText} = require('../utils/dom');
+const {$, $$, detach} = require('../utils/dom');
 const {trim} = require('../utils/misc');
 
 const EMPHASISABLE_BYLINE_TEXT_PATTERN = /^(?:by|,|and)$/;

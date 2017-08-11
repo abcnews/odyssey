@@ -62,7 +62,7 @@ function _linebreaksToParagraphsReducer(state, node, index, nodes) {
   // is to wrap series' of loose text/inline elements in
   // <p> elements and discard <br> elements
 
-  if (isText(node)) {
+  if (node.nodeType === Node.TEXT_NODE) {
     // Push the text element onto the stack if it
     // contains more than empty space
     if (trim(node.nodeValue).length) {

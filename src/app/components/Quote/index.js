@@ -5,7 +5,7 @@ const html = require('bel');
 // Ours
 const {ALIGNMENT_PATTERN, MOCK_NODE} = require('../../../constants');
 const {grabConfigSC} = require('../../utils/anchors');
-const {$, $$, append, detach, isElement, isText, prepend, substitute} = require('../../utils/dom');
+const {$, $$, append, detach, isElement, prepend, substitute} = require('../../utils/dom');
 const {linebreaksToParagraphs} = require('../../utils/misc');
 const UQuote = require('../UQuote');
 
