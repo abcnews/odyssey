@@ -5,6 +5,10 @@ const INLINE_TAG_NAMES = [
     'sub', 'sup', 'button', 'input', 'label', 'select', 'textarea'
 ];
 
+function isText(node) {
+  return node && node.nodeType === Node.TEXT_NODE
+}
+
 function isElement(node) {
   return node && node.nodeType === Node.ELEMENT_NODE;
 }
@@ -76,7 +80,7 @@ function substitute(node, replacementNode) {
 function setText(el, text) {
   let node = el.firstChild;
 
-  if (node === null || node.nodeType !== Node.TEXT_NODE) {
+  if (node === null || !isText(node)) {
     prepend(el, node = document.createTextNode(text));
   } else {
     node.nodeValue = text;
@@ -94,6 +98,7 @@ function toggleBooleanAttributes(node, map) {
 }
 
 module.exports = {
+  isText,
   isElement,
   isDocument,
   $,
