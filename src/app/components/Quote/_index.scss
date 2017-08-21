@@ -7,6 +7,10 @@
     border-left: .625rem solid $color-grey-200;
     padding: 0 2rem;
     background-color: transparent;
+
+    .u-richtext-invert > & {
+      border-left-color: $color-grey-600;
+    }
   }
 
   p {
@@ -15,12 +19,20 @@
     color: $color-darkerPrimary;
     font-size: 1.125rem;
     line-height: 1.66;
+
+    .u-richtext-invert > & {
+      color: $color-lightestPrimary;
+    }
   }
 
   footer {
     color: $color-grey-600;
     font-family: $font-sans;
     font-size: .9375rem;
+
+    .u-richtext-invert > & {
+      color: $color-grey-300;
+    }
 
     &::before {
       content: none;
@@ -88,10 +100,6 @@
     @media #{$mq-lg} {
       font-size: 1.875rem;
     }
-
-    .u-richtext-invert > & {
-      color: $color-lightestPrimary;
-    }
   }
 
   footer {
@@ -106,6 +114,7 @@
     @media #{$mq-lg} {
       font-size: 1.25rem;
     }
+
     .u-richtext-invert > & {
       color: $color-grey-300;
     }

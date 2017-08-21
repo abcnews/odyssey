@@ -208,12 +208,6 @@
     }
   }
 
-  > h2,
-  > h3,
-  > h4 {
-    color: $color-grey-700;
-  }
-
   > h2 {
     max-width: none;
     font-size: 1.375rem;
@@ -243,7 +237,6 @@
   > ul li,
   > ol li,
   > blockquote {
-    color: $color-grey-800;
     font-size: .9375rem;
   }
 
@@ -254,6 +247,23 @@
   > ul ol,
   > ol ol {
     padding-left: 0;
+  }
+}
+
+[class*="u-richtext"] > .u-richtext,
+[class*="u-pull"] > .u-richtext {
+  > h2,
+  > h3,
+  > h4 {
+    color: $color-grey-700;
+  }
+
+  > h4,
+  > p,
+  > ul li,
+  > ol li,
+  > blockquote {
+    color: $color-grey-800;
   }
 }
 

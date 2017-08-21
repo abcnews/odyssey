@@ -24,7 +24,7 @@ function Header({
   miscContentEls = []
 }) {
   const className = cn('Header', {
-    'is-dark': isDark,
+    'is-dark': meta.isDarkMode || isDark,
     'is-layered': isLayered && (imgEl || videoElOrId)
   }, 'u-full');
 

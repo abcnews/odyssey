@@ -99,6 +99,11 @@ function reset(storyEl, meta) {
   // Update (or add) the meta viewport tag so that touch devices don't introduce a click delay
   resetMetaViewport();
 
+  // Enable dark mode, if required
+  if (meta.isDarkMode) {
+    document.documentElement.classList.add('is-dark-mode');
+  }
+
   storyEl = promoteToMain(storyEl, meta);
 
   Object.keys(TEMPLATE_REMOVABLES)
@@ -118,7 +123,7 @@ function reset(storyEl, meta) {
   $$(SELECTORS.WYSIWYG_EMBED, storyEl)
   .forEach(el => {
     dewysiwyg.normalise(el);
-    el.className = `${el.className} u-richtext`;
+    el.className = `${el.className} u-richtext${meta.isDarkMode ? '-invert' : ''}`;
   });
 
   $$(P1S_FLOAT.SELECTOR, storyEl)

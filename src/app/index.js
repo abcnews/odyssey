@@ -73,7 +73,7 @@ function app() {
         Gallery.transformSection(section);
         break;
       case 'pull':
-        UPull.transformSection(section);
+        UPull.transformSection(section, meta);
         break;
       default:
         break;

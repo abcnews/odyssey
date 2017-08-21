@@ -137,7 +137,8 @@ function getMeta() {
       infoSource: getInfoSource(),
       shareLinks: getShareLinks(),
       relatedMedia: getRelatedMedia(),
-      hasCaptionAttributions: getMetaContent('caption-attributions') !== 'false'
+      hasCaptionAttributions: getMetaContent('caption-attributions') !== 'false',
+      isDarkMode: getMetaContent('dark-mode') === 'true'
     };
   }
 

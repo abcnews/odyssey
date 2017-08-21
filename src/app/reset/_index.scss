@@ -1,6 +1,5 @@
 html {
   overflow-x: hidden;
-  background-color: $color-white;
   font-size: $rem;
   -webkit-text-size-adjust: none;
   -moz-text-size-adjust: none;
@@ -19,7 +18,19 @@ body {
   min-height: 102vh;
   width: 100vw;
   width: var(--root-width);
-  background-color: #f9f9f9;
+  background-color: $color-grey-50;
+
+  .is-dark-mode > & {
+    background-color: $color-black;
+  
+    main + .page_margins {
+      background-color: $color-grey-50;
+    }
+
+    main + .content {
+      background-color: $color-white;
+    }
+  }
 }
 
 #abcHeader.global {
