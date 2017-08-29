@@ -14,7 +14,7 @@ const TAB_KEY = 9;
 
 const registeredImageIds = {};
 const images = [];
-const masterGalleryEl = null; // singleton
+let masterGalleryEl = null; // singleton
 
 function MasterGallery() {
   if (masterGalleryEl) {
