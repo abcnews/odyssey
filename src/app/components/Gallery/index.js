@@ -11,6 +11,7 @@ const {$, $$, detach, isElement, setText} = require('../../utils/dom');
 const {dePx, getRatios, returnFalse, trim} = require('../../utils/misc');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
+require('./index.scss');
 
 const MOSAIC_ROW_LENGTHS_PATTERN = /(?:tiled|mosaic)(\d+)/;
 const PCT_PATTERN = /(-?[0-9\.]+)%/;

@@ -11,6 +11,7 @@ const {$, $$, substitute} = require('../../utils/dom');
 const {getRatios} = require('../../utils/misc');
 const Caption = require('../Caption');
 const VideoPlayer = require('../VideoPlayer');
+require('./index.scss');
 
 const SCROLLPLAY_PCT_PATTERN = /scrollplay(\d+)/;
 

@@ -1,0 +1,41 @@
+@import '../../../constants';
+
+.Nav {
+  z-index: 3;
+  position: relative;
+  height: $size-bar;
+  background-color:$color-grey-brand;
+}
+
+.Nav-bar {
+  display: flex;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  height: $size-bar;
+  background-color: $color-grey-brand;
+  transition: transform .25s cubic-bezier(0, 0, .32, 1);
+  will-change: transform;
+
+  .is-above & {
+    position: fixed;
+    top: 0;
+  }
+
+  .is-above &.is-hiding {
+    transform: translateY(-102%);
+  }
+}
+
+.Nav-home {
+  flex: 0 0 auto;
+  display: block;
+  width: $size-bar * 2.9090909091;
+  height: $size-bar;
+  background-image: url(./news.svg);
+  background-position: center right;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  text-decoration: none;
+  text-indent: -100%;
+}

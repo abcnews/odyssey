@@ -1,0 +1,29 @@
+@import '../../../constants';
+
+.u-layout {
+  margin-left: auto;
+  margin-right: auto;
+  width: $layout-fluid;
+
+  @media #{$mq-lg} {
+    width: $layout-fixed;
+  }
+}
+
+.u-layout > * {
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: $layout-fluid-padding;
+  padding-right: $layout-fluid-padding;
+  width: cells(12);
+
+  @media #{$mq-md} {
+    width: cells(10);
+  }
+
+  @media #{$mq-lg} {
+    padding-left: $layout-fixed-padding;
+    padding-right: $layout-fixed-padding;
+    width: cells(8);
+  }
+}

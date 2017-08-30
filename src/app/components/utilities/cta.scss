@@ -1,0 +1,40 @@
+@import '../../../constants';
+
+.u-cta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-family: $font-sans;
+
+  a {
+    flex: 0 1 auto;
+    margin: .5rem;
+    padding: .5rem 2rem;
+    max-width: calc(100% - 1rem);
+    background-color: $color-black-transparent-30;
+    color: $color-white !important;
+    font-family: $font-sans;
+    font-size: 1.375rem;
+    font-weight: bold;
+    line-height: 1.33;
+    text-align: center;
+    text-transform: uppercase;
+    transition: filter .25s;
+    will-change: opacity; // create stacking context
+            
+    .u-richtext-invert & {
+      background-color: $color-white-transparent-30;
+    }
+
+    &:visited {
+      color: $color-white !important;
+    }
+
+    &:hover,
+    &:focus {
+      text-decoration: none;
+      -webkit-filter: brightness(1.2);
+      filter: brightness(1.2);
+    }
+  }
+}

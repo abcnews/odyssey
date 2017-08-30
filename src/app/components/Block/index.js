@@ -11,6 +11,7 @@ const {getRatios, trim} = require('../../utils/misc');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
 const VideoPlayer = require('../VideoPlayer');
+require('./index.scss');
 
 function Block({
   type = 'richtext',

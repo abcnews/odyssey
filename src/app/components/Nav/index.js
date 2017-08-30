@@ -4,6 +4,7 @@ const html = require('bel');
 // Ours
 const {enqueue, subscribe} = require('../../scheduler');
 const ShareLinks = require('../ShareLinks');
+require('./index.scss');
 
 module.exports = function Nav({homeHref = '/news/', shareLinks}) {
   const navBarEl = html`

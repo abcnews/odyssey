@@ -1,0 +1,33 @@
+@import '../../../constants';
+
+.Picture {
+  display: block;
+  position: relative;
+  font-family: $font-sans;
+
+  .u-full > & {
+    height: 100%;
+  }
+
+  picture.object-fit-polyfill {
+    position: static !important;
+  }
+
+  img {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    font-size: 0;
+    vertical-align: top;
+    object-fit: cover;
+    will-change: opacity;
+  }
+
+  &[loaded] img {
+    opacity: 1;
+    animation: fadeIn .5s;
+  }
+}

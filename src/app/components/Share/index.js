@@ -3,6 +3,7 @@ const html = require('bel');
 
 // Ours
 const ShareLinks = require('../ShareLinks');
+require('./index.scss');
 
 const DEFAULT_TYPE = 'story';
 const UPPERCASE_PATTERN = /[A-Z]/g;

@@ -1,0 +1,94 @@
+@import '../../../constants';
+
+// This follows the same rules as Picture components:
+// all devices use the large aspect ratio when in landscape orientation
+
+[class*="u-sizer"] {
+  display: block;
+  overflow: hidden;
+  position: relative;
+  min-height: 100%;
+  background-image: var(--placeholder-image);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-size: cover;
+
+  .Picture & {
+    background-color: $color-grey-100;
+
+    .Header.is-dark &,
+    .Header.is-layered &,
+    .Block &,
+    .MasterGallery & {
+      background-color: $color-black;
+    }
+  }
+}
+
+@media #{$mq-sm} {
+  .u-sizer-sm-16x9 {
+    padding-top: 56.25%;
+  }
+
+  .u-sizer-sm-3x2 {
+    padding-top: 66.6666667%;
+  }
+
+  .u-sizer-sm-4x3 {
+    padding-top: 75%;
+  }
+
+  .u-sizer-sm-1x1 {
+    padding-top: 100%;
+  }
+
+  .u-sizer-sm-3x4 {
+    padding-top: 133.3333333%;
+  }
+}
+
+@media #{$mq-md} {
+  .u-sizer-md-16x9 {
+    padding-top: 56.25%;
+  }
+
+  .u-sizer-md-3x2 {
+    padding-top: 66.6666667%;
+  }
+
+  .u-sizer-md-4x3 {
+    padding-top: 75%;
+  }
+
+  .u-sizer-md-1x1 {
+    padding-top: 100%;
+  }
+
+  .u-sizer-md-3x4 {
+    padding-top: 133.3333333%;
+  }
+}
+
+
+@media #{$mq-landscape} and #{$mq-not-lg}, #{$mq-lg} {
+  .u-sizer-lg-16x9 {
+    padding-top: 56.25%;
+  }
+
+  .u-sizer-lg-3x2 {
+    padding-top: 66.6666667%;
+  }
+
+  .u-sizer-lg-4x3 {
+    padding-top: 75%;
+  }
+
+  .u-sizer-lg-1x1 {
+    padding-top: 100%;
+  }
+
+  .u-sizer-lg-3x4 {
+    padding-top: 133.3333333%;
+  }
+}

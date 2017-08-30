@@ -1,0 +1,61 @@
+@import '../../../constants';
+
+.Main {
+  display: block;
+  
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  img,
+  video,
+  iframe,
+  object {
+    max-width: 100%;
+  }
+
+  a:hover,
+  a:focus {
+    text-decoration: underline;
+    text-decoration-skip: ink;
+  }
+
+  > a[name] {
+    padding: 0;
+  }
+
+  > h2,
+  > hr {
+    &::before {
+      content: "";
+      display: block;
+      margin: 3rem auto 1rem;
+      width: 7.5rem;
+      height: .125rem;
+      background-color: $color-grey-300;
+
+      @media #{$mq-md} {
+        margin: 4rem auto 1.5rem;
+      }
+
+      @media #{$mq-lg} {
+        margin: 5rem auto 1.5rem;
+      }
+    }
+    
+    @media #{$mq-md} {
+      padding-bottom: .5rem;
+    }
+
+    @media #{$mq-lg} {
+      padding-bottom: 1rem;
+    }
+  }
+
+  > hr {
+    border: none;
+    padding-bottom: .5rem;
+  }
+}
