@@ -8,6 +8,7 @@ const {enqueue, subscribe} = require('../../scheduler');
 const {$, $$, append, detach} = require('../../utils/dom');
 const {proximityCheck} = require('../../utils/misc');
 const {blurImage} = require('./blur');
+require('./index.scss');
 
 const SIZES = {
   '16x9': {sm: '700x394', md: '940x529', lg: '2150x1210'},

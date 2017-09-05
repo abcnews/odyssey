@@ -5,6 +5,7 @@ const html = require('bel');
 const {MOCK_ELEMENT} = require('../../../constants');
 const {$, detach, isElement} = require('../../utils/dom');
 const {trim} = require('../../utils/misc');
+require('./index.scss');
 
 function Caption({
   url,

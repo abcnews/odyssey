@@ -1,0 +1,12 @@
+@import '../../../constants';
+
+.ShareLinks {
+  display: flex;
+  justify-content: flex-end;
+  height: 3rem;
+}
+
+.Nav .ShareLinks {
+  margin-right: .375rem;
+  height: auto;
+}

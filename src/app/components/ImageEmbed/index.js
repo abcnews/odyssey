@@ -10,6 +10,7 @@ const {$, substitute} = require('../../utils/dom');
 const {getRatios} = require('../../utils/misc');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
+require('./index.scss');
 
 function ImageEmbed({
   pictureEl,

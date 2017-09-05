@@ -9,12 +9,13 @@ const {$, $$, prepend} = require('../../utils/dom');
 const Caption = require('../Caption');
 const Gallery = require('../Gallery');
 const Picture = require('../Picture');
+require('./index.scss');
 
 const TAB_KEY = 9;
 
 const registeredImageIds = {};
 const images = [];
-const masterGalleryEl = null; // singleton
+let masterGalleryEl = null; // singleton
 
 function MasterGallery() {
   if (masterGalleryEl) {

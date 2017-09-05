@@ -11,6 +11,7 @@ const {getMeta} = require('../../meta');
 const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
 const {$, $$, append, isElement, setText, toggleAttribute, toggleBooleanAttributes} = require('../../utils/dom');
 const {proximityCheck, twoDigits, whenKeyIn} = require('../../utils/misc');
+require('./index.scss');
 
 const WHITESPACE_PATTERN = /[\n\r\s]/g;
 const AMBIENT_PLAYABLE_RANGE = .5;

@@ -7,6 +7,7 @@ const {SELECTORS} = require('../../constants');
 const Main = require('../components/Main');
 const {$, $$, append, before, detach, detachAll} = require('../utils/dom');
 const {literalList, trim} = require('../utils/misc');
+require('./index.scss');
 
 const TEMPLATE_REMOVABLES = {
   '.platform-standard:not(.platform-mobile)': literalList(`

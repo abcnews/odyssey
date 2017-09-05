@@ -12,7 +12,7 @@ const {dePx, getRatios, slug, trim} = require('../../utils/misc');
 const Picture = require('../Picture');
 const UParallax = require('../UParallax');
 const VideoPlayer = require('../VideoPlayer');
-
+require('./index.scss');
 
 function Header({
   meta = {},

@@ -1,0 +1,70 @@
+@import '../../constants';
+
+html {
+  overflow-x: hidden;
+  font-size: $rem;
+  -webkit-text-size-adjust: none;
+  -moz-text-size-adjust: none;
+  -ms-text-size-adjust: none;
+  text-size-adjust: none;
+
+  // Phase 1 (Standard)
+  &.fixed {
+    @media (max-width: $p1s-fixed-width) {
+      overflow-x: auto;
+    }
+  }
+}
+
+body {
+  min-height: 102vh;
+  width: 100vw;
+  width: var(--root-width);
+  background-color: $color-grey-50;
+
+  .is-dark-mode > & {
+    background-color: $color-black;
+  
+    main + .page_margins ::before,
+    main + .page_margins ::after {
+      content: "";
+      position: absolute;
+      background-color: inherit;
+    }
+
+    main + .page_margins {
+      position: relative;
+      background-color: $color-grey-50;
+
+      &::before,
+      &::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        width: 50vw;
+        height: 100%;
+        background-color: inherit;
+      }
+
+      &::before {
+        left: -50vw;
+      }
+
+      &::after {
+        right: -50vw;
+      }
+
+      & > * {
+        border-top: 0;
+      }
+    }
+
+    main + .content {
+      background-color: $color-white;
+    }
+  }
+}
+
+#abcHeader.global {
+  max-width: inherit;
+}
