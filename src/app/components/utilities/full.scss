@@ -17,15 +17,6 @@
     margin-bottom: 3rem;
   }
 
-  &:not(.Gallery) + &:not(.Gallery),
-  &:not(.Gallery) + a[name] + &:not(.Gallery) {
-    margin-top: -2rem;
-
-    @media #{$mq-lg} {
-      margin-top: -3rem;
-    }
-  }
-
   &:first-child,
   a[name]:first-child + & {
     margin-top: 0;
@@ -43,3 +34,15 @@
     }
   }
 }
+
+.u-layout > .u-full:not(.Gallery) + .u-full:not(.Gallery),
+.u-layout > .u-full:not(.Gallery) + a[name] + .u-full:not(.Gallery),
+[class*="u-richtext"] > .u-full:not(.Gallery) + .u-full:not(.Gallery),
+[class*="u-richtext"] > .u-full:not(.Gallery) + a[name] + .u-full:not(.Gallery) {
+  margin-top: -2rem;
+
+  @media #{$mq-lg} {
+    margin-top: -3rem;
+  }
+}
+
