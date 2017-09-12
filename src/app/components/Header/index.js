@@ -159,10 +159,11 @@ function transformSection(section, meta) {
   const ratios = getRatios(section.configSC);
   const isDark = section.configSC.indexOf('dark') > -1;
   const isLayered = section.configSC.indexOf('layered') > -1;
+  const isNoMedia = section.configSC.indexOf('nomedia') > -1;
 
   let candidateNodes = section.betweenNodes;
 
-  if (meta.relatedMedia != null) {
+  if (!isNoMedia && meta.relatedMedia != null) {
     candidateNodes = [meta.relatedMedia.cloneNode(true)].concat(candidateNodes);
   }
 
@@ -172,7 +173,7 @@ function transformSection(section, meta) {
     let videoId;
     let imgEl;
 
-    if (!config.videoElOrId && !config.imgEl && isElement(node) ) {
+    if (!isNoMedia && !config.videoElOrId && !config.imgEl && isElement(node) ) {
       classList = node.className.split(' ');
       videoEl = $('video', node);
 
