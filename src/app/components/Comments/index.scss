@@ -1,0 +1,14 @@
+@import '../../../constants';
+
+.Comments {
+  .is-dark-mode & {
+    background-color: $color-white;
+  }
+}
+
+.Comments-livefyreRoot {
+  .is-dark-mode & {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+}

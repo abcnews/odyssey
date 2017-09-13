@@ -5,6 +5,7 @@ const html = require('bel');
 const {SELECTORS, RICHTEXT_BLOCK_TAGNAMES} = require('../constants');
 const api = require('./api');
 const Caption = require('./components/Caption');
+const Comments = require('./components/Comments');
 const Block = require('./components/Block');
 const Gallery = require('./components/Gallery');
 const Header = require('./components/Header');
@@ -202,6 +203,12 @@ function app() {
       setTimeout(transformRemainingEELs, 500);
     }
   })();
+
+
+  // Embed comments, if enabled
+  if (meta.hasCommentsEnabled) {
+    append(storyEl, Comments());
+  }
 
   // Embed master gallery
   append(storyEl, MasterGallery());

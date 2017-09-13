@@ -138,6 +138,7 @@ function getMeta() {
       shareLinks: getShareLinks(),
       relatedMedia: getRelatedMedia(),
       hasCaptionAttributions: getMetaContent('caption-attributions') !== 'false',
+      hasCommentsEnabled: getMetaContent('showLivefyreComments') === 'true',
       isDarkMode: getMetaContent('dark-mode') === 'true'
     };
   }
