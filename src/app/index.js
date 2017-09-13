@@ -182,13 +182,14 @@ function app() {
     .concat($$('.embed-content', storyEl)
       .filter(el => $('.type-external', el)));
 
-  setTimeout(function transformRemainingEELs() {
+  (function transformRemainingEELs() {
     eels = eels.reduce((memo, el) => {
       if (el.className.indexOf(' embedded') > -1 || $('.embedded', el)) {
         const captionEl = Caption.createFromEl(el);
+        const originalCaptionEl = $('.embed-caption, .inline-caption, a', el);
 
-        if (captionEl) {
-          substitute($('.embed-caption, .inline-caption', el), captionEl);
+        if (captionEl && originalCaptionEl) {
+          substitute(originalCaptionEl, captionEl);
         }
       } else {
         memo.push(el);
@@ -200,7 +201,7 @@ function app() {
     if (eels.length > 0) {
       setTimeout(transformRemainingEELs, 500);
     }
-  }, 0);
+  })();
 
   // Embed master gallery
   append(storyEl, MasterGallery());

@@ -63,7 +63,7 @@ function createFromEl(el) {
     $('.type-photo, .type-video, .type-external', clone)
   ) {
     // P1M
-    if (!$('.type-external', clone)) {
+    if (!$('.type-external', clone) || clone.textContent.indexOf(':') > -1) {
       detach($('h3 strong', clone));
     }
     config = {
