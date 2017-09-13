@@ -1,6 +1,8 @@
 @import '../../../constants';
 
 .Comments {
+  margin-bottom: 0 !important;
+
   .is-dark-mode & {
     background-color: $color-white;
   }
@@ -8,7 +10,40 @@
 
 .Comments-livefyreRoot {
   .is-dark-mode & {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .Comments & .interactive-livefyre-comments {
+    margin-top: 0;
+    margin-bottom: 0;
+    border: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  h2 {
+    color: $color-black;
+    font-family: $font-sans;
+    font-size: 1.375rem;
+    text-transform: none;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+
+  a,
+  .fyre a,
+  a > *,
+  .fyre a > * {
+    color: $color-darkPrimary;
+  }
+
+  a:visited,
+  .fyre a:visited,
+  a:visited > *,
+  .fyre a:visited > * {
+    color: $color-darkSecondary;
   }
 }
