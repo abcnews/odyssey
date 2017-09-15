@@ -104,6 +104,19 @@
     margin-right: -$layout-fluid-padding;
   }
 
+  > small {
+    display: block;
+    margin-top: 1rem;
+    color: $color-tertiary;
+    font-family: $font-sans;
+    font-size: .4285714286em;
+    text-transform: uppercase;
+
+    .is-dark & {
+      color: $color-lightTertiary;
+    }
+  }
+
   &::after {
     content: "";
     display: block;

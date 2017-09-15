@@ -21,6 +21,8 @@ function Header({
   ratios = {},
   isDark,
   isLayered,
+  isNoMedia,
+  isKicker,
   miscContentEls = []
 }) {
   const className = cn('Header', {
@@ -84,7 +86,11 @@ function Header({
   const published = typeof meta.published === 'string' ? meta.published : formatUIGRelative(meta.published);
 
   const contentEls = [
-    html`<h1>${meta.title}</h1>`
+    html`<h1>${
+      isKicker && meta.title.indexOf(': ') > -1 ?
+      meta.title.split(': ').map((text, index) => index === 0 ? html`<small>${text}</small>` : text) :
+      meta.title
+    }</h1>`
   ]
   .concat(clonedMiscContentEls)
   .concat([
@@ -160,6 +166,7 @@ function transformSection(section, meta) {
   const isDark = section.configSC.indexOf('dark') > -1;
   const isLayered = section.configSC.indexOf('layered') > -1;
   const isNoMedia = section.configSC.indexOf('nomedia') > -1;
+  const isKicker = section.configSC.indexOf('kicker') > -1;
 
   let candidateNodes = section.betweenNodes;
 
@@ -209,6 +216,8 @@ function transformSection(section, meta) {
     ratios,
     isDark,
     isLayered,
+    isNoMedia,
+    isKicker,
     miscContentEls: []
   });
 
