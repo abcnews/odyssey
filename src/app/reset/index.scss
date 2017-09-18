@@ -21,9 +21,11 @@ body {
   width: 100vw;
   width: var(--root-width);
   background-color: $color-grey-50;
+  background-color: var(--bg, #{$color-grey-50});
 
   .is-dark-mode > & {
     background-color: $color-black;
+    background-color: var(--bg, #{$color-black});
   
     main + .page_margins ::before,
     main + .page_margins ::after,

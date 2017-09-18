@@ -100,6 +100,18 @@ function reset(storyEl, meta) {
   // Update (or add) the meta viewport tag so that touch devices don't introduce a click delay
   resetMetaViewport();
 
+  // Apply theme, if defined
+  if (typeof meta.theme === 'string') {
+    meta.theme.split(';')
+    .forEach(definition => {
+      const [prop, value] = definition.split(':');
+
+      if (prop && value) {
+        document.documentElement.style.setProperty(prop, value);
+      }
+    });
+  }
+
   // Enable dark mode, if required
   if (meta.isDarkMode) {
     document.documentElement.classList.add('is-dark-mode');

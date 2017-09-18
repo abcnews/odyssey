@@ -137,6 +137,7 @@ function getMeta() {
       infoSource: getInfoSource(),
       shareLinks: getShareLinks(),
       relatedMedia: getRelatedMedia(),
+      theme: getMetaContent('theme'),
       hasCaptionAttributions: getMetaContent('caption-attributions') !== 'false',
       hasCommentsEnabled: getMetaContent('showLivefyreComments') === 'true',
       isDarkMode: getMetaContent('dark-mode') === 'true'
