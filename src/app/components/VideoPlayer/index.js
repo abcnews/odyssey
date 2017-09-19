@@ -202,7 +202,6 @@ function VideoPlayer({
     }
   };
 
-  playerEl.api = player;
   players.push(player);
 
   let playbackEl;
@@ -348,13 +347,17 @@ function VideoPlayer({
     document.addEventListener('touchcancel', scrubEnd);
   }
 
-  return html`
+  const videoPlayerEl = html`
     <div class="VideoPlayer">
       <div class="u-sizer-sm-${ratios.sm} u-sizer-md-${ratios.md} u-sizer-lg-${ratios.lg}"></div>
       ${videoEl}
       ${controlsEl}
     </div>
   `;
+
+  videoPlayerEl.api = player;
+
+  return videoPlayerEl;
 };
 
 function getMetadata(videoElOrId, callback) {
