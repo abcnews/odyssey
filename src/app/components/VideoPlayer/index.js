@@ -202,6 +202,7 @@ function VideoPlayer({
     }
   };
 
+  playerEl.api = player;
   players.push(player);
 
   let playbackEl;
