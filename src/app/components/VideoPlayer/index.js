@@ -1,6 +1,6 @@
 // External
 const html = require('bel');
-const playInline = require('iphone-inline-video');
+const playInline = require('iphone-inline-video').default;
 const raf = require('raf');
 const url2cmid = require('util-url2cmid');
 const xhr = require('xhr');

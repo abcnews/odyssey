@@ -33,8 +33,8 @@
     }
   }
 
-  .u-pull-left &,
-  .u-pull-right & {
+  .u-richtext .u-pull-left &,
+  .u-richtext .u-pull-right & {
     @media #{$mq-not-sm} {
       padding-left: 0;
       padding-right: 0;

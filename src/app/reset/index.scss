@@ -17,9 +17,10 @@ html {
 }
 
 body {
+  overflow: hidden;
   min-height: 102vh;
   width: 100vw;
-  width: var(--root-width);
+  width: var(--root-width, 100vw);
   background-color: $color-grey-50;
   background-color: var(--bg, #{$color-grey-50});
 
