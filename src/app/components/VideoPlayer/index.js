@@ -13,7 +13,7 @@ const {$, $$, append, isElement, setText, toggleAttribute, toggleBooleanAttribut
 const {proximityCheck, twoDigits, whenKeyIn} = require('../../utils/misc');
 require('./index.scss');
 
-const WHITESPACE_PATTERN = /[\n\r\s]/g;
+const NEWLINES_PATTERN = /[\n\r]/g;
 const AMBIENT_PLAYABLE_RANGE = .5;
 const FUZZY_INCREMENT_FPS = 30;
 const FUZZY_INCREMENT_INTERVAL = 1000 / FUZZY_INCREMENT_FPS;
@@ -437,7 +437,7 @@ function getMetadata(videoElOrId, callback) {
           posterURL: doc.querySelector('.view-inlineMediaPlayer img')
             .getAttribute('src').replace('-thumbnail', '-large'),
           sources: formatSources(JSON.parse(body
-            .replace(WHITESPACE_PATTERN, '')
+            .replace(NEWLINES_PATTERN, '')
             .match(/"sources":(\[.*\]),"addDownload"/)[1]))
         });
       } else if (body.indexOf('inlineVideoData') > -1) {
@@ -448,7 +448,7 @@ function getMetadata(videoElOrId, callback) {
         done(null, {
           posterURL: doc.querySelector('.inline-video img').getAttribute('src'),
           sources: formatSources(JSON.parse(body
-            .replace(WHITESPACE_PATTERN, '')
+            .replace(NEWLINES_PATTERN, '')
             .match(/inlineVideoData\.push\((\[.*\])\)/)[1]
             .replace(/'/g, '"')))
         });
