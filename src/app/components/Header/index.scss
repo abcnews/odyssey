@@ -107,13 +107,17 @@
   > small {
     display: block;
     margin-top: 1rem;
-    color: $color-tertiary;
+    color: #80999D;
     font-family: $font-sans;
     font-size: .4285714286em;
     text-transform: uppercase;
 
     .is-dark & {
-      color: $color-lightTertiary;
+      color: #8AB3BD;
+    }
+
+    .is-layered & {
+      color: #E9F4F5;
     }
   }
 
