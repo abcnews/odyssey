@@ -97,6 +97,7 @@
     background-color: $color-black-transparent-30;
   }
 
+
   .is-richtext:not(.is-piecemeal)  & > *::after {
     background-image: $gradient-vertical-50-0-100-60;
   }
@@ -149,6 +150,10 @@
       @media #{$mq-lg} {
         width: calc(#{cells(8)} + 2rem);
       }
+    }
+
+    &.u-richtext:before {
+      background-color: $color-white-transparent-90;
     }
 
     & > * {
