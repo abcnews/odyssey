@@ -17,6 +17,7 @@ function Block({
   type = 'richtext',
   isDocked,
   isPiecemeal,
+  isLight,
   alignment,
   videoId,
   imgEl,
@@ -31,7 +32,7 @@ function Block({
     'u-parallax': type === 'heading',
     'is-fixed': type === 'richtext' && !isDocked
   });
-  const contentClassName = 'Block-content u-layout u-richtext-invert';
+  const contentClassName = `Block-content u-layout u-richtext${isLight ? '' : '-invert'}`;
 
   ratios = {
     sm: ratios.sm || (type === 'heading' ? '3x2' : '3x4'),
@@ -119,6 +120,7 @@ function Block({
 function transformSection(section) {
   const isDocked = section.configSC.indexOf('docked') > -1;
   const isPiecemeal = section.configSC.indexOf('piecemeal') > -1;
+  const isLight = section.configSC.indexOf('light') > -1;
   const [, alignment] = section.configSC.match(ALIGNMENT_PATTERN) || [];
   let sourceMediaEl;
 
@@ -165,6 +167,7 @@ function transformSection(section) {
   }, {
     isDocked,
     isPiecemeal,
+    isLight,
     alignment,
     contentEls: []
   });
