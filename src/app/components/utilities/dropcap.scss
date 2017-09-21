@@ -1,6 +1,6 @@
 @import '../../../constants';
 
-.u-dropcap::first-letter {
+.Main > .u-dropcap::first-letter {
   float: left;
   padding-top: .4rem;
   padding-right: .25rem;
@@ -15,7 +15,7 @@
   }
 }
 
-.u-dropcap.u-quote {
+.Main > .u-dropcap.u-quote {
   text-indent: 0;
 
   &::first-letter {
