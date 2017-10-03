@@ -5,7 +5,9 @@
   "license": "MIT",
   "private": true,
   "contributors": [
-    "Colin Gourlay <Gourlay.Colin@abc.net.au>"
+    "Simon Elvery <Elvery.Simon@abc.net.au>",
+    "Colin Gourlay <Gourlay.Colin@abc.net.au>",
+    "Nathan Hoad <Hoad.Nathan@abc.net.au>"
   ],
   "scripts": {
     "start": "aunty serve"
