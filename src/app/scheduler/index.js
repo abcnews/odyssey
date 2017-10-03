@@ -10,7 +10,7 @@ const BUDGETED_MILLISECONDS_PER_FRAME = 12;
 
 const subscribers = [];
 const queue = [];
-let client = null
+let client = null;
 let hasStarted;
 
 function flush() {

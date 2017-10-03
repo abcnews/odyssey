@@ -11,7 +11,7 @@
 
   &.is-richtext {
     min-height: 100vh;
-  } 
+  }
 
   @media #{$mq-landscape} and #{$mq-not-lg}, #{$mq-lg} {
     min-height: 56.25vw;
@@ -48,7 +48,9 @@
       height: 100%;
 
       // Safari (7.1+)
-      _::-webkit-full-page-media, _:future, :root & {
+      _::-webkit-full-page-media,
+      _:future,
+      :root & {
         -webkit-transform: translateZ(0);
       }
     }
@@ -76,7 +78,7 @@
   .is-heading &::after,
   .is-richtext &::after,
   .is-richtext:not(.is-piecemeal) & > *::after {
-    content: "";
+    content: '';
     position: absolute;
     bottom: 0;
     left: 0;
@@ -92,13 +94,11 @@
     background-image: $gradient-vertical-40-0-80-60;
   }
 
- 
   .is-richtext:not(.is-piecemeal) &::after {
     background-color: $color-black-transparent-30;
   }
 
-
-  .is-richtext:not(.is-piecemeal)  & > *::after {
+  .is-richtext:not(.is-piecemeal) & > *::after {
     background-image: $gradient-vertical-50-0-100-60;
   }
 
@@ -133,13 +133,13 @@
 
   .is-richtext > & {
     &::before {
-      content: "";
+      content: '';
       position: absolute;
       top: 0;
       left: 50%;
       z-index: -1;
       transform: translateX(-50%);
-      width: calc(#{cells(10)} + .75rem);
+      width: calc(#{cells(10)} + 0.75rem);
       height: 100%;
       background-color: $color-black-transparent-30;
 
@@ -176,7 +176,7 @@
     margin-top: 40vh;
     margin-bottom: 40vh;
     padding-top: 1.5rem;
-    padding-bottom: 1.5rem;;
+    padding-bottom: 1.5rem;
 
     @media #{$mq-lg} {
       padding-top: 2.25rem;
@@ -214,7 +214,7 @@
     }
   }
 
-  .is-richtext > & [class*="u-pull"] {
+  .is-richtext > & [class*='u-pull'] {
     float: none;
     margin-left: auto;
     margin-right: auto;

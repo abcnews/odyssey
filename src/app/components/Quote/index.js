@@ -3,29 +3,25 @@ const cn = require('classnames');
 const html = require('bel');
 
 // Ours
-const {ALIGNMENT_PATTERN, MOCK_NODE} = require('../../../constants');
-const {grabConfigSC} = require('../../utils/anchors');
-const {$, $$, append, detach, isElement, isInlineElement, isText, prepend, substitute} = require('../../utils/dom');
-const {trim} = require('../../utils/misc');
+const { ALIGNMENT_PATTERN, MOCK_NODE } = require('../../../constants');
+const { grabConfigSC } = require('../../utils/anchors');
+const { $, $$, append, detach, isElement, isInlineElement, isText, prepend, substitute } = require('../../utils/dom');
+const { trim } = require('../../utils/misc');
 const UQuote = require('../UQuote');
 require('./index.scss');
 
-function Quote({
-  isPullquote = false,
-  alignment,
-  parEls = [],
-  attributionNodes = []
-}) {
+function Quote({ isPullquote = false, alignment, parEls = [], attributionNodes = [] }) {
   const className = cn('Quote', {
     'is-pullquote': isPullquote,
     [`u-pull-${alignment}`]: alignment
   });
-  const attributionEl = attributionNodes.length ? html`
+  const attributionEl = attributionNodes.length
+    ? html`
     <footer>${Array.from(attributionNodes).map(node => {
       return node.tagName === 'A' ? html`<cite>${node}</cite>` : node;
     })}</footer>
-  ` : null;
-
+  `
+    : null;
 
   // Smart double quotes & indentation
   if (parEls.length) {
@@ -79,8 +75,10 @@ function createFromEl(el) {
       parEls: Array.from(linebreaksToParagraphs($('blockquote', clone) || MOCK_NODE).childNodes),
       attributionNodes: ($('figcaption', clone) || MOCK_NODE).childNodes
     };
-  } else if (clone.className.indexOf('inline-content quote') > -1 ||
-      clone.className.indexOf('view-inline-pullquote') > -1) {
+  } else if (
+    clone.className.indexOf('inline-content quote') > -1 ||
+    clone.className.indexOf('view-inline-pullquote') > -1
+  ) {
     // P1S-E, P2-E
     config = {
       isPullquote: true,
@@ -104,10 +102,10 @@ function createFromEl(el) {
         return;
       }
 
-      const parEl =  html`<p></p>`;
+      const parEl = html`<p></p>`;
 
       while (stack.length > 0) {
-        prepend(stack.pop(), parEl)
+        prepend(stack.pop(), parEl);
       }
 
       memo.push(parEl);
@@ -179,11 +177,9 @@ function _linebreaksToParagraphsReducer(state, node, index, nodes) {
     // Push the text element onto the stack if it
     // contains more than empty space
     if (trim(node.nodeValue).length) {
-        state.stack.push(node);
+      state.stack.push(node);
     }
-
   } else if (isInlineElement(node)) {
-
     if (node.tagName === 'BR') {
       // Append the stack, discarding the <br> element
       state = _linebreaksToParagraphsAppender(state);
@@ -192,7 +188,6 @@ function _linebreaksToParagraphsReducer(state, node, index, nodes) {
       // Push the inline element onto the stack
       state.stack.push(node);
     }
-
   } else {
     // Append the stack, then append the node
     // (which should be a non-text, non-inline element)
@@ -211,11 +206,9 @@ function _linebreaksToParagraphsReducer(state, node, index, nodes) {
 }
 
 function linebreaksToParagraphs(el) {
-  const cEl = Array.from(el.childNodes)
-  .reduce(_linebreaksToParagraphsReducer, {});
+  const cEl = Array.from(el.childNodes).reduce(_linebreaksToParagraphsReducer, {});
 
-  Array.from(cEl.childNodes)
-  .forEach(childEl => append(el, childEl));
+  Array.from(cEl.childNodes).forEach(childEl => append(el, childEl));
 
   return el;
 }

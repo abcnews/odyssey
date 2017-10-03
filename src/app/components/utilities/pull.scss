@@ -1,6 +1,6 @@
 @import '../../../constants';
 
-[class*="u-pull"] {
+[class*='u-pull'] {
   @media #{$mq-not-sm} {
     clear: both;
   }
@@ -37,7 +37,7 @@
   }
 
   @media #{$mq-md} {
-    margin-left: cells(1)  !important;
+    margin-left: cells(1) !important;
     margin-right: $layout-fluid-padding !important;
   }
 }
@@ -52,7 +52,7 @@
 
   @media #{$mq-md} {
     margin-left: $layout-fluid-padding !important;
-    margin-right: cells(1)  !important;
+    margin-right: cells(1) !important;
   }
 }
 

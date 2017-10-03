@@ -3,7 +3,7 @@
 .VideoEmbed {
   &.u-full {
     min-height: 56.25vw;
-    min-height: calc(var(--root-width) * .5625);
+    min-height: calc(var(--root-width) * 0.5625);
 
     &.is-cover {
       height: 100vh;
@@ -21,19 +21,17 @@
       width: 100%;
     }
 
-    .Main > [class*="u-pull"] > & {
+    .Main > [class*='u-pull'] > & {
       margin-left: -$layout-fluid-padding;
       margin-right: -$layout-fluid-padding;
     }
   }
 
   @media #{$mq-md} {
-    .Main > &:not([class*="u-pull-"]) {
+    .Main > &:not([class*='u-pull-']) {
       padding-left: 0;
       padding-right: 0;
       width: 100%;
     }
   }
 }
-
-

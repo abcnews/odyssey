@@ -4,10 +4,10 @@ const html = require('bel');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const {ALIGNMENT_PATTERN, IS_PREVIEW} = require('../../../constants');
-const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
-const {$, detach, isElement, substitute} = require('../../utils/dom');
-const {getRatios, trim} = require('../../utils/misc');
+const { ALIGNMENT_PATTERN, IS_PREVIEW } = require('../../../constants');
+const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
+const { $, detach, isElement, substitute } = require('../../utils/dom');
+const { getRatios, trim } = require('../../utils/misc');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
 const VideoPlayer = require('../VideoPlayer');
@@ -24,10 +24,15 @@ function Block({
   ratios = {},
   contentEls = []
 }) {
-  const className = cn('Block', `is-${type}`, {
-    'is-piecemeal': type === 'richtext' && isPiecemeal,
-    [`is-${alignment}`]: alignment
-  }, 'u-full');
+  const className = cn(
+    'Block',
+    `is-${type}`,
+    {
+      'is-piecemeal': type === 'richtext' && isPiecemeal,
+      [`is-${alignment}`]: alignment
+    },
+    'u-full'
+  );
   const mediaClassName = cn('Block-media', {
     'u-parallax': type === 'heading',
     'is-fixed': type === 'richtext' && !isDocked
@@ -59,39 +64,45 @@ function Block({
         return;
       }
 
-      const replacementMediaEl = VideoPlayer(Object.assign(metadata, {
-        ratios,
-        isAlwaysHQ: true,
-        isAmbient: true
-      }));
+      const replacementMediaEl = VideoPlayer(
+        Object.assign(metadata, {
+          ratios,
+          isAlwaysHQ: true,
+          isAmbient: true
+        })
+      );
 
       substitute(mediaEl, replacementMediaEl);
       invalidateClient();
     });
   }
 
-  const mediaContainerEl = mediaEl ? html`
+  const mediaContainerEl = mediaEl
+    ? html`
     <div class="${mediaClassName}">
       ${mediaEl}
     </div>
-  ` : null;
+  `
+    : null;
 
   const blockEl = html`
     <div class="${className}">
       ${mediaContainerEl}
-      ${isPiecemeal ?
-        contentEls.map(contentEl => html`
+      ${isPiecemeal
+        ? contentEls.map(
+            contentEl => html`
           <div class="${contentClassName}">
             ${contentEl}
           </div>
-        `) :
-        contentEls.length > 0 ? html`
+        `
+          )
+        : contentEls.length > 0
+          ? html`
           <div class="${contentClassName}">
             ${contentEls}
           </div>
-        ` :
-        null
-      }
+        `
+          : null}
     </div>
   `;
 
@@ -109,13 +120,13 @@ function Block({
           mediaContainerEl.classList[isBeyond ? 'add' : 'remove']('is-beyond');
         });
 
-        state = {isFixed, isBeyond};
+        state = { isFixed, isBeyond };
       }
     });
   }
 
   return blockEl;
-};
+}
 
 function transformSection(section) {
   const isDocked = section.configSC.indexOf('docked') > -1;
@@ -124,58 +135,53 @@ function transformSection(section) {
   const [, alignment] = section.configSC.match(ALIGNMENT_PATTERN) || [];
   let sourceMediaEl;
 
-  const config = section.betweenNodes.reduce((config, node) => {
-    let classList;
-    let videoId;
-    let imgEl;
+  const config = section.betweenNodes.reduce(
+    (config, node) => {
+      let classList;
+      let videoId;
+      let imgEl;
 
-    if (!config.videoId && !config.imgEl && isElement(node) ) {
-      classList = node.className.split(' ');
+      if (!config.videoId && !config.imgEl && isElement(node)) {
+        classList = node.className.split(' ');
 
-      videoId = (
-        (classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
-        (classList.indexOf('view-inlineMediaPlayer') > -1) ||
-        (classList.indexOf('embed-content') > -1 && $('.type-video', node))
-      ) && url2cmid($('a', node).getAttribute('href'));
+        videoId =
+          ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
+            classList.indexOf('view-inlineMediaPlayer') > -1 ||
+            (classList.indexOf('embed-content') > -1 && $('.type-video', node))) &&
+          url2cmid($('a', node).getAttribute('href'));
 
-      if (videoId) {
-        config.videoId = videoId;
-      } else {
-        imgEl = $('img', node);
+        if (videoId) {
+          config.videoId = videoId;
+        } else {
+          imgEl = $('img', node);
 
-        if (imgEl) {
-          config.imgEl = imgEl;
-          config.ratios = getRatios(section.configSC);
+          if (imgEl) {
+            config.imgEl = imgEl;
+            config.ratios = getRatios(section.configSC);
+          }
+        }
+
+        if (videoId || imgEl) {
+          sourceMediaEl = node;
         }
       }
 
-      if (videoId || imgEl) {
-        sourceMediaEl = node;
+      if (!videoId && !imgEl && isElement(node) && (node.hasAttribute('name') || trim(node.textContent).length > 0)) {
+        config.contentEls.push(node);
       }
+
+      return config;
+    },
+    {
+      isDocked,
+      isPiecemeal,
+      isLight,
+      alignment,
+      contentEls: []
     }
+  );
 
-    if (
-      !videoId &&
-      !imgEl &&
-      isElement(node) &&
-      (node.hasAttribute('name') || trim(node.textContent).length > 0)
-    ) {
-      config.contentEls.push(node);
-    }
-
-    return config;
-  }, {
-    isDocked,
-    isPiecemeal,
-    isLight,
-    alignment,
-    contentEls: []
-  });
-
-  if (
-    config.contentEls.length === 1 &&
-    config.contentEls[0].tagName === 'H2'
-  ) {
+  if (config.contentEls.length === 1 && config.contentEls[0].tagName === 'H2') {
     config.type = 'heading';
   }
 

@@ -4,25 +4,18 @@ const html = require('bel');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const {IS_PREVIEW, ALIGNMENT_PATTERN} = require('../../../constants');
-const {invalidateClient} = require('../../scheduler');
-const {grabConfigSC} = require('../../utils/anchors');
-const {$, $$, substitute} = require('../../utils/dom');
-const {getRatios} = require('../../utils/misc');
+const { IS_PREVIEW, ALIGNMENT_PATTERN } = require('../../../constants');
+const { invalidateClient } = require('../../scheduler');
+const { grabConfigSC } = require('../../utils/anchors');
+const { $, $$, substitute } = require('../../utils/dom');
+const { getRatios } = require('../../utils/misc');
 const Caption = require('../Caption');
 const VideoPlayer = require('../VideoPlayer');
 require('./index.scss');
 
 const SCROLLPLAY_PCT_PATTERN = /scrollplay(\d+)/;
 
-function VideoEmbed({
-  videoPlayerEl,
-  captionEl,
-  alignment,
-  isFull,
-  isCover,
-  isAnon
-}) {
+function VideoEmbed({ videoPlayerEl, captionEl, alignment, isFull, isCover, isAnon }) {
   if (isCover) {
     isFull = true;
     isAnon = true;
@@ -41,7 +34,7 @@ function VideoEmbed({
       ${isAnon ? null : captionEl}
     </div>
   `;
-};
+}
 
 function transformEl(el) {
   const videoId = url2cmid($('a', el).getAttribute('href'));
@@ -60,10 +53,11 @@ function transformEl(el) {
     isAnon: configSC.indexOf('anon') > -1
   };
 
-  const [, scrollplayPctString] = configSC.match(SCROLLPLAY_PCT_PATTERN) ||
-    [, configSC.indexOf('autoplay') > -1 ? '0' : ''];
-  const scrollplayPct = scrollplayPctString.length > 0 &&
-      Math.max(0, Math.min(100, +scrollplayPctString));
+  const [, scrollplayPctString] = configSC.match(SCROLLPLAY_PCT_PATTERN) || [
+    ,
+    configSC.indexOf('autoplay') > -1 ? '0' : ''
+  ];
+  const scrollplayPct = scrollplayPctString.length > 0 && Math.max(0, Math.min(100, +scrollplayPctString));
 
   const videoPlayerOptions = {
     ratios: getRatios(configSC),
@@ -85,10 +79,15 @@ function transformEl(el) {
     invalidateClient();
   });
 
-  substitute(el, VideoEmbed(Object.assign(options, {
-    videoPlayerEl: videoPlayerPlaceholderEl,
-    captionEl: Caption.createFromEl(el)
-  })));
+  substitute(
+    el,
+    VideoEmbed(
+      Object.assign(options, {
+        videoPlayerEl: videoPlayerPlaceholderEl,
+        captionEl: Caption.createFromEl(el)
+      })
+    )
+  );
 }
 
 module.exports = VideoEmbed;

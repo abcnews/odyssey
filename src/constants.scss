@@ -1,21 +1,21 @@
 $rem: 16px;
 
-$font-sans: "ABCSans", Helvetica, Arial, sans-serif;
-$font-serif: "ABCSerif", "Book Antiqua", "Palatino Linotype", Palatino, serif;
+$font-sans: 'ABCSans', Helvetica, Arial, sans-serif;
+$font-serif: 'ABCSerif', 'Book Antiqua', 'Palatino Linotype', Palatino, serif;
 
 $color-white: #fff;
-$color-white-transparent-30: rgba(255, 255, 255, .3);
-$color-white-transparent-60: rgba(255, 255, 255, .6);
-$color-white-transparent-90: rgba(255, 255, 255, .9);
+$color-white-transparent-30: rgba(255, 255, 255, 0.3);
+$color-white-transparent-60: rgba(255, 255, 255, 0.6);
+$color-white-transparent-90: rgba(255, 255, 255, 0.9);
 
 $color-black: #000;
 $color-black-transparent: rgba(0, 0, 0, 0);
-$color-black-transparent-15: rgba(0, 0, 0, .15);
-$color-black-transparent-30: rgba(0, 0, 0, .3);
-$color-black-transparent-45: rgba(0, 0, 0, .45);
-$color-black-transparent-60: rgba(0, 0, 0, .6);
-$color-black-transparent-75: rgba(0, 0, 0, .75);
-$color-black-transparent-93: rgba(0, 0, 0, .93);
+$color-black-transparent-15: rgba(0, 0, 0, 0.15);
+$color-black-transparent-30: rgba(0, 0, 0, 0.3);
+$color-black-transparent-45: rgba(0, 0, 0, 0.45);
+$color-black-transparent-60: rgba(0, 0, 0, 0.6);
+$color-black-transparent-75: rgba(0, 0, 0, 0.75);
+$color-black-transparent-93: rgba(0, 0, 0, 0.93);
 
 $color-grey-50: #f9f9f9;
 $color-grey-50-transparent: rgba(249, 249, 249, 0);
@@ -34,7 +34,7 @@ $color-grey-brand: #1c1c1c;
 
 $color-lightestPrimary: #a5daf3;
 $color-lighterPrimary: #01ceff;
-$color-lightPrimary: #68e1FF;
+$color-lightPrimary: #68e1ff;
 $color-primary: #007aff;
 $color-darkPrimary: #0073a8;
 $color-darkerPrimary: #315768;
@@ -42,18 +42,38 @@ $color-darkerPrimary: #315768;
 $color-lightSecondary: #f1ccf3;
 $color-darkSecondary: #69236b;
 
-$color-lightTertiary: #FFAD7B;
+$color-lightTertiary: #ffad7b;
 $color-tertiary: #be4233;
 $color-darkTertiary: #7b3b3b;
 
-$gradient-vertical-0-0-100-60: linear-gradient(to bottom, $color-black-transparent 0%, $color-black-transparent-60 100%);
-$gradient-vertical-50-0-100-60: linear-gradient(to bottom, $color-black-transparent 50%, $color-black-transparent-60 100%);
-$gradient-vertical-0-45-100-75: linear-gradient(to bottom, $color-black-transparent-45 0%, $color-black-transparent-75 100%);
-$gradient-vertical-40-0-80-60: linear-gradient(to bottom, $color-black-transparent 40%, $color-black-transparent-60 80%);
+$gradient-vertical-0-0-100-60: linear-gradient(
+  to bottom,
+  $color-black-transparent 0%,
+  $color-black-transparent-60 100%
+);
+$gradient-vertical-50-0-100-60: linear-gradient(
+  to bottom,
+  $color-black-transparent 50%,
+  $color-black-transparent-60 100%
+);
+$gradient-vertical-0-45-100-75: linear-gradient(
+  to bottom,
+  $color-black-transparent-45 0%,
+  $color-black-transparent-75 100%
+);
+$gradient-vertical-40-0-80-60: linear-gradient(
+  to bottom,
+  $color-black-transparent 40%,
+  $color-black-transparent-60 80%
+);
 
 $gradient-horizontal-grey-50-0-75-100: linear-gradient(to right, $color-grey-50-transparent 0%, $color-grey-50 75%);
 $gradient-horizontal-grey-100-0-75-100: linear-gradient(to right, $color-grey-100-transparent 0%, $color-grey-100 75%);
-$gradient-horizontal-40-45-65-0: linear-gradient(to right, $color-black-transparent-45 40%, $color-black-transparent 65%);
+$gradient-horizontal-40-45-65-0: linear-gradient(
+  to right,
+  $color-black-transparent-45 40%,
+  $color-black-transparent 65%
+);
 
 $gradient-radial-0-0-100-60: radial-gradient(circle, $color-black-transparent 0%, $color-black-transparent-60 100%);
 
@@ -68,20 +88,20 @@ $layout-fixed-gutter: 1.75rem;
 $layout-fluid-padding: $layout-fluid-gutter / 2;
 $layout-fixed-padding: $layout-fixed-gutter / 2;
 
-$mq-sm: "(max-width: 43.6875rem)";
-$mq-md: "(min-width: 43.75rem) and (max-width: 61.1875rem)";
-$mq-lg: "(min-width: 61.25rem)";
-$mq-not-sm: "(min-width: 43.75rem)";
-$mq-not-md: "(max-width: 43.6875rem), (min-width: 61.25rem)";
-$mq-not-lg: "(max-width: 61.1875rem)";
-$mq-portrait: "(orientation: portrait)";
-$mq-landscape: "(orientation: landscape)";
-$mq-gt-4-3: "(min-aspect-ratio: 4/3)";
+$mq-sm: '(max-width: 43.6875rem)';
+$mq-md: '(min-width: 43.75rem) and (max-width: 61.1875rem)';
+$mq-lg: '(min-width: 61.25rem)';
+$mq-not-sm: '(min-width: 43.75rem)';
+$mq-not-md: '(max-width: 43.6875rem), (min-width: 61.25rem)';
+$mq-not-lg: '(max-width: 61.1875rem)';
+$mq-portrait: '(orientation: portrait)';
+$mq-landscape: '(orientation: landscape)';
+$mq-gt-4-3: '(min-aspect-ratio: 4/3)';
 
 $size-bar: 2.75rem;
 $size-control: 2.5rem;
-$size-control-margin: .1875rem;
+$size-control-margin: 0.1875rem;
 
 // Environment measurements
-$abc-nav-height: 2.5rem;   // Global nav
+$abc-nav-height: 2.5rem; // Global nav
 $p1s-fixed-width: 62.5rem; // Phase 1 (Standard) fixed width

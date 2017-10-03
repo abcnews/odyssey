@@ -3,7 +3,7 @@
 // This follows the same rules as Picture components:
 // all devices use the large aspect ratio when in landscape orientation
 
-[class*="u-sizer"] {
+[class*='u-sizer'] {
   display: block;
   overflow: hidden;
   position: relative;
@@ -69,7 +69,6 @@
     padding-top: 133.3333333%;
   }
 }
-
 
 @media #{$mq-landscape} and #{$mq-not-lg}, #{$mq-lg} {
   .u-sizer-lg-16x9 {
