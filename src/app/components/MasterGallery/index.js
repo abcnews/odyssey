@@ -4,8 +4,8 @@ const screenfull = require('screenfull');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const {enqueue, invalidateClient} = require('../../scheduler');
-const {$, $$, prepend} = require('../../utils/dom');
+const { enqueue, invalidateClient } = require('../../scheduler');
+const { $, $$, prepend } = require('../../utils/dom');
 const Caption = require('../Caption');
 const Gallery = require('../Gallery');
 const Picture = require('../Picture');
@@ -26,7 +26,7 @@ function MasterGallery() {
     return html`<div class="MasterGallery is-empty"></div>`;
   }
 
-  const galleryEl = Gallery({images});
+  const galleryEl = Gallery({ images });
 
   galleryEl.classList.remove('u-full');
 
@@ -41,13 +41,7 @@ function MasterGallery() {
   }
 
   window.addEventListener('click', event => {
-    if (
-      (event.button && event.button !== 0) ||
-      event.ctrlKey ||
-      event.metaKey ||
-      event.altKey ||
-      event.shiftKey
-    ) {
+    if ((event.button && event.button !== 0) || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) {
       return;
     }
 
@@ -56,12 +50,8 @@ function MasterGallery() {
         return;
       }
 
-      if (
-        (node.localName !== 'a') ||
-        (node.href === undefined) ||
-        (window.location.host !== node.host)
-      ) {
-         return traverse(node.parentNode);
+      if (node.localName !== 'a' || node.href === undefined || window.location.host !== node.host) {
+        return traverse(node.parentNode);
       }
 
       return node;
@@ -117,11 +107,11 @@ function MasterGallery() {
       role="dialog"
       aria-label="Gallery of all photos in this story"
       tabindex="-1"
-      onclick=${function (event) {
+      onclick=${function(event) {
         if (this === event.target) {
           close();
         }
-    }}>
+      }}>
       <div class="MasterGallery-container u-richtext-invert">
         ${galleryEl}
       </div>
@@ -150,7 +140,10 @@ function open(el) {
 
 function close() {
   document.documentElement.classList.remove('is-master-gallery-open');
-  externalActiveElement.focus();
+
+  if (externalActiveElement) {
+    externalActiveElement.focus();
+  }
 
   if (screenfull.isFullscreen) {
     screenfull.exit();
@@ -188,7 +181,7 @@ function register(el) {
   }
 
   registeredImageIds[id] = true;
-  
+
   images.push({
     id,
     pictureEl: Picture({
