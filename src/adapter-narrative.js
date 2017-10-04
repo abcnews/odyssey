@@ -1,20 +1,15 @@
 require('./polyfills');
 
 // Ours
-const {$, $$, after, append, detachAll} = require('./app/utils/dom');
+const { $, $$, after, append, detachAll } = require('./app/utils/dom');
 
 function updateAnchor(pair) {
-  $$(`a[name^="${pair[0]}"]`)
-  .forEach(el => {
-    el.setAttribute(
-      'name',
-      el.getAttribute('name').replace(pair[0], pair[1])
-    );
+  $$(`a[name^="${pair[0]}"]`).forEach(el => {
+    el.setAttribute('name', el.getAttribute('name').replace(pair[0], pair[1]));
   });
 }
 
-$$('a[name="title"]')
-.forEach(el => {
+$$('a[name="title"]').forEach(el => {
   const nextEl = el.nextElementSibling;
   const metaEl = document.createElement('meta');
 
@@ -24,8 +19,7 @@ $$('a[name="title"]')
   detachAll([el, nextEl]);
 });
 
-$$('a[name="subtitle"]')
-.forEach(el => {
+$$('a[name="subtitle"]').forEach(el => {
   let nextEl = el.nextElementSibling;
 
   if ($('img', nextEl) !== null || $('img', nextEl.nextElementSibling) !== null) {
@@ -38,9 +32,4 @@ $$('a[name="subtitle"]')
   after(nextEl, endTagEl);
 });
 
-[
-  ['subtitle', 'header'],
-  ['wall', 'mosaic'],
-  ['endwall', 'endmosaic'],
-]
-.forEach(updateAnchor);
+[['subtitle', 'header'], ['wall', 'mosaic'], ['endwall', 'endmosaic']].forEach(updateAnchor);

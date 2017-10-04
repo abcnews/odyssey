@@ -1,7 +1,9 @@
 if (typeof Object.assign !== 'function') {
-  Object.assign = function(target, varArgs) { // .length of function is 2
+  Object.assign = function(target, varArgs) {
+    // .length of function is 2
     'use strict';
-    if (target == null) { // TypeError if undefined or null
+    if (target == null) {
+      // TypeError if undefined or null
       throw new TypeError('Cannot convert undefined or null to object');
     }
 
@@ -10,7 +12,8 @@ if (typeof Object.assign !== 'function') {
     for (var index = 1; index < arguments.length; index++) {
       var nextSource = arguments[index];
 
-      if (nextSource != null) { // Skip over if undefined or null
+      if (nextSource != null) {
+        // Skip over if undefined or null
         for (var nextKey in nextSource) {
           // Avoid bugs when hasOwnProperty is shadowed
           if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
@@ -24,25 +27,29 @@ if (typeof Object.assign !== 'function') {
 }
 
 if (!Array.from) {
-  Array.from = (function () {
+  Array.from = (function() {
     var toStr = Object.prototype.toString;
-    var isCallable = function (fn) {
+    var isCallable = function(fn) {
       return typeof fn === 'function' || toStr.call(fn) === '[object Function]';
     };
-    var toInteger = function (value) {
+    var toInteger = function(value) {
       var number = Number(value);
-      if (isNaN(number)) { return 0; }
-      if (number === 0 || !isFinite(number)) { return number; }
+      if (isNaN(number)) {
+        return 0;
+      }
+      if (number === 0 || !isFinite(number)) {
+        return number;
+      }
       return (number > 0 ? 1 : -1) * Math.floor(Math.abs(number));
     };
     var maxSafeInteger = Math.pow(2, 53) - 1;
-    var toLength = function (value) {
+    var toLength = function(value) {
       var len = toInteger(value);
       return Math.min(Math.max(len, 0), maxSafeInteger);
     };
 
     // The length property of the from method is 1.
-    return function from(arrayLike/*, mapFn, thisArg */) {
+    return function from(arrayLike /*, mapFn, thisArg */) {
       // 1. Let C be the this value.
       var C = this;
 
@@ -98,18 +105,18 @@ if (!Array.from) {
       // 20. Return A.
       return A;
     };
-  }());
+  })();
 }
 
 try {
-    var ce = new window.CustomEvent('test');
-    ce.preventDefault();
-    if (ce.defaultPrevented !== true) {
-        // IE has problems with .preventDefault() on custom events
-        // http://stackoverflow.com/questions/23349191
-        throw new Error('Could not prevent default');
-    }
-} catch(e) {
+  var ce = new window.CustomEvent('test');
+  ce.preventDefault();
+  if (ce.defaultPrevented !== true) {
+    // IE has problems with .preventDefault() on custom events
+    // http://stackoverflow.com/questions/23349191
+    throw new Error('Could not prevent default');
+  }
+} catch (e) {
   var CustomEvent = function(event, params) {
     var evt, origPrevent;
     params = params || {
@@ -121,15 +128,15 @@ try {
     evt = document.createEvent('CustomEvent');
     evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
     origPrevent = evt.preventDefault;
-    evt.preventDefault = function () {
+    evt.preventDefault = function() {
       origPrevent.call(this);
       try {
         Object.defineProperty(this, 'defaultPrevented', {
-          get: function () {
+          get: function() {
             return true;
           }
         });
-      } catch(e) {
+      } catch (e) {
         this.defaultPrevented = true;
       }
     };

@@ -3,10 +3,10 @@ const html = require('bel');
 const dewysiwyg = require('util-dewysiwyg');
 
 // Ours
-const {SELECTORS} = require('../../constants');
+const { SELECTORS } = require('../../constants');
 const Main = require('../components/Main');
-const {$, $$, append, before, detach, detachAll} = require('../utils/dom');
-const {literalList, trim} = require('../utils/misc');
+const { $, $$, append, before, detach, detachAll } = require('../utils/dom');
+const { literalList, trim } = require('../utils/misc');
 require('./index.scss');
 
 const TEMPLATE_REMOVABLES = {
@@ -92,8 +92,9 @@ function promoteToMain(storyEl, meta) {
 
 function prepare() {
   // Tag indices of Phase 1 (Standard) video embeds, so we can resolve them later
-  $$('.inline-content.video:not(.expired)')
-  .forEach((el, index) => el.setAttribute('data-inline-video-data-index', index));
+  $$('.inline-content.video:not(.expired)').forEach((el, index) =>
+    el.setAttribute('data-inline-video-data-index', index)
+  );
 }
 
 function reset(storyEl, meta) {
@@ -102,8 +103,7 @@ function reset(storyEl, meta) {
 
   // Apply theme, if defined
   if (typeof meta.theme === 'string') {
-    meta.theme.split(';')
-    .forEach(definition => {
+    meta.theme.split(';').forEach(definition => {
       const [prop, value] = definition.split(':');
 
       if (prop && value) {
@@ -119,28 +119,24 @@ function reset(storyEl, meta) {
 
   storyEl = promoteToMain(storyEl, meta);
 
-  Object.keys(TEMPLATE_REMOVABLES)
-  .forEach(templateBodySelector => {
+  Object.keys(TEMPLATE_REMOVABLES).forEach(templateBodySelector => {
     if ($(templateBodySelector)) {
       detachAll($$(TEMPLATE_REMOVABLES[templateBodySelector]));
     }
   });
 
-  $$(WHITESPACE_REMOVABLES, storyEl)
-  .forEach(el => {
+  $$(WHITESPACE_REMOVABLES, storyEl).forEach(el => {
     if (trim(el.textContent).length === 0) {
       detach(el);
     }
   });
 
-  $$(SELECTORS.WYSIWYG_EMBED, storyEl)
-  .forEach(el => {
+  $$(SELECTORS.WYSIWYG_EMBED, storyEl).forEach(el => {
     dewysiwyg.normalise(el);
     el.className = `${el.className} u-richtext${meta.isDarkMode ? '-invert' : ''}`;
   });
 
-  $$(P1S_FLOAT.SELECTOR, storyEl)
-  .forEach(el => {
+  $$(P1S_FLOAT.SELECTOR, storyEl).forEach(el => {
     const [, side] = el.className.match(P1S_FLOAT.PATTERN);
     const pullEl = html`<div class="u-pull-${side}"></div>`;
 
@@ -150,8 +146,7 @@ function reset(storyEl, meta) {
     append(pullEl, el);
   });
 
-  $$(P2_FLOAT.SELECTOR, storyEl)
-  .forEach(el => {
+  $$(P2_FLOAT.SELECTOR, storyEl).forEach(el => {
     if (el.className.indexOf('view-') > -1) {
       const [, , side] = el.className.match(P2_FLOAT.PATTERN);
       const pullEl = html`<div class="u-pull-${side}"></div>`;
@@ -165,13 +160,9 @@ function reset(storyEl, meta) {
     }
   });
 
-  $$(PREVIEW_CTX_SELECTOR, storyEl)
-  .forEach(el => {
+  $$(PREVIEW_CTX_SELECTOR, storyEl).forEach(el => {
     Array.from(el.children).forEach(childEl => {
-      if (
-        childEl.tagName === 'SCRIPT' &&
-        childEl.textContent.match(PREVIEW_SCRIPT_PATTERN)
-      ) {
+      if (childEl.tagName === 'SCRIPT' && childEl.textContent.match(PREVIEW_SCRIPT_PATTERN)) {
         detach(childEl);
       } else {
         before(el, childEl);

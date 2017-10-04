@@ -1,5 +1,5 @@
 // Ours
-const {enqueue, subscribe} = require('../../scheduler');
+const { enqueue, subscribe } = require('../../scheduler');
 
 const parallaxes = [];
 
@@ -12,9 +12,7 @@ subscribe(function _checkIfParallaxesPropertiesNeedToBeUpdated() {
     }
 
     const top = Math.min(0, rect.top);
-    const opacityExtent = parallax.nextEl ?
-      parallax.nextEl.getBoundingClientRect().top - top :
-      rect.height;
+    const opacityExtent = parallax.nextEl ? parallax.nextEl.getBoundingClientRect().top - top : rect.height;
     const opacity = 1 + top / opacityExtent;
     const yOffset = -33.33 * (top / rect.height);
 
@@ -23,7 +21,7 @@ subscribe(function _checkIfParallaxesPropertiesNeedToBeUpdated() {
         parallax.el.style.opacity = opacity;
         parallax.el.style.transform = `translate3d(0, ${yOffset}%, 0)`;
       });
-      parallax.state = {opacity, yOffset};
+      parallax.state = { opacity, yOffset };
     }
   });
 });

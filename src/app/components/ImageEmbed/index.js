@@ -4,22 +4,15 @@ const html = require('bel');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const {ALIGNMENT_PATTERN} = require('../../../constants');
-const {grabConfigSC} = require('../../utils/anchors');
-const {$, substitute} = require('../../utils/dom');
-const {getRatios} = require('../../utils/misc');
+const { ALIGNMENT_PATTERN } = require('../../../constants');
+const { grabConfigSC } = require('../../utils/anchors');
+const { $, substitute } = require('../../utils/dom');
+const { getRatios } = require('../../utils/misc');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
 require('./index.scss');
 
-function ImageEmbed({
-  pictureEl,
-  captionEl,
-  alignment,
-  isFull,
-  isCover,
-  isAnon
-}) {
+function ImageEmbed({ pictureEl, captionEl, alignment, isFull, isCover, isAnon }) {
   if (isCover) {
     isFull = true;
     isAnon = true;
@@ -38,7 +31,7 @@ function ImageEmbed({
       ${isAnon ? null : captionEl}
     </div>
   `;
-};
+}
 
 function transformEl(el, preserveOriginalRatio) {
   const imgEl = $('img', el);

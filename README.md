@@ -51,4 +51,6 @@ Use other internal utility functions for string mainpulation, event handling, el
 
 ## Authors
 
+- Simon Elvery ([Elvery.Simon@abc.net.au](mailto:Elvery.Simon@abc.net.au))
 - Colin Gourlay ([Gourlay.Colin@abc.net.au](mailto:Gourlay.Colin@abc.net.au))
+- Nathan Hoad ([Hoad.Nathan@abc.net.au](mailto:Hoad.Nathan@abc.net.au))

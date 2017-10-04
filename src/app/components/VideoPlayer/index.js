@@ -194,7 +194,6 @@ function VideoPlayer({ ratios = {}, posterURL, sources = [], isAmbient, isAlways
       if (!videoEl.paused) {
         return;
       }
-
       videoEl.play();
     },
     pause: () => {

@@ -5,10 +5,10 @@ const raf = require('raf');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const {IS_IOS, REM, SUPPORTS_PASSIVE} = require('../../../constants');
-const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
-const {$, $$, detach, isElement, setText} = require('../../utils/dom');
-const {dePx, getRatios, returnFalse, trim} = require('../../utils/misc');
+const { IS_IOS, REM, SUPPORTS_PASSIVE } = require('../../../constants');
+const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
+const { $, $$, detach, isElement, setText } = require('../../utils/dom');
+const { dePx, getRatios, returnFalse, trim } = require('../../utils/misc');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
 require('./index.scss');
@@ -17,14 +17,10 @@ const MOSAIC_ROW_LENGTHS_PATTERN = /(?:tiled|mosaic)(\d+)/;
 const PCT_PATTERN = /(-?[0-9\.]+)%/;
 const SWIPE_THRESHOLD = 25;
 const AXIS_THRESHOLD = 5;
-const INACTIVE_OPACITY = .2;
-const PASSIVE_OPTIONS = {passive: true};
+const INACTIVE_OPACITY = 0.2;
+const PASSIVE_OPTIONS = { passive: true };
 
-function Gallery({
-  images = [],
-  masterCaptionEl,
-  mosaicRowLengths = []
-}) {
+function Gallery({ images = [], masterCaptionEl, mosaicRowLengths = [] }) {
   let startImagesTransformXPct;
   let startX;
   let startY;
@@ -45,8 +41,8 @@ function Gallery({
           enqueue(function _updateImagesAppearance_immediatePost() {
             imagesEl.removeEventListener('transitionend', onEnd);
             imagesEl.style.transitionDuration = '';
-            pictureEls.forEach(pictureEl => pictureEl.style.transitionDuration = '');
-          });  
+            pictureEls.forEach(pictureEl => (pictureEl.style.transitionDuration = ''));
+          });
         }
 
         wasOnEndCalled = true;
@@ -54,7 +50,7 @@ function Gallery({
 
       enqueue(function _updateImagesAppearance_immediatePre() {
         imagesEl.style.transitionDuration = '0s, 0s';
-        pictureEls.forEach(pictureEl => pictureEl.style.transitionDuration = '0s');
+        pictureEls.forEach(pictureEl => (pictureEl.style.transitionDuration = '0s'));
         imagesEl.addEventListener('transitionend', onEnd, false);
         setTimeout(onEnd, 500); // In case no transition is required
       });
@@ -95,7 +91,7 @@ function Gallery({
   }
 
   function pointerHandler(fn) {
-    return function handler (event) {
+    return function handler(event) {
       const _event = {
         type: event.type,
         preventDefault: event.preventDefault.bind(event),
@@ -119,8 +115,10 @@ function Gallery({
       return;
     }
 
-    const [, xPct] = imagesEl.style.transform.match(PCT_PATTERN) ||
-      [, dePx(imagesEl.style.left || '0') / paneWidth * 100];
+    const [, xPct] = imagesEl.style.transform.match(PCT_PATTERN) || [
+      ,
+      dePx(imagesEl.style.left || '0') / paneWidth * 100
+    ];
 
     startImagesTransformXPct = parseInt(xPct, 10);
     startX = event.clientX;
@@ -137,15 +135,15 @@ function Gallery({
       return;
     }
 
-    diffX = (event.clientX - startX);
-    diffY = (event.clientY - startY);
+    diffX = event.clientX - startX;
+    diffY = event.clientY - startY;
 
     if (!swipeAxis) {
       let absDiffX = Math.abs(diffX);
       let absDiffY = Math.abs(diffY);
 
       if (absDiffX > AXIS_THRESHOLD || absDiffY > AXIS_THRESHOLD) {
-        swipeAxis = (absDiffX < absDiffY) ? 'vertical' : 'horizontal';
+        swipeAxis = absDiffX < absDiffY ? 'vertical' : 'horizontal';
       }
     }
 
@@ -166,9 +164,9 @@ function Gallery({
     const index = +this.getAttribute('data-index');
 
     if (index > currentIndex) {
-        diffX = -(SWIPE_THRESHOLD + 1);
+      diffX = -(SWIPE_THRESHOLD + 1);
     } else if (index < currentIndex) {
-        diffX = SWIPE_THRESHOLD + 1;
+      diffX = SWIPE_THRESHOLD + 1;
     }
   }
 
@@ -197,7 +195,7 @@ function Gallery({
       // a link or something else with an event handler
       if (galleryEl.className.indexOf('is-mosaic') === -1) {
         shouldIgnoreClicks = true;
-        setTimeout(function () {
+        setTimeout(function() {
           shouldIgnoreClicks = false;
         }, 50);
       }
@@ -248,32 +246,39 @@ function Gallery({
 
   const isMosaic = mosaicRowLengths.length > 0;
 
-  const className = cn('Gallery', {
-    'is-mosaic': isMosaic
-  }, 'u-full');
+  const className = cn(
+    'Gallery',
+    {
+      'is-mosaic': isMosaic
+    },
+    'u-full'
+  );
 
   mosaicRowLengths = mosaicRowLengths.map(rowLength => Math.min(3, rowLength));
 
   const mosaicRowLengthsClone = [].concat(mosaicRowLengths);
-  const mosaicRows = images.reduce((memo, image, index) => {
-    if (mosaicRowLengthsClone.length === 0) {
-      mosaicRowLengthsClone.push(1);
-    }
-
-    memo[memo.length - 1].push(image);
-
-    mosaicRowLengthsClone[0]--;
-
-    if (mosaicRowLengthsClone[0] === 0) {
-      mosaicRowLengthsClone.shift();
-
-      if (index + 1 < images.length) {
-        memo.push([]);
+  const mosaicRows = images.reduce(
+    (memo, image, index) => {
+      if (mosaicRowLengthsClone.length === 0) {
+        mosaicRowLengthsClone.push(1);
       }
-    }
 
-    return memo;
-  }, [[]]);
+      memo[memo.length - 1].push(image);
+
+      mosaicRowLengthsClone[0]--;
+
+      if (mosaicRowLengthsClone[0] === 0) {
+        mosaicRowLengthsClone.shift();
+
+        if (index + 1 < images.length) {
+          memo.push([]);
+        }
+      }
+
+      return memo;
+    },
+    [[]]
+  );
 
   mosaicRows.forEach(images => {
     images.forEach(image => {
@@ -282,13 +287,12 @@ function Gallery({
 
       if (image.mosaicPictureEls) {
         image.mosaicPictureEls.forEach((el, index) => {
-          if (index === image.rowLength  - 1) {
+          if (index === image.rowLength - 1) {
             image.mosaicPictureEl = el;
           } else {
             el.api.forget();
           }
         });
-        
       } else {
         image.mosaicPictureEl = image.pictureEl.cloneNode(true);
       }
@@ -297,13 +301,7 @@ function Gallery({
     });
   });
 
-  const imageEls = images.map(({
-    id,
-    pictureEl,
-    mosaicPictureEl,
-    captionEl,
-    flexBasisPct
-  }, index) => {
+  const imageEls = images.map(({ id, pictureEl, mosaicPictureEl, captionEl, flexBasisPct }, index) => {
     pictureEl.api.loadedHook = imgEl => {
       imgEl.onload = measureDimensions;
       imgEl.setAttribute('draggable', 'false');
@@ -327,20 +325,28 @@ function Gallery({
     imageEl.addEventListener('touchend', swipeIntent, false);
 
     if (pictureEl.hasAttribute('href')) {
-       pictureEl.addEventListener('focus', () => {
-        goToImage(index);
-      }, false);
+      pictureEl.addEventListener(
+        'focus',
+        () => {
+          goToImage(index);
+        },
+        false
+      );
     }
 
     const captionLinkEl = $('a', captionEl);
 
     if (captionLinkEl) {
       if (isMosaic) {
-        captionLinkEl.setAttribute('tabindex', '-1')
+        captionLinkEl.setAttribute('tabindex', '-1');
       } else {
-        captionLinkEl.addEventListener('focus', () => {
-          goToImage(index);
-        }, false);
+        captionLinkEl.addEventListener(
+          'focus',
+          () => {
+            goToImage(index);
+          },
+          false
+        );
       }
     }
 
@@ -407,107 +413,114 @@ function Gallery({
     </div>
   `;
 
-  galleryEl.api = {goToImage};
+  galleryEl.api = { goToImage };
 
   raf(() => {
-    goToImage(currentIndex = 0);
+    goToImage((currentIndex = 0));
   });
 
   return galleryEl;
-};
+}
 
 function offsetBasedOpacity(imageIndex, imagesTransformXPct) {
   return (
-    (100 - Math.min(100, Math.abs(imageIndex * 100 + imagesTransformXPct))
-  ) / 100) * (1 - INACTIVE_OPACITY) + INACTIVE_OPACITY;
+    (100 - Math.min(100, Math.abs(imageIndex * 100 + imagesTransformXPct))) / 100 * (1 - INACTIVE_OPACITY) +
+    INACTIVE_OPACITY
+  );
 }
 
 function transformSection(section) {
-  const [, mosaicRowLengthsString] = (`${section.name}${section.configSC}`).match(MOSAIC_ROW_LENGTHS_PATTERN) || [null, ''];
+  const [, mosaicRowLengthsString] = `${section.name}${section.configSC}`.match(MOSAIC_ROW_LENGTHS_PATTERN) || [
+    null,
+    ''
+  ];
   const ratios = getRatios(section.configSC);
 
   const nodes = [].concat(section.betweenNodes);
 
-  const config = nodes.reduce((config, node) => {
-    const imgEl = isElement(node) && $('img', node);
+  const config = nodes.reduce(
+    (config, node) => {
+      const imgEl = isElement(node) && $('img', node);
 
-    if (imgEl) {
-      const src = imgEl.src;
-      const alt = imgEl.getAttribute('alt');
-      const id = url2cmid(src);
-      const linkUrl = `/news/${id}`;
+      if (imgEl) {
+        const src = imgEl.src;
+        const alt = imgEl.getAttribute('alt');
+        const id = url2cmid(src);
+        const linkUrl = `/news/${id}`;
 
-      config.images.push({
-        id,
-        pictureEl: Picture({
-          src,
-          alt,
-          ratios: {
-            sm: ratios.sm || '3x4',
-            md: ratios.md,
-            lg: ratios.lg,
-          },
-          linkUrl
-        }),
-        mosaicPictureEls: [
-          Picture({
-            src,
-            alt,
-            ratios: {
-              sm: ratios.sm || '3x2',
-              md: ratios.md || '16x9',
-              lg: ratios.lg,
-            },
-            linkUrl
-          }),
-          Picture({
-            src,
-            alt,
-            ratios: {
-              sm: ratios.sm || '1x1',
-              md: ratios.md,
-              lg: ratios.lg || '3x2',
-            },
-            linkUrl
-          }),
-          Picture({
+        config.images.push({
+          id,
+          pictureEl: Picture({
             src,
             alt,
             ratios: {
               sm: ratios.sm || '3x4',
-              md: ratios.md || '4x3',
-              lg: ratios.lg || '4x3',
+              md: ratios.md,
+              lg: ratios.lg
             },
             linkUrl
-          })
-        ],
-        captionEl: Caption.createFromEl(node)
-      });
-    } else if (node.tagName === 'P') {
-      if (!config.masterCaptionText) {
-        config.masterCaptionText = node.textContent;
-        config.masterCaptionEl = Caption({
-          text: config.masterCaptionText
+          }),
+          mosaicPictureEls: [
+            Picture({
+              src,
+              alt,
+              ratios: {
+                sm: ratios.sm || '3x2',
+                md: ratios.md || '16x9',
+                lg: ratios.lg
+              },
+              linkUrl
+            }),
+            Picture({
+              src,
+              alt,
+              ratios: {
+                sm: ratios.sm || '1x1',
+                md: ratios.md,
+                lg: ratios.lg || '3x2'
+              },
+              linkUrl
+            }),
+            Picture({
+              src,
+              alt,
+              ratios: {
+                sm: ratios.sm || '3x4',
+                md: ratios.md || '4x3',
+                lg: ratios.lg || '4x3'
+              },
+              linkUrl
+            })
+          ],
+          captionEl: Caption.createFromEl(node)
         });
-      } else if (!config.masterCaptionAttribution) {
-        config.masterCaptionAttribution = node.textContent;
-        config.masterCaptionEl = Caption({
-          text: config.masterCaptionText,
-          attribution: config.masterCaptionAttribution
-        });
+      } else if (node.tagName === 'P') {
+        if (!config.masterCaptionText) {
+          config.masterCaptionText = node.textContent;
+          config.masterCaptionEl = Caption({
+            text: config.masterCaptionText
+          });
+        } else if (!config.masterCaptionAttribution) {
+          config.masterCaptionAttribution = node.textContent;
+          config.masterCaptionEl = Caption({
+            text: config.masterCaptionText,
+            attribution: config.masterCaptionAttribution
+          });
+        }
       }
+
+      detach(node);
+
+      return config;
+    },
+    {
+      images: [],
+      masterCaptionEl: null,
+      masterCaptionText: null,
+      masterCaptionAttribution: null,
+      mosaicRowLengths: mosaicRowLengthsString.split('')
     }
-
-    detach(node);
-
-    return config;
-  }, {
-    images: [],
-    masterCaptionEl: null,
-    masterCaptionText: null,
-    masterCaptionAttribution: null,
-    mosaicRowLengths: mosaicRowLengthsString.split('')
-  });
+  );
 
   delete config.masterCaptionText;
   delete config.masterCaptionAttribution;

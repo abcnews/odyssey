@@ -2,7 +2,7 @@
 const html = require('bel');
 
 // Ours
-const {append} = require('../../utils/dom');
+const { append } = require('../../utils/dom');
 require('./index.scss');
 
 function Comments() {
@@ -18,7 +18,9 @@ function Comments() {
     ABC.News.initLivefyre(() => {
       ABC.News.Livefyre.initComments({
         el: livefyreRootEl,
-        config: {/* [1] */}
+        config: {
+          /* [1] */
+        }
       });
     });
   }

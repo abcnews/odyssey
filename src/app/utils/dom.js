@@ -1,12 +1,40 @@
 const INLINE_TAG_NAMES = [
-    'b', 'big', 'br', 'i', 'small', 'tt', 'abbr', 'acronym', 'cite',
-    'code', 'dfn', 'em', 'kbd', 'strong', 'samp', 'time', 'var',
-    'a', 'bdo','img', 'map', 'object', 'q', 'script', 'span',
-    'sub', 'sup', 'button', 'input', 'label', 'select', 'textarea'
+  'b',
+  'big',
+  'br',
+  'i',
+  'small',
+  'tt',
+  'abbr',
+  'acronym',
+  'cite',
+  'code',
+  'dfn',
+  'em',
+  'kbd',
+  'strong',
+  'samp',
+  'time',
+  'var',
+  'a',
+  'bdo',
+  'img',
+  'map',
+  'object',
+  'q',
+  'script',
+  'span',
+  'sub',
+  'sup',
+  'button',
+  'input',
+  'label',
+  'select',
+  'textarea'
 ];
 
 function isText(node) {
-  return node && node.nodeType === Node.TEXT_NODE
+  return node && node.nodeType === Node.TEXT_NODE;
 }
 
 function isElement(node) {
@@ -14,8 +42,7 @@ function isElement(node) {
 }
 
 function isInlineElement(node) {
-  return isElement(node) &&
-    INLINE_TAG_NAMES.indexOf(node.tagName.toLowerCase()) > -1;
+  return isElement(node) && INLINE_TAG_NAMES.indexOf(node.tagName.toLowerCase()) > -1;
 }
 
 function isDocument(node) {
@@ -81,7 +108,7 @@ function setText(el, text) {
   let node = el.firstChild;
 
   if (node === null || !isText(node)) {
-    prepend(el, node = document.createTextNode(text));
+    prepend(el, (node = document.createTextNode(text)));
   } else {
     node.nodeValue = text;
   }
