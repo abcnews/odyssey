@@ -2,7 +2,7 @@
 
 .Main {
   display: block;
-  
+
   *,
   *::before,
   *::after {
@@ -29,11 +29,11 @@
   > h2,
   > hr {
     &::before {
-      content: "";
+      content: '';
       display: block;
       margin: 3rem auto 1rem;
       width: 7.5rem;
-      height: .125rem;
+      height: 0.125rem;
       background-color: $color-grey-300;
 
       @media #{$mq-md} {
@@ -44,9 +44,9 @@
         margin: 5rem auto 1.5rem;
       }
     }
-    
+
     @media #{$mq-md} {
-      padding-bottom: .5rem;
+      padding-bottom: 0.5rem;
     }
 
     @media #{$mq-lg} {
@@ -56,6 +56,6 @@
 
   > hr {
     border: none;
-    padding-bottom: .5rem;
+    padding-bottom: 0.5rem;
   }
 }

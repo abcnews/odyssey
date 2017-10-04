@@ -1,7 +1,7 @@
 @import '../../../constants';
 
 .u-layout > .u-full,
-[class*="u-richtext"] > .u-full {
+[class*='u-richtext'] > .u-full {
   margin-top: 2rem;
   margin-bottom: 2rem;
   margin-left: calc(-50vw + 50%) !important;
@@ -10,7 +10,6 @@
   padding-right: 0;
   width: 100vw;
   width: var(--root-width);
-  
 
   @media #{$mq-lg} {
     margin-top: 3rem;
@@ -26,23 +25,22 @@
   html.fixed & {
     @media (max-width: $p1s-fixed-width) {
       min-width: $p1s-fixed-width;
-      margin-left: -.625rem  !important;
+      margin-left: -.625rem !important;
     }
 
     @media #{$mq-not-lg} {
-      margin-left: 0  !important;
+      margin-left: 0 !important;
     }
   }
 }
 
 .u-layout > .u-full:not(.Gallery) + .u-full:not(.Gallery),
 .u-layout > .u-full:not(.Gallery) + a[name] + .u-full:not(.Gallery),
-[class*="u-richtext"] > .u-full:not(.Gallery) + .u-full:not(.Gallery),
-[class*="u-richtext"] > .u-full:not(.Gallery) + a[name] + .u-full:not(.Gallery) {
+[class*='u-richtext'] > .u-full:not(.Gallery) + .u-full:not(.Gallery),
+[class*='u-richtext'] > .u-full:not(.Gallery) + a[name] + .u-full:not(.Gallery) {
   margin-top: -2rem;
 
   @media #{$mq-lg} {
     margin-top: -3rem;
   }
 }
-

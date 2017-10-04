@@ -2,7 +2,7 @@
 const html = require('bel');
 
 // Ours
-const {SELECTORS, RICHTEXT_BLOCK_TAGNAMES} = require('../constants');
+const { SELECTORS, RICHTEXT_BLOCK_TAGNAMES } = require('../constants');
 const api = require('./api');
 const Caption = require('./components/Caption');
 const Comments = require('./components/Comments');
@@ -20,11 +20,11 @@ const UQuote = require('./components/UQuote');
 const UParallax = require('./components/UParallax');
 const UPull = require('./components/UPull');
 const VideoEmbed = require('./components/VideoEmbed');
-const {enqueue, start, subscribe} = require('./scheduler');
-const {getMeta} = require('./meta');
-const {prepare, reset} = require('./reset');
-const {getMarkers, getSections} = require('./utils/anchors');
-const {$, $$, after, append, before, detach, detachAll, isElement, prepend, substitute} = require('./utils/dom');
+const { enqueue, start, subscribe } = require('./scheduler');
+const { getMeta } = require('./meta');
+const { prepare, reset } = require('./reset');
+const { getMarkers, getSections } = require('./utils/anchors');
+const { $, $$, after, append, before, detach, detachAll, isElement, prepend, substitute } = require('./utils/dom');
 
 function app() {
   prepare();
@@ -32,18 +32,14 @@ function app() {
   const meta = getMeta();
   const storyEl = reset($(SELECTORS.STORY), meta);
 
-  after($(SELECTORS.GLOBAL_NAV), Nav({shareLinks: meta.shareLinks}));
+  after($(SELECTORS.GLOBAL_NAV), Nav({ shareLinks: meta.shareLinks }));
 
   start(); // loop
 
-  // Register all embedded images with MasterGallery 
-  $$(`
-    .inline-content.photo,
-    [class*="view-image-embed"]
-  `, storyEl)
-  .concat($$('.embed-content', storyEl)
-    .filter(el => $('.type-photo', el)))
-  .forEach(MasterGallery.register);
+  // Register all embedded images with MasterGallery
+  $$('.inline-content.photo, [class*="view-image-embed"]', storyEl)
+    .concat($$('.embed-content', storyEl).filter(el => $('.type-photo', el)))
+    .forEach(MasterGallery.register);
 
   let hasHeader = false;
 
@@ -82,18 +78,14 @@ function app() {
   });
 
   if (!hasHeader) {
-    prepend(storyEl, Header({meta}));
+    prepend(storyEl, Header({ meta }));
   }
 
   // Enable drop-caps after headers
-  $$('.Header')
-  .forEach(el => {
+  $$('.Header').forEach(el => {
     let nextEl = el.nextElementSibling;
 
-    if (
-      nextEl !== null &&
-      nextEl.tagName !== 'P'
-    ) {
+    if (nextEl !== null && nextEl.tagName !== 'P') {
       nextEl = nextEl.nextElementSibling;
     }
 
@@ -102,16 +94,11 @@ function app() {
 
   // Enable outdented quotes on direct descendants of richtext elements
   $$('[class*="u-richtext"] > *')
-  .filter(el => RICHTEXT_BLOCK_TAGNAMES.indexOf(el.tagName) > -1)
-  .forEach(UQuote.conditionallyApply);
+    .filter(el => RICHTEXT_BLOCK_TAGNAMES.indexOf(el.tagName) > -1)
+    .forEach(UQuote.conditionallyApply);
 
   // Transform markers
-  getMarkers([
-    'cta',
-    'hr',
-    'series',
-    'share'
-  ]).forEach(marker => {
+  getMarkers(['cta', 'hr', 'series', 'share']).forEach(marker => {
     let el;
 
     switch (marker.name) {
@@ -142,46 +129,34 @@ function app() {
   // Transform image embeds
   const sidePulls = $$('.u-pull-left, .u-pull-right');
 
-  $$(`
-    .inline-content.photo,
-    [class*="view-image-embed"]
-  `, storyEl)
-  .concat($$('.embed-content', storyEl)
-    .filter(el => $('.type-photo', el)))
-  .forEach(el => {
-    const isSidePulled = sidePulls.filter(pEl => pEl.contains(el)).length > 0;
+  $$('.inline-content.photo, [class*="view-image-embed"]', storyEl)
+    .concat($$('.embed-content', storyEl).filter(el => $('.type-photo', el)))
+    .forEach(el => {
+      const isSidePulled = sidePulls.filter(pEl => pEl.contains(el)).length > 0;
 
-    ImageEmbed.transformEl(el, isSidePulled);
-  });
+      ImageEmbed.transformEl(el, isSidePulled);
+    });
 
   // Transform video embeds
-  $$(`
-    .inline-content.video,
-    .view-inlineMediaPlayer
-  `, storyEl)
-  .concat($$('.embed-content', storyEl)
-    .filter(el => $('.type-video', el)))
-  .forEach(VideoEmbed.transformEl);
+  $$('.inline-content.video, .view-inlineMediaPlayer', storyEl)
+    .concat($$('.embed-content', storyEl).filter(el => $('.type-video', el)))
+    .forEach(VideoEmbed.transformEl);
 
   // Transform quotes (native and embedded)
-  $$(`
-    blockquote:not([class]),
-    .quote--pullquote,
-    .inline-content.quote,
-    .embed-quote,
-    .comp-rich-text-blockquote,
-    .view-inline-pullquote
-  `, storyEl)
-  .forEach(Quote.transformEl);
+  $$(
+    'blockquote:not([class]), .quote--pullquote, .inline-content.quote, .embed-quote, .comp-rich-text-blockquote, .view-inline-pullquote',
+    storyEl
+  ).forEach(Quote.transformEl);
 
   // Nullify nested pulls (outer always wins)
-  $$('[class*="u-pull"] [class*="u-pull"]')
-  .forEach(el => el.className = el.className.replace(/u-pull(-\w+)?/, 'n-pull$1'));
+  $$('[class*="u-pull"] [class*="u-pull"]').forEach(
+    el => (el.className = el.className.replace(/u-pull(-\w+)?/, 'n-pull$1'))
+  );
 
   // Transform embedded external link captions
-  let eels = $$('.inline-content[class*="embed"]', storyEl)
-    .concat($$('.embed-content', storyEl)
-      .filter(el => $('.type-external', el)));
+  let eels = $$('.inline-content[class*="embed"]', storyEl).concat(
+    $$('.embed-content', storyEl).filter(el => $('.type-external', el))
+  );
 
   (function transformRemainingEELs() {
     eels = eels.reduce((memo, el) => {
@@ -204,7 +179,6 @@ function app() {
     }
   })();
 
-
   // Embed comments, if enabled
   if (meta.hasCommentsEnabled) {
     append(storyEl, Comments());
@@ -218,7 +192,7 @@ function app() {
 
   // Expose API, then notify interested parties
   window.__ODYSSEY__ = api;
-  window.dispatchEvent(new CustomEvent('odyssey:api', {detail: api}));
-};
+  window.dispatchEvent(new CustomEvent('odyssey:api', { detail: api }));
+}
 
 module.exports = app;

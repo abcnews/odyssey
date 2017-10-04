@@ -27,12 +27,12 @@ body {
   .is-dark-mode > & {
     background-color: $color-black;
     background-color: var(--bg, #{$color-black});
-  
+
     main + .page_margins ::before,
     main + .page_margins ::after,
     main + .content ::before,
     main + .content ::after {
-      content: "";
+      content: '';
       position: absolute;
       background-color: inherit;
     }
@@ -43,7 +43,7 @@ body {
 
       &::before,
       &::after {
-        content: "";
+        content: '';
         position: absolute;
         top: 0;
         width: 50vw;
@@ -67,7 +67,7 @@ body {
     main + .page_margins {
       background-color: $color-grey-50;
     }
-    
+
     main + .content {
       background-color: $color-white;
     }

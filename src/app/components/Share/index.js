@@ -8,9 +8,8 @@ require('./index.scss');
 const DEFAULT_TYPE = 'story';
 const UPPERCASE_PATTERN = /[A-Z]/g;
 
-function Share({type, links}) {
-  const formattedType = (type.length ? type : DEFAULT_TYPE)
-    .replace(UPPERCASE_PATTERN, x => ' ' + x.toLowerCase());
+function Share({ type, links }) {
+  const formattedType = (type.length ? type : DEFAULT_TYPE).replace(UPPERCASE_PATTERN, x => ' ' + x.toLowerCase());
 
   return html`
     <div class="Share">
@@ -21,7 +20,7 @@ function Share({type, links}) {
 }
 
 function transformMarker(marker, links) {
-  marker.substituteWith(Share({type: marker.configSC, links}));
+  marker.substituteWith(Share({ type: marker.configSC, links }));
 }
 
 module.exports = Share;

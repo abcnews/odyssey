@@ -5,7 +5,7 @@
     overflow: visible;
     margin: 0;
     border-width: 0;
-    border-left: .625rem solid $color-grey-200;
+    border-left: 0.625rem solid $color-grey-200;
     padding: 0 2rem;
     background-color: transparent;
 
@@ -29,7 +29,7 @@
   footer {
     color: $color-grey-600;
     font-family: $font-sans;
-    font-size: .9375rem;
+    font-size: 0.9375rem;
 
     .u-richtext-invert > & {
       color: $color-grey-300;
@@ -43,8 +43,8 @@
 
 .Quote:not(.is-pullquote) {
   @media #{$mq-sm} {
-    .Main > [class*="u-pull"] > &,
-    &[class*="u-pull"] {
+    .Main > [class*='u-pull'] > &,
+    &[class*='u-pull'] {
       margin-left: -$layout-fluid-padding;
       margin-right: -$layout-fluid-padding;
     }
@@ -67,9 +67,9 @@
       text-align: left;
     }
 
-    .u-richtext > &:not([class*="u-pull"]),
-    .u-pull-out > &:not([class*="u-pull"]),
-    .u-pull > &:not([class*="u-pull"]) {
+    .u-richtext > &:not([class*='u-pull']),
+    .u-pull-out > &:not([class*='u-pull']),
+    .u-pull > &:not([class*='u-pull']) {
       padding-left: cells(1);
       padding-right: cells(1);
     }
@@ -104,7 +104,7 @@
   }
 
   footer {
-    padding-top: .25rem;
+    padding-top: 0.25rem;
     font-size: 1rem;
     color: $color-grey-500;
 
@@ -121,7 +121,7 @@
     }
 
     &::before {
-      content: "\2014\00A0";
+      content: '\2014\00A0';
     }
   }
 }

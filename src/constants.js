@@ -38,22 +38,25 @@ const MOCK_NODE = {
   textContent: ''
 };
 
-const MOCK_ELEMENT = Object.assign({
-  tagName: 'MOCK-ELEMENT',
-  attributes: [],
-  name: '',
-  className: '',
-  classList: [],
-  previousElementSibling: null,
-  nextElementSibling: null,
-  children: [],
-  childElementCount: 0,
-  firstElementChild: null,
-  lastElementChild: null,
-  innerHTML: '',
-  getAttribute: _ => '',
-  hasAttribute: _ => false,
-}, MOCK_NODE);
+const MOCK_ELEMENT = Object.assign(
+  {
+    tagName: 'MOCK-ELEMENT',
+    attributes: [],
+    name: '',
+    className: '',
+    classList: [],
+    previousElementSibling: null,
+    nextElementSibling: null,
+    children: [],
+    childElementCount: 0,
+    firstElementChild: null,
+    lastElementChild: null,
+    innerHTML: '',
+    getAttribute: _ => '',
+    hasAttribute: _ => false
+  },
+  MOCK_NODE
+);
 
 const REM = 16; // (px)
 const MQ = {
@@ -101,13 +104,13 @@ const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 const SUPPORTS_PASSIVE = (isSupported => {
   try {
     const options = Object.defineProperty({}, 'passive', {
-      get: function () {
+      get: function() {
         isSupported = true;
       }
     });
 
-    window.addEventListener("test", null, options);
-  } catch(err) {}
+    window.addEventListener('test', null, options);
+  } catch (err) {}
 
   return isSupported;
 })(false);

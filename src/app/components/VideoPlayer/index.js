@@ -6,15 +6,15 @@ const url2cmid = require('util-url2cmid');
 const xhr = require('xhr');
 
 // Ours
-const {CSS_URL, IS_IOS, MQ, MS_VERSION, SMALLEST_IMAGE} = require('../../../constants');
-const {getMeta} = require('../../meta');
-const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
-const {$, $$, append, isElement, setText, toggleAttribute, toggleBooleanAttributes} = require('../../utils/dom');
-const {proximityCheck, twoDigits, whenKeyIn} = require('../../utils/misc');
+const { CSS_URL, IS_IOS, MQ, MS_VERSION, SMALLEST_IMAGE } = require('../../../constants');
+const { getMeta } = require('../../meta');
+const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
+const { $, $$, append, isElement, setText, toggleAttribute, toggleBooleanAttributes } = require('../../utils/dom');
+const { proximityCheck, twoDigits, whenKeyIn } = require('../../utils/misc');
 require('./index.scss');
 
 const NEWLINES_PATTERN = /[\n\r]/g;
-const AMBIENT_PLAYABLE_RANGE = .5;
+const AMBIENT_PLAYABLE_RANGE = 0.5;
 const FUZZY_INCREMENT_FPS = 30;
 const FUZZY_INCREMENT_INTERVAL = 1000 / FUZZY_INCREMENT_FPS;
 const STEP_SECONDS = 5;
@@ -23,21 +23,10 @@ const DEFAULT_RATIO = '16x9';
 const players = [];
 
 function hasAudio(el) {
-  return el.mozHasAudio ||
-    !!el.webkitAudioDecodedByteCount ||
-    !!(el.audioTracks && el.audioTracks.length);
+  return el.mozHasAudio || !!el.webkitAudioDecodedByteCount || !!(el.audioTracks && el.audioTracks.length);
 }
 
-function VideoPlayer({
-  ratios = {},
-  posterURL,
-  sources = [],
-  isAmbient,
-  isAlwaysHQ,
-  isLoop,
-  isMuted,
-  scrollplayPct
-}) {
+function VideoPlayer({ ratios = {}, posterURL, sources = [], isAmbient, isAlwaysHQ, isLoop, isMuted, scrollplayPct }) {
   ratios = {
     sm: ratios.sm || DEFAULT_RATIO,
     md: ratios.md || DEFAULT_RATIO,
@@ -65,7 +54,7 @@ function VideoPlayer({
     'webkit-playsinline': true
   });
 
-   // Firefox doesn't respect the muted attribute initially.
+  // Firefox doesn't respect the muted attribute initially.
   if (isMuted && !videoEl.muted) {
     videoEl.muted = true;
   }
@@ -97,7 +86,7 @@ function VideoPlayer({
     if (muteEl) {
       muteEl.setAttribute('aria-label', videoEl.muted ? 'Unmute' : 'Mute');
     }
-  };
+  }
 
   let fuzzyCurrentTime = 0;
   let fuzzyTimeout;
@@ -147,7 +136,7 @@ function VideoPlayer({
       // Fixed players should use their parent's rect, as they're always in the viewport
       const playerEl = videoEl.parentElement;
       const position = window.getComputedStyle(playerEl).position;
-      const el = (position === 'fixed' ? playerEl.parentElement : playerEl);
+      const el = position === 'fixed' ? playerEl.parentElement : playerEl;
 
       return el.getBoundingClientRect();
     },
@@ -155,7 +144,7 @@ function VideoPlayer({
       if (!videoEl.paused) {
         return;
       }
-      
+
       // Stop all other non-ambient videos
       if (!player.isAmbient) {
         players.forEach(_player => {
@@ -172,8 +161,7 @@ function VideoPlayer({
       }
 
       // Play and update attributes
-      (videoEl.play() || {then: x => x()})
-      .then(() => {
+      (videoEl.play() || { then: x => x() }).then(() => {
         videoEl.removeAttribute('paused');
 
         if (playbackEl) {
@@ -185,7 +173,7 @@ function VideoPlayer({
       if (videoEl.paused) {
         return;
       }
-      
+
       videoEl.pause();
       videoEl.setAttribute('paused', '');
 
@@ -242,7 +230,7 @@ function VideoPlayer({
 
     if (steppingKeysHeldDown.indexOf(event.keyCode) === steppingKeysHeldDown.length - 1) {
       const isSteppingForwards = event.keyCode === 38 || event.keyCode === 39;
-    
+
       jumpTo(videoEl.currentTime + STEP_SECONDS * (isSteppingForwards ? 1 : -1));
     }
   }
@@ -266,11 +254,11 @@ function VideoPlayer({
     if (!isScrubbing) {
       return;
     }
-    
+
     if (!isPassive) {
       event.preventDefault();
     }
-    
+
     const clientX = event.touches ? event.touches[0].clientX : event.clientX;
     const rect = progressEl.getBoundingClientRect();
 
@@ -281,11 +269,11 @@ function VideoPlayer({
     if (!isScrubbing) {
       return;
     }
-        
+
     if (wasPlayingBeforeScrubbing) {
       videoEl.play();
     }
-    
+
     isScrubbing = false;
   }
 
@@ -314,7 +302,7 @@ function VideoPlayer({
     ></progress>`;
     progressEl = html`<div class="VideoPlayer-progress">
       ${progressBarEl}
-    </div>`
+    </div>`;
     controlsEl = html`<div class="VideoPlayer-controls">
       ${playbackEl}
       ${muteEl}
@@ -325,13 +313,11 @@ function VideoPlayer({
     videoEl.addEventListener('timeupdate', () => {
       if (videoEl.readyState > 0) {
         const secondsRemaining = videoEl.duration - videoEl.currentTime;
-        const formattedNegativeTimeFromEnd = isNaN(secondsRemaining) ? '' : `${
-          secondsRemaining > 0 ? '-' : ''
-        }${
-          twoDigits(Math.floor(secondsRemaining / 60))
-        }:${
-          twoDigits(Math.round(secondsRemaining % 60))
-        }`;
+        const formattedNegativeTimeFromEnd = isNaN(secondsRemaining)
+          ? ''
+          : `${secondsRemaining > 0 ? '-' : ''}${twoDigits(Math.floor(secondsRemaining / 60))}:${twoDigits(
+              Math.round(secondsRemaining % 60)
+            )}`;
 
         setText(timeRemainingEl, formattedNegativeTimeFromEnd);
         player.currentFuzzyTime = videoEl.currentTime;
@@ -339,9 +325,9 @@ function VideoPlayer({
     });
 
     progressEl.addEventListener('mousedown', scrubStart);
-    progressEl.addEventListener('touchstart', scrubStart, {passive: true});
+    progressEl.addEventListener('touchstart', scrubStart, { passive: true });
     document.addEventListener('mousemove', scrub);
-    document.addEventListener('touchmove', scrub, {passive: true});
+    document.addEventListener('touchmove', scrub, { passive: true });
     document.addEventListener('mouseup', scrubEnd);
     document.addEventListener('touchend', scrubEnd);
     document.addEventListener('touchcancel', scrubEnd);
@@ -358,7 +344,7 @@ function VideoPlayer({
   videoPlayerEl.api = player;
 
   return videoPlayerEl;
-};
+}
 
 function getMetadata(videoElOrId, callback) {
   let wasCalled;
@@ -381,8 +367,7 @@ function getMetadata(videoElOrId, callback) {
     // Phase 2
     // * Poster & sources are nested inside global `WCMS` object
 
-    Object.keys(WCMS.pluginCache.plugins.videoplayer)
-    .some(key => {
+    Object.keys(WCMS.pluginCache.plugins.videoplayer).some(key => {
       const config = WCMS.pluginCache.plugins.videoplayer[key][0].videos[0];
 
       if (config.url.indexOf(videoElOrId) > -1) {
@@ -402,31 +387,31 @@ function getMetadata(videoElOrId, callback) {
     const relatedMedia = getMeta().relatedMedia;
 
     $$('.inline-content.video[data-inline-video-data-index]')
-    .concat(relatedMedia ? [relatedMedia] : [])
-    .some(el => {
-      if ($(`[href*="/${videoElOrId}"]`, el)) {
-        const posterEl = $('img, .inline-video', el);
+      .concat(relatedMedia ? [relatedMedia] : [])
+      .some(el => {
+        if ($(`[href*="/${videoElOrId}"]`, el)) {
+          const posterEl = $('img, .inline-video', el);
 
-        done(null, {
-          posterURL: posterEl ? (posterEl.style.backgroundImage.match(CSS_URL) || [, posterEl.src])[1] : null,
-          sources: formatSources(window.inlineVideoData[el.getAttribute('data-inline-video-data-index')])
-        });
+          done(null, {
+            posterURL: posterEl ? (posterEl.style.backgroundImage.match(CSS_URL) || [, posterEl.src])[1] : null,
+            sources: formatSources(window.inlineVideoData[el.getAttribute('data-inline-video-data-index')])
+          });
 
-        return true;
-      }
-    });
+          return true;
+        }
+      });
   } else {
     // Phase 1 (Mobile):
     // * Doesn't embed video; only teases to it.
     // * Must fetch video detail page...
     // * ...then parse posterURL and sources, based on the page template
-    
-    xhr({url: `/news/${videoElOrId}`}, (err, response, body) => {
+
+    xhr({ url: `/news/${videoElOrId}` }, (err, response, body) => {
       if (err || response.statusCode !== 200) {
         return done(err || new Error(response.statusCode));
       }
 
-      const doc = (new DOMParser()).parseFromString(body, 'text/html');
+      const doc = new DOMParser().parseFromString(body, 'text/html');
 
       if (body.indexOf('WCMS.pluginCache') > -1) {
         // Phase 2
@@ -434,11 +419,13 @@ function getMetadata(videoElOrId, callback) {
         // * Sources can be parsed from JS that would nest them under the global `WCMS` object
 
         done(null, {
-          posterURL: doc.querySelector('.view-inlineMediaPlayer img')
-            .getAttribute('src').replace('-thumbnail', '-large'),
-          sources: formatSources(JSON.parse(body
-            .replace(NEWLINES_PATTERN, '')
-            .match(/"sources":(\[.*\]),"addDownload"/)[1]))
+          posterURL: doc
+            .querySelector('.view-inlineMediaPlayer img')
+            .getAttribute('src')
+            .replace('-thumbnail', '-large'),
+          sources: formatSources(
+            JSON.parse(body.replace(NEWLINES_PATTERN, '').match(/"sources":(\[.*\]),"addDownload"/)[1])
+          )
         });
       } else if (body.indexOf('inlineVideoData') > -1) {
         // Phase 1 (Standard)
@@ -447,10 +434,14 @@ function getMetadata(videoElOrId, callback) {
 
         done(null, {
           posterURL: doc.querySelector('.inline-video img').getAttribute('src'),
-          sources: formatSources(JSON.parse(body
-            .replace(NEWLINES_PATTERN, '')
-            .match(/inlineVideoData\.push\((\[.*\])\)/)[1]
-            .replace(/'/g, '"')))
+          sources: formatSources(
+            JSON.parse(
+              body
+                .replace(NEWLINES_PATTERN, '')
+                .match(/inlineVideoData\.push\((\[.*\])\)/)[1]
+                .replace(/'/g, '"')
+            )
+          )
         });
       } else {
         // Phase 1 (Mobile)
@@ -466,9 +457,7 @@ function getMetadata(videoElOrId, callback) {
 }
 
 function formatSources(sources, sortProp = 'bitrate') {
-  return sources
-  .sort((a, b) => +b[sortProp] - +a[sortProp])
-  .map(source => ({
+  return sources.sort((a, b) => +b[sortProp] - +a[sortProp]).map(source => ({
     src: source.src || source.url,
     type: source.type || source.contentType
   }));
@@ -481,9 +470,9 @@ subscribe(function _checkIfVideoPlayersNeedToBeToggled(client) {
     }
 
     const rect = player.getRect();
-    const isInPlayableRange = player.isAmbient ?
-      proximityCheck(rect, client, AMBIENT_PLAYABLE_RANGE) :
-      proximityCheck(rect, client, (player.scrollplayPct || 0) / -100);
+    const isInPlayableRange = player.isAmbient
+      ? proximityCheck(rect, client, AMBIENT_PLAYABLE_RANGE)
+      : proximityCheck(rect, client, (player.scrollplayPct || 0) / -100);
 
     if (
       (typeof player.isInPlayableRange === 'undefined' && isInPlayableRange) ||
@@ -491,7 +480,7 @@ subscribe(function _checkIfVideoPlayersNeedToBeToggled(client) {
     ) {
       enqueue(function _toggleVideoPlay() {
         player.togglePlayback(null, true);
-      })
+      });
     }
 
     player.isInPlayableRange = isInPlayableRange;

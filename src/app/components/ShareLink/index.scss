@@ -7,7 +7,7 @@
   background-position: center;
   background-repeat: no-repeat;
   background-size: auto 100%;
-  transition: filter .25s;
+  transition: filter 0.25s;
 
   .u-richtext-invert > * > * > &,
   .u-richtext-invert > * > * > * > & {
@@ -15,8 +15,8 @@
   }
 
   &:hover {
-    -webkit-filter: brightness(.95);
-    filter: brightness(.95);
+    -webkit-filter: brightness(0.95);
+    filter: brightness(0.95);
   }
 }
 

@@ -1,11 +1,11 @@
 // External
 const html = require('bel');
-const {parseDate} = require('inn-abcdatetime-lib');
+const { parseDate } = require('inn-abcdatetime-lib');
 
 // Ours
-const {MOCK_ELEMENT, SELECTORS} = require('../../constants');
-const {$, $$, detach} = require('../utils/dom');
-const {trim} = require('../utils/misc');
+const { MOCK_ELEMENT, SELECTORS } = require('../../constants');
+const { $, $$, detach } = require('../utils/dom');
+const { trim } = require('../utils/misc');
 
 const EMPHASISABLE_BYLINE_TEXT_PATTERN = /^(?:by|,|and)$/;
 const STARTS_WITH_YEAR_PATTERN = /^\d{4}-/;
@@ -17,13 +17,7 @@ const WHATS_APP = /whatsapp:/;
 const REDDIT = /reddit\.com/;
 const EMAIL = /mailto:/;
 
-const SHARE_ORDERING = [
-  'facebook',
-  'twitter',
-  'whatsapp',
-  'reddit',
-  'email'
-];
+const SHARE_ORDERING = ['facebook', 'twitter', 'whatsapp', 'reddit', 'email'];
 
 let meta = null; // singleton
 
@@ -40,13 +34,12 @@ function getDate(metaElName, timeElClassName) {
     return parseDate(datetime);
   }
 
-  datetime = ($(`time.${timeElClassName}`) || MOCK_ELEMENT)
-    .getAttribute('datetime') || '';
-  
+  datetime = ($(`time.${timeElClassName}`) || MOCK_ELEMENT).getAttribute('datetime') || '';
+
   if (STARTS_WITH_YEAR_PATTERN.test(datetime)) {
-    return parseDate(datetime);  
+    return parseDate(datetime);
   }
-  
+
   return datetime.replace(ROGUE_YEAR_COLON_PATTERN, '$1');
 }
 
@@ -61,8 +54,8 @@ function getBylineNodes() {
   const bylineSubEl = $('p', bylineEl);
 
   return Array.from((bylineSubEl || bylineEl).childNodes)
-  .filter(node => node !== infoSourceEl && trim(node.textContent).length > -1)
-  .map(node => node.cloneNode(true));
+    .filter(node => node !== infoSourceEl && trim(node.textContent).length > -1)
+    .map(node => node.cloneNode(true));
 }
 
 function getInfoSource() {
@@ -76,54 +69,56 @@ function getInfoSource() {
     }
   }
 
-  return infoSourceLinkEl ? {
-    name: trim(infoSourceLinkEl.textContent),
-    url: infoSourceLinkEl.href
-  } : null;
+  return infoSourceLinkEl
+    ? {
+        name: trim(infoSourceLinkEl.textContent),
+        url: infoSourceLinkEl.href
+      }
+    : null;
 }
 
 function getShareLinks() {
   return $$('a', $(SELECTORS.SHARE_TOOLS))
-  .reduce((links, linkEl) => {
-    const href = linkEl.href;
+    .reduce((links, linkEl) => {
+      const href = linkEl.href;
 
-    switch (href) {
-      case ((href.match(FACEBOOK) || {}).input):
-        links.push({id: 'facebook', href});
-        break;
-      case ((href.match(TWITTER) || {}).input):
-        links.push({id: 'twitter', href});
-        break;
-      case ((href.match(WHATS_APP) || {}).input):
-        links.push({id: 'whatsapp', href});
-        break;
-      case ((href.match(REDDIT) || {}).input):
-        links.push({id: 'reddit', href});
-        break;
-      case ((href.match(EMAIL) || {}).input):
-        links.push({id: 'email', href});
-        break;
-      default:
-        break;
-    }
+      switch (href) {
+        case (href.match(FACEBOOK) || {}).input:
+          links.push({ id: 'facebook', href });
+          break;
+        case (href.match(TWITTER) || {}).input:
+          links.push({ id: 'twitter', href });
+          break;
+        case (href.match(WHATS_APP) || {}).input:
+          links.push({ id: 'whatsapp', href });
+          break;
+        case (href.match(REDDIT) || {}).input:
+          links.push({ id: 'reddit', href });
+          break;
+        case (href.match(EMAIL) || {}).input:
+          links.push({ id: 'email', href });
+          break;
+        default:
+          break;
+      }
 
-    return links;
-  }, [])
-  .sort((a, b) => SHARE_ORDERING.indexOf(a.id) - SHARE_ORDERING.indexOf(b.id));
+      return links;
+    }, [])
+    .sort((a, b) => SHARE_ORDERING.indexOf(a.id) - SHARE_ORDERING.indexOf(b.id));
 }
 
 function getRelatedMedia() {
   const relatedMediaEl = $(`
-.view-hero-media,
-.content > article > header + figure,
-.attached-content > .inline-content.photo,
-.attached-content > .inline-content.video
+    .view-hero-media,
+    .content > article > header + figure,
+    .attached-content > .inline-content.photo,
+    .attached-content > .inline-content.video
   `);
 
   if (!relatedMediaEl) {
     return null;
   }
-  
+
   return detach(relatedMediaEl);
 }
 

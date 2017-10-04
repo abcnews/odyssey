@@ -1,14 +1,14 @@
 // External
 const cn = require('classnames');
 const html = require('bel');
-const {formatUIGRelative} = require('inn-abcdatetime-lib');
+const { formatUIGRelative } = require('inn-abcdatetime-lib');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const {IS_PREVIEW, MS_VERSION} = require('../../../constants');
-const {enqueue, invalidateClient, subscribe} = require('../../scheduler');
-const {$, isElement, prepend, substitute} = require('../../utils/dom');
-const {dePx, getRatios, slug, trim} = require('../../utils/misc');
+const { IS_PREVIEW, MS_VERSION } = require('../../../constants');
+const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
+const { $, isElement, prepend, substitute } = require('../../utils/dom');
+const { dePx, getRatios, slug, trim } = require('../../utils/misc');
 const Picture = require('../Picture');
 const UParallax = require('../UParallax');
 const VideoPlayer = require('../VideoPlayer');
@@ -25,10 +25,14 @@ function Header({
   isKicker,
   miscContentEls = []
 }) {
-  const className = cn('Header', {
-    'is-dark': meta.isDarkMode || isDark,
-    'is-layered': isLayered && (imgEl || videoElOrId)
-  }, 'u-full');
+  const className = cn(
+    'Header',
+    {
+      'is-dark': meta.isDarkMode || isDark,
+      'is-layered': isLayered && (imgEl || videoElOrId)
+    },
+    'u-full'
+  );
 
   ratios = {
     sm: ratios.sm || (isLayered ? '3x4' : undefined),
@@ -44,7 +48,7 @@ function Header({
       alt: imgEl.getAttribute('alt'),
       ratios
     });
-    
+
     if (!isLayered) {
       mediaEl.classList.add('u-parallax');
     }
@@ -55,11 +59,13 @@ function Header({
         return;
       }
 
-      const replacementMediaEl = VideoPlayer(Object.assign(metadata, {
-        ratios,
-        isAlwaysHQ: true,
-        isAmbient: true
-      }));
+      const replacementMediaEl = VideoPlayer(
+        Object.assign(metadata, {
+          ratios,
+          isAlwaysHQ: true,
+          isAmbient: true
+        })
+      );
 
       substitute(mediaEl, replacementMediaEl);
 
@@ -73,11 +79,11 @@ function Header({
   }
 
   const clonedMiscContentEls = miscContentEls.map(el => {
-      const clonedEl = el.cloneNode(true);
+    const clonedEl = el.cloneNode(true);
 
-      clonedEl.classList.add('Header-miscEl');
+    clonedEl.classList.add('Header-miscEl');
 
-      return clonedEl;
+    return clonedEl;
   });
 
   const clonedBylineNodes = meta.bylineNodes ? meta.bylineNodes.map(node => node.cloneNode(true)) : null;
@@ -86,49 +92,57 @@ function Header({
   const published = typeof meta.published === 'string' ? meta.published : formatUIGRelative(meta.published);
 
   const contentEls = [
-    html`<h1>${
-      isKicker && meta.title.indexOf(': ') > -1 ?
-      meta.title.split(': ').map((text, index) => index === 0 ? html`<small>${text}</small>` : text) :
-      meta.title
-    }</h1>`
+    html`<h1>${isKicker && meta.title.indexOf(': ') > -1
+      ? meta.title.split(': ').map((text, index) => (index === 0 ? html`<small>${text}</small>` : text))
+      : meta.title}</h1>`
   ]
-  .concat(clonedMiscContentEls)
-  .concat([
-    clonedBylineNodes ? html`
+    .concat(clonedMiscContentEls)
+    .concat([
+      clonedBylineNodes
+        ? html`
       <p class="Header-byline">
         ${clonedBylineNodes}
       </p>
-    ` : null,
-    infoSource ? html`
+    `
+        : null,
+      infoSource
+        ? html`
       <div class="Header-infoSource Header-infoSource--${slug(meta.infoSource.name)}">
         ${infoSource}
       </div>
-    ` : null,
-    updated ? html`
+    `
+        : null,
+      updated
+        ? html`
       <div class="Header-updated">
         Updated
         <time datetime="${meta.updated}">${updated}</time>
       </div>
-    ` : null,
-    published ? html`
+    `
+        : null,
+      published
+        ? html`
       <div class="Header-published">
         Published
         <time datetime="${meta.published}">${published}</time>
       </div>
-    ` : null
-  ]);
+    `
+        : null
+    ]);
 
   const headerContentEl = html`
-    <div class="Header-content u-richtext${isDark || isLayered && mediaEl ? '-invert' : ''}">
+    <div class="Header-content u-richtext${isDark || (isLayered && mediaEl) ? '-invert' : ''}">
       ${contentEls}
     </div>
   `;
-    
+
   const headerEl = html`
     <div class="${className}">
-      ${mediaEl ? html`<div class="Header-media${isLayered ? ' u-parallax' : ''}">
+      ${mediaEl
+        ? html`<div class="Header-media${isLayered ? ' u-parallax' : ''}">
         ${mediaEl}
-      </div>` : null}
+      </div>`
+        : null}
       ${headerContentEl}
     </div>
   `;
@@ -143,10 +157,7 @@ function Header({
         const headerContentElHeight = headerContentEl.getBoundingClientRect().height;
         const headerContentElMarginTop = dePx(window.getComputedStyle(headerContentEl).marginTop);
 
-        const nextHeightOverride = Math.max(
-          headerElMinHeight,
-          headerContentElHeight + headerContentElMarginTop
-        );
+        const nextHeightOverride = Math.max(headerElMinHeight, headerContentElHeight + headerContentElMarginTop);
 
         if (nextHeightOverride !== heightOverride) {
           heightOverride = nextHeightOverride;
@@ -159,7 +170,7 @@ function Header({
   }
 
   return headerEl;
-};
+}
 
 function transformSection(section, meta) {
   const ratios = getRatios(section.configSC);
@@ -174,52 +185,55 @@ function transformSection(section, meta) {
     candidateNodes = [meta.relatedMedia.cloneNode(true)].concat(candidateNodes);
   }
 
-  const config = candidateNodes.reduce((config, node) => {
-    let classList;
-    let videoEl;
-    let videoId;
-    let imgEl;
+  const config = candidateNodes.reduce(
+    (config, node) => {
+      let classList;
+      let videoEl;
+      let videoId;
+      let imgEl;
 
-    if (!isNoMedia && !config.videoElOrId && !config.imgEl && isElement(node) ) {
-      classList = node.className.split(' ');
-      videoEl = $('video', node);
+      if (!isNoMedia && !config.videoElOrId && !config.imgEl && isElement(node)) {
+        classList = node.className.split(' ');
+        videoEl = $('video', node);
 
-      if (videoEl) {
-        config.videoElOrId = videoEl;
-      } else {
-        videoId = (
-          (classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
-          (classList.indexOf('view-inlineMediaPlayer') > -1) ||
-          (classList.indexOf('view-hero-media') > -1 && $('.view-inlineMediaPlayer', node)) ||
-          (classList.indexOf('embed-content') > -1 && $('.type-video', node))
-        ) && url2cmid($('a', node).getAttribute('href'));
-
-        if (videoId) {
-          config.videoElOrId = videoId;
+        if (videoEl) {
+          config.videoElOrId = videoEl;
         } else {
-          imgEl = $('img', node);
+          videoId =
+            ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
+              classList.indexOf('view-inlineMediaPlayer') > -1 ||
+              (classList.indexOf('view-hero-media') > -1 && $('.view-inlineMediaPlayer', node)) ||
+              (classList.indexOf('embed-content') > -1 && $('.type-video', node))) &&
+            url2cmid($('a', node).getAttribute('href'));
 
-          if (imgEl) {
-            config.imgEl = imgEl;
+          if (videoId) {
+            config.videoElOrId = videoId;
+          } else {
+            imgEl = $('img', node);
+
+            if (imgEl) {
+              config.imgEl = imgEl;
+            }
           }
         }
       }
-    }
 
-    if (!videoEl && !videoId && !imgEl && isElement(node) && trim(node.textContent).length > 0) {
-      config.miscContentEls.push(node);
-    }
+      if (!videoEl && !videoId && !imgEl && isElement(node) && trim(node.textContent).length > 0) {
+        config.miscContentEls.push(node);
+      }
 
-    return config;
-  }, {
-    meta,
-    ratios,
-    isDark,
-    isLayered,
-    isNoMedia,
-    isKicker,
-    miscContentEls: []
-  });
+      return config;
+    },
+    {
+      meta,
+      ratios,
+      isDark,
+      isLayered,
+      isNoMedia,
+      isKicker,
+      miscContentEls: []
+    }
+  );
 
   section.substituteWith(Header(config));
 }

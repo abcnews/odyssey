@@ -8,8 +8,8 @@
 
   a {
     flex: 0 1 auto;
-    margin: .5rem;
-    padding: .5rem 2rem;
+    margin: 0.5rem;
+    padding: 0.5rem 2rem;
     max-width: calc(100% - 1rem);
     background-color: $color-black-transparent-30;
     color: $color-white !important;
@@ -19,9 +19,9 @@
     line-height: 1.33;
     text-align: center;
     text-transform: uppercase;
-    transition: filter .25s;
+    transition: filter 0.25s;
     will-change: opacity; // create stacking context
-            
+
     .u-richtext-invert & {
       background-color: $color-white-transparent-30;
     }

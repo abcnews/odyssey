@@ -1,6 +1,6 @@
 // Ours
-const {MOCK_ELEMENT} = require('../../constants');
-const {$$, detach, detachAll, isElement, substitute} = require('./dom');
+const { MOCK_ELEMENT } = require('../../constants');
+const { $$, detach, detachAll, isElement, substitute } = require('./dom');
 
 function grabConfigSC(el) {
   const prevEl = el.previousElementSibling || MOCK_ELEMENT;
@@ -8,8 +8,7 @@ function grabConfigSC(el) {
   let configSC;
 
   // TODO: Convert #image and #video in all stories to #config
-  ['config', 'image', 'video']
-  .some(name => {
+  ['config', 'image', 'video'].some(name => {
     if (prevElName.indexOf(name) === 0) {
       configSC = prevElName.slice(name.length);
       detach(prevEl);
@@ -20,8 +19,7 @@ function grabConfigSC(el) {
 }
 
 function _substituteSectionWith(el, remainingBetweenNodes) {
-  remainingBetweenNodes = Array.isArray(remainingBetweenNodes) ?
-    remainingBetweenNodes : this.betweenNodes;
+  remainingBetweenNodes = Array.isArray(remainingBetweenNodes) ? remainingBetweenNodes : this.betweenNodes;
 
   detachAll(remainingBetweenNodes.concat([this.endNode]));
 
@@ -40,28 +38,28 @@ function getSections(names) {
 
     $$(`a[name^="${name}"]`).forEach(startNode => {
       let nextNode = startNode;
-    	let isMoreContent = true;
-    	const betweenNodes = [];
+      let isMoreContent = true;
+      const betweenNodes = [];
       const configSC = startNode.getAttribute('name').slice(name.length);
 
-    	while(isMoreContent && (nextNode = nextNode.nextSibling) !== null) {
-    		if (isElement(nextNode) && (nextNode.getAttribute('name') || '').indexOf(endName) === 0) {
-    			isMoreContent = false;
-    		} else {
-    			betweenNodes.push(nextNode);
-    		}
-    	}
+      while (isMoreContent && (nextNode = nextNode.nextSibling) !== null) {
+        if (isElement(nextNode) && (nextNode.getAttribute('name') || '').indexOf(endName) === 0) {
+          isMoreContent = false;
+        } else {
+          betweenNodes.push(nextNode);
+        }
+      }
 
       const section = {
         name,
         configSC,
-    		startNode,
+        startNode,
         betweenNodes,
         endNode: nextNode
-    	};
+      };
 
       section.substituteWith = _substituteSectionWith.bind(section);
-    	sections.push(section);
+      sections.push(section);
     });
   });
 
@@ -74,19 +72,21 @@ function getMarkers(names) {
   }
 
   return names.reduce((memo, name) => {
-    return memo.concat($$(`a[name^="${name}"]`).map(node => {
-      const configSC = node.getAttribute('name').slice(name.length);
+    return memo.concat(
+      $$(`a[name^="${name}"]`).map(node => {
+        const configSC = node.getAttribute('name').slice(name.length);
 
-      const marker = {
-        name,
-        configSC,
-    		node
-    	};
+        const marker = {
+          name,
+          configSC,
+          node
+        };
 
-      marker.substituteWith = substitute.bind(null, marker.node);
-    	
-      return marker;
-    }));
+        marker.substituteWith = substitute.bind(null, marker.node);
+
+        return marker;
+      })
+    );
   }, []);
 }
 
