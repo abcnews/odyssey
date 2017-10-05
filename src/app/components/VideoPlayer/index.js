@@ -359,10 +359,19 @@ function getMetadata(videoElOrId, callback) {
   }
 
   if (isElement(videoElOrId)) {
-    done(null, {
-      posterURL: videoElOrId.poster,
-      sources: formatSources($$('source', videoElOrId))
-    });
+    if (videoElOrId.className.indexOf('jw-') > -1) {
+      // JWPLayer <video> with src attribute and nearby element with poster as a background-image
+      done(null, {
+        posterURL: (videoElOrId.parentElement.nextElementSibling.style.backgroundImage.match(CSS_URL) || [, ''])[1],
+        sources: formatSources([videoElOrId])
+      });
+    } else {
+      // <video> with poster attribute and <source> children
+      done(null, {
+        posterURL: videoElOrId.poster,
+        sources: formatSources($$('source', videoElOrId))
+      });
+    }
   } else if ('WCMS' in window) {
     // Phase 2
     // * Poster & sources are nested inside global `WCMS` object
