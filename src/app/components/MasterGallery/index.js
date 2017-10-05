@@ -140,7 +140,10 @@ function open(el) {
 
 function close() {
   document.documentElement.classList.remove('is-master-gallery-open');
-  externalActiveElement.focus();
+
+  if (externalActiveElement) {
+    externalActiveElement.focus();
+  }
 
   if (screenfull.isFullscreen) {
     screenfull.exit();

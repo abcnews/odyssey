@@ -5,11 +5,11 @@
   margin-top: 2rem;
   margin-bottom: 2rem;
   margin-left: calc(-50vw + 50%) !important;
-  margin-left: calc((var(--root-width) / -2) + 50%) !important;
+  margin-left: calc((var(--root-width, 100vw) / -2) + 50%) !important;
   padding-left: 0;
   padding-right: 0;
   width: 100vw;
-  width: var(--root-width);
+  width: var(--root-width, 100vw);
 
   @media #{$mq-lg} {
     margin-top: 3rem;

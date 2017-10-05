@@ -102,8 +102,56 @@ function VideoPlayer({ ratios = {}, posterURL, sources = [], isAmbient, isAlways
     fuzzyTimeout = setTimeout(nextFuzzyIncrement, FUZZY_INCREMENT_INTERVAL);
   }
 
+  videoEl.addEventListener('timeupdate', () => {
+    fuzzyCurrentTime = videoEl.currentTime;
+  });
+
+  videoEl.addEventListener('playing', () => {
+    if (isScrubbing) {
+      return;
+    }
+
+    // Stop all other non-ambient videos
+    if (!player.isAmbient) {
+      players.forEach(_player => {
+        if (_player !== player && !_player.isAmbient) {
+          _player.pause();
+        }
+      });
+    }
+
+    // Reset video if it had ended
+    if (videoEl.hasAttribute('ended')) {
+      videoEl.removeAttribute('ended');
+      videoEl.currentTime = 0;
+    }
+
+    // Update attributes
+    videoEl.removeAttribute('paused');
+
+    if (playbackEl) {
+      playbackEl.setAttribute('aria-label', 'Pause');
+    }
+
+    // Incrememnt fuzzy time
+    nextFuzzyIncrement();
+  });
+
+  videoEl.addEventListener('pause', () => {
+    if (isScrubbing) {
+      return;
+    }
+
+    videoEl.setAttribute('paused', '');
+
+    if (playbackEl) {
+      playbackEl.setAttribute('aria-label', 'Play');
+    }
+
+    clearTimeout(fuzzyTimeout);
+  });
+
   videoEl.addEventListener('play', nextFuzzyIncrement);
-  videoEl.addEventListener('playing', nextFuzzyIncrement);
   videoEl.addEventListener('stalled', clearTimeout(fuzzyTimeout));
   videoEl.addEventListener('waiting', clearTimeout(fuzzyTimeout));
 
@@ -129,6 +177,7 @@ function VideoPlayer({ ratios = {}, posterURL, sources = [], isAmbient, isAlways
   });
 
   const player = {
+    hasNativeUI: false,
     isAmbient,
     isScrollplay,
     scrollplayPct,
@@ -140,34 +189,12 @@ function VideoPlayer({ ratios = {}, posterURL, sources = [], isAmbient, isAlways
 
       return el.getBoundingClientRect();
     },
+    getVideoEl: () => videoEl,
     play: () => {
       if (!videoEl.paused) {
         return;
       }
-
-      // Stop all other non-ambient videos
-      if (!player.isAmbient) {
-        players.forEach(_player => {
-          if (_player !== player && !_player.isAmbient) {
-            _player.pause();
-          }
-        });
-      }
-
-      // Reset video if it had ended
-      if (videoEl.hasAttribute('ended')) {
-        videoEl.removeAttribute('ended');
-        videoEl.currentTime = 0;
-      }
-
-      // Play and update attributes
-      (videoEl.play() || { then: x => x() }).then(() => {
-        videoEl.removeAttribute('paused');
-
-        if (playbackEl) {
-          playbackEl.setAttribute('aria-label', 'Pause');
-        }
-      });
+      videoEl.play();
     },
     pause: () => {
       if (videoEl.paused) {
@@ -175,11 +202,6 @@ function VideoPlayer({ ratios = {}, posterURL, sources = [], isAmbient, isAlways
       }
 
       videoEl.pause();
-      videoEl.setAttribute('paused', '');
-
-      if (playbackEl) {
-        playbackEl.setAttribute('aria-label', 'Play');
-      }
     },
     togglePlayback: (event, wasScrollBased) => {
       if (!wasScrollBased && !player.isAmbient) {
@@ -331,6 +353,8 @@ function VideoPlayer({ ratios = {}, posterURL, sources = [], isAmbient, isAlways
     document.addEventListener('mouseup', scrubEnd);
     document.addEventListener('touchend', scrubEnd);
     document.addEventListener('touchcancel', scrubEnd);
+
+    updateUI(player);
   }
 
   const videoPlayerEl = html`
@@ -493,6 +517,47 @@ subscribe(function _checkIfVideoPlayersNeedToBeToggled(client) {
     }
 
     player.isInPlayableRange = isInPlayableRange;
+  });
+});
+
+const mql = window.matchMedia('(max-height: 30rem)');
+let mqlDidMatch = mql.matches;
+
+function updateUI(player) {
+  const shouldBeNative = mql.matches;
+
+  player.hasNativeUI = shouldBeNative;
+
+  toggleBooleanAttributes(player.getVideoEl(), {
+    controls: shouldBeNative,
+    playsinline: !shouldBeNative,
+    'webkit-playsinline': !shouldBeNative
+  });
+}
+
+subscribe(function _checkIfVideoPlayersNeedToUpdateUIBasedOnMedia() {
+  if (mqlDidMatch === mql.matches) {
+    return;
+  }
+
+  mqlDidMatch = mql.matches;
+
+  players.forEach(player => {
+    if (player.isAmbient) {
+      return;
+    }
+
+    const wasPlaying = Boolean(player.paused);
+
+    enqueue(() => {
+      updateUI(player, mql.matches);
+
+      enqueue(() => {
+        if (wasPlaying && player.getVideoEl().scrollIntoView) {
+          player.getVideoEl().scrollIntoView(true);
+        }
+      });
+    });
   });
 });
 

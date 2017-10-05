@@ -28,8 +28,28 @@
     vertical-align: top;
     object-fit: cover;
 
-    &::-webkit-media-controls-play-button,
-    &::-webkit-media-controls-start-playback-button {
+    &:-webkit-full-screen {
+      background-image: none !important;
+      object-fit: contain;
+    }
+
+    &:-moz-full-screen {
+      background-image: none !important;
+      object-fit: contain;
+    }
+
+    &:-ms-full-screen {
+      background-image: none !important;
+      object-fit: contain;
+    }
+
+    &:fullscreen {
+      background-image: none !important;
+      object-fit: contain;
+    }
+
+    &:not([controls])::-webkit-media-controls-play-button,
+    &:not([controls])::-webkit-media-controls-start-playback-button {
       opacity: 0;
       width: 0.3125rem;
       pointer-events: none;
@@ -45,8 +65,12 @@
   left: 0;
   width: 100%;
   max-width: 100vw;
-  max-width: var(--root-width);
+  max-width: var(--root-width, 100vw);
   height: 100%;
+
+  [controls] + & {
+    display: none;
+  }
 
   & > :not(.VideoPlayer-playback) {
     opacity: 0;

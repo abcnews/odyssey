@@ -81,7 +81,7 @@ function onResize(event) {
 }
 
 function invalidateClient() {
-  enqueue(onResize.bind(null, null, true));
+  enqueue(onResize.bind(null, true));
 }
 
 function start() {
