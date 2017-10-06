@@ -9,11 +9,6 @@
   background-size: auto 100%;
   transition: filter 0.25s;
 
-  .u-richtext-invert > * > * > &,
-  .u-richtext-invert > * > * > * > & {
-    background-color: $color-grey-800;
-  }
-
   &:hover {
     -webkit-filter: brightness(0.95);
     filter: brightness(0.95);
