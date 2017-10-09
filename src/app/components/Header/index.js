@@ -18,6 +18,7 @@ function Header({
   meta = {},
   videoElOrId,
   imgEl,
+  interactiveEl,
   ratios = {},
   isDark,
   isLayered,
@@ -29,7 +30,7 @@ function Header({
     'Header',
     {
       'is-dark': meta.isDarkMode || isDark,
-      'is-layered': isLayered && (imgEl || videoElOrId)
+      'is-layered': isLayered && (imgEl || videoElOrId || interactiveEl)
     },
     'u-full'
   );
@@ -76,6 +77,8 @@ function Header({
 
       invalidateClient();
     });
+  } else if (interactiveEl) {
+    mediaEl = interactiveEl.cloneNode(true);
   }
 
   const clonedMiscContentEls = miscContentEls.map(el => {
@@ -139,9 +142,7 @@ function Header({
   const headerEl = html`
     <div class="${className}">
       ${mediaEl
-        ? html`<div class="Header-media${isLayered ? ' u-parallax' : ''}">
-        ${mediaEl}
-      </div>`
+        ? html`<div class="Header-media${isLayered && mediaEl.tagName !== 'DIV' ? ' u-parallax' : ''}">${mediaEl}</div>`
         : null}
       ${headerContentEl}
     </div>
@@ -191,8 +192,9 @@ function transformSection(section, meta) {
       let videoEl;
       let videoId;
       let imgEl;
+      let interactiveEl;
 
-      if (!isNoMedia && !config.videoElOrId && !config.imgEl && isElement(node)) {
+      if (!isNoMedia && !config.videoElOrId && !config.imgEl && !config.interactiveEl && isElement(node)) {
         classList = node.className.split(' ');
         videoEl = $('video', node);
 
@@ -213,12 +215,14 @@ function transformSection(section, meta) {
 
             if (imgEl) {
               config.imgEl = imgEl;
+            } else if (classList.indexOf('init-interactive') > -1) {
+              config.interactiveEl = interactiveEl = node;
             }
           }
         }
       }
 
-      if (!videoEl && !videoId && !imgEl && isElement(node) && trim(node.textContent).length > 0) {
+      if (!videoEl && !videoId && !imgEl && !interactiveEl && isElement(node) && trim(node.textContent).length > 0) {
         config.miscContentEls.push(node);
       }
 
