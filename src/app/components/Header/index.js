@@ -215,7 +215,10 @@ function transformSection(section, meta) {
 
             if (imgEl) {
               config.imgEl = imgEl;
-            } else if (classList.indexOf('init-interactive') > -1) {
+            } else if (
+              classList.indexOf('init-interactive') > -1 ||
+              node.querySelector('[class^="init-interactive"]')
+            ) {
               config.interactiveEl = interactiveEl = node;
             }
           }
