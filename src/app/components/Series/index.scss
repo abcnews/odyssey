@@ -21,9 +21,10 @@
 }
 
 .Series > * {
-  padding: 0.375rem 0.75rem;
-  font-size: 0.9375rem;
-  line-height: 1.4;
+  border: 0.0625rem solid transparent;
+  padding: 0.5625rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
 
   &[aria-current]:hover {
     text-decoration: none;
@@ -32,34 +33,25 @@
   & > img {
     float: left;
     margin-right: 0.75rem;
-    // 127px wide, 3:2
-    width: 7.9375rem;
+
+    width: 7.9375rem; // 127px wide, 3:2
     height: 5.2916666667rem;
     object-fit: cover;
   }
 
-  &::before,
-  &::after,
+  & > label,
+  & > span {
+    transform: translate(0, -0.0625rem);
+  }
+
   label {
     display: block;
-    line-height: 1;
-    text-transform: uppercase;
-  }
-
-  label {
-    margin-top: 0.1875rem;
-    margin-bottom: 0.125rem;
     font-size: 0.8125rem;
-    font-weight: bold;
+    text-transform: uppercase;
     cursor: inherit;
-  }
 
-  label,
-  &:visited label {
-    color: $color-grey-600;
-
-    .u-richtext-invert & {
-      color: $color-grey-400;
+    .u-richtext & {
+      color: $color-grey-600;
     }
   }
 
@@ -67,7 +59,12 @@
     display: block;
   }
 
-  &[href][aria-current='false']:hover span {
+  &[href][aria-current='false'] {
+    .u-richtext-invert & span,
+    .u-richtext-invert &:visited span {
+      color: $color-white;
+    }
+
     &:hover span {
       text-decoration: underline;
     }
@@ -78,53 +75,10 @@
   }
 
   &[aria-current='page'] {
-    position: relative;
-    background-color: $color-grey-100;
-    font-weight: bold;
-    cursor: default;
+    border-color: $color-grey-300;
 
     .u-richtext-invert & {
-      border: 0.125rem solid $color-grey-300;
-      padding: 0.25rem 0.625rem;
-      background-color: transparent;
-    }
-
-    span,
-    &:visited span {
-      color: $color-black;
-
-      .u-richtext-invert & {
-        color: $color-white;
-      }
-    }
-
-    &::before,
-    &::after {
-      content: 'Now reading';
-      font-size: 0.75rem;
-      font-weight: normal;
-    }
-
-    &::before {
-      float: right;
-      visibility: hidden;
-    }
-
-    &::after {
-      position: absolute;
-      top: 0;
-      right: 0;
-      padding: 0.1875rem 0.25rem 0.125rem;
-      background-color: $color-tertiary;
-      color: $color-white;
-
-      .u-richtext-invert & {
-        top: -0.125rem;
-        right: -0.125rem;
-        background-color: $color-white;
-        color: $color-tertiary;
-        font-weight: bold;
-      }
+      border-color: $color-grey-500;
     }
   }
 }
