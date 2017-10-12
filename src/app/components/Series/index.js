@@ -4,7 +4,7 @@ const html = require('bel');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const { $$, isElement, substitute } = require('../../utils/dom');
+const { $, $$, isElement, substitute } = require('../../utils/dom');
 require('./index.scss');
 
 const CURRENT_STORY_ID = url2cmid(window.location.href);
@@ -19,25 +19,36 @@ function Series({ stories }) {
   return html`
     <div role="navigation" class="${className}">
       ${stories.map(
-        story => html`
-          <a href="${story.url}" aria-current="${story.url ? 'false' : 'page'}">
-            ${story.kicker ? html`<label>${story.kicker}</label>` : null}
-            <span>${story.title}</span>
-          </a>
-        `
+        ({ isCurrent, kicker, title, url }) =>
+          url && !isCurrent
+            ? html`
+              <a href="${url}" aria-current="false">
+                ${kicker ? html`<label>${kicker}</label>` : null}
+                <span>${title}</span>
+              </a>
+            `
+            : html`
+              <div aria-current="${isCurrent ? 'page' : 'false'}">
+                ${kicker ? html`<label>${kicker}</label>` : null}
+                <span>${title}</span>
+              </div>
+            `
       )}
     </div>
   `;
 }
 
 function transformEl(el) {
-  const stories = $$('a', el).map(linkEl => {
-    const linkTextParts = linkEl.textContent.split(': ');
+  const stories = $$('li', el).map(listItemEl => {
+    const linkEl = $('a', listItemEl);
+    const isCurrent = linkEl && url2cmid(linkEl.href) === CURRENT_STORY_ID;
+    const textParts = (linkEl || listItemEl).textContent.split(': ');
 
     return {
-      url: url2cmid(linkEl.href) === CURRENT_STORY_ID ? '' : linkEl.href,
-      kicker: linkTextParts.length > 1 ? linkTextParts[0] : null,
-      title: linkTextParts[linkTextParts.length - 1]
+      isCurrent,
+      kicker: textParts.length > 1 ? textParts[0] : null,
+      title: textParts[textParts.length - 1],
+      url: linkEl ? linkEl.href : ''
     };
   });
 

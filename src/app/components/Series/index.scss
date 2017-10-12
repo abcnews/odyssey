@@ -4,9 +4,13 @@
   display: flex;
   clear: both;
   flex-wrap: wrap;
-  margin-left: -.5rem;
-  margin-right: -.5rem;
+  margin-left: -0.5rem;
+  margin-right: -0.5rem;
   font-family: $font-sans;
+
+  .u-richtext-invert & {
+    color: $color-white;
+  }
 }
 
 .Series > *,
@@ -44,14 +48,24 @@
   label,
   &:visited label {
     color: $color-grey-600;
+
+    .u-richtext-invert & {
+      color: $color-grey-400;
+    }
   }
 
   span {
     display: block;
   }
 
-  &[aria-current='false']:hover span {
-    text-decoration: underline;
+  &[href][aria-current='false']:hover span {
+    &:hover span {
+      text-decoration: underline;
+    }
+  }
+
+  &:not([href])[aria-current='false'] {
+    opacity: 0.5;
   }
 
   &[aria-current='page'] {
@@ -60,9 +74,19 @@
     font-weight: bold;
     cursor: default;
 
+    .u-richtext-invert & {
+      border: 0.125rem solid $color-grey-300;
+      padding: 0.25rem 0.625rem;
+      background-color: transparent;
+    }
+
     span,
     &:visited span {
       color: $color-black;
+
+      .u-richtext-invert & {
+        color: $color-white;
+      }
     }
 
     &::before,
@@ -84,6 +108,14 @@
       padding: 0.1875rem 0.25rem 0.125rem;
       background-color: $color-tertiary;
       color: $color-white;
+
+      .u-richtext-invert & {
+        top: -0.125rem;
+        right: -0.125rem;
+        background-color: $color-white;
+        color: $color-tertiary;
+        font-weight: bold;
+      }
     }
   }
 }
