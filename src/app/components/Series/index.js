@@ -4,6 +4,7 @@ const html = require('bel');
 const url2cmid = require('util-url2cmid');
 
 // Ours
+const { MOCK_ELEMENT } = require('../../../constants');
 const { $, $$, isElement, substitute } = require('../../utils/dom');
 require('./index.scss');
 
@@ -19,16 +20,18 @@ function Series({ stories }) {
   return html`
     <div role="navigation" class="${className}">
       ${stories.map(
-        ({ isCurrent, kicker, title, url }) =>
+        ({ isCurrent, kicker, thumbnail, title, url }) =>
           url && !isCurrent
             ? html`
               <a href="${url}" aria-current="false">
+                ${thumbnail}
                 ${kicker ? html`<label>${kicker}</label>` : null}
                 <span>${title}</span>
               </a>
             `
             : html`
               <div aria-current="${isCurrent ? 'page' : 'false'}">
+                ${thumbnail}
                 ${kicker ? html`<label>${kicker}</label>` : null}
                 <span>${title}</span>
               </div>
@@ -40,13 +43,15 @@ function Series({ stories }) {
 
 function transformEl(el) {
   const stories = $$('li', el).map(listItemEl => {
-    const linkEl = $('a', listItemEl);
+    const linkEl = (listItemEl.firstChild || MOCK_ELEMENT).tagName === 'A' ? listItemEl.firstChild : null;
     const isCurrent = linkEl && url2cmid(linkEl.href) === CURRENT_STORY_ID;
-    const textParts = (linkEl || listItemEl).textContent.split(': ');
+    const textParts = (linkEl ? linkEl.textContent : listItemEl.firstChild.nodeValue).split(': ');
+    const thumbnailImageEl = $('img', listItemEl);
 
     return {
       isCurrent,
       kicker: textParts.length > 1 ? textParts[0] : null,
+      thumbnail: thumbnailImageEl ? thumbnailImageEl.cloneNode(true) : null,
       title: textParts[textParts.length - 1],
       url: linkEl ? linkEl.href : ''
     };

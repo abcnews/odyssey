@@ -29,6 +29,15 @@
     text-decoration: none;
   }
 
+  & > img {
+    float: left;
+    margin-right: 0.75rem;
+    // 127px wide, 3:2
+    width: 7.9375rem;
+    height: 5.2916666667rem;
+    object-fit: cover;
+  }
+
   &::before,
   &::after,
   label {
