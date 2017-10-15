@@ -5,12 +5,12 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const { MOCK_ELEMENT } = require('../../../constants');
-const { $, $$, isElement, substitute } = require('../../utils/dom');
+const { $, $$, detach, isElement } = require('../../utils/dom');
 require('./index.scss');
 
 const CURRENT_STORY_ID = url2cmid(window.location.href);
 
-function Series({ stories }) {
+function Series({ stories, options = {} }) {
   const className = cn('Series', {
     'has-m2r1': stories.length % 2 === 1,
     'has-m3r1': stories.length % 3 === 1,
@@ -19,7 +19,7 @@ function Series({ stories }) {
 
   return html`
     <div role="navigation" class="${className}">
-      ${stories.map(
+      ${stories.filter(({ isCurrent }) => !options.isRest || !isCurrent).map(
         ({ isCurrent, kicker, thumbnail, title, url }) =>
           url && !isCurrent
             ? html`
@@ -41,8 +41,21 @@ function Series({ stories }) {
   `;
 }
 
-function transformEl(el) {
-  const stories = $$('li', el).map(listItemEl => {
+function transformMarker(marker) {
+  const nextEl = marker.node.nextElementSibling;
+  const listEl = nextEl.tagName === 'OL' || nextEl.tagName === 'UL' ? nextEl : $('ol, ul', nextEl);
+
+  if (!listEl) {
+    return;
+  }
+
+  const listItemEls = $$('li', listEl);
+
+  if (!listItemEls.length) {
+    return;
+  }
+
+  const stories = listItemEls.map(listItemEl => {
     const linkEl = (listItemEl.firstChild || MOCK_ELEMENT).tagName === 'A' ? listItemEl.firstChild : null;
     const isCurrent = linkEl && url2cmid(linkEl.href) === CURRENT_STORY_ID;
     const textParts = (linkEl ? linkEl.textContent : listItemEl.firstChild.nodeValue).split(': ');
@@ -57,8 +70,13 @@ function transformEl(el) {
     };
   });
 
-  substitute(el, Series({ stories }));
+  const options = {
+    isRest: marker.configSC.indexOf('rest') > -1
+  };
+
+  detach(nextEl);
+  marker.substituteWith(Series({ stories, options }));
 }
 
 module.exports = Series;
-module.exports.transformEl = transformEl;
+module.exports.transformMarker = transformMarker;

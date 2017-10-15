@@ -112,8 +112,7 @@ function app() {
         UDropcap.conditionallyApply(el.nextElementSibling);
         break;
       case 'series':
-        Series.transformEl($('ol, ul', marker.node.nextElementSibling));
-        detach(marker.node);
+        Series.transformMarker(marker);
         break;
       case 'share':
         Share.transformMarker(marker, meta.shareLinks);
