@@ -83,9 +83,7 @@
     }
 
     &::after,
-    & span > i::after {
-      content: 'Now reading';
-      padding: 0.125rem 0.125rem 0.0625rem 0.25rem;
+    & span > i {
       font-size: 0.75rem;
       font-weight: bold;
       line-height: 0.9;
@@ -94,9 +92,11 @@
     }
 
     &::after {
+      content: 'now reading';
       position: absolute;
       right: 0;
       bottom: 0;
+      padding: 0.125rem 0.125rem 0.0625rem 0.25rem;
       background-color: $color-grey-300;
       color: $color-black;
 
@@ -106,8 +106,12 @@
       }
     }
 
-    & span > i::after {
+    & span > i {
+      display: inline-block;
+      float: right;
       visibility: hidden;
+      width: 5.25em;
+      height: 0.5rem;
     }
   }
 }
