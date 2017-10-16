@@ -5,7 +5,7 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const { MOCK_ELEMENT } = require('../../../constants');
-const { $, $$, detach, isElement } = require('../../utils/dom');
+const { $, $$, detach, isElement, substitute } = require('../../utils/dom');
 require('./index.scss');
 
 const CURRENT_STORY_ID = url2cmid(window.location.href);
@@ -74,8 +74,8 @@ function transformMarker(marker) {
     isRest: marker.configSC.indexOf('rest') > -1
   };
 
-  detach(nextEl);
-  marker.substituteWith(Series({ stories, options }));
+  substitute(listEl, Series({ stories, options }));
+  detach(marker.node);
 }
 
 module.exports = Series;
