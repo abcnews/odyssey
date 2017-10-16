@@ -33,7 +33,7 @@ function Series({ stories, options = {} }) {
               <div aria-current="${isCurrent ? 'page' : 'false'}">
                 ${thumbnail}
                 ${kicker ? html`<label>${kicker}</label>` : null}
-                <span>${title}</span>
+                <span>${title}${isCurrent ? [' ', html`<i></i>`] : null}</span>
               </div>
             `
       )}
