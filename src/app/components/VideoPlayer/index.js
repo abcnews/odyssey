@@ -11,6 +11,7 @@ const { getMeta } = require('../../meta');
 const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
 const { $, $$, append, isElement, setText, toggleAttribute, toggleBooleanAttributes } = require('../../utils/dom');
 const { proximityCheck, twoDigits, whenKeyIn } = require('../../utils/misc');
+const { trackProgress } = require('./stats');
 require('./index.scss');
 
 const NEWLINES_PATTERN = /[\n\r]/g;
@@ -355,6 +356,8 @@ function VideoPlayer({ ratios = {}, posterURL, sources = [], isAmbient, isAlways
     document.addEventListener('touchcancel', scrubEnd);
 
     updateUI(player);
+
+    trackProgress(videoEl);
   }
 
   const videoPlayerEl = html`
