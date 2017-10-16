@@ -4,12 +4,13 @@ const html = require('bel');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const { $$, isElement, substitute } = require('../../utils/dom');
+const { MOCK_ELEMENT } = require('../../../constants');
+const { $, $$, detach, isElement, substitute } = require('../../utils/dom');
 require('./index.scss');
 
 const CURRENT_STORY_ID = url2cmid(window.location.href);
 
-function Series({ stories }) {
+function Series({ stories, options = {} }) {
   const className = cn('Series', {
     'has-m2r1': stories.length % 2 === 1,
     'has-m3r1': stories.length % 3 === 1,
@@ -18,31 +19,64 @@ function Series({ stories }) {
 
   return html`
     <div role="navigation" class="${className}">
-      ${stories.map(
-        story => html`
-          <a href="${story.url}" aria-current="${story.url ? 'false' : 'page'}">
-            ${story.kicker ? html`<label>${story.kicker}</label>` : null}
-            <span>${story.title}</span>
-          </a>
-        `
+      ${stories.filter(({ isCurrent }) => !options.isRest || !isCurrent).map(
+        ({ isCurrent, kicker, thumbnail, title, url }) =>
+          url && !isCurrent
+            ? html`
+              <a href="${url}" aria-current="false">
+                ${thumbnail}
+                ${kicker ? html`<label>${kicker}</label>` : null}
+                <span>${title}</span>
+              </a>
+            `
+            : html`
+              <div aria-current="${isCurrent ? 'page' : 'false'}">
+                ${thumbnail}
+                ${kicker ? html`<label>${kicker}</label>` : null}
+                <span>${title}${isCurrent ? [' ', html`<i></i>`] : null}</span>
+              </div>
+            `
       )}
     </div>
   `;
 }
 
-function transformEl(el) {
-  const stories = $$('a', el).map(linkEl => {
-    const linkTextParts = linkEl.textContent.split(': ');
+function transformMarker(marker) {
+  const nextEl = marker.node.nextElementSibling;
+  const listEl = nextEl.tagName === 'OL' || nextEl.tagName === 'UL' ? nextEl : $('ol, ul', nextEl);
+
+  if (!listEl) {
+    return;
+  }
+
+  const listItemEls = $$('li', listEl);
+
+  if (!listItemEls.length) {
+    return;
+  }
+
+  const stories = listItemEls.map(listItemEl => {
+    const linkEl = (listItemEl.firstChild || MOCK_ELEMENT).tagName === 'A' ? listItemEl.firstChild : null;
+    const isCurrent = linkEl && url2cmid(linkEl.href) === CURRENT_STORY_ID;
+    const textParts = (linkEl ? linkEl.textContent : listItemEl.firstChild.nodeValue).split(': ');
+    const thumbnailImageEl = $('img', listItemEl);
 
     return {
-      url: url2cmid(linkEl.href) === CURRENT_STORY_ID ? '' : linkEl.href,
-      kicker: linkTextParts.length > 1 ? linkTextParts[0] : null,
-      title: linkTextParts[linkTextParts.length - 1]
+      isCurrent,
+      kicker: textParts.length > 1 ? textParts[0] : null,
+      thumbnail: thumbnailImageEl ? thumbnailImageEl.cloneNode(true) : null,
+      title: textParts[textParts.length - 1],
+      url: linkEl ? linkEl.href : ''
     };
   });
 
-  substitute(el, Series({ stories }));
+  const options = {
+    isRest: marker.configSC.indexOf('rest') > -1
+  };
+
+  substitute(listEl, Series({ stories, options }));
+  detach(marker.node);
 }
 
 module.exports = Series;
-module.exports.transformEl = transformEl;
+module.exports.transformMarker = transformMarker;

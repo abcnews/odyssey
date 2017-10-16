@@ -4,9 +4,13 @@
   display: flex;
   clear: both;
   flex-wrap: wrap;
-  margin-left: -.5rem;
-  margin-right: -.5rem;
+  margin-left: -0.5rem;
+  margin-right: -0.5rem;
   font-family: $font-sans;
+
+  .u-richtext-invert & {
+    color: $color-white;
+  }
 }
 
 .Series > *,
@@ -17,73 +21,96 @@
 }
 
 .Series > * {
-  padding: 0.375rem 0.75rem;
-  font-size: 0.9375rem;
-  line-height: 1.4;
+  border: 0.0625rem solid transparent;
+  padding: 0.5625rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
 
   &[aria-current]:hover {
     text-decoration: none;
   }
 
-  &::before,
-  &::after,
+  & > img {
+    float: left;
+    margin-right: 0.75rem;
+
+    width: 7.9375rem; // 127px wide, 3:2
+    height: 5.2916666667rem;
+    object-fit: cover;
+  }
+
+  & > label,
+  & > span {
+    transform: translate(0, -0.0625rem);
+  }
+
   label {
     display: block;
-    line-height: 1;
-    text-transform: uppercase;
-  }
-
-  label {
-    margin-top: 0.1875rem;
-    margin-bottom: 0.125rem;
     font-size: 0.8125rem;
-    font-weight: bold;
+    text-transform: uppercase;
     cursor: inherit;
-  }
 
-  label,
-  &:visited label {
-    color: $color-grey-600;
+    .u-richtext & {
+      color: $color-grey-600;
+    }
   }
 
   span {
     display: block;
   }
 
-  &[aria-current='false']:hover span {
-    text-decoration: underline;
+  &[href][aria-current='false'] {
+    .u-richtext-invert & span,
+    .u-richtext-invert &:visited span {
+      color: $color-white;
+    }
+
+    &:hover span {
+      text-decoration: underline;
+    }
+  }
+
+  &:not([href])[aria-current='false'] {
+    opacity: 0.5;
   }
 
   &[aria-current='page'] {
     position: relative;
-    background-color: $color-grey-100;
-    font-weight: bold;
-    cursor: default;
+    border-color: $color-grey-300;
 
-    span,
-    &:visited span {
-      color: $color-black;
+    .u-richtext-invert & {
+      border-color: $color-grey-500;
     }
 
-    &::before,
-    &::after {
-      content: 'Now reading';
+    &::after,
+    & span > i {
       font-size: 0.75rem;
-      font-weight: normal;
+      font-weight: bold;
+      line-height: 0.9;
+      text-transform: uppercase;
+      white-space: nowrap;
     }
 
-    &::before {
+    &::after {
+      content: 'now reading';
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      padding: 0.125rem 0.125rem 0.0625rem 0.25rem;
+      background-color: $color-grey-300;
+      color: $color-black;
+
+      .u-richtext-invert & {
+        background-color: $color-grey-500;
+        color: var(--bg, #{$color-black});
+      }
+    }
+
+    & span > i {
       float: right;
       visibility: hidden;
-    }
-
-    &::after {
-      position: absolute;
-      top: 0;
-      right: 0;
-      padding: 0.1875rem 0.25rem 0.125rem;
-      background-color: $color-tertiary;
-      color: $color-white;
+      width: 5.25em;
+      height: 0.5rem;
     }
   }
 }
