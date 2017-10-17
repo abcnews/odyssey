@@ -180,7 +180,15 @@ function VideoPlayer({ ratios = {}, posterURL, sources = [], isAmbient, isAlways
       return el.getBoundingClientRect();
     },
     getVideoEl: () => videoEl,
-    getMuteEl: () => muteEl,
+    setMuted: shouldBeMuted => {
+      player.isUserInControl = true;
+      videoEl.muted = shouldBeMuted;
+      toggleAttribute(videoEl, 'muted', shouldBeMuted);
+
+      if (muteEl) {
+        muteEl.setAttribute('aria-label', shouldBeMuted ? 'Unmute' : 'Mute');
+      }
+    },
     play: () => {
       if (!videoEl.paused) {
         return;
@@ -366,6 +374,8 @@ function VideoPlayer({ ratios = {}, posterURL, sources = [], isAmbient, isAlways
 function toggleMutePreference(event) {
   event.stopPropagation();
 
+  const shouldBeMuted = !this.parentElement.previousElementSibling.muted;
+
   players.forEach(player => {
     // We can't potentially unmute an ambient/scroll-based video as
     // browsers won't allow them to play without a user click event
@@ -373,17 +383,7 @@ function toggleMutePreference(event) {
       return;
     }
 
-    const videoEl = player.getVideoEl();
-
-    player.isUserInControl = true;
-    videoEl.muted = !videoEl.muted;
-    toggleAttribute(videoEl, 'muted', videoEl.muted);
-
-    const muteEl = player.getMuteEl();
-
-    if (muteEl) {
-      muteEl.setAttribute('aria-label', videoEl.muted ? 'Unmute' : 'Mute');
-    }
+    player.setMuted(shouldBeMuted);
   });
 }
 
