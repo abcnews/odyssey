@@ -66,13 +66,20 @@ function getInfoSource() {
 
     if (infoSourceMetaContent) {
       infoSourceLinkEl = $(`a[title="${infoSourceMetaContent}"]`);
+    } else {
+      const infoSourceEl = $(SELECTORS.INFO_SOURCE);
+
+      if (infoSourceEl) {
+        infoSourceLinkEl = document.createElement('a');
+        infoSourceLinkEl.textContent = infoSourceEl.textContent;
+      }
     }
   }
 
   return infoSourceLinkEl
     ? {
         name: trim(infoSourceLinkEl.textContent),
-        url: infoSourceLinkEl.href
+        url: infoSourceLinkEl.getAttribute('href')
       }
     : null;
 }

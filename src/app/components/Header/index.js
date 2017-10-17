@@ -90,7 +90,9 @@ function Header({
   });
 
   const clonedBylineNodes = meta.bylineNodes ? meta.bylineNodes.map(node => node.cloneNode(true)) : null;
-  const infoSource = meta.infoSource ? html`<a href="${meta.infoSource.url}">${meta.infoSource.name}</a>` : null;
+  const infoSource = meta.infoSource
+    ? meta.infoSource.url ? html`<a href="${meta.infoSource.url}">${meta.infoSource.name}</a>` : meta.infoSource.name
+    : null;
   const updated = typeof meta.updated === 'string' ? meta.updated : formatUIGRelative(meta.updated);
   const published = typeof meta.published === 'string' ? meta.published : formatUIGRelative(meta.published);
 
@@ -110,9 +112,9 @@ function Header({
         : null,
       infoSource
         ? html`
-      <div class="Header-infoSource Header-infoSource--${slug(meta.infoSource.name)}">
+      <p class="Header-infoSource Header-infoSource--${slug(meta.infoSource.name)}">
         ${infoSource}
-      </div>
+      </p>
     `
         : null,
       updated
