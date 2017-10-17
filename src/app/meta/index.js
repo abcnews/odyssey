@@ -79,7 +79,7 @@ function getInfoSource() {
   return infoSourceLinkEl
     ? {
         name: trim(infoSourceLinkEl.textContent),
-        url: infoSourceLinkEl.href
+        url: infoSourceLinkEl.getAttribute('href')
       }
     : null;
 }
