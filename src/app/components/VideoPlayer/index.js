@@ -78,17 +78,6 @@ function VideoPlayer({ ratios = {}, posterURL, sources = [], isAmbient, isAlways
     });
   }
 
-  function toggleMute(event) {
-    event.stopPropagation();
-    player.isUserInControl = true;
-    videoEl.muted = !videoEl.muted;
-    toggleAttribute(videoEl, 'muted', videoEl.muted);
-
-    if (muteEl) {
-      muteEl.setAttribute('aria-label', videoEl.muted ? 'Unmute' : 'Mute');
-    }
-  }
-
   let fuzzyCurrentTime = 0;
   let fuzzyTimeout;
 
@@ -191,6 +180,7 @@ function VideoPlayer({ ratios = {}, posterURL, sources = [], isAmbient, isAlways
       return el.getBoundingClientRect();
     },
     getVideoEl: () => videoEl,
+    getMuteEl: () => muteEl,
     play: () => {
       if (!videoEl.paused) {
         return;
@@ -311,7 +301,7 @@ function VideoPlayer({ ratios = {}, posterURL, sources = [], isAmbient, isAlways
     muteEl = html`<button
       class="VideoPlayer-mute"
       aria-label="${isMuted ? 'Unmute' : 'Mute'}"
-      onclick=${toggleMute}
+      onclick=${toggleMutePreference}
     ></button>`;
     timeRemainingEl = html`<time
       class="VideoPlayer-timeRemaining"
@@ -371,6 +361,30 @@ function VideoPlayer({ ratios = {}, posterURL, sources = [], isAmbient, isAlways
   videoPlayerEl.api = player;
 
   return videoPlayerEl;
+}
+
+function toggleMutePreference(event) {
+  event.stopPropagation();
+
+  players.forEach(player => {
+    // We can't potentially unmute an ambient/scroll-based video as
+    // browsers won't allow them to play without a user click event
+    if (player.isAmbient || player.isScrollplay) {
+      return;
+    }
+
+    const videoEl = player.getVideoEl();
+
+    player.isUserInControl = true;
+    videoEl.muted = !videoEl.muted;
+    toggleAttribute(videoEl, 'muted', videoEl.muted);
+
+    const muteEl = player.getMuteEl();
+
+    if (muteEl) {
+      muteEl.setAttribute('aria-label', videoEl.muted ? 'Unmute' : 'Mute');
+    }
+  });
 }
 
 function getMetadata(videoElOrId, callback) {
