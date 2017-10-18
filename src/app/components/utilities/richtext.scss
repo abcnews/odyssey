@@ -156,11 +156,11 @@
     }
 
     tr > * {
-      border-bottom: 0.0625rem solid $color-grey-300;
+      border-bottom: 0.0625rem solid $color-grey-300-transparent-70;
     }
 
     th {
-      background-color: $color-grey-100;
+      background-color: $color-grey-300-transparent-15;
     }
   }
 
@@ -174,8 +174,9 @@
     color: $color-darkSecondary;
   }
 
-  > br {
-    content: '';
+  > br:first-child,
+  > br:first-child ~ br {
+    display: none;
   }
 
   &::after {
@@ -188,8 +189,8 @@
 [class*='u-richtext'] > [class*='u-richtext'],
 [class*='u-pull'] > [class*='u-richtext'] {
   margin-top: 0.375rem;
-  border-top: 0.125rem solid $color-grey-300;
-  border-bottom: 0.125rem solid $color-grey-300;
+  border-top: 0.125rem solid $color-grey-300-transparent-70;
+  border-bottom: 0.125rem solid $color-grey-300-transparent-70;
   padding-top: 2rem;
   padding-bottom: 0.75rem;
 
@@ -252,23 +253,6 @@
   }
 }
 
-[class*='u-richtext'] > .u-richtext,
-[class*='u-pull'] > .u-richtext {
-  > h2,
-  > h3,
-  > h4 {
-    color: $color-grey-700;
-  }
-
-  > h4,
-  > p,
-  > ul li,
-  > ol li,
-  > blockquote {
-    color: $color-grey-800;
-  }
-}
-
 [class*='u-pull'] > [class*='u-richtext'] {
   padding-left: 0;
   padding-right: 0;
@@ -286,8 +270,9 @@
   > p,
   > ul li,
   > ol li,
-  > blockquote {
-    color: $color-grey-50;
+  > blockquote,
+  > table {
+    color: $color-grey-100;
   }
 
   > ul > li,

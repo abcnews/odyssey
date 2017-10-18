@@ -5,13 +5,9 @@
     overflow: visible;
     margin: 0;
     border-width: 0;
-    border-left: 0.625rem solid $color-grey-200;
+    border-left: 0.625rem solid $color-grey-300-transparent-70;
     padding: 0 2rem;
     background-color: transparent;
-
-    .u-richtext-invert > & {
-      border-left-color: $color-grey-600;
-    }
   }
 
   p {
@@ -22,17 +18,17 @@
     line-height: 1.66;
 
     .u-richtext-invert > & {
-      color: $color-lightestPrimary;
+      color: $color-lighterPrimary;
     }
   }
 
   footer {
-    color: $color-grey-600;
+    color: $color-grey-500;
     font-family: $font-sans;
     font-size: 0.9375rem;
 
     .u-richtext-invert > & {
-      color: $color-grey-300;
+      color: $color-grey-200;
     }
 
     &::before {
@@ -106,7 +102,7 @@
   footer {
     padding-top: 0.25rem;
     font-size: 1rem;
-    color: $color-grey-500;
+    color: $color-grey-300;
 
     @media #{$mq-md} {
       font-size: 1.125rem;
@@ -117,7 +113,7 @@
     }
 
     .u-richtext-invert > & {
-      color: $color-grey-300;
+      color: $color-grey-200;
     }
 
     &::before {

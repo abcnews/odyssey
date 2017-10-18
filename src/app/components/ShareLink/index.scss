@@ -1,17 +1,30 @@
 @import '../../../constants';
 
 .ShareLink {
+  position: relative;
   flex: 1 1 ($size-control - $size-control-margin);
   width: $size-control - $size-control-margin;
-  background-color: $color-grey-100;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: auto 100%;
-  transition: filter 0.25s;
+  background-color: $color-grey-300;
 
-  &:hover {
-    -webkit-filter: brightness(0.95);
-    filter: brightness(0.95);
+  .Share & {
+    transition: filter 0.25s;
+
+    &:hover {
+      -webkit-filter: brightness(0.95);
+      filter: brightness(0.95);
+    }
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: auto 100%;
   }
 }
 
@@ -25,53 +38,63 @@
 }
 
 .ShareLink--email {
-  background-image: url(./email.svg);
-
-  .Nav & {
-    background-image: url(./email--nav.svg);
-  }
-
   @media #{$mq-sm} {
     display: none;
+  }
+
+  &::after {
+    background-image: url(./email.svg);
+
+    .Nav & {
+      background-image: url(./email--nav.svg);
+    }
   }
 }
 
 .ShareLink--facebook {
-  background-image: url(./facebook.svg);
+  &::after {
+    background-image: url(./facebook.svg);
 
-  .Nav & {
-    background-image: url(./facebook--nav.svg);
+    .Nav & {
+      background-image: url(./facebook--nav.svg);
+    }
   }
 }
 
 .ShareLink--reddit {
-  background-image: url(./reddit.svg);
-
-  .Nav & {
-    background-image: url(./reddit--nav.svg);
-  }
-
   @media #{$mq-sm} {
     display: none;
+  }
+
+  &::after {
+    background-image: url(./reddit.svg);
+
+    .Nav & {
+      background-image: url(./reddit--nav.svg);
+    }
   }
 }
 
 .ShareLink--twitter {
-  background-image: url(./twitter.svg);
+  &::after {
+    background-image: url(./twitter.svg);
 
-  .Nav & {
-    background-image: url(./twitter--nav.svg);
+    .Nav & {
+      background-image: url(./twitter--nav.svg);
+    }
   }
 }
 
 .ShareLink--whatsapp {
-  background-image: url(./whatsapp.svg);
-
-  .Nav & {
-    background-image: url(./whatsapp--nav.svg);
-  }
-
   @media #{$mq-not-sm} {
     display: none;
+  }
+
+  &::after {
+    background-image: url(./whatsapp.svg);
+
+    .Nav & {
+      background-image: url(./whatsapp--nav.svg);
+    }
   }
 }

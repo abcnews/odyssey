@@ -14,7 +14,7 @@ function Share({ type, links }) {
   return html`
     <div class="Share">
       <div class="Share-title">Share this ${formattedType}</div>
-      ${ShareLinks(links)}
+      ${ShareLinks({ links, shouldBlend: true })}
     </div>
   `;
 }

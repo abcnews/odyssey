@@ -10,30 +10,23 @@ $color-white-transparent-90: rgba(255, 255, 255, 0.9);
 
 $color-black: #000;
 $color-black-transparent: rgba(0, 0, 0, 0);
-$color-black-transparent-15: rgba(0, 0, 0, 0.15);
 $color-black-transparent-30: rgba(0, 0, 0, 0.3);
 $color-black-transparent-45: rgba(0, 0, 0, 0.45);
 $color-black-transparent-60: rgba(0, 0, 0, 0.6);
 $color-black-transparent-75: rgba(0, 0, 0, 0.75);
 $color-black-transparent-93: rgba(0, 0, 0, 0.93);
 
-$color-grey-50: #f9f9f9;
-$color-grey-50-transparent: rgba(249, 249, 249, 0);
-$color-grey-75: #f3f3f3;
-$color-grey-100: #eee;
-$color-grey-100-transparent: rgba(238, 238, 238, 0);
-$color-grey-200: #dedede;
-$color-grey-300: #d2d2d2;
-$color-grey-400: #bbb;
-$color-grey-500: #898989;
-$color-grey-600: #666;
-$color-grey-700: #444;
-$color-grey-800: #333;
+$color-grey-100: #f9f9f9;
+$color-grey-200: #d2d2d2;
+$color-grey-300: #b3b3b3;
+$color-grey-300-transparent-15: rgba(179, 179, 179, 0.15);
+$color-grey-300-transparent-70: rgba(179, 179, 179, 0.7);
+$color-grey-500: #666;
+$color-grey-500-transparent-65: rgba(102, 102, 102, 0.65);
+$color-grey-800: #1c1c1c;
 $color-grey-900: #111;
-$color-grey-brand: #1c1c1c;
 
-$color-lightestPrimary: #a5daf3;
-$color-lighterPrimary: #01ceff;
+$color-lighterPrimary: #a5daf3;
 $color-lightPrimary: #68e1ff;
 $color-primary: #007aff;
 $color-darkPrimary: #0073a8;
@@ -41,10 +34,6 @@ $color-darkerPrimary: #315768;
 
 $color-lightSecondary: #f1ccf3;
 $color-darkSecondary: #69236b;
-
-$color-lightTertiary: #ffad7b;
-$color-tertiary: #be4233;
-$color-darkTertiary: #7b3b3b;
 
 $gradient-vertical-0-0-100-60: linear-gradient(
   to bottom,
@@ -66,16 +55,11 @@ $gradient-vertical-40-0-80-60: linear-gradient(
   $color-black-transparent 40%,
   $color-black-transparent-60 80%
 );
-
-$gradient-horizontal-grey-50-0-75-100: linear-gradient(to right, $color-grey-50-transparent 0%, $color-grey-50 75%);
-$gradient-horizontal-grey-100-0-75-100: linear-gradient(to right, $color-grey-100-transparent 0%, $color-grey-100 75%);
 $gradient-horizontal-40-45-65-0: linear-gradient(
   to right,
   $color-black-transparent-45 40%,
   $color-black-transparent 65%
 );
-
-$gradient-radial-0-0-100-60: radial-gradient(circle, $color-black-transparent 0%, $color-black-transparent-60 100%);
 
 @function cells($numColumns, $totalColumns: 12) {
   @return $numColumns / $totalColumns * 100%;

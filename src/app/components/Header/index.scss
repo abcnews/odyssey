@@ -14,6 +14,10 @@
     background-color: $color-black;
   }
 
+  .is-dark-mode &:not(.is-dark):not(.is-layered) {
+    background-color: $color-grey-100;
+  }
+
   &.is-layered {
     display: flex;
     flex-direction: column;
@@ -127,12 +131,7 @@
     margin: 1.25rem auto;
     width: 9rem;
     height: 0.125rem;
-    background-color: $color-grey-300;
-
-    .is-layered &,
-    .is-dark & {
-      background-color: $color-grey-600;
-    }
+    background-color: $color-grey-300-transparent-70;
 
     @media #{$mq-not-sm} {
       width: 18rem;
@@ -166,7 +165,7 @@
 .Header-byline + *,
 .Header-infoSource,
 .Header-infoSource + * {
-  margin-top: -.5rem;
+  margin-top: -0.5rem;
 }
 
 .Header .Header-content .Header-byline,
@@ -239,10 +238,10 @@
 .Header-updated,
 .Header-published {
   font-size: 0.75rem;
-  color: $color-grey-600;
+  color: $color-grey-500;
 
   .is-layered &,
   .is-dark & {
-    color: $color-grey-500;
+    color: $color-grey-300;
   }
 }

@@ -1,9 +1,9 @@
 @import '../../../constants';
 
 .Share {
-  color: $color-grey-600;
+  color: $color-grey-500;
 
-  .u-richtext-invert > & {
+  .u-richtext-invert & {
     color: $color-white;
   }
 }

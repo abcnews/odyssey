@@ -2,7 +2,7 @@
 
 .Nav {
   height: $size-bar;
-  background-color: $color-grey-brand;
+  background-color: $color-grey-800;
 
   &.is-above {
     position: relative;
@@ -16,7 +16,7 @@
   box-sizing: border-box;
   width: 100%;
   height: $size-bar;
-  background-color: $color-grey-brand;
+  background-color: $color-grey-800;
   transition: transform 0.25s cubic-bezier(0, 0, 0.32, 1);
   will-change: transform;
 

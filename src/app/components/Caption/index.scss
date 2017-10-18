@@ -60,13 +60,13 @@
   display: none;
   white-space: nowrap;
   font-size: 0.6875rem;
-  color: $color-grey-600;
+  color: $color-grey-500;
 
   .has-caption-attributions & {
     display: inline;
   }
 
   .u-richtext-invert & {
-    color: $color-grey-300;
+    color: $color-grey-200;
   }
 }

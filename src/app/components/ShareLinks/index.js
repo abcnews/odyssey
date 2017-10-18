@@ -5,10 +5,10 @@ const html = require('bel');
 const ShareLink = require('../ShareLink');
 require('./index.scss');
 
-module.exports = function ShareLinks(links) {
+module.exports = function ShareLinks({ links, shouldBlend }) {
   return html`
     <div class="ShareLinks">
-      ${links.map(ShareLink)}
+      ${links.map(link => ShareLink({ link, shouldBlend }))}
     </div>
   `;
 };
