@@ -196,7 +196,7 @@ function transformSection(section, meta) {
       let imgEl;
       let interactiveEl;
 
-      if (!isNoMedia && !config.videoElOrId && !config.imgEl && !config.interactiveEl && isElement(node)) {
+      if (!config.videoElOrId && !config.imgEl && !config.interactiveEl && isElement(node)) {
         classList = node.className.split(' ');
         videoEl = $('video', node);
 
