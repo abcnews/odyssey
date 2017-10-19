@@ -31,12 +31,15 @@
 
   p {
     font-size: 1rem;
+    line-height: 1.667;
   }
 
   a,
   .fyre a,
+  .fyre .fyre-comment a,
   a > *,
-  .fyre a > * {
+  .fyre a > *,
+  .fyre .fyre-comment a > * {
     color: $color-darkPrimary;
   }
 
@@ -45,5 +48,15 @@
   a:visited > *,
   .fyre a:visited > * {
     color: $color-darkSecondary;
+  }
+
+  .fyre * {
+    box-sizing: content-box;
+  }
+
+  .fyre .fyre-stream-sort,
+  .fyre .fyre-comment-article,
+  .fyre .fyre-comment-stream {
+    font-family: $font-sans;
   }
 }
