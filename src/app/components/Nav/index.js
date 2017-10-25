@@ -10,7 +10,7 @@ module.exports = function Nav({ homeHref = '/news/', shareLinks }) {
   const navBarEl = html`
     <div class="Nav-bar">
       <a class="Nav-home" href="${homeHref}" aria-label="Return to the ABC News homepage">ABC News</a>
-      ${ShareLinks(shareLinks)}
+      ${ShareLinks({ links: shareLinks })}
     </div>
   `;
 

@@ -50,8 +50,8 @@
     text-transform: uppercase;
     cursor: inherit;
 
-    .u-richtext & {
-      color: $color-grey-600;
+    .u-richtext > & {
+      color: $color-grey-500;
     }
   }
 
@@ -60,8 +60,15 @@
   }
 
   &[href][aria-current='false'] {
-    .u-richtext-invert & span,
-    .u-richtext-invert &:visited span {
+    .u-richtext > & label,
+    .u-richtext > &:visited label {
+      color: $color-grey-500;
+    }
+
+    .u-richtext-invert > & label,
+    .u-richtext-invert > &:visited label,
+    .u-richtext-invert > & span,
+    .u-richtext-invert > &:visited span {
       color: $color-white;
     }
 
@@ -76,11 +83,7 @@
 
   &[aria-current='page'] {
     position: relative;
-    border-color: $color-grey-300;
-
-    .u-richtext-invert & {
-      border-color: $color-grey-500;
-    }
+    border-color: $color-grey-300-transparent-70;
 
     &::after,
     & span > i {
@@ -97,11 +100,10 @@
       right: 0;
       bottom: 0;
       padding: 0.125rem 0.125rem 0.0625rem 0.25rem;
-      background-color: $color-grey-300;
+      background-color: $color-grey-300-transparent-70;
       color: $color-black;
 
       .u-richtext-invert & {
-        background-color: $color-grey-500;
         color: var(--bg, #{$color-black});
       }
     }
