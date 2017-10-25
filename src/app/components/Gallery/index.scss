@@ -212,7 +212,7 @@
     max-width: calc(100% - 0.25rem);
     min-height: 0;
     background-color: $color-black-transparent-60;
-    color: $color-grey-100;
+    color: $color-grey-50;
     pointer-events: none;
     transition-delay: 0s;
 
@@ -236,7 +236,7 @@
   }
 
   .is-mosaic & .Caption-attribution {
-    color: $color-grey-200;
+    color: $color-grey-100;
   }
 }
 

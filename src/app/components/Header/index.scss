@@ -15,7 +15,7 @@
   }
 
   .is-dark-mode &:not(.is-dark):not(.is-layered) {
-    background-color: $color-grey-100;
+    background-color: $color-grey-50;
   }
 
   &.is-layered {

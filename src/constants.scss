@@ -6,6 +6,7 @@ $font-serif: 'ABCSerif', 'Book Antiqua', 'Palatino Linotype', Palatino, serif;
 $color-white: #fff;
 $color-white-transparent-30: rgba(255, 255, 255, 0.3);
 $color-white-transparent-60: rgba(255, 255, 255, 0.6);
+$color-white-transparent-75: rgba(255, 255, 255, 0.75);
 $color-white-transparent-90: rgba(255, 255, 255, 0.9);
 
 $color-black: #000;
@@ -16,8 +17,10 @@ $color-black-transparent-60: rgba(0, 0, 0, 0.6);
 $color-black-transparent-75: rgba(0, 0, 0, 0.75);
 $color-black-transparent-93: rgba(0, 0, 0, 0.93);
 
-$color-grey-100: #f9f9f9;
-$color-grey-200: #d2d2d2;
+$color-grey-50: #f9f9f9;
+$color-grey-100: #d2d2d2;
+$color-grey-200: #c4c4c4;
+$color-grey-200-transparent-30: rgba(196, 196, 196, 0.3);
 $color-grey-300: #b3b3b3;
 $color-grey-300-transparent-15: rgba(179, 179, 179, 0.15);
 $color-grey-300-transparent-70: rgba(179, 179, 179, 0.7);

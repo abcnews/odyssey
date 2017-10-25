@@ -21,8 +21,8 @@ body {
   min-height: 102vh;
   width: 100vw;
   width: var(--root-width, 100vw);
-  background-color: $color-grey-100;
-  background-color: var(--bg, #{$color-grey-100});
+  background-color: $color-grey-50;
+  background-color: var(--bg, #{$color-grey-50});
 
   .is-dark-mode > & {
     background-color: $color-black;
@@ -65,7 +65,7 @@ body {
     }
 
     main + .page_margins {
-      background-color: $color-grey-100;
+      background-color: $color-grey-50;
     }
 
     main + .content {

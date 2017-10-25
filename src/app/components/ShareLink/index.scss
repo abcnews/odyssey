@@ -45,6 +45,10 @@
   &::after {
     background-image: url(./email.svg);
 
+    .u-richtext-invert & {
+      background-image: url(./email--inverted.svg);
+    }
+
     .Nav & {
       background-image: url(./email--nav.svg);
     }
@@ -54,6 +58,10 @@
 .ShareLink--facebook {
   &::after {
     background-image: url(./facebook.svg);
+
+    .u-richtext-invert & {
+      background-image: url(./facebook--inverted.svg);
+    }
 
     .Nav & {
       background-image: url(./facebook--nav.svg);
@@ -69,6 +77,10 @@
   &::after {
     background-image: url(./reddit.svg);
 
+    .u-richtext-invert & {
+      background-image: url(./reddit--inverted.svg);
+    }
+
     .Nav & {
       background-image: url(./reddit--nav.svg);
     }
@@ -78,6 +90,10 @@
 .ShareLink--twitter {
   &::after {
     background-image: url(./twitter.svg);
+
+    .u-richtext-invert & {
+      background-image: url(./twitter--inverted.svg);
+    }
 
     .Nav & {
       background-image: url(./twitter--nav.svg);
@@ -92,6 +108,10 @@
 
   &::after {
     background-image: url(./whatsapp.svg);
+
+    .u-richtext-invert & {
+      background-image: url(./whatsapp--inverted.svg);
+    }
 
     .Nav & {
       background-image: url(./whatsapp--nav.svg);
