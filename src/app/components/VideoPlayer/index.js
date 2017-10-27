@@ -22,12 +22,23 @@ const STEP_SECONDS = 5;
 const DEFAULT_RATIO = '16x9';
 
 const players = [];
+let nextUntitledVideoCharCode = 65;
 
 function hasAudio(el) {
   return el.mozHasAudio || !!el.webkitAudioDecodedByteCount || !!(el.audioTracks && el.audioTracks.length);
 }
 
-function VideoPlayer({ ratios = {}, posterURL, sources = [], isAmbient, isAlwaysHQ, isLoop, isMuted, scrollplayPct }) {
+function VideoPlayer({
+  posterURL,
+  ratios = {},
+  sources = [],
+  title,
+  isAmbient,
+  isAlwaysHQ,
+  isLoop,
+  isMuted,
+  scrollplayPct
+}) {
   ratios = {
     sm: ratios.sm || DEFAULT_RATIO,
     md: ratios.md || DEFAULT_RATIO,
@@ -45,7 +56,11 @@ function VideoPlayer({ ratios = {}, posterURL, sources = [], isAmbient, isAlways
     isMuted = true;
   }
 
-  const videoEl = html`<video preload="none" tabindex="-1"></video>`;
+  if (!title) {
+    title = String.fromCharCode(nextUntitledVideoCharCode++);
+  }
+
+  const videoEl = html`<video preload="none" tabindex="-1" aria-label="${title}"></video>`;
 
   toggleBooleanAttributes(videoEl, {
     loop: isLoop,
@@ -301,7 +316,7 @@ function VideoPlayer({ ratios = {}, posterURL, sources = [], isAmbient, isAlways
   if (!isAmbient) {
     playbackEl = html`<button
       class="VideoPlayer-playback"
-      aria-label="Play"
+      aria-label="${`Play video, ${title}`}"
       onkeydown=${whenKeyIn([37, 38, 39, 40], steppingKeyDown)}
       onkeyup=${whenKeyIn([37, 38, 39, 40], steppingKeyUp)}
       onclick=${player.togglePlayback}
