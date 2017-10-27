@@ -43,6 +43,9 @@ function transformEl(el) {
     return;
   }
 
+  const captionEl = Caption.createFromEl(el);
+  const title = captionEl ? captionEl.children[0].textContent : null;
+
   const configSC = grabConfigSC(el);
   const [, alignment] = configSC.match(ALIGNMENT_PATTERN) || [];
 
@@ -61,6 +64,7 @@ function transformEl(el) {
 
   const videoPlayerOptions = {
     ratios: getRatios(configSC),
+    title,
     isAlwaysHQ: options.isCover || options.isFull,
     isAmbient: configSC.indexOf('ambient') > -1,
     isLoop: configSC.indexOf('loop') > -1,
@@ -84,7 +88,7 @@ function transformEl(el) {
     VideoEmbed(
       Object.assign(options, {
         videoPlayerEl: videoPlayerPlaceholderEl,
-        captionEl: Caption.createFromEl(el)
+        captionEl
       })
     )
   );
