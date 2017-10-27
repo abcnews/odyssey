@@ -49,7 +49,7 @@ function sendWebtrendsClipEvent(el, eventName) {
   const args = {
     'DCS.dcsuri': window.location.pathname + '/' + el.src.replace(/.*\//, ''),
     'WT.clip_ev': eventName,
-    'WT.clip_n': document.title, // TODO: Video title
+    'WT.clip_n': el.getAttribute('aria-label') || document.title,
     'WT.clip_t': WT__CLIP_T,
     'WT.dl': WT__DL,
     'WT.ti': document.title
