@@ -14,7 +14,7 @@ function Caption({ url, text, attribution }) {
 
   return html`
     <p class="Caption" title="${text}${attribution ? ` (${attribution})` : ''}">
-      ${url ? html`<a href="${url}">${text}</a>` : text}
+      ${url ? html`<a href="${url}">${text}</a>` : html`<span>${text}</span>`}
       ${attribution ? html`<em class="Caption-attribution">${attribution}</em>` : null}
     </p>
   `;
