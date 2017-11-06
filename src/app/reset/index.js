@@ -12,6 +12,7 @@ require('./index.scss');
 const TEMPLATE_REMOVABLES = {
   '.platform-standard:not(.platform-mobile)': literalList(`
     #container_header
+    #container_subheader
     #container_nav
     .ticker
     .page:not(.featured-scroller):not([id])
