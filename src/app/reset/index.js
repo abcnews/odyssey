@@ -15,7 +15,7 @@ const TEMPLATE_REMOVABLES = {
     #container_nav
     .ticker
     .page:not(.featured-scroller):not([id])
-    .article h1
+    h1
     .tools
     .byline
     .published
