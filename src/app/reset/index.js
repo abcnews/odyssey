@@ -13,10 +13,9 @@ const TEMPLATE_REMOVABLES = {
   '.platform-standard:not(.platform-mobile)': literalList(`
     #container_header
     #container_nav
-    .subheader
     .ticker
     .page:not(.featured-scroller):not([id])
-    h1
+    .article h1
     .tools
     .byline
     .published

@@ -132,7 +132,7 @@ function getRelatedMedia() {
 function getMeta() {
   if (!meta) {
     meta = {
-      title: getMetaContent('replacement-title') || $('h1').textContent,
+      title: getMetaContent('replacement-title') || $(SELECTORS.TITLE).textContent,
       published: getDate('DCTERMS.issued', 'original'),
       updated: getDate('DCTERMS.modified', 'updated'),
       bylineNodes: getBylineNodes(),

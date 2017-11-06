@@ -15,6 +15,7 @@ const SELECTORS = {
   MAIN: ns('main'),
   STORY: ns('story'),
   SHARE_TOOLS: '.share-tools-list, .share, .tools',
+  TITLE: '.article h1, header > h1, h1[itemprop="name"]',
   BYLINE: '.view-byline, header > .attribution, .byline',
   INFO_SOURCE: '.bylinepromo, .program',
   INFO_SOURCE_LINK: '.bylinepromo > a, .program > a',
