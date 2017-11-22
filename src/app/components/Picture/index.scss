@@ -6,6 +6,7 @@
   font-family: $font-sans;
 
   .u-full > & {
+    overflow: hidden;
     height: 100%;
   }
 
