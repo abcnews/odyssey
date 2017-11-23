@@ -3,6 +3,7 @@
 .Picture {
   display: block;
   position: relative;
+  outline-offset: -3px;
   font-family: $font-sans;
 
   .u-full > & {

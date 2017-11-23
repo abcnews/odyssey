@@ -83,7 +83,7 @@
 .Gallery-images {
   display: flex;
   position: relative;
-  transition: transform 0.125s ease-out, left 0.125s ease-out;
+  transition: transform 0.125s ease-out;
   will-change: transform, left;
 
   @media #{$mq-lg} {
@@ -93,6 +93,10 @@
   .is-mosaic & {
     flex-wrap: wrap;
     transform: none !important;
+    transition-duration: 0s;
+  }
+
+  .is-moving {
     transition-duration: 0s;
   }
 }
@@ -120,6 +124,10 @@
 
   .Gallery:not(.is-mosaic) & {
     flex: 0 0 100% !important;
+
+    &:focus {
+      outline: 0;
+    }
   }
 
   @media #{$mq-md} {

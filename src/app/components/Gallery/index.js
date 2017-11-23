@@ -5,7 +5,7 @@ const raf = require('raf');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const { IS_IOS, REM, SUPPORTS_PASSIVE } = require('../../../constants');
+const { REM, SUPPORTS_PASSIVE } = require('../../../constants');
 const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
 const { $, $$, detach, isElement, setText } = require('../../utils/dom');
 const { dePx, getRatios, returnFalse, trim } = require('../../utils/misc');
@@ -57,11 +57,7 @@ function Gallery({ images = [], masterCaptionEl, mosaicRowLengths = [] }) {
     }
 
     enqueue(function _updateImagesAppearance() {
-      if (IS_IOS) {
-        imagesEl.style.left = `${xPct / 100 * paneWidth}px`;
-      } else {
-        imagesEl.style.transform = `translate3d(${xPct}%, 0, 0)`;
-      }
+      imagesEl.style.transform = `translate3d(${xPct}%, 0, 0)`;
 
       pictureEls.forEach((pictureEl, index) => {
         pictureEl.style.opacity = offsetBasedOpacity(index, xPct);
@@ -127,7 +123,7 @@ function Gallery({ images = [], masterCaptionEl, mosaicRowLengths = [] }) {
     diffY = 0;
     swipeAxis = null;
 
-    imagesEl.style.transitionDuration = '0s, 0s';
+    imagesEl.style.transitionDuration = '0s';
   }
 
   function swipeUpdate(event) {
@@ -214,7 +210,6 @@ function Gallery({ images = [], masterCaptionEl, mosaicRowLengths = [] }) {
     swipeAxis = null;
 
     imagesEl.style.transitionDuration = '';
-
     imagesEl.classList.remove('is-moving');
 
     goToImage(nextIndex);
@@ -413,7 +408,7 @@ function Gallery({ images = [], masterCaptionEl, mosaicRowLengths = [] }) {
     </div>
   `;
 
-  galleryEl.api = { goToImage };
+  galleryEl.api = { goToImage, measureDimensions };
 
   raf(() => {
     goToImage((currentIndex = 0));

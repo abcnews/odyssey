@@ -1,6 +1,5 @@
 // External
 const html = require('bel');
-const screenfull = require('screenfull');
 const url2cmid = require('util-url2cmid');
 
 // Ours
@@ -35,8 +34,7 @@ function MasterGallery() {
     const index = imageEl.dataset['index'];
 
     if (index != null) {
-      galleryEl.api.goToImage(+index, true);
-      open(galleryEl);
+      open(galleryEl, +index);
     }
   }
 
@@ -121,21 +119,17 @@ function MasterGallery() {
   return masterGalleryEl;
 }
 
-let lastKnownScrollY;
 let externalActiveElement;
 
-function open(el) {
-  lastKnownScrollY = window.scrollY;
+function open(galleryEl, index = 0) {
+  galleryEl.api.goToImage(index, true);
   document.documentElement.classList.add('is-master-gallery-open');
   externalActiveElement = document.activeElement;
   enqueue(() => {
     $('.is-active', masterGalleryEl).focus();
   });
   invalidateClient();
-
-  if (screenfull.enabled) {
-    screenfull.request();
-  }
+  setTimeout(galleryEl.api.measureDimensions, 0, { hasChanged: true });
 }
 
 function close() {
@@ -144,22 +138,6 @@ function close() {
   if (externalActiveElement) {
     externalActiveElement.focus();
   }
-
-  if (screenfull.isFullscreen) {
-    screenfull.exit();
-  }
-}
-
-if (screenfull) {
-  screenfull.onchange(() => {
-    if (screenfull.isFullscreen) {
-      window.scrollTo(0, lastKnownScrollY);
-      // ...because window scrolls to y=0 while fullscreen is active
-      setTimeout(invalidateClient, 1000);
-    } else {
-      close();
-    }
-  });
 }
 
 function has(id) {
