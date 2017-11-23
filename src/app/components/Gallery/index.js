@@ -90,8 +90,8 @@ function Gallery({ images = [], masterCaptionEl, mosaicRowLengths = [] }) {
     return function handler(event) {
       const _event = {
         type: event.type,
-        preventDefault: boundFnOrNoop(event, 'preventDefault'),
-        stopPropagation: boundFnOrNoop(event, 'stopPropagation')
+        preventDefault: event.preventDefault.bind(event),
+        stopPropagation: event.stopPropagation.bind(event)
       };
 
       if (event.touches) {
@@ -521,12 +521,6 @@ function transformSection(section) {
   delete config.masterCaptionAttribution;
 
   section.substituteWith(Gallery(config), []);
-}
-
-function boundFnOrNoop(obj, propName) {
-  return obj && typeof obj[propName] === 'function' && typeof obj[propName].bind === 'function'
-    ? obj[propName].bind(obj)
-    : () => {};
 }
 
 module.exports = Gallery;
