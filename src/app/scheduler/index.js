@@ -40,7 +40,7 @@ function enqueue(task) {
 function notifySubscribers(hasChanged) {
   const state = Object.assign({ hasChanged }, client);
 
-  subscribers.forEach((subscriber, index) => enqueue(subscriber.bind(null, state)));
+  subscribers.forEach(subscriber => enqueue(subscriber.bind(null, state)));
 }
 
 function onScroll() {
@@ -97,6 +97,10 @@ function start() {
 }
 
 function subscribe(subscriber) {
+  if (typeof subscriber !== 'function') {
+    return;
+  }
+
   subscribers.push(subscriber);
 
   if (hasStarted) {
