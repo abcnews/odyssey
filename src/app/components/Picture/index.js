@@ -176,3 +176,9 @@ subscribe(function _checkIfPicturesNeedToBeLoaded(client) {
 });
 
 module.exports = Picture;
+
+module.exports.resize = ({ url = '', ratio = '16x9', size = 'md' }) =>
+  url
+    .replace(P2_RATIO_SIZE_PATTERN, '$1-large')
+    .replace(RATIO_PATTERN, ratio)
+    .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratio][size]}`);

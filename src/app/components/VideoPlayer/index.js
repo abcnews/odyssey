@@ -11,6 +11,7 @@ const { getMeta } = require('../../meta');
 const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
 const { $, $$, append, isElement, setText, toggleAttribute, toggleBooleanAttributes } = require('../../utils/dom');
 const { proximityCheck, twoDigits, whenKeyIn } = require('../../utils/misc');
+const { resize } = require('../Picture');
 const { trackProgress } = require('./stats');
 require('./index.scss');
 
@@ -77,7 +78,7 @@ function VideoPlayer({
 
   if (posterURL) {
     videoEl.poster = SMALLEST_IMAGE;
-    videoEl.style.backgroundImage = `url("${posterURL}")`;
+    videoEl.style.backgroundImage = `url("${resize({ url: posterURL })}")`;
   }
 
   const source = sources[!isAlwaysHQ && sources.length > 1 && window.matchMedia(MQ.SM).matches ? 1 : 0];
