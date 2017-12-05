@@ -227,7 +227,7 @@ function transformSection(section, meta) {
         }
       }
 
-      if (!videoEl && !videoId && !imgEl && !interactiveEl && isElement(node) && trim(node.textContent).length > 0) {
+      if (!videoEl && !videoId && !imgEl && !interactiveEl && isElement(node) && (trim(node.textContent).length > 0 || node.tagName === 'A')) {
         config.miscContentEls.push(node);
       }
 
