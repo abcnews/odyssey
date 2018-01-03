@@ -97,9 +97,11 @@ function Header({
   const published = typeof meta.published === 'string' ? meta.published : formatUIGRelative(meta.published);
 
   const contentEls = [
-    html`<h1>${isKicker && meta.title.indexOf(': ') > -1
-      ? meta.title.split(': ').map((text, index) => (index === 0 ? html`<small>${text}</small>` : text))
-      : meta.title}</h1>`
+    html`<h1>${
+      isKicker && meta.title.indexOf(': ') > -1
+        ? meta.title.split(': ').map((text, index) => (index === 0 ? html`<small>${text}</small>` : text))
+        : meta.title
+    }</h1>`
   ]
     .concat(clonedMiscContentEls)
     .concat([
@@ -143,9 +145,13 @@ function Header({
 
   const headerEl = html`
     <div class="${className}">
-      ${mediaEl
-        ? html`<div class="Header-media${isLayered && mediaEl.tagName !== 'DIV' ? ' u-parallax' : ''}">${mediaEl}</div>`
-        : null}
+      ${
+        mediaEl
+          ? html`<div class="Header-media${
+              isLayered && mediaEl.tagName !== 'DIV' ? ' u-parallax' : ''
+            }">${mediaEl}</div>`
+          : null
+      }
       ${headerContentEl}
     </div>
   `;
@@ -188,13 +194,24 @@ function transformSection(section, meta) {
     candidateNodes = [meta.relatedMedia.cloneNode(true)].concat(candidateNodes);
   }
 
+  // See if we have an init-interactive in the header
+  const interactiveNode = candidateNodes.filter(node => {
+    const classList = node.className.split(' ');
+    return classList.indexOf('init-interactive') > -1 || node.querySelector('[class^="init-interactive"]');
+  })[0];
+
   const config = candidateNodes.reduce(
     (config, node) => {
-      let classList;
+      let classList = node.className.split(' ');
       let videoEl;
       let videoId;
       let imgEl;
       let interactiveEl;
+
+      // If we found an init-interactive then it takes over being the header media
+      if (!isNoMedia && interactiveNode) {
+        config.interactiveEl = interactiveEl = interactiveNode;
+      }
 
       if (!isNoMedia && !config.videoElOrId && !config.imgEl && !config.interactiveEl && isElement(node)) {
         classList = node.className.split(' ');
@@ -217,17 +234,19 @@ function transformSection(section, meta) {
 
             if (imgEl) {
               config.imgEl = imgEl;
-            } else if (
-              classList.indexOf('init-interactive') > -1 ||
-              node.querySelector('[class^="init-interactive"]')
-            ) {
-              config.interactiveEl = interactiveEl = node;
             }
           }
         }
       }
 
-      if (!videoEl && !videoId && !imgEl && !interactiveEl && isElement(node) && (trim(node.textContent).length > 0 || node.tagName === 'A')) {
+      if (
+        !videoEl &&
+        !videoId &&
+        !imgEl &&
+        !interactiveEl &&
+        isElement(node) &&
+        (trim(node.textContent).length > 0 || node.tagName === 'A')
+      ) {
         config.miscContentEls.push(node);
       }
 
