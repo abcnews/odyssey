@@ -28,6 +28,21 @@
     vertical-align: top;
     object-fit: cover;
 
+    // Until IE/Edge supports object-fit, ambient (control-less) video elements need
+    // to be resized, transformed and (effectively) clipped to cover their parents
+    _:-ms-lang(x),
+    &:not([controls]) {
+      transform: translate(-50%, -50%);
+      top: 50%;
+      left: 50%;
+      z-index: 0;
+      width: auto;
+      height: auto;
+      min-width: 100%;
+      min-height: 100%;
+      max-width: none;
+    }
+
     &:-webkit-full-screen {
       background-image: none !important;
       object-fit: contain;
@@ -115,8 +130,8 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    margin-top: $size-control * -.75;
-    margin-left: $size-control * -.75;
+    margin-top: $size-control * -0.75;
+    margin-left: $size-control * -0.75;
     width: $size-control * 1.5;
     height: $size-control * 1.5;
     background-color: $color-black-transparent-60;
@@ -130,8 +145,8 @@
     @media #{$mq-md} {
       .u-pull &,
       .u-full & {
-        margin-top: $size-control * -.875;
-        margin-left: $size-control * -.875;
+        margin-top: $size-control * -0.875;
+        margin-left: $size-control * -0.875;
         width: $size-control * 1.75;
         height: $size-control * 1.75;
       }
