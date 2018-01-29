@@ -513,7 +513,7 @@ function getMetadata(videoElOrId, callback) {
           });
         }
 
-        done('Unrecognised video detail page template');
+        done(new Error('Unrecognised video detail page template'));
       }
     );
   }
