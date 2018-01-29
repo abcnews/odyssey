@@ -473,7 +473,7 @@ function getMetadata(videoElOrId, callback) {
     // * ...then parse posterURL and sources, based on the page template
 
     xhr(
-      { url: `${(window.location.origin || '').replace('mobile', 'www')}/news/${videoElOrId}` },
+      { url: `${(window.location.origin || '').replace('mobile', 'www')}/news/${videoElOrId}?pfm=ms` },
       (err, response, body) => {
         if (err || response.statusCode !== 200) {
           return done(err || new Error(response.statusCode));
