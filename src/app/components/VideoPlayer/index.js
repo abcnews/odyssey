@@ -469,56 +469,53 @@ function getMetadata(videoElOrId, callback) {
   } else {
     // Phase 1 (Mobile):
     // * Doesn't embed video; only teases to it.
-    // * Must fetch video detail page...
+    // * Must fetch video detail page (Phase 1 always fetches from Standard)...
     // * ...then parse posterURL and sources, based on the page template
 
-    xhr({ url: `/news/${videoElOrId}` }, (err, response, body) => {
-      if (err || response.statusCode !== 200) {
-        return done(err || new Error(response.statusCode));
-      }
+    xhr(
+      { url: `${(window.location.origin || '').replace('mobile', 'www')}/news/${videoElOrId}?pfm=ms` },
+      (err, response, body) => {
+        if (err || response.statusCode !== 200) {
+          return done(err || new Error(response.statusCode));
+        }
 
-      const doc = new DOMParser().parseFromString(body, 'text/html');
+        const doc = new DOMParser().parseFromString(body, 'text/html');
 
-      if (body.indexOf('WCMS.pluginCache') > -1) {
-        // Phase 2
-        // * Poster can be selected from the DOM
-        // * Sources can be parsed from JS that would nest them under the global `WCMS` object
+        if (body.indexOf('WCMS.pluginCache') > -1) {
+          // Phase 2
+          // * Poster can be selected from the DOM
+          // * Sources can be parsed from JS that would nest them under the global `WCMS` object
 
-        done(null, {
-          posterURL: doc
-            .querySelector('.view-inlineMediaPlayer img')
-            .getAttribute('src')
-            .replace('-thumbnail', '-large'),
-          sources: formatSources(
-            JSON.parse(body.replace(NEWLINES_PATTERN, '').match(/"sources":(\[.*\]),"addDownload"/)[1])
-          )
-        });
-      } else if (body.indexOf('inlineVideoData') > -1) {
-        // Phase 1 (Standard)
-        // * Poster can be selected from the DOM
-        // * Sources can be parsed from JS that would nest them under the global `inlineVideoData` object
-
-        done(null, {
-          posterURL: doc.querySelector('.inline-video img').getAttribute('src'),
-          sources: formatSources(
-            JSON.parse(
-              body
-                .replace(NEWLINES_PATTERN, '')
-                .match(/inlineVideoData\.push\((\[.*\])\)/)[1]
-                .replace(/'/g, '"')
+          return done(null, {
+            posterURL: doc
+              .querySelector('.view-inlineMediaPlayer img')
+              .getAttribute('src')
+              .replace('-thumbnail', '-large'),
+            sources: formatSources(
+              JSON.parse(body.replace(NEWLINES_PATTERN, '').match(/"sources":(\[.*\]),"addDownload"/)[1])
             )
-          )
-        });
-      } else {
-        // Phase 1 (Mobile)
-        // * Poster & sources can be selected from the DOM
+          });
+        } else if (body.indexOf('inlineVideoData') > -1) {
+          // Phase 1 (Standard)
+          // * Poster can be selected from the DOM
+          // * Sources can be parsed from JS that would nest them under the global `inlineVideoData` object
 
-        done(null, {
-          posterURL: doc.querySelector('.media video').poster,
-          sources: formatSources(Array.from(doc.querySelectorAll('.media source')))
-        });
+          return done(null, {
+            posterURL: doc.querySelector('.inline-video img').getAttribute('src'),
+            sources: formatSources(
+              JSON.parse(
+                body
+                  .replace(NEWLINES_PATTERN, '')
+                  .match(/inlineVideoData\.push\((\[.*\])\)/)[1]
+                  .replace(/'/g, '"')
+              )
+            )
+          });
+        }
+
+        done(new Error('Unrecognised video detail page template'));
       }
-    });
+    );
   }
 }
 
