@@ -196,6 +196,7 @@ function transformSection(section, meta) {
 
   // See if we have an init-interactive in the header
   const interactiveNode = candidateNodes.filter(node => {
+    if (!node.className) return false;
     const classList = node.className.split(' ');
     return classList.indexOf('init-interactive') > -1 || node.querySelector('[class^="init-interactive"]');
   })[0];
