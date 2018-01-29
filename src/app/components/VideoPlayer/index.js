@@ -469,7 +469,7 @@ function getMetadata(videoElOrId, callback) {
   } else {
     // Phase 1 (Mobile):
     // * Doesn't embed video; only teases to it.
-    // * Must fetch Phase 1 (Standard) video detail page...
+    // * Must fetch video detail page (Phase 1 always fetches from Standard)...
     // * ...then parse posterURL and sources, based on the page template
 
     xhr(
