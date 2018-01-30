@@ -7,22 +7,20 @@ const xhr = require('xhr');
 
 // Ours
 const { CSS_URL, IS_IOS, MQ, MS_VERSION, SMALLEST_IMAGE } = require('../../../constants');
+const { registerPlayer, forEachPlayer } = require('../../media');
 const { getMeta } = require('../../meta');
-const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
-const { $, $$, append, isElement, setText, toggleAttribute, toggleBooleanAttributes } = require('../../utils/dom');
-const { proximityCheck, twoDigits, whenKeyIn } = require('../../utils/misc');
+const { enqueue, subscribe } = require('../../scheduler');
+const { $, $$, append, isElement, toggleAttribute, toggleBooleanAttributes } = require('../../utils/dom');
 const { resize } = require('../Picture');
+const VideoControls = require('../VideoControls');
 const { trackProgress } = require('./stats');
 require('./index.scss');
 
 const NEWLINES_PATTERN = /[\n\r]/g;
-const AMBIENT_PLAYABLE_RANGE = 0.5;
 const FUZZY_INCREMENT_FPS = 30;
 const FUZZY_INCREMENT_INTERVAL = 1000 / FUZZY_INCREMENT_FPS;
-const STEP_SECONDS = 5;
 const DEFAULT_RATIO = '16x9';
 
-const players = [];
 let nextUntitledVideoCharCode = 65;
 
 function hasAudio(el) {
@@ -98,12 +96,12 @@ function VideoPlayer({
   let fuzzyTimeout;
 
   function nextFuzzyIncrement() {
-    if (!controlsEl || videoEl.paused || !videoEl.duration) {
+    if (!videoControlsEl || videoEl.paused || !videoEl.duration) {
       return;
     }
 
     fuzzyCurrentTime = (fuzzyCurrentTime + FUZZY_INCREMENT_INTERVAL / 1000) % videoEl.duration;
-    progressBarEl.value = fuzzyCurrentTime / videoEl.duration * 100;
+    videoControlsEl.api.setProgress(fuzzyCurrentTime / videoEl.duration * 100);
     clearTimeout(fuzzyTimeout);
     fuzzyTimeout = setTimeout(nextFuzzyIncrement, FUZZY_INCREMENT_INTERVAL);
   }
@@ -113,13 +111,13 @@ function VideoPlayer({
   });
 
   videoEl.addEventListener('playing', () => {
-    if (isScrubbing) {
+    if (videoControlsEl && videoControlsEl.api.isScrubbing()) {
       return;
     }
 
     // Stop all other non-ambient videos
     if (!player.isAmbient) {
-      players.forEach(_player => {
+      forEachPlayer(_player => {
         if (_player !== player && !_player.isAmbient) {
           _player.pause();
         }
@@ -135,8 +133,8 @@ function VideoPlayer({
     // Update attributes
     videoEl.removeAttribute('paused');
 
-    if (playbackEl) {
-      playbackEl.setAttribute('aria-label', 'Pause');
+    if (videoControlsEl) {
+      videoControlsEl.api.setPlaybackLabel('Pause');
     }
 
     // Incrememnt fuzzy time
@@ -144,14 +142,14 @@ function VideoPlayer({
   });
 
   videoEl.addEventListener('pause', () => {
-    if (isScrubbing) {
+    if (videoControlsEl && videoControlsEl.api.isScrubbing()) {
       return;
     }
 
     videoEl.setAttribute('paused', '');
 
-    if (playbackEl) {
-      playbackEl.setAttribute('aria-label', 'Play');
+    if (videoControlsEl) {
+      videoControlsEl.api.setPlaybackLabel('Play');
     }
 
     clearTimeout(fuzzyTimeout);
@@ -177,8 +175,8 @@ function VideoPlayer({
     videoEl.setAttribute('ended', '');
     videoEl.setAttribute('paused', '');
 
-    if (playbackEl) {
-      playbackEl.setAttribute('aria-label', 'Replay');
+    if (videoControlsEl) {
+      videoControlsEl.api.setPlaybackLabel('Replay');
     }
   });
 
@@ -187,6 +185,7 @@ function VideoPlayer({
     isAmbient,
     isScrollplay,
     scrollplayPct,
+    getTitle: () => title,
     getRect: () => {
       // Fixed players should use their parent's rect, as they're always in the viewport
       const playerEl = videoEl.parentElement;
@@ -196,15 +195,18 @@ function VideoPlayer({
       return el.getBoundingClientRect();
     },
     getVideoEl: () => videoEl,
+    isMuted: () => videoEl.muted,
     setMuted: shouldBeMuted => {
       player.isUserInControl = true;
       videoEl.muted = shouldBeMuted;
       toggleAttribute(videoEl, 'muted', shouldBeMuted);
 
-      if (muteEl) {
-        muteEl.setAttribute('aria-label', shouldBeMuted ? 'Unmute' : 'Mute');
+      if (videoControlsEl) {
+        videoControlsEl.api.setMuteLabel(shouldBeMuted ? 'Unmute' : 'Mute');
       }
     },
+    toggleMutePreference: toggleMutePreference,
+    isPaused: () => videoEl.paused,
     play: () => {
       if (!videoEl.paused) {
         return;
@@ -224,21 +226,14 @@ function VideoPlayer({
       }
 
       player[videoEl.paused ? 'play' : 'pause']();
-    }
+    },
+    jumpToPct: pct => jumpTo(pct * videoEl.duration),
+    jumpBy: time => jumpTo(videoEl.currentTime + time)
   };
 
-  players.push(player);
+  registerPlayer(player);
 
-  let playbackEl;
-  let muteEl;
-  let timeRemainingEl;
-  let progressBarEl;
-  let progressEl;
-  let controlsEl = null;
-  let steppingKeysHeldDown = [];
-  let wasPlayingBeforeStepping;
-  let isScrubbing;
-  let wasPlayingBeforeScrubbing;
+  let videoControlsEl = null;
 
   function jumpTo(time) {
     if (isNaN(videoEl.duration) || videoEl.duration === videoEl.currentTime) {
@@ -247,127 +242,21 @@ function VideoPlayer({
 
     videoEl.currentTime = Math.max(Math.min(time, videoEl.duration - 0.01), 0);
     fuzzyCurrentTime = videoEl.currentTime;
-    progressBarEl.value = videoEl.currentTime / videoEl.duration * 100;
-  }
 
-  function steppingKeyDown(event) {
-    event.preventDefault();
-
-    if (steppingKeysHeldDown.length === 0) {
-      wasPlayingBeforeStepping = !videoEl.paused;
-
-      if (wasPlayingBeforeStepping) {
-        videoEl.pause();
-      }
+    if (videoControlsEl) {
+      videoControlsEl.api.setProgress(videoEl.currentTime / videoEl.duration * 100);
     }
-
-    if (steppingKeysHeldDown.indexOf(event.keyCode) < 0) {
-      steppingKeysHeldDown.push(event.keyCode);
-    }
-
-    if (steppingKeysHeldDown.indexOf(event.keyCode) === steppingKeysHeldDown.length - 1) {
-      const isSteppingForwards = event.keyCode === 38 || event.keyCode === 39;
-
-      jumpTo(videoEl.currentTime + STEP_SECONDS * (isSteppingForwards ? 1 : -1));
-    }
-  }
-
-  function steppingKeyUp(event) {
-    steppingKeysHeldDown.splice(steppingKeysHeldDown.indexOf(event.keyCode), 1);
-
-    if (steppingKeysHeldDown.length === 0 && wasPlayingBeforeStepping) {
-      videoEl.play();
-    }
-  }
-
-  function scrubStart(event) {
-    isScrubbing = true;
-    wasPlayingBeforeScrubbing = !videoEl.paused;
-    videoEl.pause();
-    scrub(event, !!event.touches);
-  }
-
-  function scrub(event, isPassive) {
-    if (!isScrubbing) {
-      return;
-    }
-
-    if (!isPassive) {
-      event.preventDefault();
-    }
-
-    const clientX = event.touches ? event.touches[0].clientX : event.clientX;
-    const rect = progressEl.getBoundingClientRect();
-
-    jumpTo((clientX - rect.left) / rect.width * videoEl.duration);
-  }
-
-  function scrubEnd() {
-    if (!isScrubbing) {
-      return;
-    }
-
-    if (wasPlayingBeforeScrubbing) {
-      videoEl.play();
-    }
-
-    isScrubbing = false;
   }
 
   if (!isAmbient) {
-    playbackEl = html`<button
-      class="VideoPlayer-playback"
-      aria-label="${`Play video, ${title}`}"
-      onkeydown=${whenKeyIn([37, 38, 39, 40], steppingKeyDown)}
-      onkeyup=${whenKeyIn([37, 38, 39, 40], steppingKeyUp)}
-      onclick=${player.togglePlayback}
-    ></button>`;
-    muteEl = html`<button
-      class="VideoPlayer-mute"
-      aria-label="${isMuted ? 'Unmute' : 'Mute'}"
-      onclick=${toggleMutePreference}
-    ></button>`;
-    timeRemainingEl = html`<time
-      class="VideoPlayer-timeRemaining"
-      aria-label="Time Remaining"
-    ></time>`;
-    progressBarEl = html`<progress
-      class="VideoPlayer-progressBar"
-      aria-label="Percentage Complete"
-      max="100"
-      draggable="false"
-    ></progress>`;
-    progressEl = html`<div class="VideoPlayer-progress">
-      ${progressBarEl}
-    </div>`;
-    controlsEl = html`<div class="VideoPlayer-controls">
-      ${playbackEl}
-      ${muteEl}
-      ${progressEl}
-      ${timeRemainingEl}
-    </div>`;
+    videoControlsEl = VideoControls(player);
 
     videoEl.addEventListener('timeupdate', () => {
       if (videoEl.readyState > 0) {
-        const secondsRemaining = videoEl.duration - videoEl.currentTime;
-        const formattedNegativeTimeFromEnd = isNaN(secondsRemaining)
-          ? ''
-          : `${secondsRemaining > 0 ? '-' : ''}${twoDigits(Math.floor(secondsRemaining / 60))}:${twoDigits(
-              Math.round(secondsRemaining % 60)
-            )}`;
-
-        setText(timeRemainingEl, formattedNegativeTimeFromEnd);
         player.currentFuzzyTime = videoEl.currentTime;
+        videoControlsEl.api.setTimeRemaining(videoEl.duration - videoEl.currentTime);
       }
     });
-
-    progressEl.addEventListener('mousedown', scrubStart);
-    progressEl.addEventListener('touchstart', scrubStart, { passive: true });
-    document.addEventListener('mousemove', scrub);
-    document.addEventListener('touchmove', scrub, { passive: true });
-    document.addEventListener('mouseup', scrubEnd);
-    document.addEventListener('touchend', scrubEnd);
-    document.addEventListener('touchcancel', scrubEnd);
 
     updateUI(player);
 
@@ -378,7 +267,7 @@ function VideoPlayer({
     <div class="VideoPlayer">
       <div class="u-sizer-sm-${ratios.sm} u-sizer-md-${ratios.md} u-sizer-lg-${ratios.lg}"></div>
       ${videoEl}
-      ${controlsEl}
+      ${videoControlsEl}
     </div>
   `;
 
@@ -392,7 +281,7 @@ function toggleMutePreference(event) {
 
   const shouldBeMuted = !this.parentElement.previousElementSibling.muted;
 
-  players.forEach(player => {
+  forEachPlayer(player => {
     // We can't potentially unmute an ambient/scroll-based video as
     // browsers won't allow them to play without a user click event
     if (player.isAmbient || player.isScrollplay) {
@@ -456,7 +345,7 @@ function getMetadata(videoElOrId, callback) {
       .concat(relatedMedia ? [relatedMedia] : [])
       .some(el => {
         if ($(`[href*="/${videoElOrId}"]`, el)) {
-          const posterEl = $('img, .inline-video', el);
+          const posterEl = $('img', el) || $('.inline-video, .jwplayer-video', el);
 
           done(null, {
             posterURL: posterEl ? (posterEl.style.backgroundImage.match(CSS_URL) || [, posterEl.src])[1] : null,
@@ -526,30 +415,6 @@ function formatSources(sources, sortProp = 'bitrate') {
   }));
 }
 
-subscribe(function _checkIfVideoPlayersNeedToBeToggled(client) {
-  players.forEach(player => {
-    if (player.isUserInControl || (!player.isAmbient && !player.isScrollplay)) {
-      return;
-    }
-
-    const rect = player.getRect();
-    const isInPlayableRange = player.isAmbient
-      ? proximityCheck(rect, client, AMBIENT_PLAYABLE_RANGE)
-      : proximityCheck(rect, client, (player.scrollplayPct || 0) / -100);
-
-    if (
-      (typeof player.isInPlayableRange === 'undefined' && isInPlayableRange) ||
-      (typeof player.isInPlayableRange !== 'undefined' && isInPlayableRange !== player.isInPlayableRange)
-    ) {
-      enqueue(function _toggleVideoPlay() {
-        player.togglePlayback(null, true);
-      });
-    }
-
-    player.isInPlayableRange = isInPlayableRange;
-  });
-});
-
 const mql = window.matchMedia('(max-height: 30rem)');
 let mqlDidMatch = mql.matches;
 
@@ -572,7 +437,7 @@ subscribe(function _checkIfVideoPlayersNeedToUpdateUIBasedOnMedia() {
 
   mqlDidMatch = mql.matches;
 
-  players.forEach(player => {
+  forEachPlayer(player => {
     if (player.isAmbient) {
       return;
     }

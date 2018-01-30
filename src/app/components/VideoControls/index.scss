@@ -1,0 +1,189 @@
+@import '../../../constants';
+
+.VideoControls {
+  display: flex;
+  align-items: flex-end;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  max-width: 100vw;
+  max-width: var(--root-width, 100vw);
+  height: 100%;
+
+  [controls] + & {
+    display: none;
+  }
+
+  & > :not(.VideoControls-playback) {
+    opacity: 0;
+    transition: opacity 0.5s 0.5s;
+  }
+
+  & > button {
+    margin: 0;
+    border: none;
+    padding: 0;
+    outline-offset: -3px;
+  }
+
+  &:hover > * {
+    opacity: 1;
+    transition: opacity 0.25s;
+  }
+
+  & > *:focus {
+    opacity: 1;
+    transition: none;
+  }
+
+  [paused] + & > :not(:focus):not(.VideoControls-playback) {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+  }
+}
+
+.VideoControls-playback {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  -webkit-tap-highlight-color: $color-black-transparent;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: $size-control * -0.75;
+    margin-left: $size-control * -0.75;
+    width: $size-control * 1.5;
+    height: $size-control * 1.5;
+    background-color: $color-black-transparent-60;
+    background-image: url(./play.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    transition: opacity 0.25s, transform 0.25s;
+    will-change: opacity, transform;
+
+    @media #{$mq-md} {
+      .u-pull &,
+      .u-full & {
+        margin-top: $size-control * -0.875;
+        margin-left: $size-control * -0.875;
+        width: $size-control * 1.75;
+        height: $size-control * 1.75;
+      }
+    }
+
+    @media #{$mq-lg} {
+      .u-pull &,
+      .u-full & {
+        margin-top: $size-control * -1;
+        margin-left: $size-control * -1;
+        width: $size-control * 2;
+        height: $size-control * 2;
+      }
+    }
+  }
+
+  :not([paused]) + * > &::before {
+    opacity: 0;
+    transform: scale(1.5);
+    background-image: url(./pause.svg);
+  }
+
+  [ended] + * > &::before {
+    background-image: url(./replay.svg);
+  }
+
+  [ended]:not([paused]) + * > &::before {
+    opacity: 0;
+  }
+}
+
+.VideoControls-mute {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: $size-control;
+  height: $size-control;
+  background-color: $color-black-transparent-60;
+  background-image: url(./muted.svg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  cursor: pointer;
+
+  .has-audio + .VideoControls & {
+    display: block;
+  }
+
+  &:focus,
+  [muted] + .VideoControls & {
+    opacity: 1;
+  }
+
+  [muted] + .VideoControls & {
+    background-image: url(./mute.svg);
+  }
+}
+
+.VideoControls-progress {
+  flex: 1 1 auto;
+  z-index: 1;
+  margin-left: 1.25rem;
+  margin-bottom: 0.625rem;
+  padding: 0.625rem 0;
+  line-height: 0.5rem;
+  cursor: pointer;
+  -webkit-tap-highlight-color: $color-black-transparent;
+}
+
+.VideoControls-progressBar {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+  border: none;
+  padding: 0.125rem;
+  width: 100%;
+  height: 0.75rem;
+  background-color: $color-black-transparent-60;
+  color: $color-white-transparent-60;
+
+  &::-webkit-progress-bar {
+    background: none;
+  }
+
+  &::-webkit-progress-value {
+    background: $color-white-transparent-60;
+  }
+
+  &::-moz-progress-bar {
+    background: $color-white-transparent-60;
+  }
+
+  &::-ms-fill {
+    background: $color-white-transparent-60;
+  }
+}
+
+.VideoControls-timeRemaining {
+  margin-left: $size-control-margin;
+  padding: 0.25rem;
+  min-width: 3.75rem;
+  height: 2rem;
+  background-color: $color-black-transparent-60;
+  color: $color-white;
+  font-family: $font-sans;
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+  text-align: center;
+  letter-spacing: 0.0375rem;
+}
