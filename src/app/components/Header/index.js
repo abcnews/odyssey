@@ -203,7 +203,7 @@ function transformSection(section, meta) {
 
   const config = candidateNodes.reduce(
     (config, node) => {
-      let classList = node.className.split(' ');
+      let classList = node.className ? node.className.split(' ') : [];
       let videoEl;
       let videoId;
       let imgEl;
@@ -215,7 +215,6 @@ function transformSection(section, meta) {
       }
 
       if (!isNoMedia && !config.videoElOrId && !config.imgEl && !config.interactiveEl && isElement(node)) {
-        classList = node.className.split(' ');
         videoEl = $('video', node);
 
         if (videoEl) {
