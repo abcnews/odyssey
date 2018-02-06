@@ -7,7 +7,7 @@ const xhr = require('xhr');
 
 // Ours
 const { CSS_URL, IS_IOS, MQ, MS_VERSION, SMALLEST_IMAGE } = require('../../../constants');
-const { registerPlayer, forEachPlayer } = require('../../media');
+const { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } = require('../../media');
 const { getMeta } = require('../../meta');
 const { enqueue, subscribe } = require('../../scheduler');
 const { $, $$, append, isElement, toggleAttribute, toggleBooleanAttributes } = require('../../utils/dom');
@@ -20,8 +20,6 @@ const NEWLINES_PATTERN = /[\n\r]/g;
 const FUZZY_INCREMENT_FPS = 30;
 const FUZZY_INCREMENT_INTERVAL = 1000 / FUZZY_INCREMENT_FPS;
 const DEFAULT_RATIO = '16x9';
-
-let nextUntitledVideoCharCode = 65;
 
 function hasAudio(el) {
   return el.mozHasAudio || !!el.webkitAudioDecodedByteCount || !!(el.audioTracks && el.audioTracks.length);
@@ -56,7 +54,7 @@ function VideoPlayer({
   }
 
   if (!title) {
-    title = String.fromCharCode(nextUntitledVideoCharCode++);
+    title = String.fromCharCode(getNextUntitledMediaCharCode());
   }
 
   const videoEl = html`<video preload="none" tabindex="-1" aria-label="${title}"></video>`;
@@ -142,6 +140,8 @@ function VideoPlayer({
   });
 
   videoEl.addEventListener('pause', () => {
+    clearTimeout(fuzzyTimeout);
+
     if (videoControlsEl && videoControlsEl.api.isScrubbing()) {
       return;
     }
@@ -151,8 +151,6 @@ function VideoPlayer({
     if (videoControlsEl) {
       videoControlsEl.api.setPlaybackLabel('Play');
     }
-
-    clearTimeout(fuzzyTimeout);
   });
 
   videoEl.addEventListener('play', nextFuzzyIncrement);
@@ -253,7 +251,7 @@ function VideoPlayer({
 
     videoEl.addEventListener('timeupdate', () => {
       if (videoEl.readyState > 0) {
-        player.currentFuzzyTime = videoEl.currentTime;
+        // player.currentFuzzyTime = videoEl.currentTime;
         videoControlsEl.api.setTimeRemaining(videoEl.duration - videoEl.currentTime);
       }
     });

@@ -5,6 +5,10 @@ const AMBIENT_PLAYABLE_RANGE = 0.5;
 
 const players = [];
 
+let nextUntitledMediaCharCode = 65;
+
+module.exports.getNextUntitledMediaCharCode = () => nextUntitledMediaCharCode++;
+
 const forEachPlayer = (module.exports.forEachPlayer = fn => players.forEach(fn));
 
 module.exports.registerPlayer = player => players.push(player);
