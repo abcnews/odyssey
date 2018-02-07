@@ -12,11 +12,13 @@ const { dePx, getRatios, slug, trim } = require('../../utils/misc');
 const Picture = require('../Picture');
 const UParallax = require('../UParallax');
 const VideoPlayer = require('../VideoPlayer');
+const YouTubePlayer = require('../YouTubePlayer');
 require('./index.scss');
 
 function Header({
   meta = {},
   videoElOrId,
+  isVideoYouTube,
   imgEl,
   interactiveEl,
   ratios = {},
@@ -54,29 +56,42 @@ function Header({
       mediaEl.classList.add('u-parallax');
     }
   } else if (videoElOrId) {
-    mediaEl = html`<div></div>`;
-    VideoPlayer.getMetadata(videoElOrId, (err, metadata) => {
-      if (err) {
-        return;
-      }
-
-      const replacementMediaEl = VideoPlayer(
-        Object.assign(metadata, {
-          ratios,
-          isAlwaysHQ: true,
-          isAmbient: true
-        })
-      );
-
-      substitute(mediaEl, replacementMediaEl);
+    if (isVideoYouTube) {
+      mediaEl = YouTubePlayer({
+        videoId: videoElOrId,
+        isAmbient: true,
+        ratios
+      });
 
       if (!isLayered) {
-        replacementMediaEl.classList.add('u-parallax');
-        UParallax.activate(replacementMediaEl);
+        mediaEl.classList.add('u-parallax');
+        UParallax.activate(mediaEl);
       }
+    } else {
+      mediaEl = html`<div></div>`;
+      VideoPlayer.getMetadata(videoElOrId, (err, metadata) => {
+        if (err) {
+          return;
+        }
 
-      invalidateClient();
-    });
+        const replacementMediaEl = VideoPlayer(
+          Object.assign(metadata, {
+            ratios,
+            isAlwaysHQ: true,
+            isAmbient: true
+          })
+        );
+
+        substitute(mediaEl, replacementMediaEl);
+
+        if (!isLayered) {
+          replacementMediaEl.classList.add('u-parallax');
+          UParallax.activate(replacementMediaEl);
+        }
+
+        invalidateClient();
+      });
+    }
   } else if (interactiveEl) {
     mediaEl = interactiveEl.cloneNode(true);
   }
@@ -219,6 +234,13 @@ function transformSection(section, meta) {
 
         if (videoEl) {
           config.videoElOrId = videoEl;
+        } else if (node.name && node.name.indexOf('youtube') === 0) {
+          videoId = node.name.split('youtube')[1];
+
+          if (videoId) {
+            config.isVideoYouTube = true;
+            config.videoElOrId = videoId;
+          }
         } else {
           videoId =
             ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
