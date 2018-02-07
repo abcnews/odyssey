@@ -225,7 +225,7 @@ function transformSection(section, meta) {
       let interactiveEl;
 
       // If we found an init-interactive then it takes over being the header media
-      if (!isNoMedia && interactiveNode) {
+      if (!isNoMedia && !config.interactiveEl && interactiveNode) {
         config.interactiveEl = interactiveEl = interactiveNode;
       }
 
