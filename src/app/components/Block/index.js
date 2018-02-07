@@ -11,6 +11,7 @@ const { getRatios, trim } = require('../../utils/misc');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
 const VideoPlayer = require('../VideoPlayer');
+const YouTubePlayer = require('../YouTubePlayer');
 require('./index.scss');
 
 function Block({
@@ -20,6 +21,7 @@ function Block({
   isLight,
   alignment,
   videoId,
+  isVideoYouTube,
   imgEl,
   ratios = {},
   contentEls = []
@@ -58,23 +60,31 @@ function Block({
       ratios
     });
   } else if (videoId) {
-    mediaEl = html`<div></div>`;
-    VideoPlayer.getMetadata(videoId, (err, metadata) => {
-      if (err) {
-        return;
-      }
+    if (isVideoYouTube) {
+      mediaEl = YouTubePlayer({
+        videoId,
+        isAmbient: true,
+        ratios
+      });
+    } else {
+      mediaEl = html`<div></div>`;
+      VideoPlayer.getMetadata(videoId, (err, metadata) => {
+        if (err) {
+          return;
+        }
 
-      const replacementMediaEl = VideoPlayer(
-        Object.assign(metadata, {
-          ratios,
-          isAlwaysHQ: true,
-          isAmbient: true
-        })
-      );
+        const replacementMediaEl = VideoPlayer(
+          Object.assign(metadata, {
+            ratios,
+            isAlwaysHQ: true,
+            isAmbient: true
+          })
+        );
 
-      substitute(mediaEl, replacementMediaEl);
-      invalidateClient();
-    });
+        substitute(mediaEl, replacementMediaEl);
+        invalidateClient();
+      });
+    }
   }
 
   const mediaContainerEl = mediaEl
@@ -88,21 +98,23 @@ function Block({
   const blockEl = html`
     <div class="${className}">
       ${mediaContainerEl}
-      ${isPiecemeal
-        ? contentEls.map(
-            contentEl => html`
+      ${
+        isPiecemeal
+          ? contentEls.map(
+              contentEl => html`
           <div class="${contentClassName}">
             ${contentEl}
           </div>
         `
-          )
-        : contentEls.length > 0
-          ? html`
+            )
+          : contentEls.length > 0
+            ? html`
           <div class="${contentClassName}">
             ${contentEls}
           </div>
         `
-          : null}
+            : null
+      }
     </div>
   `;
 
@@ -144,11 +156,16 @@ function transformSection(section) {
       if (!config.videoId && !config.imgEl && isElement(node)) {
         classList = node.className.split(' ');
 
-        videoId =
-          ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
-            classList.indexOf('view-inlineMediaPlayer') > -1 ||
-            (classList.indexOf('embed-content') > -1 && $('.type-video', node))) &&
-          url2cmid($('a', node).getAttribute('href'));
+        if (node.name && node.name.indexOf('youtube') === 0) {
+          videoId = node.name.split('youtube')[1];
+          config.isVideoYouTube = true;
+        } else {
+          videoId =
+            ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
+              classList.indexOf('view-inlineMediaPlayer') > -1 ||
+              (classList.indexOf('embed-content') > -1 && $('.type-video', node))) &&
+            url2cmid($('a', node).getAttribute('href'));
+        }
 
         if (videoId) {
           config.videoId = videoId;
