@@ -11,11 +11,12 @@ const { $, $$, substitute } = require('../../utils/dom');
 const { getRatios } = require('../../utils/misc');
 const Caption = require('../Caption');
 const VideoPlayer = require('../VideoPlayer');
+const YouTubePlayer = require('../YouTubePlayer');
 require('./index.scss');
 
 const SCROLLPLAY_PCT_PATTERN = /scrollplay(\d+)/;
 
-function VideoEmbed({ videoPlayerEl, captionEl, alignment, isFull, isCover, isAnon }) {
+function VideoEmbed({ playerEl, captionEl, alignment, isFull, isCover, isAnon }) {
   if (isCover) {
     isFull = true;
     isAnon = true;
@@ -30,14 +31,15 @@ function VideoEmbed({ videoPlayerEl, captionEl, alignment, isFull, isCover, isAn
 
   return html`
     <div class="${className}">
-      ${videoPlayerEl}
+      ${playerEl}
       ${isAnon ? null : captionEl}
     </div>
   `;
 }
 
 function transformEl(el) {
-  const videoId = url2cmid($('a', el).getAttribute('href'));
+  const isYouTube = el.name && el.name.indexOf('youtube') === 0;
+  const videoId = isYouTube ? el.name.split('youtube')[1] : url2cmid($('a', el).getAttribute('href'));
 
   if (!videoId) {
     return;
@@ -62,7 +64,7 @@ function transformEl(el) {
   ];
   const scrollplayPct = scrollplayPctString.length > 0 && Math.max(0, Math.min(100, +scrollplayPctString));
 
-  const videoPlayerOptions = {
+  const playerOptions = {
     ratios: getRatios(configSC),
     title,
     isAlwaysHQ: options.isCover || options.isFull,
@@ -72,26 +74,20 @@ function transformEl(el) {
     scrollplayPct
   };
 
-  const videoPlayerPlaceholderEl = html`<div></div>`;
+  const playerEl = isYouTube ? YouTubePlayer(Object.assign(playerOptions, { videoId })) : html`<div></div>`;
 
-  VideoPlayer.getMetadata(videoId, (err, metadata) => {
-    if (err) {
-      return;
-    }
+  substitute(el, VideoEmbed(Object.assign(options, { playerEl, captionEl })));
 
-    substitute(videoPlayerPlaceholderEl, VideoPlayer(Object.assign(videoPlayerOptions, metadata)));
-    invalidateClient();
-  });
+  if (!isYouTube) {
+    VideoPlayer.getMetadata(videoId, (err, metadata) => {
+      if (err) {
+        return;
+      }
 
-  substitute(
-    el,
-    VideoEmbed(
-      Object.assign(options, {
-        videoPlayerEl: videoPlayerPlaceholderEl,
-        captionEl
-      })
-    )
-  );
+      substitute(playerEl, VideoPlayer(Object.assign(playerOptions, metadata)));
+      invalidateClient();
+    });
+  }
 }
 
 module.exports = VideoEmbed;
