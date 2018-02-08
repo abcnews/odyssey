@@ -67,7 +67,14 @@ function VideoPlayer({ posterURL, ratios = {}, sources = [], title, isAmbient, i
     videoEl.style.backgroundImage = `url("${resize({ url: posterURL })}")`;
   }
 
-  const source = sources[sources.length > 1 && window.matchMedia(MQ.SM).matches ? 1 : 0];
+  // If we're on mobile, and have more than one high resolution source, use the second
+  // highest; otherwise, use the first source (of any resolution).
+  // Note: Only Phase 1 (Desktop) sources have width/height defined, making it the
+  // only template that can differentiate its high resolution sources.
+  const highResSources = sources.filter(source => source.width >= 1024);
+  const source = (highResSources.length ? highResSources : sources)[
+    highResSources.length > 1 && window.matchMedia(MQ.SM).matches ? 1 : 0
+  ];
 
   if (source) {
     videoEl.src = source.src;
@@ -399,7 +406,9 @@ function getMetadata(videoElOrId, callback) {
 function formatSources(sources, sortProp = 'bitrate') {
   return sources.sort((a, b) => +b[sortProp] - +a[sortProp]).map(source => ({
     src: source.src || source.url,
-    type: source.type || source.contentType
+    type: source.type || source.contentType,
+    width: +source.width || 0,
+    height: +source.height || 0
   }));
 }
 
