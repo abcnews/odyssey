@@ -67,7 +67,6 @@ function transformEl(el) {
   const playerOptions = {
     ratios: getRatios(configSC),
     title,
-    isAlwaysHQ: options.isCover || options.isFull,
     isAmbient: configSC.indexOf('ambient') > -1,
     isLoop: configSC.indexOf('loop') > -1,
     isMuted: configSC.indexOf('muted') > -1,

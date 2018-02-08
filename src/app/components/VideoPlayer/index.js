@@ -25,17 +25,7 @@ function hasAudio(el) {
   return el.mozHasAudio || !!el.webkitAudioDecodedByteCount || !!(el.audioTracks && el.audioTracks.length);
 }
 
-function VideoPlayer({
-  posterURL,
-  ratios = {},
-  sources = [],
-  title,
-  isAmbient,
-  isAlwaysHQ,
-  isLoop,
-  isMuted,
-  scrollplayPct
-}) {
+function VideoPlayer({ posterURL, ratios = {}, sources = [], title, isAmbient, isLoop, isMuted, scrollplayPct }) {
   ratios = {
     sm: ratios.sm || DEFAULT_RATIO,
     md: ratios.md || DEFAULT_RATIO,
@@ -77,7 +67,7 @@ function VideoPlayer({
     videoEl.style.backgroundImage = `url("${resize({ url: posterURL })}")`;
   }
 
-  const source = sources[!isAlwaysHQ && sources.length > 1 && window.matchMedia(MQ.SM).matches ? 1 : 0];
+  const source = sources[sources.length > 1 && window.matchMedia(MQ.SM).matches ? 1 : 0];
 
   if (source) {
     videoEl.src = source.src;
