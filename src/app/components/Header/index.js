@@ -77,7 +77,6 @@ function Header({
         const replacementMediaEl = VideoPlayer(
           Object.assign(metadata, {
             ratios,
-            isAlwaysHQ: true,
             isAmbient: true
           })
         );
