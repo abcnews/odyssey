@@ -32,6 +32,13 @@
   position: relative;
   background-color: $color-black;
 
+  :not(.is-layered) > & {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-height: calc(85vh - #{$abc-nav-height + $size-bar});
+  }
+
   .is-layered > & {
     position: absolute;
     top: 0;
