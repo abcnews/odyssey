@@ -195,6 +195,19 @@ function app() {
   // Expose API, then notify interested parties
   window.__ODYSSEY__ = api;
   window.dispatchEvent(new CustomEvent('odyssey:api', { detail: api }));
+
+  // Notify console of deprecated anchors
+  setTimeout(() => {
+    const deprecated = {};
+
+    getMarkers(['image', 'video', 'cover', 'endcover']).forEach(marker => (deprecated[`#${marker.name}`] = true));
+
+    const keys = Object.keys(deprecated);
+
+    if (keys) {
+      console.debug(`[Odyssey] Deprecated anchors used: ${Object.keys(deprecated).join()}`);
+    }
+  }, 0);
 }
 
 module.exports = app;
