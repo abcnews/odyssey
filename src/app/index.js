@@ -204,7 +204,7 @@ function app() {
 
     const keys = Object.keys(deprecated);
 
-    if (keys) {
+    if (keys.length) {
       console.debug(`[Odyssey] Deprecated anchors used: ${Object.keys(deprecated).join()}`);
     }
   }, 5000);
