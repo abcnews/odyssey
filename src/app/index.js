@@ -207,7 +207,7 @@ function app() {
     if (keys) {
       console.debug(`[Odyssey] Deprecated anchors used: ${Object.keys(deprecated).join()}`);
     }
-  }, 0);
+  }, 5000);
 }
 
 module.exports = app;
