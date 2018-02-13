@@ -75,8 +75,6 @@ function transformEl(el) {
 
   const playerEl = isYouTube ? YouTubePlayer(Object.assign(playerOptions, { videoId })) : html`<div></div>`;
 
-  substitute(el, VideoEmbed(Object.assign(options, { playerEl, captionEl })));
-
   if (!isYouTube) {
     VideoPlayer.getMetadata(videoId, (err, metadata) => {
       if (err) {
@@ -87,6 +85,8 @@ function transformEl(el) {
       invalidateClient();
     });
   }
+
+  substitute(el, VideoEmbed(Object.assign(options, { playerEl, captionEl })));
 }
 
 module.exports = VideoEmbed;
