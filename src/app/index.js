@@ -44,15 +44,7 @@ function app() {
   let hasHeader = false;
 
   // Transform sections
-  getSections([
-    'header',
-    'remove',
-    'block',
-    'cover', // deprecated - use 'block'
-    'gallery',
-    'mosaic',
-    'pull'
-  ]).forEach(section => {
+  getSections(['header', 'remove', 'block', 'gallery', 'mosaic', 'pull']).forEach(section => {
     switch (section.name) {
       case 'header':
         hasHeader = true;
@@ -62,7 +54,6 @@ function app() {
         detachAll([section.startNode, section.endNode].concat(section.betweenNodes));
         break;
       case 'block':
-      case 'cover':
         Block.transformSection(section);
         break;
       case 'gallery':
