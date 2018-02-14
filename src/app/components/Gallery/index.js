@@ -13,7 +13,7 @@ const Caption = require('../Caption');
 const Picture = require('../Picture');
 require('./index.scss');
 
-const MOSAIC_ROW_LENGTHS_PATTERN = /(?:tiled|mosaic)(\d+)/;
+const MOSAIC_ROW_LENGTHS_PATTERN = /mosaic(\d+)/;
 const PCT_PATTERN = /(-?[0-9\.]+)%/;
 const SWIPE_THRESHOLD = 25;
 const AXIS_THRESHOLD = 5;
