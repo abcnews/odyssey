@@ -2,20 +2,19 @@
 const { MOCK_ELEMENT } = require('../../constants');
 const { $$, detach, detachAll, isElement, substitute } = require('./dom');
 
+const CONFIG_ANCHOR_NAME = 'config';
+
 function grabConfigSC(el) {
   const prevEl = el.previousElementSibling || MOCK_ELEMENT;
   const prevElName = prevEl.getAttribute('name') || '';
-  let configSC;
 
-  // TODO: Convert #image and #video in all stories to #config
-  ['config', 'image', 'video'].some(name => {
-    if (prevElName.indexOf(name) === 0) {
-      configSC = prevElName.slice(name.length);
-      detach(prevEl);
-    }
-  });
+  if (prevElName.indexOf(CONFIG_ANCHOR_NAME) !== 0) {
+    return '';
+  }
 
-  return configSC || '';
+  detach(prevEl);
+
+  return prevElName.slice(CONFIG_ANCHOR_NAME.length);
 }
 
 function _substituteSectionWith(el, remainingBetweenNodes) {

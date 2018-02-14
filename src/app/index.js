@@ -44,15 +44,7 @@ function app() {
   let hasHeader = false;
 
   // Transform sections
-  getSections([
-    'header',
-    'remove',
-    'block',
-    'cover', // deprecated - use 'block'
-    'gallery',
-    'mosaic',
-    'pull'
-  ]).forEach(section => {
+  getSections(['header', 'remove', 'block', 'gallery', 'mosaic', 'pull']).forEach(section => {
     switch (section.name) {
       case 'header':
         hasHeader = true;
@@ -62,7 +54,6 @@ function app() {
         detachAll([section.startNode, section.endNode].concat(section.betweenNodes));
         break;
       case 'block':
-      case 'cover':
         Block.transformSection(section);
         break;
       case 'gallery':
@@ -195,6 +186,19 @@ function app() {
   // Expose API, then notify interested parties
   window.__ODYSSEY__ = api;
   window.dispatchEvent(new CustomEvent('odyssey:api', { detail: api }));
+
+  // Notify console of deprecated anchors
+  setTimeout(() => {
+    const deprecated = {};
+
+    getMarkers(['image', 'video', 'cover', 'gallerytiled']).forEach(marker => (deprecated[`#${marker.name}`] = true));
+
+    const keys = Object.keys(deprecated);
+
+    if (keys.length) {
+      console.debug(`[Odyssey] Deprecated anchors used: ${Object.keys(deprecated).join(', ')}`);
+    }
+  }, 5000);
 }
 
 module.exports = app;
