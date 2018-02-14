@@ -11,7 +11,7 @@ const { toggleAttribute, toggleBooleanAttributes } = require('../../utils/dom');
 const { resize } = require('../Picture');
 const VideoControls = require('../VideoControls');
 const { trackProgress } = require('./stats');
-const { getMetadata, getRemoteMetadata, hasAudio } = require('./utils');
+const { getMetadata, getMetadataFromDetailPage, hasAudio } = require('./utils');
 require('./index.scss');
 
 const FUZZY_INCREMENT_FPS = 30;
@@ -323,4 +323,4 @@ subscribe(function _checkIfVideoPlayersNeedToUpdateUIBasedOnMedia() {
 
 module.exports = VideoPlayer;
 module.exports.getMetadata = getMetadata;
-module.exports.getRemoteMetadata = getRemoteMetadata;
+module.exports.getMetadataFromDetailPage = getMetadataFromDetailPage;

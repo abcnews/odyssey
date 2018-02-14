@@ -14,6 +14,7 @@ const VideoPlayer = require('../VideoPlayer');
 const YouTubePlayer = require('../YouTubePlayer');
 require('./index.scss');
 
+const VIDEO_ID_PATTERN = /(?:video|youtube)(\w+)/;
 const SCROLLPLAY_PCT_PATTERN = /scrollplay(\d+)/;
 
 function VideoEmbed({ playerEl, captionEl, alignment, isFull, isCover, isAnon }) {
@@ -38,14 +39,15 @@ function VideoEmbed({ playerEl, captionEl, alignment, isFull, isCover, isAnon })
 }
 
 function transformEl(el) {
-  const isYouTube = el.name && el.name.indexOf('youtube') === 0;
-  const videoId = isYouTube ? el.name.split('youtube')[1] : url2cmid($('a', el).getAttribute('href'));
+  const isMarker = el.name && !!el.name.match(VIDEO_ID_PATTERN);
+  const videoId = isMarker ? el.name.match(VIDEO_ID_PATTERN)[1] : url2cmid($('a', el).getAttribute('href'));
 
   if (!videoId) {
     return;
   }
 
-  const captionEl = Caption.createFromEl(el);
+  const isYouTube = isMarker && el.name.indexOf('youtube') === 0;
+  const captionEl = !isMarker ? Caption.createFromEl(el) : null;
   const title = captionEl ? captionEl.children[0].textContent : null;
 
   const configSC = grabConfigSC(el);
@@ -76,7 +78,7 @@ function transformEl(el) {
   const playerEl = isYouTube ? YouTubePlayer(Object.assign(playerOptions, { videoId })) : html`<div></div>`;
 
   if (!isYouTube) {
-    VideoPlayer.getMetadata(videoId, (err, metadata) => {
+    VideoPlayer[`getMetadata${isMarker ? 'FromDetailPage' : ''}`](videoId, (err, metadata) => {
       if (err) {
         return;
       }
@@ -89,5 +91,10 @@ function transformEl(el) {
   substitute(el, VideoEmbed(Object.assign(options, { playerEl, captionEl })));
 }
 
+function transformMarker(marker) {
+  return transformEl(marker.node);
+}
+
 module.exports = VideoEmbed;
 module.exports.transformEl = transformEl;
+module.exports.transformMarker = transformMarker;

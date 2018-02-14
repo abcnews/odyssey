@@ -89,7 +89,7 @@ function app() {
     .forEach(UQuote.conditionallyApply);
 
   // Transform markers
-  getMarkers(['cta', 'hr', 'series', 'share', 'youtube']).forEach(marker => {
+  getMarkers(['cta', 'hr', 'series', 'share', 'video', 'youtube']).forEach(marker => {
     let el;
 
     switch (marker.name) {
@@ -108,8 +108,9 @@ function app() {
       case 'share':
         Share.transformMarker(marker, meta.shareLinks);
         break;
+      case 'video':
       case 'youtube':
-        VideoEmbed.transformEl(marker.node);
+        VideoEmbed.transformMarker(marker);
         break;
       default:
         break;

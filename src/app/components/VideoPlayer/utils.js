@@ -88,17 +88,15 @@ function getMetadata(videoElOrId, callback) {
     // * Must fetch video detail page (Phase 1 always fetches from Standard)...
     // * ...then parse posterURL and sources, based on the page template
 
-    getRemoteMetadata(videoElOrId, done);
+    getMetadataFromDetailPage(videoElOrId, done);
   }
 }
-
-module.exports.getMetadata = getMetadata;
 
 function detailPageURLFromId(id) {
   return `${(window.location.origin || '').replace('mobile', 'www')}/news/${id}?pfm=ms`;
 }
 
-function getRemoteMetadata(id, callback) {
+function getMetadataFromDetailPage(id, callback) {
   xhr({ url: detailPageURLFromId(id) }, (err, response, body) => {
     if (err || response.statusCode !== 200) {
       return callback(err || new Error(response.statusCode));
@@ -142,10 +140,10 @@ function getRemoteMetadata(id, callback) {
   });
 }
 
-module.exports.getRemoteMetadata = getRemoteMetadata;
-
 function hasAudio(el) {
   return el.mozHasAudio || !!el.webkitAudioDecodedByteCount || !!(el.audioTracks && el.audioTracks.length);
 }
 
+module.exports.getMetadata = getMetadata;
+module.exports.getMetadataFromDetailPage = getMetadataFromDetailPage;
 module.exports.hasAudio = hasAudio;
