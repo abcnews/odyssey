@@ -191,12 +191,12 @@ function app() {
   setTimeout(() => {
     const deprecated = {};
 
-    getMarkers(['image', 'video', 'cover', 'endcover']).forEach(marker => (deprecated[`#${marker.name}`] = true));
+    getMarkers(['image', 'video', 'cover', 'gallerytiled']).forEach(marker => (deprecated[`#${marker.name}`] = true));
 
     const keys = Object.keys(deprecated);
 
     if (keys.length) {
-      console.debug(`[Odyssey] Deprecated anchors used: ${Object.keys(deprecated).join()}`);
+      console.debug(`[Odyssey] Deprecated anchors used: ${Object.keys(deprecated).join(', ')}`);
     }
   }, 5000);
 }
