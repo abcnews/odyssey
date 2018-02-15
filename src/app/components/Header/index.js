@@ -7,7 +7,7 @@ const url2cmid = require('util-url2cmid');
 // Ours
 const { IS_PREVIEW, MS_VERSION, VIDEO_MARKER_PATTERN } = require('../../../constants');
 const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
-const { $, isElement, prepend, substitute } = require('../../utils/dom');
+const { $, detach, isElement, prepend, substitute } = require('../../utils/dom');
 const { dePx, getRatios, slug, trim } = require('../../utils/misc');
 const Picture = require('../Picture');
 const UParallax = require('../UParallax');
@@ -202,11 +202,16 @@ function transformSection(section, meta) {
   const isLayered = section.configSC.indexOf('layered') > -1;
   const isNoMedia = section.configSC.indexOf('nomedia') > -1;
   const isKicker = section.configSC.indexOf('kicker') > -1;
+  const shouldSupplant = section.configSC.indexOf('supplant') > -1;
 
   let candidateNodes = section.betweenNodes;
 
   if (!isNoMedia && meta.relatedMedia != null) {
     candidateNodes = [meta.relatedMedia.cloneNode(true)].concat(candidateNodes);
+  }
+
+  if (shouldSupplant && candidateNodes.length) {
+    detach(candidateNodes.shift());
   }
 
   // See if we have an init-interactive in the header

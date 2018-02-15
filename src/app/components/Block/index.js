@@ -144,8 +144,13 @@ function transformSection(section) {
   const isDocked = section.configSC.indexOf('docked') > -1;
   const isPiecemeal = section.configSC.indexOf('piecemeal') > -1;
   const isLight = section.configSC.indexOf('light') > -1;
+  const shouldSupplant = section.configSC.indexOf('supplant') > -1;
   const [, alignment] = section.configSC.match(ALIGNMENT_PATTERN) || [];
   let sourceMediaEl;
+
+  if (shouldSupplant && section.betweenNodes.length) {
+    detach(section.betweenNodes.shift());
+  }
 
   const config = section.betweenNodes.reduce(
     (config, node) => {
