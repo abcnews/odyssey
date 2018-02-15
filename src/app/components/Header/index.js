@@ -5,7 +5,7 @@ const { formatUIGRelative } = require('inn-abcdatetime-lib');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const { IS_PREVIEW, MS_VERSION } = require('../../../constants');
+const { IS_PREVIEW, MS_VERSION, VIDEO_MARKER_PATTERN } = require('../../../constants');
 const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
 const { $, isElement, prepend, substitute } = require('../../utils/dom');
 const { dePx, getRatios, slug, trim } = require('../../utils/misc');
@@ -18,6 +18,7 @@ require('./index.scss');
 function Header({
   meta = {},
   videoElOrId,
+  isVideoMarker,
   isVideoYouTube,
   imgEl,
   interactiveEl,
@@ -69,7 +70,7 @@ function Header({
       }
     } else {
       mediaEl = html`<div></div>`;
-      VideoPlayer.getMetadata(videoElOrId, (err, metadata) => {
+      VideoPlayer[`getMetadata${isVideoMarker ? 'FromDetailPage' : ''}`](videoElOrId, (err, metadata) => {
         if (err) {
           return;
         }
@@ -233,13 +234,10 @@ function transformSection(section, meta) {
 
         if (videoEl) {
           config.videoElOrId = videoEl;
-        } else if (node.name && node.name.indexOf('youtube') === 0) {
-          videoId = node.name.split('youtube')[1];
-
-          if (videoId) {
-            config.isVideoYouTube = true;
-            config.videoElOrId = videoId;
-          }
+        } else if (node.name && !!node.name.match(VIDEO_MARKER_PATTERN)) {
+          config.isVideoMarker = true;
+          config.isVideoYouTube = node.name.split('youtube')[1];
+          config.videoElOrId = videoId = node.name.match(VIDEO_MARKER_PATTERN)[1];
         } else {
           videoId =
             ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||

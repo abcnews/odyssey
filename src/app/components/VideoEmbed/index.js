@@ -4,7 +4,7 @@ const html = require('bel');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const { IS_PREVIEW, ALIGNMENT_PATTERN } = require('../../../constants');
+const { IS_PREVIEW, ALIGNMENT_PATTERN, VIDEO_MARKER_PATTERN, SCROLLPLAY_PCT_PATTERN } = require('../../../constants');
 const { invalidateClient } = require('../../scheduler');
 const { grabConfigSC } = require('../../utils/anchors');
 const { $, $$, substitute } = require('../../utils/dom');
@@ -13,9 +13,6 @@ const Caption = require('../Caption');
 const VideoPlayer = require('../VideoPlayer');
 const YouTubePlayer = require('../YouTubePlayer');
 require('./index.scss');
-
-const VIDEO_ID_PATTERN = /(?:video|youtube)(\w+)/;
-const SCROLLPLAY_PCT_PATTERN = /scrollplay(\d+)/;
 
 function VideoEmbed({ playerEl, captionEl, alignment, isFull, isCover, isAnon }) {
   if (isCover) {
@@ -39,8 +36,8 @@ function VideoEmbed({ playerEl, captionEl, alignment, isFull, isCover, isAnon })
 }
 
 function transformEl(el) {
-  const isMarker = el.name && !!el.name.match(VIDEO_ID_PATTERN);
-  const videoId = isMarker ? el.name.match(VIDEO_ID_PATTERN)[1] : url2cmid($('a', el).getAttribute('href'));
+  const isMarker = el.name && !!el.name.match(VIDEO_MARKER_PATTERN);
+  const videoId = isMarker ? el.name.match(VIDEO_MARKER_PATTERN)[1] : url2cmid($('a', el).getAttribute('href'));
 
   if (!videoId) {
     return;
