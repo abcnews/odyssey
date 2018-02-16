@@ -4,7 +4,7 @@ const html = require('bel');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const { ALIGNMENT_PATTERN, IS_PREVIEW } = require('../../../constants');
+const { ALIGNMENT_PATTERN, VIDEO_MARKER_PATTERN, IS_PREVIEW } = require('../../../constants');
 const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
 const { $, detach, isElement, substitute } = require('../../utils/dom');
 const { getRatios, trim } = require('../../utils/misc');
@@ -21,6 +21,7 @@ function Block({
   isLight,
   alignment,
   videoId,
+  isVideoMarker,
   isVideoYouTube,
   imgEl,
   ratios = {},
@@ -68,7 +69,7 @@ function Block({
       });
     } else {
       mediaEl = html`<div></div>`;
-      VideoPlayer.getMetadata(videoId, (err, metadata) => {
+      VideoPlayer[`getMetadata${isVideoMarker ? 'FromDetailPage' : ''}`](videoId, (err, metadata) => {
         if (err) {
           return;
         }
@@ -143,8 +144,13 @@ function transformSection(section) {
   const isDocked = section.configSC.indexOf('docked') > -1;
   const isPiecemeal = section.configSC.indexOf('piecemeal') > -1;
   const isLight = section.configSC.indexOf('light') > -1;
+  const shouldSupplant = section.configSC.indexOf('supplant') > -1;
   const [, alignment] = section.configSC.match(ALIGNMENT_PATTERN) || [];
   let sourceMediaEl;
+
+  if (shouldSupplant && section.betweenNodes.length) {
+    detach(section.betweenNodes.shift());
+  }
 
   const config = section.betweenNodes.reduce(
     (config, node) => {
@@ -155,9 +161,10 @@ function transformSection(section) {
       if (!config.videoId && !config.imgEl && isElement(node)) {
         classList = node.className.split(' ');
 
-        if (node.name && node.name.indexOf('youtube') === 0) {
-          videoId = node.name.split('youtube')[1];
-          config.isVideoYouTube = true;
+        if (node.name && !!node.name.match(VIDEO_MARKER_PATTERN)) {
+          config.isVideoMarker = true;
+          config.isVideoYouTube = node.name.split('youtube')[1];
+          config.videoElOrId = videoId = node.name.match(VIDEO_MARKER_PATTERN)[1];
         } else {
           videoId =
             ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
