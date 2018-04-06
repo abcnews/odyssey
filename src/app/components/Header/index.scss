@@ -51,6 +51,10 @@
     }
   }
 
+  .Header-interactive > div > div {
+    height: calc(85vh - #{$abc-nav-height + $size-bar});
+  }
+
   &::after {
     content: '';
     position: absolute;
