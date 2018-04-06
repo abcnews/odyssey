@@ -26,7 +26,9 @@ function Block({
   isVideoYouTube,
   imgEl,
   ratios = {},
-  contentEls = []
+  contentEls = [],
+  transition,
+  backgrounds
 }) {
   const className = cn(
     'Block',
@@ -51,7 +53,53 @@ function Block({
 
   let mediaEl;
 
-  if (imgEl) {
+  if (backgrounds) {
+    // const productionUnit = document.querySelector('meta[name="ABC.productionUnit"]');
+    // if (!productionUnit || productionUnit.getAttribute('content') !== 'Interactive Digital Storytelling team') {
+    //   alert(
+    //     "In order to use Block transitions you need to set the production unit to 'Interactive Digital Storytelling team'."
+    //   );
+
+    //   transition = null;
+    //   backgrounds = [];
+    // }
+
+    const TRANSITIONS = [
+      'colour',
+      'crossfade',
+      'zoomfade',
+      'bouncefade',
+      'slideup',
+      'slidedown',
+      'slideright',
+      'slideleft',
+      'shuffle'
+    ];
+    // testing
+    transition = 'zoomfade';
+    // /testing
+
+    backgrounds = backgrounds.map(img => {
+      const src = img.src;
+      const alt = img.getAttribute('alt');
+      const id = url2cmid(src);
+
+      const picture = Picture({
+        src,
+        alt,
+        ratios
+      });
+
+      picture.classList.add('background-transition');
+      if (TRANSITIONS.indexOf(transition) > -1) {
+        picture.classList.add(transition);
+      } else {
+        picture.classList.add('colour');
+      }
+
+      return picture;
+    });
+  } else if (imgEl) {
     const src = imgEl.src;
     const alt = imgEl.getAttribute('alt');
     const id = url2cmid(src);
@@ -91,13 +139,21 @@ function Block({
     }
   }
 
-  const mediaContainerEl = mediaEl
-    ? html`
-    <div class="${mediaClassName}">
-      ${mediaEl}
-    </div>
-  `
-    : null;
+  let mediaContainerEl;
+  if (backgrounds) {
+    mediaContainerEl = html`
+      <div class="${mediaClassName}">
+        ${backgrounds}
+      </div>`;
+  } else {
+    mediaContainerEl = mediaEl
+      ? html`
+      <div class="${mediaClassName}">
+        ${mediaEl}
+      </div>
+    `
+      : null;
+  }
 
   const blockEl = html`
     <div class="${className}">
@@ -141,6 +197,45 @@ function Block({
     });
   }
 
+  if (backgrounds) {
+    // In theory, this could be any colour
+    // if (transition === 'white') {
+    if (transition.length === 6 && transition.match(/^[0-9a-f]{6}$/)) {
+      blockEl.style.setProperty('background-color', '#' + transition);
+    }
+
+    // keep a list of marked nodes for switching backgrounds
+    let markers = contentEls.filter(element => element.getAttribute('data-background-index'));
+    let activeIndex = -1;
+
+    subscribe(function _checkIfBackgroundShouldChange(client) {
+      // get the last marker that has a bottom above the fold
+      const marker = markers.reduce((activeMarker, currentMarker) => {
+        const { top } = currentMarker.getBoundingClientRect();
+        if (top > window.innerHeight * 0.8) return activeMarker;
+
+        return currentMarker;
+      }, markers[0]);
+
+      const newActiveIndex = parseInt(marker.getAttribute('data-background-index'), 10);
+      if (activeIndex !== newActiveIndex) {
+        activeIndex = newActiveIndex;
+
+        enqueue(function _updateBackground() {
+          backgrounds.forEach((background, index) => {
+            if (index === activeIndex) {
+              background.classList.add('transition-in');
+              background.classList.remove('transition-out');
+            } else {
+              background.classList.add('transition-out');
+              background.classList.remove('transition-in');
+            }
+          });
+        });
+      }
+    });
+  }
+
   return blockEl;
 }
 
@@ -150,6 +245,16 @@ function transformSection(section) {
   const isPiecemeal = section.configSC.indexOf('piecemeal') > -1;
   const isLight = section.configSC.indexOf('light') > -1;
   const shouldSupplant = section.configSC.indexOf('supplant') > -1;
+
+  let transition;
+  if (section.configSC.indexOf('transitioncrossfade') > -1) {
+    transition = 'crossfade';
+  } else if (section.configSC.indexOf('transitionwhite') > -1) {
+    transition = 'white';
+  } else if (section.configSC.indexOf('transition') > -1) {
+    transition = 'black';
+  }
+
   const [, alignment] = section.configSC.match(ALIGNMENT_PATTERN) || [];
   let sourceMediaEl;
 
@@ -157,19 +262,60 @@ function transformSection(section) {
     detach(section.betweenNodes.shift());
   }
 
-  const config = section.betweenNodes.reduce(
-    (config, node) => {
+  let config = {
+    isContained,
+    isDocked,
+    isPiecemeal,
+    isLight,
+    alignment,
+    contentEls: []
+  };
+
+  // if the 'transition' flag is set then assume its a slide show
+  // extract all images as  media elements
+  // graft a 'marker' property onto the next sibling to know where this image came from
+
+  if (transition) {
+    // If transitions are enabled then we can extract any images from the block
+    // for use as backgrounds
+    config.transition = transition;
+    config.backgrounds = [];
+    config.contentEls = section.betweenNodes
+      .map(node => {
+        let img = $('img', node);
+
+        if (img) {
+          // We found an image to use as one of the backgrounds
+          config.backgrounds.push(img);
+          config.ratios = getRatios(section.configSC);
+
+          // Graft a 'marker' onto the next paragraph
+          if (node.nextElementSibling && node.nextElementSibling.tagName === 'P') {
+            node.nextElementSibling.setAttribute('data-background-index', config.backgrounds.length - 1);
+          }
+
+          // Remove this image from the flow
+          node.parentElement.removeChild(node);
+          return null;
+        }
+
+        return node;
+      })
+      .filter(n => n);
+  } else {
+    // Transitions is not enabled to business as usual
+    config = section.betweenNodes.reduce((_config, node) => {
       let classList;
       let videoId;
       let imgEl;
 
-      if (!config.videoId && !config.imgEl && isElement(node)) {
+      if (!_config.videoId && !_config.imgEl && isElement(node)) {
         classList = node.className.split(' ');
 
         if (node.name && !!node.name.match(VIDEO_MARKER_PATTERN)) {
-          config.isVideoMarker = true;
-          config.isVideoYouTube = node.name.split('youtube')[1];
-          config.videoElOrId = videoId = node.name.match(VIDEO_MARKER_PATTERN)[1];
+          _config.isVideoMarker = true;
+          _config.isVideoYouTube = node.name.split('youtube')[1];
+          _config.videoElOrId = videoId = node.name.match(VIDEO_MARKER_PATTERN)[1];
         } else {
           videoId =
             ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
@@ -179,13 +325,13 @@ function transformSection(section) {
         }
 
         if (videoId) {
-          config.videoId = videoId;
+          _config.videoId = videoId;
         } else {
           imgEl = $('img', node);
 
           if (imgEl) {
-            config.imgEl = imgEl;
-            config.ratios = getRatios(section.configSC);
+            _config.imgEl = imgEl;
+            _config.ratios = getRatios(section.configSC);
           }
         }
 
@@ -195,20 +341,12 @@ function transformSection(section) {
       }
 
       if (!videoId && !imgEl && isElement(node) && (node.hasAttribute('name') || trim(node.textContent).length > 0)) {
-        config.contentEls.push(node);
+        _config.contentEls.push(node);
       }
 
-      return config;
-    },
-    {
-      isContained,
-      isDocked,
-      isPiecemeal,
-      isLight,
-      alignment,
-      contentEls: []
-    }
-  );
+      return _config;
+    }, config);
+  }
 
   if (config.contentEls.length === 1 && config.contentEls[0].tagName === 'H2') {
     config.type = 'heading';
