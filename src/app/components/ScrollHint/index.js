@@ -14,14 +14,14 @@ function ScrollHint() {
     scrollHintEl = html`
       <div class="ScrollHint" role="presentation"></div>
     `;
-  }
 
-  scrollHintEl.addEventListener('click', () => {
-    window.scrollTo({
-      behavior: 'smooth',
-      top: window.innerHeight
+    scrollHintEl.addEventListener('click', () => {
+      window.scrollTo({
+        behavior: 'smooth',
+        top: window.innerHeight / 4 * 3
+      });
     });
-  });
+  }
 
   return scrollHintEl;
 }
