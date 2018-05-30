@@ -7,8 +7,9 @@ const url2cmid = require('util-url2cmid');
 // Ours
 const { IS_PREVIEW, MS_VERSION, VIDEO_MARKER_PATTERN } = require('../../../constants');
 const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
-const { $, detach, isElement, prepend, substitute } = require('../../utils/dom');
+const { $, append, detach, isElement, prepend, substitute } = require('../../utils/dom');
 const { dePx, getRatios, slug, trim } = require('../../utils/misc');
+const ScrollHint = require('../ScrollHint');
 const Picture = require('../Picture');
 const UParallax = require('../UParallax');
 const VideoPlayer = require('../VideoPlayer');
@@ -107,7 +108,9 @@ function Header({
 
   const clonedBylineNodes = meta.bylineNodes ? meta.bylineNodes.map(node => node.cloneNode(true)) : null;
   const infoSource = meta.infoSource
-    ? meta.infoSource.url ? html`<a href="${meta.infoSource.url}">${meta.infoSource.name}</a>` : meta.infoSource.name
+    ? meta.infoSource.url
+      ? html`<a href="${meta.infoSource.url}">${meta.infoSource.name}</a>`
+      : meta.infoSource.name
     : null;
   const updated = typeof meta.updated === 'string' ? meta.updated : formatUIGRelative(meta.updated);
   const published = typeof meta.published === 'string' ? meta.published : formatUIGRelative(meta.published);
@@ -163,9 +166,10 @@ function Header({
     <div class="${className}">
       ${
         mediaEl
-          ? html`<div class="Header-media${
-              isLayered && mediaEl.tagName !== 'DIV' ? ' u-parallax' : ''
-            }">${mediaEl}</div>`
+          ? html`<div class="Header-media${isLayered && mediaEl.tagName !== 'DIV' ? ' u-parallax' : ''}">
+              ${!isLayered ? ScrollHint() : null}
+              ${mediaEl}
+            </div>`
           : null
       }
       ${headerContentEl}
