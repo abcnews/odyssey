@@ -22,7 +22,6 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-
     min-height: calc(100vh - #{$abc-nav-height + $size-bar});
   }
 }
@@ -36,7 +35,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    max-height: calc(85vh - #{$abc-nav-height + $size-bar});
+    max-height: calc(100vh - #{$abc-nav-height + $size-bar});
   }
 
   .is-layered > & {
@@ -52,7 +51,7 @@
   }
 
   .Header-interactive > div > div {
-    height: calc(85vh - #{$abc-nav-height + $size-bar});
+    height: calc(100vh - #{$abc-nav-height + $size-bar});
   }
 
   &::after {
