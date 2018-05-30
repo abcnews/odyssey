@@ -13,6 +13,7 @@ const ImageEmbed = require('./components/ImageEmbed');
 const MasterGallery = require('./components/MasterGallery');
 const Nav = require('./components/Nav');
 const Quote = require('./components/Quote');
+const ScrollHint = require('./components/ScrollHint');
 const Series = require('./components/Series');
 const Share = require('./components/Share');
 const UDropcap = require('./components/UDropcap');
@@ -89,7 +90,7 @@ function app() {
     .forEach(UQuote.conditionallyApply);
 
   // Transform markers
-  getMarkers(['cta', 'hr', 'series', 'share', 'video', 'youtube']).forEach(marker => {
+  getMarkers(['cta', 'hr', 'scrollhint', 'series', 'share', 'video', 'youtube']).forEach(marker => {
     let el;
 
     switch (marker.name) {
@@ -101,6 +102,9 @@ function app() {
         el = html`<hr>`;
         marker.substituteWith(el);
         UDropcap.conditionallyApply(el.nextElementSibling);
+        break;
+      case 'scrollhint':
+        ScrollHint.transformMarker(marker);
         break;
       case 'series':
         Series.transformMarker(marker);
