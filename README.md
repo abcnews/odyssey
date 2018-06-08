@@ -48,6 +48,26 @@ Use the internal DOM inspection/manipulation functions as an alternative to othe
  
 Use other internal utility functions for string mainpulation, event handling, element proximity, etc.
 
+## Using Odyssey as a dependency
+
+Odyssey is well modularised and parts of it can readily be used as dependencies for other projects. An important caveat to this is that Webpack does not automatically transpile es6 code in the `node_modules` folder (for sensible reasons).
+
+Adding an `aunty.config.js` to your project with the following properties should do the trick.
+
+```
+const path = require('path');
+module.exports = {
+  babel: {
+    cacheDirectory: false
+  },
+  webpack: config => {
+    config.module.rules
+      .find(r => r.loader.match(/babel-loader/))
+      .include.push(path.resolve(__dirname, 'node_modules/odyssey'));
+    return config;
+  }
+};
+```
 
 ## Authors
 
