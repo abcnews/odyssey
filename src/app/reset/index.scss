@@ -16,6 +16,12 @@ html {
   }
 }
 
+@media print {
+  html {
+    --root-width: 100% !important;
+  }
+}
+
 body {
   overflow: hidden;
   min-height: 102vh;
