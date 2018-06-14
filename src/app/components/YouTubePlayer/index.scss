@@ -18,13 +18,15 @@
     pointer-events: none;
   }
 
-  &:not(.is-contained) iframe {
-    transform: translate(-50%, -50%);
-    top: 50%;
-    left: 50%;
-    min-width: 100%;
-    max-width: none !important;
-    min-height: 100%;
+  @media #{$mq-lg} {
+    &:not(.is-contained) iframe {
+      transform: translate(-50%, -50%);
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      max-width: none !important;
+      min-height: 100%;
+    }
   }
 
   .VideoControls {
@@ -40,7 +42,9 @@
     object-fit: cover;
   }
 
-  &.is-contained img {
-    object-fit: contain;
+  @media #{$mq-not-lg} {
+    &.is-contained img {
+      object-fit: contain;
+    }
   }
 }

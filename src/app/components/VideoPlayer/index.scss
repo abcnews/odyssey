@@ -72,12 +72,14 @@
     max-width: none;
   }
 
-  &.is-contained video {
-    background-size: contain;
-    object-fit: contain;
+  @media #{$mq-not-lg} {
+    &.is-contained video {
+      background-size: contain;
+      object-fit: contain;
 
-    &:not([paused]) {
-      background-image: none !important;
+      &:not([paused]) {
+        background-image: none !important;
+      }
     }
   }
 }

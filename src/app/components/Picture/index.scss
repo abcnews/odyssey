@@ -28,8 +28,10 @@
     will-change: opacity;
   }
 
-  &.is-contained img {
-    object-fit: contain;
+  @media #{$mq-not-lg} {
+    &.is-contained img {
+      object-fit: contain;
+    }
   }
 
   &[loaded] img {
