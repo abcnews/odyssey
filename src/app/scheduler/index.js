@@ -1,4 +1,5 @@
 // External
+const debounce = require('debounce');
 const raf = require('raf');
 
 // Ours
@@ -80,6 +81,8 @@ function onResize(event) {
   }
 }
 
+const onDebouncedResize = debounce(onResize, 50);
+
 function invalidateClient() {
   enqueue(onResize.bind(null, true));
 }
@@ -91,8 +94,8 @@ function start() {
 
   hasStarted = true;
   window.addEventListener('scroll', onScroll, false);
-  window.addEventListener('resize', onResize, false);
-  window.addEventListener('orientationchange', onResize, false);
+  window.addEventListener('resize', onDebouncedResize, false);
+  window.addEventListener('orientationchange', onDebouncedResize, false);
   invalidateClient();
 }
 

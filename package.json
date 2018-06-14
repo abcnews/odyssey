@@ -15,6 +15,7 @@
   "dependencies": {
     "bel": "^4.5.1",
     "classnames": "^2.2.5",
+    "debounce": "^1.1.0",
     "inn-abcdatetime-lib": "git+ssh://git@stash.abc-dev.net.au:7999/news/news-abcdatetime-lib#v1.1.3",
     "iphone-inline-video": "^2.0.2",
     "load-script": "^1.0.0",
