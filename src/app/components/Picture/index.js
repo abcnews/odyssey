@@ -30,7 +30,14 @@ const IMAGE_LOAD_RANGE = 1;
 
 const pictures = [];
 
-function Picture({ src = SMALLEST_IMAGE, alt = '', ratios = {}, preserveOriginalRatio = false, linkUrl = '' }) {
+function Picture({
+  src = SMALLEST_IMAGE,
+  alt = '',
+  isContained = false,
+  ratios = {},
+  preserveOriginalRatio = false,
+  linkUrl = ''
+}) {
   const [, originalRatio] = src.match(RATIO_PATTERN) || [, null];
 
   ratios =
@@ -74,7 +81,7 @@ function Picture({ src = SMALLEST_IMAGE, alt = '', ratios = {}, preserveOriginal
   `;
 
   const pictureEl = html`
-    <a class="Picture">
+    <a class="Picture${isContained ? ' is-contained' : ''}">
       ${placeholderEl}
       ${picturePictureEl}
     </a>
@@ -176,6 +183,8 @@ subscribe(function _checkIfPicturesNeedToBeLoaded(client) {
 });
 
 module.exports = Picture;
+
+module.exports.PLACEHOLDER_PROPERTY = PLACEHOLDER_PROPERTY;
 
 module.exports.resize = ({ url = '', ratio = '16x9', size = 'md' }) =>
   url

@@ -16,6 +16,7 @@ require('./index.scss');
 
 function Block({
   type = 'richtext',
+  isContained,
   isDocked,
   isPiecemeal,
   isLight,
@@ -58,6 +59,7 @@ function Block({
     mediaEl = Picture({
       src,
       alt,
+      isContained,
       ratios
     });
   } else if (videoId) {
@@ -65,6 +67,7 @@ function Block({
       mediaEl = YouTubePlayer({
         videoId,
         isAmbient: true,
+        isContained,
         ratios
       });
     } else {
@@ -77,7 +80,8 @@ function Block({
         const replacementMediaEl = VideoPlayer(
           Object.assign(metadata, {
             ratios,
-            isAmbient: true
+            isAmbient: true,
+            isContained: isContained
           })
         );
 
@@ -141,6 +145,7 @@ function Block({
 }
 
 function transformSection(section) {
+  const isContained = section.configSC.indexOf('contain') > -1;
   const isDocked = section.configSC.indexOf('docked') > -1;
   const isPiecemeal = section.configSC.indexOf('piecemeal') > -1;
   const isLight = section.configSC.indexOf('light') > -1;
@@ -196,6 +201,7 @@ function transformSection(section) {
       return config;
     },
     {
+      isContained,
       isDocked,
       isPiecemeal,
       isLight,

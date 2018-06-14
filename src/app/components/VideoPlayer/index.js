@@ -8,7 +8,8 @@ const { IS_IOS, MQ, MS_VERSION, SMALLEST_IMAGE } = require('../../../constants')
 const { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } = require('../../media');
 const { enqueue, subscribe } = require('../../scheduler');
 const { toggleAttribute, toggleBooleanAttributes } = require('../../utils/dom');
-const { resize } = require('../Picture');
+const { PLACEHOLDER_PROPERTY, resize } = require('../Picture');
+const { blurImage } = require('../Picture/blur');
 const VideoControls = require('../VideoControls');
 const { trackProgress } = require('./stats');
 const { getMetadata, getMetadataFromDetailPage, hasAudio } = require('./utils');
@@ -18,7 +19,17 @@ const FUZZY_INCREMENT_FPS = 30;
 const FUZZY_INCREMENT_INTERVAL = 1000 / FUZZY_INCREMENT_FPS;
 const DEFAULT_RATIO = '16x9';
 
-function VideoPlayer({ posterURL, ratios = {}, sources = [], title, isAmbient, isLoop, isMuted, scrollplayPct }) {
+function VideoPlayer({
+  posterURL,
+  ratios = {},
+  sources = [],
+  title,
+  isAmbient,
+  isContained,
+  isLoop,
+  isMuted,
+  scrollplayPct
+}) {
   ratios = {
     sm: ratios.sm || DEFAULT_RATIO,
     md: ratios.md || DEFAULT_RATIO,
@@ -40,7 +51,22 @@ function VideoPlayer({ posterURL, ratios = {}, sources = [], title, isAmbient, i
     title = String.fromCharCode(getNextUntitledMediaCharCode());
   }
 
+  const placeholderEl = html`
+    <div class="u-sizer-sm-${ratios.sm} u-sizer-md-${ratios.md} u-sizer-lg-${ratios.lg}"></div>
+  `;
   const videoEl = html`<video preload="none" tabindex="-1" aria-label="${title}"></video>`;
+
+  if (isContained) {
+    enqueue(function _createAndAddPlaceholderImage() {
+      blurImage(posterURL, (err, blurredImageURL) => {
+        if (err) {
+          return;
+        }
+
+        placeholderEl.style.setProperty(PLACEHOLDER_PROPERTY, `url("${blurredImageURL}")`);
+      });
+    });
+  }
 
   toggleBooleanAttributes(videoEl, {
     loop: isLoop,
@@ -89,7 +115,7 @@ function VideoPlayer({ posterURL, ratios = {}, sources = [], title, isAmbient, i
     }
 
     fuzzyCurrentTime = (fuzzyCurrentTime + FUZZY_INCREMENT_INTERVAL / 1000) % videoEl.duration;
-    videoControlsEl.api.setProgress(fuzzyCurrentTime / videoEl.duration * 100);
+    videoControlsEl.api.setProgress((fuzzyCurrentTime / videoEl.duration) * 100);
     clearTimeout(fuzzyTimeout);
     fuzzyTimeout = setTimeout(nextFuzzyIncrement, FUZZY_INCREMENT_INTERVAL);
   }
@@ -232,7 +258,7 @@ function VideoPlayer({ posterURL, ratios = {}, sources = [], title, isAmbient, i
     fuzzyCurrentTime = videoEl.currentTime;
 
     if (videoControlsEl) {
-      videoControlsEl.api.setProgress(videoEl.currentTime / videoEl.duration * 100);
+      videoControlsEl.api.setProgress((videoEl.currentTime / videoEl.duration) * 100);
     }
   }
 
@@ -252,8 +278,8 @@ function VideoPlayer({ posterURL, ratios = {}, sources = [], title, isAmbient, i
   }
 
   const videoPlayerEl = html`
-    <div class="VideoPlayer">
-      <div class="u-sizer-sm-${ratios.sm} u-sizer-md-${ratios.md} u-sizer-lg-${ratios.lg}"></div>
+    <div class="VideoPlayer${isContained ? ' is-contained' : ''}">
+      ${placeholderEl}
       ${videoEl}
       ${videoControlsEl}
     </div>
