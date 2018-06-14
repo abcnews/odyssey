@@ -90,7 +90,12 @@ function VideoPlayer({
   // highest; otherwise, use the first source (of any resolution).
   // Note: Only Phase 1 (Desktop) sources have width/height defined, making it the
   // only template that can differentiate its high resolution sources.
-  const highResSources = sources.filter(source => source.width >= 1024);
+  const highResSources = sources.filter(source => source.width >= 1080).sort((a, b) => {
+    // Wide videos should come before squares
+    if (a.width > b.width) return -1;
+    if (b.width > a.width) return 1;
+    return 0;
+  });
   const source = (highResSources.length ? highResSources : sources)[
     highResSources.length > 1 && window.matchMedia(MQ.SM).matches ? 1 : 0
   ];
