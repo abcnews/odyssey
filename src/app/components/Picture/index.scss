@@ -28,6 +28,10 @@
     will-change: opacity;
   }
 
+  &.is-contained img {
+    object-fit: contain;
+  }
+
   &[loaded] img {
     opacity: 1;
     animation: fadeIn 0.5s;

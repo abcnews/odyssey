@@ -5,8 +5,10 @@ const raf = require('raf');
 
 // Ours
 const { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } = require('../../media');
-const { invalidateClient, subscribe } = require('../../scheduler');
+const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
 const { toggleAttribute } = require('../../utils/dom');
+const { PLACEHOLDER_PROPERTY } = require('../Picture');
+const { blurImage } = require('../Picture/blur');
 const VideoControls = require('../VideoControls');
 require('./index.scss');
 
@@ -28,7 +30,7 @@ let youtubeIframeAPI;
 const players = [];
 let nextId = 0;
 
-function YouTubePlayer({ videoId, ratios = {}, title, isAmbient, isLoop, isMuted, scrollplayPct }) {
+function YouTubePlayer({ videoId, ratios = {}, title, isAmbient, isContained, isLoop, isMuted, scrollplayPct }) {
   ratios = {
     sm: ratios.sm || DEFAULT_RATIO,
     md: ratios.md || DEFAULT_RATIO,
@@ -51,7 +53,11 @@ function YouTubePlayer({ videoId, ratios = {}, title, isAmbient, isLoop, isMuted
   }
 
   const id = nextId++;
-  let posterEl = html`<img src="https://img.youtube.com/vi/${videoId}/0.jpg" />`;
+  const posterURL = `https://img.youtube.com/vi/${videoId}/0.jpg`;
+  const placeholderEl = html`
+    <div class="u-sizer-sm-${ratios.sm} u-sizer-md-${ratios.md} u-sizer-lg-${ratios.lg}"></div>
+  `;
+  const posterEl = html`<img src="${posterURL}" />`;
   let youtubeEl = html`<div id="youtube-player-${id}"></div>`;
   let youtube;
   let playerEl;
@@ -67,9 +73,21 @@ function YouTubePlayer({ videoId, ratios = {}, title, isAmbient, isLoop, isMuted
     }
 
     fuzzyCurrentTime = (fuzzyCurrentTime + FUZZY_INCREMENT_INTERVAL / 1000) % duration;
-    videoControlsEl.api.setProgress(fuzzyCurrentTime / duration * 100);
+    videoControlsEl.api.setProgress((fuzzyCurrentTime / duration) * 100);
     clearTimeout(fuzzyTimeout);
     fuzzyTimeout = setTimeout(nextFuzzyIncrement, FUZZY_INCREMENT_INTERVAL);
+  }
+
+  if (isContained) {
+    enqueue(function _createAndAddPlaceholderImage() {
+      blurImage(posterURL, (err, blurredImageURL) => {
+        if (err) {
+          return;
+        }
+
+        placeholderEl.style.setProperty(PLACEHOLDER_PROPERTY, `url("${blurredImageURL}")`);
+      });
+    });
   }
 
   loadYouTubeAPI(YT => {
@@ -266,7 +284,7 @@ function YouTubePlayer({ videoId, ratios = {}, title, isAmbient, isLoop, isMuted
     fuzzyCurrentTime = time;
 
     if (videoControlsEl) {
-      videoControlsEl.api.setProgress(currentTime / duration * 100);
+      videoControlsEl.api.setProgress((currentTime / duration) * 100);
     }
   }
 
@@ -277,8 +295,8 @@ function YouTubePlayer({ videoId, ratios = {}, title, isAmbient, isLoop, isMuted
   }
 
   playerEl = html`
-    <div class="YouTubePlayer">
-      <div class="u-sizer-sm-${ratios.sm} u-sizer-md-${ratios.md} u-sizer-lg-${ratios.lg}"></div>
+    <div class="YouTubePlayer${isContained ? ' is-contained' : ''}">
+      ${placeholderEl}
       ${youtubeEl}
       ${videoControlsEl}
       ${posterEl}

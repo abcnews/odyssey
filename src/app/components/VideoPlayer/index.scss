@@ -28,21 +28,6 @@
     vertical-align: top;
     object-fit: cover;
 
-    // Until IE/Edge supports object-fit, ambient (control-less) video elements need
-    // to be resized, transformed and (effectively) clipped to cover their parents
-    _:-ms-lang(x),
-    &:not([controls]) {
-      transform: translate(-50%, -50%);
-      top: 50%;
-      left: 50%;
-      z-index: 0;
-      width: auto;
-      height: auto;
-      min-width: 100%;
-      min-height: 100%;
-      max-width: none;
-    }
-
     &:-webkit-full-screen {
       background-image: none !important;
       object-fit: contain;
@@ -68,6 +53,31 @@
       opacity: 0;
       width: 0.3125rem;
       pointer-events: none;
+    }
+  }
+
+  // Until IE/Edge supports object-fit, un-constrained ambient
+  // (control-less) video elements need to be resized, transformed
+  // and (effectively) clipped to cover their parents
+  _:-ms-lang(x),
+  &:not(.is-contained) video:not([controls]) {
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    z-index: 0;
+    width: auto;
+    height: auto;
+    min-width: 100%;
+    min-height: 100%;
+    max-width: none;
+  }
+
+  &.is-contained video {
+    background-size: contain;
+    object-fit: contain;
+
+    &:not([paused]) {
+      background-image: none !important;
     }
   }
 }
