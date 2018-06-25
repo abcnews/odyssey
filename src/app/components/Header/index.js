@@ -101,7 +101,6 @@ function Header({
   } else if (interactiveEl) {
     mediaEl = interactiveEl.cloneNode(true);
     mediaEl.classList.add('Header-interactive');
-  } else {
   }
 
   const clonedMiscContentEls = miscContentEls.map(el => {
