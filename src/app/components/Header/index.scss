@@ -92,16 +92,8 @@
   }
 
   .is-layered > & {
-    margin-top: 16rem;
+    margin-top: auto;
     background-image: $gradient-vertical-0-45-100-75;
-
-    @media #{$mq-md} {
-      margin-top: 22rem;
-    }
-
-    @media #{$mq-lg} {
-      margin-top: 28rem;
-    }
   }
 
   .is-floating > & {
