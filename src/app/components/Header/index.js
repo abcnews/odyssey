@@ -25,16 +25,21 @@ function Header({
   interactiveEl,
   ratios = {},
   isDark,
+  isFloating,
   isLayered,
-  isNoMedia,
   isKicker,
   miscContentEls = []
 }) {
+  isFloating = isFloating || (isLayered && !imgEl && !videoElOrId && !interactiveEl);
+  isLayered = isLayered || isFloating;
+  isDark = meta.isDarkMode || isLayered || isDark;
+
   const className = cn(
     'Header',
     {
-      'is-dark': meta.isDarkMode || isDark,
-      'is-layered': isLayered && (imgEl || videoElOrId || interactiveEl)
+      'is-dark': isDark,
+      'is-floating': isFloating,
+      'is-layered': isLayered
     },
     'u-full'
   );
@@ -96,6 +101,7 @@ function Header({
   } else if (interactiveEl) {
     mediaEl = interactiveEl.cloneNode(true);
     mediaEl.classList.add('Header-interactive');
+  } else {
   }
 
   const clonedMiscContentEls = miscContentEls.map(el => {
@@ -157,7 +163,7 @@ function Header({
     ]);
 
   const headerContentEl = html`
-    <div class="Header-content u-richtext${isDark || (isLayered && mediaEl) ? '-invert' : ''}">
+    <div class="Header-content u-richtext${isDark ? '-invert' : ''}">
       ${contentEls}
     </div>
   `;
@@ -203,9 +209,10 @@ function Header({
 
 function transformSection(section, meta) {
   const ratios = getRatios(section.configSC);
-  const isDark = section.configSC.indexOf('dark') > -1;
-  const isLayered = section.configSC.indexOf('layered') > -1;
-  const isNoMedia = section.configSC.indexOf('nomedia') > -1;
+  const isFloating = section.configSC.indexOf('floating') > -1;
+  const isLayered = isFloating || section.configSC.indexOf('layered') > -1;
+  const isDark = isLayered || section.configSC.indexOf('dark') > -1;
+  const isNoMedia = isFloating || section.configSC.indexOf('nomedia') > -1;
   const isKicker = section.configSC.indexOf('kicker') > -1;
   const shouldSupplant = section.configSC.indexOf('supplant') > -1;
 
@@ -285,8 +292,8 @@ function transformSection(section, meta) {
       meta,
       ratios,
       isDark,
+      isFloating,
       isLayered,
-      isNoMedia,
       isKicker,
       miscContentEls: []
     }
