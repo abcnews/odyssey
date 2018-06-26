@@ -14,6 +14,18 @@ const VideoPlayer = require('../VideoPlayer');
 const YouTubePlayer = require('../YouTubePlayer');
 require('./index.scss');
 
+const TRANSITIONS = [
+  'colour',
+  'crossfade',
+  'zoomfade',
+  'bouncefade',
+  'slideup',
+  'slidedown',
+  'slideright',
+  'slideleft',
+  'shuffle'
+];
+
 function Block({
   type = 'richtext',
   isContained,
@@ -63,21 +75,6 @@ function Block({
     //   transition = null;
     //   backgrounds = [];
     // }
-
-    const TRANSITIONS = [
-      'colour',
-      'crossfade',
-      'zoomfade',
-      'bouncefade',
-      'slideup',
-      'slidedown',
-      'slideright',
-      'slideleft',
-      'shuffle'
-    ];
-    // testing
-    transition = 'zoomfade';
-    // /testing
 
     backgrounds = backgrounds.map(img => {
       const src = img.src;
@@ -247,11 +244,17 @@ function transformSection(section) {
   const shouldSupplant = section.configSC.indexOf('supplant') > -1;
 
   let transition;
-  if (section.configSC.indexOf('transitioncrossfade') > -1) {
-    transition = 'crossfade';
-  } else if (section.configSC.indexOf('transitionwhite') > -1) {
-    transition = 'white';
-  } else if (section.configSC.indexOf('transition') > -1) {
+  TRANSITIONS.forEach(t => {
+    if (section.configSC.indexOf('transition' + t) > -1) {
+      if (t === 'colour') {
+        transition = section.configSC.match(/colour([a-f0-9]+)/)[1];
+      } else {
+        transition = t;
+      }
+    }
+  });
+  // fallback for just basic default transition
+  if (!transition && section.configSC.indexOf('transition') > -1) {
     transition = 'black';
   }
 
