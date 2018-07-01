@@ -22,7 +22,7 @@
     "objectFitPolyfill": "^2.0.4",
     "picturefill": "^3.0.2",
     "raf": "^3.3.0",
-    "util-dewysiwyg": "git+ssh://git@stash.abc-dev.net.au:7999/news/util-dewysiwyg.git#3.6.0",
+    "util-dewysiwyg": "git+ssh://git@stash.abc-dev.net.au:7999/news/util-dewysiwyg.git#3.7.0",
     "util-news-selectors": "git+ssh://git@stash.abc-dev.net.au:7999/news/util-news-selectors.git#2.3.0",
     "util-url2cmid": "git+ssh://git@stash.abc-dev.net.au:7999/news/util-url2cmid.git#1.0.1",
     "xhr": "^2.4.0"
