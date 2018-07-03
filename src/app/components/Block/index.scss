@@ -125,6 +125,260 @@
   video {
     z-index: -1;
   }
+
+  .background-transition {
+    /* fade between colours  */
+    &.colour {
+      transition: all 0.3s ease;
+
+      &.transition-in {
+        animation: blackIn 1s linear forwards 1;
+      }
+
+      &.transition-out {
+        animation: blackOut 1s linear forwards 1;
+      }
+
+      @keyframes blackIn {
+        0% {
+          opacity: 0;
+          // filter: saturate(0);
+        }
+        50% {
+          opacity: 0;
+          // filter: saturate(0);
+        }
+        100% {
+          opacity: 1;
+          // filter: saturate(1);
+        }
+      }
+
+      @keyframes blackOut {
+        0% {
+          opacity: 1;
+          // filter: saturate(1);
+        }
+        50% {
+          opacity: 0;
+          // filter: saturate(0);
+        }
+        100% {
+          opacity: 0;
+          // filter: saturate(0);
+        }
+      }
+    }
+
+    /* fading between the two cards  */
+
+    &.crossfade {
+      transition: all 0.5s ease;
+
+      &.transition-in {
+        opacity: 1;
+      }
+
+      &.transition-out {
+        opacity: 0;
+      }
+    }
+
+    &.bouncefade {
+      transition: all 0.5s ease;
+
+      &.transition-in {
+        opacity: 1;
+        transform: translate(0, 0);
+      }
+
+      &.transition-out {
+        opacity: 0;
+        transform: translate(0, 20px);
+      }
+    }
+
+    &.zoomfade {
+      transition: all 0.5s ease;
+
+      &.transition-in {
+        opacity: 1;
+        transform: translate(0, 0);
+        transition: transform 0s ease, opacity 0.5s ease;
+      }
+
+      &.transition-out {
+        opacity: 0;
+        transform: translate(0, 20px) scale(1.1) rotate(3deg);
+      }
+    }
+
+    /* Sliding around */
+
+    &.slideup {
+      transition: all 1s ease;
+
+      &.transition-in {
+        animation: slideupIn 0.5s linear 0s 1 forwards;
+      }
+
+      &.transition-out {
+        animation: slideupOut 0.5s linear 0s 1 forwards;
+      }
+
+      @keyframes slideupIn {
+        0% {
+          transform: translate(0, 100%);
+        }
+        100% {
+          transform: translate(0, 0);
+        }
+      }
+
+      @keyframes slideupOut {
+        0% {
+          transform: translate(0, 0);
+        }
+        100% {
+          transform: translate(0, -100%);
+        }
+      }
+    }
+
+    &.slidedown {
+      transition: all 1s ease;
+
+      &.transition-in {
+        animation: slidedownIn 0.5s linear 0s 1 forwards;
+      }
+
+      &.transition-out {
+        animation: slidedownOut 0.5s linear 0s 1 forwards;
+      }
+
+      @keyframes slidedownIn {
+        0% {
+          transform: translate(0, -100%);
+        }
+        100% {
+          transform: translate(0, 0);
+        }
+      }
+
+      @keyframes slidedownOut {
+        0% {
+          transform: translate(0, 0);
+        }
+        100% {
+          transform: translate(0, 100%);
+        }
+      }
+    }
+
+    &.slideright {
+      transition: all 1s ease;
+
+      &.transition-in {
+        animation: sliderightIn 0.5s linear 0s 1 forwards;
+      }
+
+      &.transition-out {
+        animation: sliderightOut 0.5s linear 0s 1 forwards;
+      }
+
+      @keyframes sliderightIn {
+        0% {
+          transform: translate(100%, 0);
+        }
+        100% {
+          transform: translate(0, 0);
+        }
+      }
+
+      @keyframes sliderightOut {
+        0% {
+          transform: translate(0, 0);
+        }
+        100% {
+          transform: translate(-100%, 0);
+        }
+      }
+    }
+
+    &.slideleft {
+      transition: all 1s ease;
+
+      &.transition-in {
+        animation: slidelefttIn 0.5s linear 0s 1 forwards;
+      }
+
+      &.transition-out {
+        animation: slidelefttOut 0.5s linear 0s 1 forwards;
+      }
+
+      @keyframes slidelefttIn {
+        0% {
+          transform: translate(-100%, 0);
+        }
+        100% {
+          transform: translate(0, 0);
+        }
+      }
+
+      @keyframes slidelefttOut {
+        0% {
+          transform: translate(0, 0);
+        }
+        100% {
+          transform: translate(100%, 0);
+        }
+      }
+    }
+
+    /* Swap in cards, like shuffling */
+
+    &.shuffle {
+      transition: all 1s ease;
+
+      &.transition-in {
+        animation: shuffleIn 0.5s linear 0s 1 forwards;
+      }
+
+      &.transition-out {
+        animation: shuffleOut 0.5s linear 0s 1 forwards;
+      }
+
+      @keyframes shuffleIn {
+        0% {
+          opacity: 0;
+          transform: scale(0.25) translate(0, 0);
+        }
+        50% {
+          opacity: 0.5;
+          transform: scale(0.5) translate(-100%, 0) rotate(-10deg);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1) translate(0, 0);
+        }
+      }
+
+      @keyframes shuffleOut {
+        0% {
+          opacity: 1;
+          transform: scale(1) translate(0, 0);
+        }
+        35% {
+          opacity: 0.5;
+          transform: scale(0.5) translate(100%, 0) rotate(10deg);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(0.25) translate(0, 0);
+        }
+      }
+    }
+  }
 }
 
 .Block-content {
