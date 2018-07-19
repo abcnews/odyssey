@@ -4,6 +4,7 @@
   overflow: hidden;
   position: relative;
   line-height: 1.5;
+  background-color: $color-grey-50;
 
   @media #{$mq-not-sm} {
     font-size: 1.25rem;

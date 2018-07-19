@@ -33,50 +33,50 @@ body {
   .is-dark-mode > & {
     background-color: $color-black;
     background-color: var(--bg, #{$color-black});
+  }
 
-    main + .page_margins ::before,
-    main + .page_margins ::after,
-    main + .content ::before,
-    main + .content ::after {
+  main + .page_margins ::before,
+  main + .page_margins ::after,
+  main + .content ::before,
+  main + .content ::after {
+    content: '';
+    position: absolute;
+    background-color: inherit;
+  }
+
+  main + .page_margins,
+  main + .content {
+    position: relative;
+
+    &::before,
+    &::after {
       content: '';
       position: absolute;
+      top: 0;
+      width: 50vw;
+      height: 100%;
       background-color: inherit;
     }
 
-    main + .page_margins,
-    main + .content {
-      position: relative;
-
-      &::before,
-      &::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        width: 50vw;
-        height: 100%;
-        background-color: inherit;
-      }
-
-      &::before {
-        left: -50vw;
-      }
-
-      &::after {
-        right: -50vw;
-      }
-
-      & > * {
-        border-top: 0;
-      }
+    &::before {
+      left: -50vw;
     }
 
-    main + .page_margins {
-      background-color: $color-grey-50;
+    &::after {
+      right: -50vw;
     }
 
-    main + .content {
-      background-color: $color-white;
+    & > * {
+      border-top: 0;
     }
+  }
+
+  main + .page_margins {
+    background-color: $color-grey-50;
+  }
+
+  main + .content {
+    background-color: $color-white;
   }
 }
 
