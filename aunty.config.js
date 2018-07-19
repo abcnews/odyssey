@@ -1,5 +1,5 @@
 module.exports = {
-  type: 'basic-app',
+  type: 'basic',
   build: {
     useCSSModules: false
   },
