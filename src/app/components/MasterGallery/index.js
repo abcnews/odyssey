@@ -12,8 +12,8 @@ require('./index.scss');
 
 const TAB_KEY = 9;
 
-const registeredImageIds = {};
-const images = [];
+const registeredCMIDs = {};
+const items = [];
 let masterGalleryEl = null; // singleton
 
 function MasterGallery() {
@@ -21,17 +21,17 @@ function MasterGallery() {
     return masterGalleryEl;
   }
 
-  if (images.length === 0) {
+  if (items.length === 0) {
     return html`<div class="MasterGallery is-empty"></div>`;
   }
 
-  const galleryEl = Gallery({ images });
+  const galleryEl = Gallery({ items });
 
   galleryEl.classList.remove('u-full');
 
   function goToId(id) {
-    const imageEl = $(`[data-id="${id}"]`, galleryEl);
-    const index = imageEl.dataset['index'];
+    const itemEl = $(`[data-id="${id}"]`, galleryEl);
+    const index = itemEl.dataset['index'];
 
     if (index != null) {
       open(galleryEl, +index);
@@ -122,7 +122,7 @@ function MasterGallery() {
 let externalActiveElement;
 
 function open(galleryEl, index = 0) {
-  galleryEl.api.goToImage(index, true);
+  galleryEl.api.goToItem(index, true);
   document.documentElement.classList.add('is-master-gallery-open');
   externalActiveElement = document.activeElement;
   enqueue(() => {
@@ -141,7 +141,7 @@ function close() {
 }
 
 function has(id) {
-  return images.filter(image => image.id === id).length > 0;
+  return items.filter(item => item.id === id).length > 0;
 }
 
 function register(el) {
@@ -154,15 +154,15 @@ function register(el) {
   const src = imgEl.src;
   const id = url2cmid(src);
 
-  if (!id || registeredImageIds[id]) {
+  if (!id || registeredCMIDs[id]) {
     return;
   }
 
-  registeredImageIds[id] = true;
+  registeredCMIDs[id] = true;
 
-  images.push({
+  items.push({
     id,
-    pictureEl: Picture({
+    mediaEl: Picture({
       src: src,
       alt: imgEl.getAttribute('alt'),
       ratios: {

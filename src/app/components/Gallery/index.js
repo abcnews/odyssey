@@ -7,10 +7,11 @@ const url2cmid = require('util-url2cmid');
 // Ours
 const { REM, SUPPORTS_PASSIVE } = require('../../../constants');
 const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
-const { $, $$, detach, isElement, setText } = require('../../utils/dom');
-const { dePx, getRatios, returnFalse, trim } = require('../../utils/misc');
+const { $, $$, detach, isElement, setText, substitute } = require('../../utils/dom');
+const { dePx, getRatios, returnFalse } = require('../../utils/misc');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
+const VideoPlayer = require('../VideoPlayer');
 require('./index.scss');
 
 const MOSAIC_ROW_LENGTHS_PATTERN = /mosaic(\d+)/;
@@ -20,8 +21,8 @@ const AXIS_THRESHOLD = 5;
 const INACTIVE_OPACITY = 0.2;
 const PASSIVE_OPTIONS = { passive: true };
 
-function Gallery({ images = [], masterCaptionEl, mosaicRowLengths = [] }) {
-  let startImagesTransformXPct;
+function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
+  let startItemsTransformXPct;
   let startX;
   let startY;
   let diffX;
@@ -30,59 +31,60 @@ function Gallery({ images = [], masterCaptionEl, mosaicRowLengths = [] }) {
   let shouldIgnoreClicks;
   let currentIndex;
   let paneWidth;
-  let imageHeight;
+  let itemHeight;
+  let mediaEls;
 
-  function updateImagesAppearance(xPct, isImmediate) {
+  function updateItemsAppearance(xPct, isImmediate) {
     let wasOnEndCalled = false;
 
     if (isImmediate) {
       const onEnd = () => {
         if (!wasOnEndCalled) {
-          enqueue(function _updateImagesAppearance_immediatePost() {
-            imagesEl.removeEventListener('transitionend', onEnd);
-            imagesEl.style.transitionDuration = '';
-            pictureEls.forEach(pictureEl => (pictureEl.style.transitionDuration = ''));
+          enqueue(function _updateItemsAppearance_immediatePost() {
+            itemsEl.removeEventListener('transitionend', onEnd);
+            itemsEl.style.transitionDuration = '';
+            mediaEls.forEach(mediaEl => (mediaEl.style.transitionDuration = ''));
           });
         }
 
         wasOnEndCalled = true;
       };
 
-      enqueue(function _updateImagesAppearance_immediatePre() {
-        imagesEl.style.transitionDuration = '0s, 0s';
-        pictureEls.forEach(pictureEl => (pictureEl.style.transitionDuration = '0s'));
-        imagesEl.addEventListener('transitionend', onEnd, false);
+      enqueue(function _updateItemsAppearance_immediatePre() {
+        itemsEl.style.transitionDuration = '0s, 0s';
+        mediaEls.forEach(mediaEl => (mediaEl.style.transitionDuration = '0s'));
+        itemsEl.addEventListener('transitionend', onEnd, false);
         setTimeout(onEnd, 500); // In case no transition is required
       });
     }
 
-    enqueue(function _updateImagesAppearance() {
-      imagesEl.style.transform = `translate3d(${xPct}%, 0, 0)`;
+    enqueue(function _updateItemsAppearance() {
+      itemsEl.style.transform = `translate3d(${xPct}%, 0, 0)`;
 
-      pictureEls.forEach((pictureEl, index) => {
-        pictureEl.style.opacity = offsetBasedOpacity(index, xPct);
+      mediaEls.forEach((mediaEl, index) => {
+        mediaEl.style.opacity = offsetBasedOpacity(index, xPct);
       });
     });
   }
 
-  function goToImage(index, isImmediate) {
+  function goToItem(index, isImmediate) {
     // Reset scroll position in case it was changed by browser focus() side-effect
     galleryEl.scrollLeft = 0;
 
-    if (index < 0 || index >= images.length) {
+    if (index < 0 || index >= items.length) {
       index = currentIndex;
     }
 
-    imageEls[currentIndex].classList.remove('is-active');
+    itemEls[currentIndex].classList.remove('is-active');
 
     currentIndex = index;
 
     galleryEl.classList[index === 0 ? 'add' : 'remove']('is-at-start');
-    galleryEl.classList[index === images.length - 1 ? 'add' : 'remove']('is-at-end');
-    imageEls[currentIndex].classList.add('is-active');
-    setText(indexEl, `${currentIndex + 1} / ${images.length}`);
+    galleryEl.classList[index === items.length - 1 ? 'add' : 'remove']('is-at-end');
+    itemEls[currentIndex].classList.add('is-active');
+    setText(indexEl, `${currentIndex + 1} / ${items.length}`);
 
-    updateImagesAppearance(-currentIndex * 100, isImmediate);
+    updateItemsAppearance(-currentIndex * 100, isImmediate);
     setTimeout(invalidateClient, 1000);
   }
 
@@ -107,27 +109,27 @@ function Gallery({ images = [], masterCaptionEl, mosaicRowLengths = [] }) {
   }
 
   function swipeBegin(event) {
-    if (isMosaic || startImagesTransformXPct != null) {
+    if (isMosaic || startItemsTransformXPct != null) {
       return;
     }
 
-    const [, xPct] = imagesEl.style.transform.match(PCT_PATTERN) || [
+    const [, xPct] = itemsEl.style.transform.match(PCT_PATTERN) || [
       ,
-      dePx(imagesEl.style.left || '0') / paneWidth * 100
+      (dePx(itemsEl.style.left || '0') / paneWidth) * 100
     ];
 
-    startImagesTransformXPct = parseInt(xPct, 10);
+    startItemsTransformXPct = parseInt(xPct, 10);
     startX = event.clientX;
     startY = event.clientY;
     diffX = 0;
     diffY = 0;
     swipeAxis = null;
 
-    imagesEl.style.transitionDuration = '0s';
+    itemsEl.style.transitionDuration = '0s';
   }
 
   function swipeUpdate(event) {
-    if (startImagesTransformXPct == null || swipeAxis === 'vertical') {
+    if (startItemsTransformXPct == null || swipeAxis === 'vertical') {
       return;
     }
 
@@ -147,8 +149,8 @@ function Gallery({ images = [], masterCaptionEl, mosaicRowLengths = [] }) {
       event.preventDefault();
       event.stopPropagation();
 
-      imagesEl.classList.add('is-moving');
-      updateImagesAppearance(startImagesTransformXPct + diffX / paneWidth * 100);
+      itemsEl.classList.add('is-moving');
+      updateItemsAppearance(startItemsTransformXPct + (diffX / paneWidth) * 100);
     }
   }
 
@@ -174,7 +176,7 @@ function Gallery({ images = [], masterCaptionEl, mosaicRowLengths = [] }) {
   }
 
   function swipeComplete(event) {
-    if (startImagesTransformXPct == null) {
+    if (startItemsTransformXPct == null) {
       return;
     }
 
@@ -197,43 +199,43 @@ function Gallery({ images = [], masterCaptionEl, mosaicRowLengths = [] }) {
       }
 
       if (absDiffX > SWIPE_THRESHOLD) {
-        // Update the image index we'll be navigating to
+        // Update the item index we'll be navigating to
         nextIndex = currentIndex - diffX / absDiffX;
       }
     }
 
-    startImagesTransformXPct = null;
+    startItemsTransformXPct = null;
     startX = null;
     startY = null;
     diffX = null;
     diffY = null;
     swipeAxis = null;
 
-    imagesEl.style.transitionDuration = '';
-    imagesEl.classList.remove('is-moving');
+    itemsEl.style.transitionDuration = '';
+    itemsEl.classList.remove('is-moving');
 
-    goToImage(nextIndex);
+    goToItem(nextIndex);
   }
 
   function measureDimensions(client) {
-    if (client.hasChanged === false) {
+    if (!paneEl || client.hasChanged === false) {
       return;
     }
 
     paneWidth = paneEl.getBoundingClientRect().width;
 
-    const nextImageHeight = $('[class^=u-sizer]', imageEls[currentIndex]).getBoundingClientRect().height;
+    const nextItemHeight = $('[class^=u-sizer]', itemEls[currentIndex]).getBoundingClientRect().height;
 
-    if (nextImageHeight !== imageHeight) {
-      imageHeight = nextImageHeight;
+    if (nextItemHeight !== itemHeight) {
+      itemHeight = nextItemHeight;
 
       enqueue(function _updateControlsPosition() {
-        controlsEl.style.transform = `translateY(${imageHeight / REM}rem) translateY(-100%)`;
+        controlsEl.style.transform = `translateY(${itemHeight / REM}rem) translateY(-100%)`;
       });
     }
   }
 
-  if (images.length === 0) {
+  if (items.length === 0) {
     return html`<div class="Gallery is-empty"></div>`;
   }
 
@@ -252,20 +254,20 @@ function Gallery({ images = [], masterCaptionEl, mosaicRowLengths = [] }) {
   mosaicRowLengths = mosaicRowLengths.map(rowLength => Math.min(3, rowLength));
 
   const mosaicRowLengthsClone = [].concat(mosaicRowLengths);
-  const mosaicRows = images.reduce(
-    (memo, image, index) => {
+  const mosaicRows = items.reduce(
+    (memo, item, index) => {
       if (mosaicRowLengthsClone.length === 0) {
         mosaicRowLengthsClone.push(1);
       }
 
-      memo[memo.length - 1].push(image);
+      memo[memo.length - 1].push(item);
 
       mosaicRowLengthsClone[0]--;
 
       if (mosaicRowLengthsClone[0] === 0) {
         mosaicRowLengthsClone.shift();
 
-        if (index + 1 < images.length) {
+        if (index + 1 < items.length) {
           memo.push([]);
         }
       }
@@ -275,35 +277,40 @@ function Gallery({ images = [], masterCaptionEl, mosaicRowLengths = [] }) {
     [[]]
   );
 
-  mosaicRows.forEach(images => {
-    images.forEach(image => {
-      image.rowLength = images.length;
-      image.flexBasisPct = 100 / image.rowLength;
+  mosaicRows.forEach(items => {
+    items.forEach(item => {
+      item.rowLength = items.length;
+      item.flexBasisPct = 100 / item.rowLength;
 
-      if (image.mosaicPictureEls) {
-        image.mosaicPictureEls.forEach((el, index) => {
-          if (index === image.rowLength - 1) {
-            image.mosaicPictureEl = el;
+      if (item.mosaicMediaEls) {
+        item.mosaicMediaEls.forEach((el, index) => {
+          if (index === item.rowLength - 1) {
+            item.mosaicMediaEl = el;
           } else {
-            el.api.forget();
+            // Unused Picture instances should be forgotten
+            el.api && el.api.forget && el.api.forget();
           }
         });
       } else {
-        image.mosaicPictureEl = image.pictureEl.cloneNode(true);
+        item.mosaicMediaEl = item.mediaEl.cloneNode(true);
       }
 
-      delete image.mosaicPictureEls;
+      delete item.mosaicMediaEls;
     });
   });
 
-  const imageEls = images.map(({ id, pictureEl, mosaicPictureEl, captionEl, flexBasisPct }, index) => {
-    pictureEl.api.loadedHook = imgEl => {
-      imgEl.onload = measureDimensions;
-      imgEl.setAttribute('draggable', 'false');
-    };
+  const itemEls = items.map(({ id, mediaEl, mosaicMediaEl, captionEl, flexBasisPct }, index) => {
+    if (mediaEl.api && mediaEl.api.loaded) {
+      // Because Picture instances have multiple possible aspect ratios,
+      // they call `loadedHook` (if one exists) each time its <img> lazy-loads.
+      mediaEl.api.loadedHook = imgEl => {
+        imgEl.onload = measureDimensions;
+        imgEl.setAttribute('draggable', 'false');
+      };
+    }
 
-    const imageEl = html`
-      <div class="Gallery-image"
+    const itemEl = html`
+      <div class="Gallery-item"
         style="flex: 0 1 ${flexBasisPct}%; max-width: ${flexBasisPct}%"
         data-id="${id}"
         data-index="${index}"
@@ -311,19 +318,58 @@ function Gallery({ images = [], masterCaptionEl, mosaicRowLengths = [] }) {
         ondragstart=${returnFalse}
         onmouseup=${swipeIntent}
         onclick=${stopIfIgnoringClicks}>
-        ${pictureEl}
-        ${mosaicPictureEl}
+        ${mediaEl}
+        ${mosaicMediaEl}
         ${captionEl}
       </div>
     `;
 
-    imageEl.addEventListener('touchend', swipeIntent, false);
+    if (mediaEl.hasAttribute('data-video-player-placeholder')) {
+      VideoPlayer.getMetadata(id, (err, metadata) => {
+        if (err) {
+          return;
+        }
 
-    if (pictureEl.hasAttribute('href')) {
-      pictureEl.addEventListener(
+        const sharedProps = Object.assign(metadata, {
+          isAmbient: true
+        });
+
+        const replacementMediaEl = VideoPlayer(
+          Object.assign({}, sharedProps, {
+            ratios: {
+              sm: mediaEl.getAttribute('data-ratio-sm'),
+              md: mediaEl.getAttribute('data-ratio-md'),
+              lg: mediaEl.getAttribute('data-ratio-lg')
+            }
+          })
+        );
+
+        const replacementMosaicMediaEl = VideoPlayer(
+          Object.assign({}, sharedProps, {
+            ratios: {
+              sm: mosaicMediaEl.getAttribute('data-ratio-sm'),
+              md: mosaicMediaEl.getAttribute('data-ratio-md'),
+              lg: mosaicMediaEl.getAttribute('data-ratio-lg')
+            }
+          })
+        );
+
+        mediaEls.splice(mediaEls.indexOf(mediaEl), 1, replacementMediaEl);
+
+        substitute(mediaEl, replacementMediaEl);
+        substitute(mosaicMediaEl, replacementMosaicMediaEl);
+
+        invalidateClient();
+      });
+    }
+
+    mediaEl.addEventListener('touchend', swipeIntent, false);
+
+    if (mediaEl.hasAttribute('href')) {
+      mediaEl.addEventListener(
         'focus',
         () => {
-          goToImage(index);
+          goToItem(index);
         },
         false
       );
@@ -338,36 +384,36 @@ function Gallery({ images = [], masterCaptionEl, mosaicRowLengths = [] }) {
         captionLinkEl.addEventListener(
           'focus',
           () => {
-            goToImage(index);
+            goToItem(index);
           },
           false
         );
       }
     }
 
-    return imageEl;
+    return itemEl;
   });
 
-  const pictureEls = imageEls.map(imageEl => $('.Picture', imageEl));
+  mediaEls = itemEls.map(itemEl => $('.Picture, [data-video-player-placeholder]', itemEl));
 
-  const imagesEl = html`
-    <div class="Gallery-images"
+  const itemsEl = html`
+    <div class="Gallery-items"
       onmousedown=${pointerHandler(swipeBegin)}
       onmousemove=${pointerHandler(swipeUpdate)}
       onmouseup=${swipeComplete}
       onmouseleave=${swipeComplete}>
-      ${imageEls}
+      ${itemEls}
     </div>
   `;
 
-  imagesEl.addEventListener('touchstart', pointerHandler(swipeBegin), SUPPORTS_PASSIVE ? PASSIVE_OPTIONS : false);
-  imagesEl.addEventListener('touchmove', pointerHandler(swipeUpdate), false);
-  imagesEl.addEventListener('touchend', swipeComplete, false);
-  imagesEl.addEventListener('touchcancel', swipeComplete, false);
+  itemsEl.addEventListener('touchstart', pointerHandler(swipeBegin), SUPPORTS_PASSIVE ? PASSIVE_OPTIONS : false);
+  itemsEl.addEventListener('touchmove', pointerHandler(swipeUpdate), false);
+  itemsEl.addEventListener('touchend', swipeComplete, false);
+  itemsEl.addEventListener('touchcancel', swipeComplete, false);
 
   const paneEl = html`
     <div class="Gallery-pane">
-      ${imagesEl}
+      ${itemsEl}
     </div>
   `;
 
@@ -377,16 +423,16 @@ function Gallery({ images = [], masterCaptionEl, mosaicRowLengths = [] }) {
 
   const prevEl = html`
     <button class="Gallery-step-prev"
-      aria-label="View the previous image"
-      onfocus=${() => goToImage(currentIndex)}
-      onclick=${() => goToImage(currentIndex - 1)}></button>
+      aria-label="View the previous item"
+      onfocus=${() => goToItem(currentIndex)}
+      onclick=${() => goToItem(currentIndex - 1)}></button>
   `;
 
   const nextEl = html`
     <button class="Gallery-step-next"
-      aria-label="View the next image"
-      onfocus=${() => goToImage(currentIndex)}
-      onclick=${() => goToImage(currentIndex + 1)}></button>
+      aria-label="View the next item"
+      onfocus=${() => goToItem(currentIndex)}
+      onclick=${() => goToItem(currentIndex + 1)}></button>
   `;
 
   const controlsEl = html`
@@ -408,18 +454,18 @@ function Gallery({ images = [], masterCaptionEl, mosaicRowLengths = [] }) {
     </div>
   `;
 
-  galleryEl.api = { goToImage, measureDimensions };
+  galleryEl.api = { goToItem, measureDimensions };
 
   raf(() => {
-    goToImage((currentIndex = 0));
+    goToItem((currentIndex = 0));
   });
 
   return galleryEl;
 }
 
-function offsetBasedOpacity(imageIndex, imagesTransformXPct) {
+function offsetBasedOpacity(itemIndex, itemsTransformXPct) {
   return (
-    (100 - Math.min(100, Math.abs(imageIndex * 100 + imagesTransformXPct))) / 100 * (1 - INACTIVE_OPACITY) +
+    ((100 - Math.min(100, Math.abs(itemIndex * 100 + itemsTransformXPct))) / 100) * (1 - INACTIVE_OPACITY) +
     INACTIVE_OPACITY
   );
 }
@@ -435,17 +481,44 @@ function transformSection(section) {
 
   const config = nodes.reduce(
     (config, node) => {
-      const imgEl = isElement(node) && $('img', node);
+      detach(node);
 
-      if (imgEl) {
+      if (!isElement(node)) {
+        return config;
+      }
+
+      const classList = node.className.split(' ');
+      const imgEl = $('img', node);
+      const videoId =
+        ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
+          classList.indexOf('view-inlineMediaPlayer') > -1 ||
+          (classList.indexOf('embed-content') > -1 && $('.type-video', node))) &&
+        url2cmid($('a', node).getAttribute('href'));
+
+      if (videoId) {
+        config.items.push({
+          id: videoId,
+          mediaEl: html`<div data-video-player-placeholder data-ratio-sm="${ratios.sm ||
+            '3x4'}" data-ratio-md="${ratios.md || ''}" data-ratio-lg="${ratios.lg || ''}"></div>`,
+          mosaicMediaEls: [
+            html`<div data-video-player-placeholder data-ratio-sm="${ratios.sm || '3x2'}" data-ratio-md="${ratios.md ||
+              '16x9'}" data-ratio-lg="${ratios.lg || ''}"></div>`,
+            html`<div data-video-player-placeholder data-ratio-sm="${ratios.sm || '1x1'}" data-ratio-md="${ratios.md ||
+              ''}" data-ratio-lg="${ratios.lg || '3x2'}"></div>`,
+            html`<div data-video-player-placeholder data-ratio-sm="${ratios.sm || '3x4'}" data-ratio-md="${ratios.md ||
+              '4x3'}" data-ratio-lg="${ratios.lg || '4x3'}"></div>`
+          ],
+          captionEl: Caption.createFromEl(node)
+        });
+      } else if (imgEl) {
         const src = imgEl.src;
         const alt = imgEl.getAttribute('alt');
         const id = url2cmid(src);
         const linkUrl = `/news/${id}`;
 
-        config.images.push({
+        config.items.push({
           id,
-          pictureEl: Picture({
+          mediaEl: Picture({
             src,
             alt,
             ratios: {
@@ -455,7 +528,7 @@ function transformSection(section) {
             },
             linkUrl
           }),
-          mosaicPictureEls: [
+          mosaicMediaEls: [
             Picture({
               src,
               alt,
@@ -504,12 +577,10 @@ function transformSection(section) {
         }
       }
 
-      detach(node);
-
       return config;
     },
     {
-      images: [],
+      items: [],
       masterCaptionEl: null,
       masterCaptionText: null,
       masterCaptionAttribution: null,
