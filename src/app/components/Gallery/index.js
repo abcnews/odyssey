@@ -7,10 +7,11 @@ const url2cmid = require('util-url2cmid');
 // Ours
 const { REM, SUPPORTS_PASSIVE } = require('../../../constants');
 const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
-const { $, $$, detach, isElement, setText } = require('../../utils/dom');
-const { dePx, getRatios, returnFalse, trim } = require('../../utils/misc');
+const { $, $$, detach, isElement, setText, substitute } = require('../../utils/dom');
+const { dePx, getRatios, returnFalse } = require('../../utils/misc');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
+const VideoPlayer = require('../VideoPlayer');
 require('./index.scss');
 
 const MOSAIC_ROW_LENGTHS_PATTERN = /mosaic(\d+)/;
@@ -31,6 +32,7 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
   let currentIndex;
   let paneWidth;
   let itemHeight;
+  let mediaEls;
 
   function updateItemsAppearance(xPct, isImmediate) {
     let wasOnEndCalled = false;
@@ -216,7 +218,7 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
   }
 
   function measureDimensions(client) {
-    if (client.hasChanged === false) {
+    if (!paneEl || client.hasChanged === false) {
       return;
     }
 
@@ -286,7 +288,7 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
             item.mosaicMediaEl = el;
           } else {
             // Unused Picture instances should be forgotten
-            el.api.forget && el.api.forget();
+            el.api && el.api.forget && el.api.forget();
           }
         });
       } else {
@@ -298,7 +300,7 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
   });
 
   const itemEls = items.map(({ id, mediaEl, mosaicMediaEl, captionEl, flexBasisPct }, index) => {
-    if (mediaEl.api.loaded) {
+    if (mediaEl.api && mediaEl.api.loaded) {
       // Because Picture instances have multiple possible aspect ratios,
       // they call `loadedHook` (if one exists) each time its <img> lazy-loads.
       mediaEl.api.loadedHook = imgEl => {
@@ -321,6 +323,45 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
         ${captionEl}
       </div>
     `;
+
+    if (mediaEl.hasAttribute('data-video-player-placeholder')) {
+      VideoPlayer.getMetadata(id, (err, metadata) => {
+        if (err) {
+          return;
+        }
+
+        const sharedProps = Object.assign(metadata, {
+          isAmbient: true
+        });
+
+        const replacementMediaEl = VideoPlayer(
+          Object.assign({}, sharedProps, {
+            ratios: {
+              sm: mediaEl.getAttribute('data-ratio-sm'),
+              md: mediaEl.getAttribute('data-ratio-md'),
+              lg: mediaEl.getAttribute('data-ratio-lg')
+            }
+          })
+        );
+
+        const replacementMosaicMediaEl = VideoPlayer(
+          Object.assign({}, sharedProps, {
+            ratios: {
+              sm: mosaicMediaEl.getAttribute('data-ratio-sm'),
+              md: mosaicMediaEl.getAttribute('data-ratio-md'),
+              lg: mosaicMediaEl.getAttribute('data-ratio-lg')
+            }
+          })
+        );
+
+        mediaEls.splice(mediaEls.indexOf(mediaEl), 1, replacementMediaEl);
+
+        substitute(mediaEl, replacementMediaEl);
+        substitute(mosaicMediaEl, replacementMosaicMediaEl);
+
+        invalidateClient();
+      });
+    }
 
     mediaEl.addEventListener('touchend', swipeIntent, false);
 
@@ -353,7 +394,7 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
     return itemEl;
   });
 
-  const mediaEls = itemEls.map(itemEl => $('.Picture, .VideoPlayer', itemEl));
+  mediaEls = itemEls.map(itemEl => $('.Picture, [data-video-player-placeholder]', itemEl));
 
   const itemsEl = html`
     <div class="Gallery-items"
@@ -440,9 +481,36 @@ function transformSection(section) {
 
   const config = nodes.reduce(
     (config, node) => {
-      const imgEl = isElement(node) && $('img', node);
+      detach(node);
 
-      if (imgEl) {
+      if (!isElement(node)) {
+        return config;
+      }
+
+      const classList = node.className.split(' ');
+      const imgEl = $('img', node);
+      const videoId =
+        ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
+          classList.indexOf('view-inlineMediaPlayer') > -1 ||
+          (classList.indexOf('embed-content') > -1 && $('.type-video', node))) &&
+        url2cmid($('a', node).getAttribute('href'));
+
+      if (videoId) {
+        config.items.push({
+          id: videoId,
+          mediaEl: html`<div data-video-player-placeholder data-ratio-sm="${ratios.sm ||
+            '3x4'}" data-ratio-md="${ratios.md || ''}" data-ratio-lg="${ratios.lg || ''}"></div>`,
+          mosaicMediaEls: [
+            html`<div data-video-player-placeholder data-ratio-sm="${ratios.sm || '3x2'}" data-ratio-md="${ratios.md ||
+              '16x9'}" data-ratio-lg="${ratios.lg || ''}"></div>`,
+            html`<div data-video-player-placeholder data-ratio-sm="${ratios.sm || '1x1'}" data-ratio-md="${ratios.md ||
+              ''}" data-ratio-lg="${ratios.lg || '3x2'}"></div>`,
+            html`<div data-video-player-placeholder data-ratio-sm="${ratios.sm || '3x4'}" data-ratio-md="${ratios.md ||
+              '4x3'}" data-ratio-lg="${ratios.lg || '4x3'}"></div>`
+          ],
+          captionEl: Caption.createFromEl(node)
+        });
+      } else if (imgEl) {
         const src = imgEl.src;
         const alt = imgEl.getAttribute('alt');
         const id = url2cmid(src);
@@ -508,8 +576,6 @@ function transformSection(section) {
           });
         }
       }
-
-      detach(node);
 
       return config;
     },
