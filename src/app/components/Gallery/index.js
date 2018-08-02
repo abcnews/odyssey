@@ -222,9 +222,15 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
       return;
     }
 
+    const nextItemSizerEl = $('[class^=u-sizer]', itemEls[currentIndex]);
+
     paneWidth = paneEl.getBoundingClientRect().width;
 
-    const nextItemHeight = $('[class^=u-sizer]', itemEls[currentIndex]).getBoundingClientRect().height;
+    if (!nextItemSizerEl) {
+      return;
+    }
+
+    const nextItemHeight = nextItemSizerEl.getBoundingClientRect().height;
 
     if (nextItemHeight !== itemHeight) {
       itemHeight = nextItemHeight;
