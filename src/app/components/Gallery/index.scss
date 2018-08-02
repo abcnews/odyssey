@@ -80,7 +80,7 @@
   }
 }
 
-.Gallery-images {
+.Gallery-items {
   display: flex;
   position: relative;
   transition: transform 0.125s ease-out;
@@ -101,7 +101,7 @@
   }
 }
 
-.Gallery-image {
+.Gallery-item {
   display: flex;
   flex-direction: column;
   flex: 0 0 100%;
@@ -148,7 +148,8 @@
     }
   }
 
-  .Picture {
+  // mediaEl
+  & > :not(.Caption) {
     cursor: pointer;
     cursor: -webkit-grab;
     cursor: -moz-grab;
@@ -172,7 +173,8 @@
     }
   }
 
-  .Picture + .Picture {
+  // mosaicMediaEl
+  & > :not(.Caption) + :not(.Caption) {
     display: none;
     cursor: initial;
 
@@ -238,7 +240,7 @@
   }
 
   .is-mosaic &:hover .Caption,
-  .is-mosaic & .Picture:focus + .Caption {
+  .is-mosaic & :not(.Caption):focus + .Caption {
     opacity: 1;
     pointer-events: all;
   }

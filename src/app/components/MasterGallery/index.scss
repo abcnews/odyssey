@@ -46,7 +46,8 @@ html.is-master-gallery-open {
     padding: 0;
   }
 
-  .Picture {
+  // mediaEl
+  .Gallery-item > :not(.Caption) {
     max-width: 100%;
     height: auto;
   }
