@@ -218,7 +218,7 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
   }
 
   function measureDimensions(client) {
-    if (!paneEl || client.hasChanged === false) {
+    if (!paneEl || (client && client.hasChanged === false)) {
       return;
     }
 
@@ -365,7 +365,7 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
         substitute(mediaEl, replacementMediaEl);
         substitute(mosaicMediaEl, replacementMosaicMediaEl);
 
-        invalidateClient();
+        measureDimensions();
       });
     }
 
