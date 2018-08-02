@@ -305,16 +305,6 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
         imgEl.onload = measureDimensions;
         imgEl.setAttribute('draggable', 'false');
       };
-    } else {
-      // Videos may be embedded asynchronously, so wait a while...
-      setTimeout(() => {
-        const videoEl = $('video', mediaEl);
-
-        if (videoEl) {
-          videoEl.onloadeddata = measureDimensions;
-          videoEl.setAttribute('draggable', 'false');
-        }
-      }, 1000);
     }
 
     const itemEl = html`
