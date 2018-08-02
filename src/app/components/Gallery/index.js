@@ -331,7 +331,7 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
     `;
 
     if (mediaEl.hasAttribute('data-video-player-placeholder')) {
-      VideoPlayer.getMetadata(id, (err, metadata) => {
+      VideoPlayer.getMetadataFromDetailPage(id, (err, metadata) => {
         if (err) {
           return;
         }
@@ -504,15 +504,15 @@ function transformSection(section) {
       if (videoId) {
         config.items.push({
           id: videoId,
-          mediaEl: html`<div data-video-player-placeholder data-ratio-sm="${ratios.sm ||
+          mediaEl: html`<div data-video-player-placeholder="" data-ratio-sm="${ratios.sm ||
             '3x4'}" data-ratio-md="${ratios.md || ''}" data-ratio-lg="${ratios.lg || ''}"></div>`,
           mosaicMediaEls: [
-            html`<div data-video-player-placeholder data-ratio-sm="${ratios.sm || '3x2'}" data-ratio-md="${ratios.md ||
-              '16x9'}" data-ratio-lg="${ratios.lg || ''}"></div>`,
-            html`<div data-video-player-placeholder data-ratio-sm="${ratios.sm || '1x1'}" data-ratio-md="${ratios.md ||
-              ''}" data-ratio-lg="${ratios.lg || '3x2'}"></div>`,
-            html`<div data-video-player-placeholder data-ratio-sm="${ratios.sm || '3x4'}" data-ratio-md="${ratios.md ||
-              '4x3'}" data-ratio-lg="${ratios.lg || '4x3'}"></div>`
+            html`<div data-video-player-placeholder="" data-ratio-sm="${ratios.sm ||
+              '3x2'}" data-ratio-md="${ratios.md || '16x9'}" data-ratio-lg="${ratios.lg || ''}"></div>`,
+            html`<div data-video-player-placeholder="" data-ratio-sm="${ratios.sm ||
+              '1x1'}" data-ratio-md="${ratios.md || ''}" data-ratio-lg="${ratios.lg || '3x2'}"></div>`,
+            html`<div data-video-player-placeholder="" data-ratio-sm="${ratios.sm ||
+              '3x4'}" data-ratio-md="${ratios.md || '4x3'}" data-ratio-lg="${ratios.lg || '4x3'}"></div>`
           ],
           captionEl: Caption.createFromEl(node)
         });
