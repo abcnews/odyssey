@@ -52,7 +52,10 @@ function Header({
 
   let mediaEl;
 
-  if (imgEl) {
+  if (interactiveEl) {
+    mediaEl = interactiveEl.cloneNode(true);
+    mediaEl.classList.add('Header-interactive');
+  } else if (imgEl) {
     mediaEl = Picture({
       src: imgEl.src,
       alt: imgEl.getAttribute('alt'),
@@ -98,9 +101,6 @@ function Header({
         invalidateClient();
       });
     }
-  } else if (interactiveEl) {
-    mediaEl = interactiveEl.cloneNode(true);
-    mediaEl.classList.add('Header-interactive');
   }
 
   const clonedMiscContentEls = miscContentEls.map(el => {
@@ -225,13 +225,6 @@ function transformSection(section, meta) {
     detach(candidateNodes.shift());
   }
 
-  // See if we have an init-interactive in the header
-  const interactiveNode = candidateNodes.filter(node => {
-    if (!node.className) return false;
-    const classList = node.className.split(' ');
-    return classList.indexOf('init-interactive') > -1 || node.querySelector('[class^="init-interactive"]');
-  })[0];
-
   const config = candidateNodes.reduce(
     (config, node) => {
       let classList = node.className ? node.className.split(' ') : [];
@@ -241,8 +234,17 @@ function transformSection(section, meta) {
       let interactiveEl;
 
       // If we found an init-interactive then it takes over being the header media
-      if (!isNoMedia && !config.interactiveEl && interactiveNode) {
-        config.interactiveEl = interactiveEl = interactiveNode;
+      if (!isNoMedia && !config.interactiveEl && isElement(node)) {
+        // special case for parallax hash markers
+        const isParallax = node.tagName === 'A' && node.getAttribute('name').indexOf('parallax') === 0;
+
+        // normal init-interactives
+        const isInteractive =
+          classList.indexOf('init-interactive') > -1 || node.querySelector('[class^="init-interactive"]');
+
+        if (isParallax || isInteractive) {
+          config.interactiveEl = interactiveEl = node;
+        }
       }
 
       if (!isNoMedia && !config.videoElOrId && !config.imgEl && !config.interactiveEl && isElement(node)) {
