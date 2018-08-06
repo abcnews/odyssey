@@ -567,7 +567,7 @@ function transformSection(section) {
               linkUrl
             })
           ],
-          captionEl: Caption.createFromEl(node)
+          captionEl: Caption.createFromEl(node, unlink)
         });
       } else if (node.tagName === 'P') {
         if (!config.masterCaptionText) {
