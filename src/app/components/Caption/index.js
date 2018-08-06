@@ -7,20 +7,20 @@ const { $, detach, isElement } = require('../../utils/dom');
 const { trim } = require('../../utils/misc');
 require('./index.scss');
 
-function Caption({ url, text, attribution, noLink }) {
+function Caption({ url, text, attribution, unlink }) {
   if (!text && !attribution) {
     return null;
   }
 
   return html`
     <p class="Caption" title="${text}${attribution ? ` (${attribution})` : ''}">
-      ${url && !noLink ? html`<a href="${url}">${text}</a>` : html`<span>${text}</span>`}
+      ${url && !unlink ? html`<a href="${url}">${text}</a>` : html`<span>${text}</span>`}
       ${attribution ? html`<em class="Caption-attribution">${attribution}</em>` : null}
     </p>
   `;
 }
 
-function createFromEl(el, noLink) {
+function createFromEl(el, unlink) {
   if (!isElement(el)) {
     return null;
   }
@@ -80,7 +80,7 @@ function createFromEl(el, noLink) {
   }
 
   // Option to remove caption link
-  noLink ? config.noLink = true: config.noLink = false;
+  if (unlink) Object.assign(config, { unlink: true });
 
   if (config) {
     return Caption(Object.assign(config));
