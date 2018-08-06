@@ -482,6 +482,7 @@ function transformSection(section) {
     ''
   ];
   const ratios = getRatios(section.configSC);
+  const noLink = section.configSC.includes('nolink');
 
   const nodes = [].concat(section.betweenNodes);
 
@@ -514,7 +515,7 @@ function transformSection(section) {
             html`<div data-video-player-placeholder="" data-ratio-sm="${ratios.sm ||
               '3x4'}" data-ratio-md="${ratios.md || '4x3'}" data-ratio-lg="${ratios.lg || '4x3'}"></div>`
           ],
-          captionEl: Caption.createFromEl(node)
+          captionEl: Caption.createFromEl(node, noLink)
         });
       } else if (imgEl) {
         const src = imgEl.src;
