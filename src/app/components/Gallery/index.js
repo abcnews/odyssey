@@ -482,6 +482,7 @@ function transformSection(section) {
     ''
   ];
   const ratios = getRatios(section.configSC);
+  const unlink = section.configSC.includes('unlink');
 
   const nodes = [].concat(section.betweenNodes);
 
@@ -514,7 +515,7 @@ function transformSection(section) {
             html`<div data-video-player-placeholder="" data-ratio-sm="${ratios.sm ||
               '3x4'}" data-ratio-md="${ratios.md || '4x3'}" data-ratio-lg="${ratios.lg || '4x3'}"></div>`
           ],
-          captionEl: Caption.createFromEl(node)
+          captionEl: Caption.createFromEl(node, unlink)
         });
       } else if (imgEl) {
         const src = imgEl.src;
@@ -566,7 +567,7 @@ function transformSection(section) {
               linkUrl
             })
           ],
-          captionEl: Caption.createFromEl(node)
+          captionEl: Caption.createFromEl(node, unlink)
         });
       } else if (node.tagName === 'P') {
         if (!config.masterCaptionText) {

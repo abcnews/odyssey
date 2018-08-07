@@ -7,20 +7,20 @@ const { $, detach, isElement } = require('../../utils/dom');
 const { trim } = require('../../utils/misc');
 require('./index.scss');
 
-function Caption({ url, text, attribution }) {
+function Caption({ url, text, attribution, unlink }) {
   if (!text && !attribution) {
     return null;
   }
 
   return html`
     <p class="Caption" title="${text}${attribution ? ` (${attribution})` : ''}">
-      ${url ? html`<a href="${url}">${text}</a>` : html`<span>${text}</span>`}
+      ${url && !unlink ? html`<a href="${url}">${text}</a>` : html`<span>${text}</span>`}
       ${attribution ? html`<em class="Caption-attribution">${attribution}</em>` : null}
     </p>
   `;
 }
 
-function createFromEl(el) {
+function createFromEl(el, unlink) {
   if (!isElement(el)) {
     return null;
   }
@@ -78,6 +78,9 @@ function createFromEl(el) {
       attribution: trim(($('.comp-video-player ~ .caption .byline', clone) || MOCK_ELEMENT).textContent.slice(1, -1))
     };
   }
+
+  // Option to remove caption link
+  if (unlink) Object.assign(config, { unlink: true });
 
   if (config) {
     return Caption(Object.assign(config));

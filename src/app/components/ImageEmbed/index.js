@@ -43,6 +43,7 @@ function transformEl(el, preserveOriginalRatio) {
   const configSC = grabConfigSC(el);
   const [, alignment] = configSC.match(ALIGNMENT_PATTERN) || [];
   const ratios = getRatios(configSC);
+  const unlink = configSC.includes('unlink');
 
   const src = imgEl.src;
   const alt = imgEl.getAttribute('alt');
@@ -61,7 +62,7 @@ function transformEl(el, preserveOriginalRatio) {
       preserveOriginalRatio,
       linkUrl
     }),
-    captionEl: Caption.createFromEl(el),
+    captionEl: Caption.createFromEl(el, unlink),
     alignment,
     isFull: configSC.indexOf('full') > -1,
     isCover: configSC.indexOf('cover') > -1,

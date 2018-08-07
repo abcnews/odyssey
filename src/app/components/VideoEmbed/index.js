@@ -43,12 +43,13 @@ function transformEl(el) {
     return;
   }
 
-  const isYouTube = isMarker && el.name.indexOf('youtube') === 0;
-  const captionEl = !isMarker ? Caption.createFromEl(el) : null;
-  const title = captionEl ? captionEl.children[0].textContent : null;
-
   const configSC = grabConfigSC(el);
   const [, alignment] = configSC.match(ALIGNMENT_PATTERN) || [];
+  const unlink = configSC.includes('unlink');
+
+  const isYouTube = isMarker && el.name.indexOf('youtube') === 0;
+  const captionEl = !isMarker ? Caption.createFromEl(el, unlink) : null;
+  const title = captionEl ? captionEl.children[0].textContent : null;
 
   const options = {
     alignment,
