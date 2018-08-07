@@ -5,9 +5,9 @@ const raf = require('raf');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const { REM, SUPPORTS_PASSIVE } = require('../../../constants');
+const { REM, SUPPORTS_PASSIVE, VIDEO_MARKER_PATTERN } = require('../../../constants');
 const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
-const { $, $$, detach, isElement, setText, substitute } = require('../../utils/dom');
+const { $, append, detach, isElement, setText, substitute } = require('../../utils/dom');
 const { dePx, getRatios, returnFalse } = require('../../utils/misc');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
@@ -365,6 +365,10 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
         substitute(mediaEl, replacementMediaEl);
         substitute(mosaicMediaEl, replacementMosaicMediaEl);
 
+        if (!captionEl && metadata.alternativeText) {
+          append(itemEl, Caption({ text: metadata.alternativeText, attribution: 'ABC News' }));
+        }
+
         measureDimensions();
       });
     }
@@ -497,10 +501,12 @@ function transformSection(section) {
       const classList = node.className.split(' ');
       const imgEl = $('img', node);
       const videoId =
-        ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
-          classList.indexOf('view-inlineMediaPlayer') > -1 ||
-          (classList.indexOf('embed-content') > -1 && $('.type-video', node))) &&
-        url2cmid($('a', node).getAttribute('href'));
+        node.name && !!node.name.match(VIDEO_MARKER_PATTERN)
+          ? node.name.match(VIDEO_MARKER_PATTERN)[1]
+          : ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
+              classList.indexOf('view-inlineMediaPlayer') > -1 ||
+              (classList.indexOf('embed-content') > -1 && $('.type-video', node))) &&
+            url2cmid($('a', node).getAttribute('href'));
 
       if (videoId) {
         config.items.push({

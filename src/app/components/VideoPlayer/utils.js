@@ -109,11 +109,11 @@ function getMetadataFromDetailPage(id, callback) {
       // * Poster can be selected from the DOM
       // * Sources can be parsed from JS that would nest them under the global `WCMS` object
 
+      const imgEl = doc.querySelector('.view-inlineMediaPlayer img');
+
       return callback(null, {
-        posterURL: doc
-          .querySelector('.view-inlineMediaPlayer img')
-          .getAttribute('src')
-          .replace('-thumbnail', '-large'),
+        posterURL: imgEl.getAttribute('src').replace('-thumbnail', '-large'),
+        alternativeText: imgEl.getAttribute('alt'),
         sources: formatSources(
           JSON.parse(body.replace(NEWLINES_PATTERN, '').match(/"sources":(\[.*\]),"addDownload"/)[1])
         )
@@ -123,8 +123,11 @@ function getMetadataFromDetailPage(id, callback) {
       // * Poster can be selected from the DOM
       // * Sources can be parsed from JS that would nest them under the global `inlineVideoData` object
 
+      const imgEl = doc.querySelector('.inline-video img');
+
       return callback(null, {
-        posterURL: doc.querySelector('.inline-video img').getAttribute('src'),
+        posterURL: imgEl.getAttribute('src'),
+        alternativeText: imgEl.getAttribute('alt'),
         sources: formatSources(
           JSON.parse(
             body
