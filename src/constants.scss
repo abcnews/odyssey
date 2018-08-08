@@ -4,6 +4,7 @@ $font-sans: 'ABCSans', Helvetica, Arial, sans-serif;
 $font-serif: 'ABCSerif', 'Book Antiqua', 'Palatino Linotype', Palatino, serif;
 
 $color-white: #fff;
+$color-white-transparent: rgba(255, 255, 255, 0);
 $color-white-transparent-30: rgba(255, 255, 255, 0.3);
 $color-white-transparent-60: rgba(255, 255, 255, 0.6);
 $color-white-transparent-75: rgba(255, 255, 255, 0.75);
@@ -38,27 +39,33 @@ $color-darkerPrimary: #315768;
 $color-lightSecondary: #f1ccf3;
 $color-darkSecondary: #69236b;
 
-$gradient-vertical-0-0-100-60: linear-gradient(
+$gradient-white-vertical-0-0-100-60: linear-gradient(
+  to bottom,
+  $color-white-transparent 0%,
+  $color-white-transparent-60 100%
+);
+
+$gradient-black-vertical-0-0-100-60: linear-gradient(
   to bottom,
   $color-black-transparent 0%,
   $color-black-transparent-60 100%
 );
-$gradient-vertical-50-0-100-60: linear-gradient(
+$gradient-black-vertical-50-0-100-60: linear-gradient(
   to bottom,
   $color-black-transparent 50%,
   $color-black-transparent-60 100%
 );
-$gradient-vertical-0-45-100-75: linear-gradient(
+$gradient-black-vertical-0-45-100-75: linear-gradient(
   to bottom,
   $color-black-transparent-45 0%,
   $color-black-transparent-75 100%
 );
-$gradient-vertical-40-0-80-60: linear-gradient(
+$gradient-black-vertical-40-0-80-60: linear-gradient(
   to bottom,
   $color-black-transparent 40%,
   $color-black-transparent-60 80%
 );
-$gradient-horizontal-40-45-65-0: linear-gradient(
+$gradient-black-horizontal-40-45-65-0: linear-gradient(
   to right,
   $color-black-transparent-45 40%,
   $color-black-transparent 65%
