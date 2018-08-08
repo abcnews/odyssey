@@ -25,6 +25,7 @@ function Header({
   interactiveEl,
   ratios = {},
   isDark,
+  isPale,
   isFloating,
   isLayered,
   isKicker,
@@ -38,6 +39,7 @@ function Header({
     'Header',
     {
       'is-dark': isDark,
+      'is-pale': isPale,
       'is-floating': isFloating,
       'is-layered': isLayered
     },
@@ -211,6 +213,7 @@ function transformSection(section, meta) {
   const isFloating = section.configSC.indexOf('floating') > -1;
   const isLayered = isFloating || section.configSC.indexOf('layered') > -1;
   const isDark = isLayered || section.configSC.indexOf('dark') > -1;
+  const isPale = section.configSC.indexOf('pale') > -1;
   const isNoMedia = isFloating || section.configSC.indexOf('nomedia') > -1;
   const isKicker = section.configSC.indexOf('kicker') > -1;
   const shouldSupplant = section.configSC.indexOf('supplant') > -1;
@@ -293,6 +296,7 @@ function transformSection(section, meta) {
       meta,
       ratios,
       isDark,
+      isPale,
       isFloating,
       isLayered,
       isKicker,

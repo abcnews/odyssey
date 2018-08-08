@@ -36,6 +36,10 @@
   position: relative;
   background-color: $color-black;
 
+  .is-pale > & {
+    background-color: $color-white;
+  }
+
   :not(.is-layered) > & {
     display: flex;
     flex-direction: column;
@@ -70,7 +74,11 @@
     left: 0;
     width: 100%;
     height: 6.25rem;
-    background-image: $gradient-vertical-0-0-100-60;
+    background-image: $gradient-black-vertical-0-0-100-60;
+  }
+
+  .is-pale > &::after {
+    background-image: $gradient-white-vertical-0-0-100-60;
   }
 }
 
@@ -94,7 +102,7 @@
 
   .is-layered > & {
     margin-top: auto;
-    background-image: $gradient-vertical-0-45-100-75;
+    background-image: $gradient-black-vertical-0-45-100-75;
   }
 
   .is-floating > & {

@@ -91,7 +91,7 @@
   }
 
   .is-heading &::after {
-    background-image: $gradient-vertical-40-0-80-60;
+    background-image: $gradient-black-vertical-40-0-80-60;
   }
 
   .is-richtext:not(.is-piecemeal) &::after {
@@ -99,7 +99,7 @@
   }
 
   .is-richtext:not(.is-piecemeal) & > *::after {
-    background-image: $gradient-vertical-50-0-100-60;
+    background-image: $gradient-black-vertical-50-0-100-60;
   }
 
   @media #{$mq-lg} {
@@ -110,7 +110,7 @@
 
     .is-left:not(.is-piecemeal) &::after,
     .is-right:not(.is-piecemeal) &::after {
-      background-image: $gradient-horizontal-40-45-65-0;
+      background-image: $gradient-black-horizontal-40-45-65-0;
     }
 
     .is-right:not(.is-piecemeal) &::after {
