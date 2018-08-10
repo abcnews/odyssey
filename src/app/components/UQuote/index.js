@@ -1,5 +1,5 @@
 // Ours
-const smartquotes = require('./smartquotes');
+const { smartquotes } = require('../../utils/misc');
 
 const BEGINS_WITH_LEFT_DOUBLE_QUOTATION_MARK_PATTERN = /^\u201c/;
 

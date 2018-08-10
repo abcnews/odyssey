@@ -1,3 +1,4 @@
+const smartquotes = require('./smartquotes');
 const { HYPHEN, NEWLINE, SM_RATIO_PATTERN, MD_RATIO_PATTERN, LG_RATIO_PATTERN } = require('../../constants');
 
 const TRIM_PATTERN = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
@@ -91,5 +92,6 @@ module.exports = {
   getRatios,
   dePx,
   proximityCheck,
-  whenKeyIn
+  whenKeyIn,
+  smartquotes
 };
