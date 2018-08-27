@@ -157,19 +157,22 @@ function Block({
       ${mediaContainerEl}
       ${
         isPiecemeal
-          ? contentEls.map(
-              contentEl => html`
-          <div class="${contentClassName}">
-            ${contentEl}
-          </div>
-        `
-            )
+          ? contentEls.map(contentEl => {
+              // Override the light/dark from the Block if a marker was given
+              let actualContentClassName = contentClassName;
+              switch (contentEl.getAttribute('data-lightdark')) {
+                case 'light':
+                  actualContentClassName = actualContentClassName.replace('u-richtext-invert', 'u-richtext');
+                  break;
+                case 'dark':
+                  actualContentClassName = actualContentClassName.replace('u-richtext', 'u-richtext-invert');
+                  break;
+              }
+
+              return html`<div class="${actualContentClassName}">${contentEl}</div>`;
+            })
           : contentEls.length > 0
-            ? html`
-          <div class="${contentClassName}">
-            ${contentEls}
-          </div>
-        `
+            ? html`<div class="${contentClassName}">${contentEls}</div>`
             : null
       }
     </div>
@@ -279,6 +282,8 @@ function transformSection(section) {
   // graft a 'marker' property onto the next sibling to know where this image came from
 
   if (transition) {
+    let lightDarkConfig;
+
     // If transitions are enabled then we can extract any images from the block
     // for use as backgrounds
     config.transition = transition;
@@ -293,13 +298,39 @@ function transformSection(section) {
           config.ratios = getRatios(section.configSC);
 
           // Graft a 'marker' onto the next paragraph
-          if (node.nextElementSibling && node.nextElementSibling.tagName === 'P') {
+          if (node.nextElementSibling) {
             node.nextElementSibling.setAttribute('data-background-index', config.backgrounds.length - 1);
           }
+
+          // Reset the light/dark setter
+          lightDarkConfig = null;
 
           // Remove this image from the flow
           node.parentElement.removeChild(node);
           return null;
+        }
+
+        if (node.tagName && node.tagName === 'A' && (node.getAttribute('name') || '').indexOf('mark') === 0) {
+          const config = node.getAttribute('name').replace('mark', '');
+          if (config.indexOf('light') > -1) {
+            lightDarkConfig = 'light';
+          }
+          if (config.indexOf('dark') > -1) {
+            lightDarkConfig = 'dark';
+          }
+
+          // If an image gave us this config we can pass it onto the actual paragraph
+          if (node.hasAttribute('data-background-index')) {
+            node.nextElementSibling.setAttribute('data-background-index', node.getAttribute('data-background-index'));
+          }
+
+          // Remove this anchor from the flow
+          node.parentElement.removeChild(node);
+          return null;
+        }
+
+        if (node.tagName && lightDarkConfig) {
+          node.setAttribute('data-lightdark', lightDarkConfig);
         }
 
         return node;
