@@ -223,6 +223,14 @@ function Block({
 
         enqueue(function _updateBackground() {
           backgrounds.forEach((background, index) => {
+            // Only keep the previous 2 and next 2 in the context
+            if (index > activeIndex - 2 && index < activeIndex + 2) {
+              background.style.removeProperty('display');
+            } else {
+              background.style.setProperty('display', 'none');
+            }
+
+            // Transition between the images
             if (index === activeIndex) {
               background.classList.add('transition-in');
               background.classList.remove('transition-out');
