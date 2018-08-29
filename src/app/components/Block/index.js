@@ -158,14 +158,28 @@ function Block({
       ${
         isPiecemeal
           ? contentEls.map(contentEl => {
-              // Override the light/dark from the Block if a marker was given
               let actualContentClassName = contentClassName;
+
+              // Override the light/dark from the Block if a marker was given
               switch (contentEl.getAttribute('data-lightdark')) {
                 case 'light':
                   actualContentClassName = actualContentClassName.replace('u-richtext-invert', 'u-richtext');
                   break;
                 case 'dark':
                   actualContentClassName = actualContentClassName.replace('u-richtext', 'u-richtext-invert');
+                  break;
+              }
+
+              // Override the left/right from the Block if marker has it
+              switch (contentEl.getAttribute('data-alignment')) {
+                case 'left':
+                  actualContentClassName = actualContentClassName += ' is-left';
+                  break;
+                case 'right':
+                  actualContentClassName = actualContentClassName += ' is-right';
+                  break;
+                case 'center':
+                  actualContentClassName = actualContentClassName += ' is-center';
                   break;
               }
 
@@ -291,6 +305,7 @@ function transformSection(section) {
 
   if (transition) {
     let lightDarkConfig;
+    let leftRightConfig;
 
     // If transitions are enabled then we can extract any images from the block
     // for use as backgrounds
@@ -310,8 +325,9 @@ function transformSection(section) {
             node.nextElementSibling.setAttribute('data-background-index', config.backgrounds.length - 1);
           }
 
-          // Reset the light/dark setter
+          // Reset the light/dark left/right setter
           lightDarkConfig = null;
+          leftRightConfig = null;
 
           // Remove this image from the flow
           node.parentElement.removeChild(node);
@@ -327,6 +343,16 @@ function transformSection(section) {
             lightDarkConfig = 'dark';
           }
 
+          if (config.indexOf('left') > -1) {
+            leftRightConfig = 'left';
+          }
+          if (config.indexOf('right') > -1) {
+            leftRightConfig = 'right';
+          }
+          if (config.indexOf('center') > -1) {
+            leftRightConfig = 'center';
+          }
+
           // If an image gave us this config we can pass it onto the actual paragraph
           if (node.hasAttribute('data-background-index')) {
             node.nextElementSibling.setAttribute('data-background-index', node.getAttribute('data-background-index'));
@@ -337,8 +363,13 @@ function transformSection(section) {
           return null;
         }
 
-        if (node.tagName && lightDarkConfig) {
-          node.setAttribute('data-lightdark', lightDarkConfig);
+        if (node.tagName) {
+          if (lightDarkConfig) {
+            node.setAttribute('data-lightdark', lightDarkConfig);
+          }
+          if (leftRightConfig) {
+            node.setAttribute('data-alignment', leftRightConfig);
+          }
         }
 
         return node;
