@@ -497,15 +497,25 @@
 
   @media #{$mq-lg} {
     .is-richtext.is-left > &,
-    .is-richtext.is-right > & {
+    .is-richtext.is-right > &,
+    .is-richtext > &.is-left,
+    .is-richtext > &.is-right {
       width: 49.5rem;
     }
 
-    .is-richtext.is-left > & {
+    .is-richtext.is-left > &,
+    .is-richtext > &.is-left {
       margin-left: calc(30% - 24.75rem);
     }
-    .is-richtext.is-right > & {
+    .is-richtext.is-right > &,
+    .is-richtext > &.is-right {
       margin-right: calc(30% - 24.75rem);
+    }
+
+    .is-richtext > &.is-center {
+      width: 61.25rem;
+      margin-right: auto;
+      margin-left: auto;
     }
   }
 
