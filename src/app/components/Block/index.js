@@ -283,7 +283,11 @@ function transformSection(section) {
     transition = 'black';
   }
 
-  const [, alignment] = section.configSC.match(ALIGNMENT_PATTERN) || [];
+  const [, alignment] =
+    section.configSC
+      .replace('slideright', '')
+      .replace('slideleft', '')
+      .match(ALIGNMENT_PATTERN) || [];
   let sourceMediaEl;
 
   if (shouldSupplant && section.betweenNodes.length) {
