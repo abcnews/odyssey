@@ -76,25 +76,67 @@ function Block({
     //   backgrounds = [];
     // }
 
-    backgrounds = backgrounds.map(img => {
-      const src = img.src;
-      const alt = img.getAttribute('alt');
-      const id = url2cmid(src);
+    backgrounds = backgrounds.map(element => {
+      // Try to resolve the background element
+      let backgroundEl;
+      if (element.tagName === 'IMG') {
+        backgroundEl = Picture({
+          src: element.src,
+          alt: element.getAttribute('alt'),
+          ratios
+        });
+      } else if (element.videoId) {
+        if (element.isVideoYouTube) {
+          backgroundEl = YouTubePlayer({
+            videoId: element.videoId,
+            isAmbient: true,
+            isContained,
+            ratios
+          });
+        } else {
+          backgroundEl = html`<div></div>`;
+          VideoPlayer.getMetadata(element.videoId, (err, metadata) => {
+            if (err) {
+              return;
+            }
 
-      const picture = Picture({
-        src,
-        alt,
-        ratios
-      });
+            const replacementMediaEl = VideoPlayer(
+              Object.assign(metadata, {
+                ratios,
+                isAmbient: true,
+                isContained
+              })
+            );
 
-      picture.classList.add('background-transition');
-      if (TRANSITIONS.indexOf(transition) > -1) {
-        picture.classList.add(transition);
-      } else {
-        picture.classList.add('colour');
+            // Reapply the classes that handle transitions
+            replacementMediaEl.classList.add('background-transition');
+            if (TRANSITIONS.indexOf(transition) > -1) {
+              replacementMediaEl.classList.add(transition);
+            } else {
+              replacementMediaEl.classList.add('colour');
+            }
+
+            substitute(backgroundEl, replacementMediaEl);
+
+            // Make sure we swap in our new video element
+            backgrounds = backgrounds.map(b => {
+              if (b === backgroundEl) return replacementMediaEl;
+              return b;
+            });
+
+            invalidateClient();
+          });
+        }
       }
 
-      return picture;
+      backgroundEl.classList.add('background-transition');
+      if (TRANSITIONS.indexOf(transition) > -1) {
+        backgroundEl.classList.add(transition);
+      } else {
+        backgroundEl.classList.add('colour');
+      }
+
+      return backgroundEl;
     });
   } else if (imgEl) {
     const src = imgEl.src;
@@ -318,10 +360,40 @@ function transformSection(section) {
     config.contentEls = section.betweenNodes
       .map(node => {
         let img = $('img', node);
-
         if (img) {
           // We found an image to use as one of the backgrounds
           config.backgrounds.push(img);
+          config.ratios = getRatios(section.configSC);
+
+          // Graft a 'marker' onto the next paragraph
+          if (node.nextElementSibling) {
+            node.nextElementSibling.setAttribute('data-background-index', config.backgrounds.length - 1);
+          }
+
+          // Reset the light/dark left/right setter
+          lightDarkConfig = null;
+          leftRightConfig = null;
+
+          // Remove this image from the flow
+          node.parentElement.removeChild(node);
+          return null;
+        }
+
+        // See if we have a video we can use for a background
+        let videoMarker = {};
+        if (node.name && !!node.name.match(VIDEO_MARKER_PATTERN)) {
+          videoMarker = {
+            isVideoYouTube: node.name.split('youtube')[1],
+            videoElOrId: node.name.match(VIDEO_MARKER_PATTERN)[1]
+          };
+          videoMarker.videoId = videoMarker.videoElOrId;
+        } else {
+          videoMarker.videoId = detectVideoId(node);
+        }
+
+        if (videoMarker.videoId) {
+          // We found a video to use as one of the backgrounds
+          config.backgrounds.push(videoMarker);
           config.ratios = getRatios(section.configSC);
 
           // Graft a 'marker' onto the next paragraph
@@ -380,7 +452,7 @@ function transformSection(section) {
       })
       .filter(n => n);
   } else {
-    // Transitions is not enabled to business as usual
+    // Transitions are not being used so business as usual
     config = section.betweenNodes.reduce((_config, node) => {
       let classList;
       let videoId;
@@ -394,11 +466,7 @@ function transformSection(section) {
           _config.isVideoYouTube = node.name.split('youtube')[1];
           _config.videoElOrId = videoId = node.name.match(VIDEO_MARKER_PATTERN)[1];
         } else {
-          videoId =
-            ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
-              classList.indexOf('view-inlineMediaPlayer') > -1 ||
-              (classList.indexOf('embed-content') > -1 && $('.type-video', node))) &&
-            url2cmid($('a', node).getAttribute('href'));
+          videoId = detectVideoId(node);
         }
 
         if (videoId) {
@@ -430,6 +498,16 @@ function transformSection(section) {
   }
 
   section.substituteWith(Block(config), sourceMediaEl ? [sourceMediaEl] : []);
+}
+
+function detectVideoId(node) {
+  let classList = node.className.split(' ');
+  return (
+    ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
+      classList.indexOf('view-inlineMediaPlayer') > -1 ||
+      (classList.indexOf('embed-content') > -1 && $('.type-video', node))) &&
+    url2cmid($('a', node).getAttribute('href'))
+  );
 }
 
 module.exports = Block;
