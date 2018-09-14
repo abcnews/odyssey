@@ -29,7 +29,7 @@ const TEMPLATE_REMOVABLES = {
     header > .section
     .content > article
     .share
-    .related
+    .related:not(.m-recirc)
   `),
   '.platform-standard.platform-mobile': literalList(`
     #page-header

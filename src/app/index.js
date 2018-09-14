@@ -13,6 +13,7 @@ const ImageEmbed = require('./components/ImageEmbed');
 const MasterGallery = require('./components/MasterGallery');
 const Nav = require('./components/Nav');
 const Quote = require('./components/Quote');
+const Recirculation = require('./components/Recirculation');
 const ScrollHint = require('./components/ScrollHint');
 const Series = require('./components/Series');
 const Share = require('./components/Share');
@@ -21,7 +22,7 @@ const UQuote = require('./components/UQuote');
 const UParallax = require('./components/UParallax');
 const UPull = require('./components/UPull');
 const VideoEmbed = require('./components/VideoEmbed');
-const { enqueue, start, subscribe } = require('./scheduler');
+const { start } = require('./scheduler');
 const { getMeta } = require('./meta');
 const { prepare, reset } = require('./reset');
 const { getMarkers, getSections } = require('./utils/anchors');
@@ -90,7 +91,7 @@ function app() {
     .forEach(UQuote.conditionallyApply);
 
   // Transform markers
-  getMarkers(['cta', 'hr', 'scrollhint', 'series', 'share', 'video', 'youtube']).forEach(marker => {
+  getMarkers(['cta', 'hr', 'scrollhint', 'series', 'share', 'video', 'youtube', 'related', 'tease']).forEach(marker => {
     let el;
 
     switch (marker.name) {
@@ -115,6 +116,10 @@ function app() {
       case 'video':
       case 'youtube':
         VideoEmbed.transformMarker(marker);
+        break;
+      case 'related':
+      case 'tease':
+        Recirculation.transformMarker(marker, meta);
         break;
       default:
         break;

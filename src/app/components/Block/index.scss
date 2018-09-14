@@ -486,8 +486,8 @@
 
   .is-richtext > & [class*='u-pull'] {
     float: none;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: auto !important;
+    margin-right: auto !important;
     width: cells(10);
 
     @media #{$mq-lg} {
