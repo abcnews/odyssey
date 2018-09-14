@@ -1,13 +1,12 @@
 // External
-const html = require('bel');
 const { parseDate } = require('inn-abcdatetime-lib');
+const url2cmid = require('util-url2cmid');
 
 // Ours
 const { MOCK_ELEMENT, SELECTORS } = require('../../constants');
 const { $, $$, detach } = require('../utils/dom');
 const { trim } = require('../utils/misc');
 
-const EMPHASISABLE_BYLINE_TEXT_PATTERN = /^(?:by|,|and)$/;
 const STARTS_WITH_YEAR_PATTERN = /^\d{4}-/;
 const ROGUE_YEAR_COLON_PATTERN = /:(\d+)$/;
 
@@ -114,6 +113,13 @@ function getShareLinks() {
     .sort((a, b) => SHARE_ORDERING.indexOf(a.id) - SHARE_ORDERING.indexOf(b.id));
 }
 
+function getRelatedStoriesIds() {
+  return $$(`
+    .attached-content > .inline-content.story > a,
+    .related > article > a
+  `).map(el => url2cmid(el.href));
+}
+
 function getRelatedMedia() {
   const relatedMediaEl = $(`
     .view-hero-media,
@@ -139,6 +145,7 @@ function getMeta() {
       infoSource: getInfoSource(),
       shareLinks: getShareLinks(),
       relatedMedia: getRelatedMedia(),
+      relatedStoriesIds: getRelatedStoriesIds(),
       theme: getMetaContent('theme'),
       hasCaptionAttributions: getMetaContent('caption-attributions') !== 'false',
       hasCommentsEnabled: getMetaContent('showLivefyreComments') === 'true',
