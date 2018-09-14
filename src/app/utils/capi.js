@@ -1,8 +1,11 @@
 // External
 const xhr = require('xhr');
 
+// Ours
+const { IS_PREVIEW } = require('../../constants');
+
 const ENDPOINT =
-  window.location.hostname.indexOf('nucwed') === -1 || window.location.search.indexOf('prod') > -1
+  IS_PREVIEW || window.location.search.indexOf('prod') > -1
     ? 'https://content-gateway.abc-prod.net.au'
     : 'http://nucwed.aus.aunty.abc.net.au';
 

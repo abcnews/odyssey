@@ -78,15 +78,6 @@ const SMALLEST_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAAAADs=';
 
 const IS_PREVIEW = window.location.hostname.indexOf('nucwed') > -1;
 
-const QUERY = {};
-window.location.search
-  .replace(/\?/, '')
-  .split('&')
-  .forEach(q => {
-    q = q.split('=');
-    QUERY[q[0]] = q[1];
-  });
-
 const MS_VERSION = (ua => {
   const msie = ua.indexOf('MSIE ');
 
@@ -147,7 +138,6 @@ module.exports = {
   MQ,
   SMALLEST_IMAGE,
   IS_PREVIEW,
-  QUERY,
   MS_VERSION,
   IS_IOS,
   SUPPORTS_PASSIVE
