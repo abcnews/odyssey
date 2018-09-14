@@ -1,0 +1,83 @@
+@import '../../../constants';
+
+.Recirculation:not(.has-children) {
+  display: none;
+}
+
+.Recirculation-item {
+  display: block;
+  border: 0.0625rem solid $color-grey-300-transparent-70;
+  padding: 1rem 1.1875rem;
+  font-size: 0.875rem;
+  transition: opacity 0.5s;
+
+  &.is-missing {
+    display: none;
+  }
+
+  &:empty {
+    opacity: 0.25;
+    color: $color-grey-300-transparent-70 !important;
+
+    &::before,
+    &::after {
+      display: block;
+      letter-spacing: -1px;
+    }
+
+    &::before {
+      content: '▇▇▇▇▇ ▇▇▇ ▇▇▇▇';
+      padding-bottom: calc(1.25rem + 56.25%);
+      font-size: 1.125rem;
+    }
+
+    &::after {
+      content: '▇▇▇▇▇ ▇▇▇▇▇▇▇ ▇▇▇▇ ▇▇▇ ▇▇▇▇▇▇▇ ▇▇▇▇ ▇▇▇ ▇▇▇▇▇▇ ▇▇▇▇▇ ▇▇▇ ▇▇▇▇▇';
+      padding-bottom: 2rem;
+      font-size: 0.8125rem;
+    }
+  }
+
+  &:hover,
+  &:active {
+    text-decoration: none !important;
+  }
+
+  & > * {
+    margin: 0;
+    font-family: $font-sans;
+  }
+
+  & > :not(:first-child) {
+    margin-top: 0.75rem;
+  }
+
+  & > h2 {
+    font-size: 1.125rem;
+    line-height: 1.294117647;
+    text-transform: none;
+  }
+
+  & > img {
+    width: 100%;
+    vertical-align: bottom;
+  }
+
+  & > p {
+    color: $color-black !important;
+    font-size: 0.8125rem;
+    line-height: 1.555555556;
+  }
+
+  .u-richtext-invert > .Recirculation > & > p {
+    color: $color-white !important;
+  }
+}
+
+.Recirculation-item:not(.is-missing) ~ .Recirculation-item:not(.is-missing) {
+  margin-top: 1.5rem;
+
+  @media #{$mq-lg} {
+    margin-top: 2.25rem;
+  }
+}
