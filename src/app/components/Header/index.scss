@@ -26,6 +26,7 @@
   }
 
   &.is-floating {
+    z-index: 2;
     margin-bottom: calc(-100vh + #{$abc-nav-height + $size-bar}) !important;
     background-color: transparent;
   }
