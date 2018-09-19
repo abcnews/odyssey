@@ -1,6 +1,5 @@
 // External
 const html = require('bel');
-const playInline = require('iphone-inline-video').default;
 const raf = require('raf');
 
 // Ours
@@ -102,13 +101,6 @@ function VideoPlayer({
 
   if (source) {
     videoEl.src = source.src;
-  }
-
-  // iOS8-9 inline video (muted only)
-  if (IS_IOS) {
-    raf(() => {
-      playInline(videoEl, !isMuted);
-    });
   }
 
   let fuzzyCurrentTime = 0;
