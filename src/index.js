@@ -1,6 +1,4 @@
 // Polyfills
-require('@babel/polyfill');
-require('objectFitPolyfill');
 require('./polyfills');
 
 // Global styles
