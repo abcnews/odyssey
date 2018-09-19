@@ -3,7 +3,7 @@ const html = require('bel');
 const raf = require('raf');
 
 // Ours
-const { IS_IOS, MQ, MS_VERSION, SMALLEST_IMAGE } = require('../../../constants');
+const { MQ, MS_VERSION, SMALLEST_IMAGE } = require('../../../constants');
 const { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } = require('../../media');
 const { enqueue, subscribe } = require('../../scheduler');
 const { toggleAttribute, toggleBooleanAttributes } = require('../../utils/dom');

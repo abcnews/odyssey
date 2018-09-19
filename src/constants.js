@@ -102,8 +102,6 @@ const MS_VERSION = (ua => {
   }
 })(window.navigator.userAgent);
 
-const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-
 const SUPPORTS_PASSIVE = (isSupported => {
   try {
     const options = Object.defineProperty({}, 'passive', {
@@ -139,6 +137,5 @@ module.exports = {
   SMALLEST_IMAGE,
   IS_PREVIEW,
   MS_VERSION,
-  IS_IOS,
   SUPPORTS_PASSIVE
 };
