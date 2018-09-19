@@ -13,6 +13,7 @@
     "start": "aunty serve"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.0.0",
     "bel": "^4.5.1",
     "classnames": "^2.2.5",
     "debounce": "^1.1.0",
