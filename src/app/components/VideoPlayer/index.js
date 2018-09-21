@@ -25,15 +25,25 @@ function VideoPlayer({
   title,
   isAmbient,
   isContained,
+  isInvariablyAmbient,
   isLoop,
   isMuted,
   scrollplayPct
 }) {
+  let videoPlayerEl;
+  let videoControlsEl;
+  let fuzzyCurrentTime = 0;
+  let fuzzyTimeout;
+
   ratios = {
     sm: ratios.sm || DEFAULT_RATIO,
     md: ratios.md || DEFAULT_RATIO,
     lg: ratios.lg || DEFAULT_RATIO
   };
+
+  if (isInvariablyAmbient) {
+    isAmbient = true;
+  }
 
   if (isAmbient) {
     isLoop = true;
@@ -102,9 +112,6 @@ function VideoPlayer({
   if (source) {
     videoEl.src = source.src;
   }
-
-  let fuzzyCurrentTime = 0;
-  let fuzzyTimeout;
 
   function nextFuzzyIncrement() {
     if (!videoControlsEl || videoEl.paused || !videoEl.duration) {
@@ -199,9 +206,8 @@ function VideoPlayer({
     getTitle: () => title,
     getRect: () => {
       // Fixed players should use their parent's rect, as they're always in the viewport
-      const playerEl = videoEl.parentElement;
-      const position = window.getComputedStyle(playerEl).position;
-      const el = position === 'fixed' ? playerEl.parentElement : playerEl;
+      const position = window.getComputedStyle(videoPlayerEl).position;
+      const el = position === 'fixed' ? videoPlayerEl.parentElement : videoPlayerEl;
 
       return el.getBoundingClientRect();
     },
@@ -222,7 +228,21 @@ function VideoPlayer({
       if (!videoEl.paused) {
         return;
       }
-      videoEl.play();
+
+      const playback = videoEl.play();
+
+      if (isAmbient && !isInvariablyAmbient && playback != null) {
+        playback
+          .then(() => {
+            videoControlsEl.parentElement && videoPlayerEl.removeChild(videoControlsEl);
+          })
+          .catch(err => {
+            if (String(err).indexOf('NotAllowedError') === 0) {
+              // Browser is blocking non-user-initited playback
+              videoPlayerEl.appendChild(videoControlsEl);
+            }
+          });
+      }
     },
     pause: () => {
       if (videoEl.paused) {
@@ -244,7 +264,7 @@ function VideoPlayer({
 
   registerPlayer(player);
 
-  let videoControlsEl = null;
+  videoControlsEl = VideoControls(player, isInvariablyAmbient);
 
   function jumpTo(time) {
     if (isNaN(videoEl.duration) || videoEl.duration === videoEl.currentTime) {
@@ -260,11 +280,8 @@ function VideoPlayer({
   }
 
   if (!isAmbient) {
-    videoControlsEl = VideoControls(player);
-
     videoEl.addEventListener('timeupdate', () => {
       if (videoEl.readyState > 0) {
-        // player.currentFuzzyTime = videoEl.currentTime;
         videoControlsEl.api.setTimeRemaining(videoEl.duration - videoEl.currentTime);
       }
     });
@@ -274,11 +291,11 @@ function VideoPlayer({
     trackProgress(videoEl);
   }
 
-  const videoPlayerEl = html`
+  videoPlayerEl = html`
     <div class="VideoPlayer${isContained ? ' is-contained' : ''}">
       ${placeholderEl}
       ${videoEl}
-      ${videoControlsEl}
+      ${isInvariablyAmbient ? null : videoControlsEl}
     </div>
   `;
 

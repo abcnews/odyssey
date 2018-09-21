@@ -103,8 +103,8 @@ function Block({
             const replacementMediaEl = VideoPlayer(
               Object.assign(metadata, {
                 ratios,
-                isAmbient: true,
-                isContained
+                isContained,
+                isInvariablyAmbient: true
               })
             );
 
@@ -167,8 +167,8 @@ function Block({
         const replacementMediaEl = VideoPlayer(
           Object.assign(metadata, {
             ratios,
-            isAmbient: true,
-            isContained: isContained
+            isContained: isContained,
+            isInvariablyAmbient: true
           })
         );
 

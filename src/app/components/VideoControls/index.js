@@ -6,11 +6,9 @@ const { setText } = require('../../utils/dom');
 const { twoDigits, whenKeyIn } = require('../../utils/misc');
 require('./index.scss');
 
-const FUZZY_INCREMENT_FPS = 30;
-const FUZZY_INCREMENT_INTERVAL = 1000 / FUZZY_INCREMENT_FPS;
 const STEP_SECONDS = 5;
 
-function VideoControls(player) {
+function VideoControls(player, hasInvariablyAmbientParent) {
   let steppingKeysHeldDown = [];
   let wasPlayingBeforeStepping;
   let isScrubbing;
@@ -83,26 +81,34 @@ function VideoControls(player) {
   const playbackEl = html`<button
     class="VideoControls-playback"
     aria-label="${`Play video, ${player.getTitle()}`}"
-    onkeydown=${whenKeyIn([37, 38, 39, 40], steppingKeyDown)}
-    onkeyup=${whenKeyIn([37, 38, 39, 40], steppingKeyUp)}
+    onkeydown=${hasInvariablyAmbientParent ? null : whenKeyIn([37, 38, 39, 40], steppingKeyDown)}
+    onkeyup=${hasInvariablyAmbientParent ? null : whenKeyIn([37, 38, 39, 40], steppingKeyUp)}
     onclick=${player.togglePlayback}
   ></button>`;
-  const muteEl = html`<button
+  const muteEl = hasInvariablyAmbientParent
+    ? null
+    : html`<button
     class="VideoControls-mute"
     aria-label="${player.isMuted() ? 'Unmute' : 'Mute'}"
     onclick=${player.toggleMutePreference}
   ></button>`;
-  const timeRemainingEl = html`<time
+  const timeRemainingEl = hasInvariablyAmbientParent
+    ? null
+    : html`<time
     class="VideoControls-timeRemaining"
     aria-label="Time Remaining"
   ></time>`;
-  const progressBarEl = html`<progress
+  const progressBarEl = hasInvariablyAmbientParent
+    ? null
+    : html`<progress
     class="VideoControls-progressBar"
     aria-label="Percentage Complete"
     max="100"
     draggable="false"
   ></progress>`;
-  const progressEl = html`<div class="VideoControls-progress">
+  const progressEl = hasInvariablyAmbientParent
+    ? null
+    : html`<div class="VideoControls-progress">
     ${progressBarEl}
   </div>`;
   const videoControlsEl = html`<div class="VideoControls">
@@ -112,20 +118,26 @@ function VideoControls(player) {
     ${timeRemainingEl}
   </div>`;
 
-  progressEl.addEventListener('mousedown', scrubStart);
-  progressEl.addEventListener('touchstart', scrubStart, { passive: true });
-  document.addEventListener('mousemove', scrub);
-  document.addEventListener('touchmove', scrub, { passive: true });
-  document.addEventListener('mouseup', scrubEnd);
-  document.addEventListener('touchend', scrubEnd);
-  document.addEventListener('touchcancel', scrubEnd);
+  if (!hasInvariablyAmbientParent) {
+    progressEl.addEventListener('mousedown', scrubStart);
+    progressEl.addEventListener('touchstart', scrubStart, { passive: true });
+    document.addEventListener('mousemove', scrub);
+    document.addEventListener('touchmove', scrub, { passive: true });
+    document.addEventListener('mouseup', scrubEnd);
+    document.addEventListener('touchend', scrubEnd);
+    document.addEventListener('touchcancel', scrubEnd);
+  }
 
   videoControlsEl.api = {
-    setMuteLabel: label => muteEl.setAttribute('aria-label', label),
+    setMuteLabel: label => muteEl && muteEl.setAttribute('aria-label', label),
     isScrubbing: () => isScrubbing,
     setPlaybackLabel: label => playbackEl.setAttribute('aria-label', label),
-    setProgress: value => (progressBarEl.value = value),
+    setProgress: value => progressBarEl && (progressBarEl.value = value),
     setTimeRemaining: secondsRemaining => {
+      if (!timeRemainingEl) {
+        return;
+      }
+
       const formattedNegativeTimeFromEnd = isNaN(secondsRemaining)
         ? ''
         : `${secondsRemaining > 0 ? '-' : ''}${twoDigits(Math.floor(secondsRemaining / 60))}:${twoDigits(
