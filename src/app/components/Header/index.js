@@ -243,7 +243,9 @@ function transformSection(section, meta) {
 
         // normal init-interactives
         const isInteractive =
-          classList.indexOf('init-interactive') > -1 || node.querySelector('[class^="init-interactive"]');
+          classList.indexOf('init-interactive') > -1 ||
+          node.querySelector('[class^="init-interactive"]') ||
+          (node.tagName === 'A' && node.getAttribute('name').indexOf('interactive') === 0);
 
         if (isParallax || isInteractive) {
           config.interactiveEl = interactiveEl = node;
