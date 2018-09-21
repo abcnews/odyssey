@@ -65,6 +65,8 @@ function VideoPlayer({
   `;
   const videoEl = html`<video preload="none" tabindex="-1" aria-label="${title}"></video>`;
 
+  const isInitiallySmallViewport = window.matchMedia(MQ.SM).matches;
+
   if (isContained) {
     enqueue(function _createAndAddPlaceholderImage() {
       blurImage(posterURL, (err, blurredImageURL) => {
@@ -92,7 +94,14 @@ function VideoPlayer({
 
   if (posterURL) {
     videoEl.poster = SMALLEST_IMAGE;
-    videoEl.style.backgroundImage = `url("${resize({ url: posterURL })}")`;
+    // Pick the aspect ratio based on config and the current viewport
+    // size (similar to how the video source is chosen below).
+    // Eventually, we'd like to update both of these as the viewport
+    // changes, but it's not a priority right now.
+    videoEl.style.backgroundImage = `url("${resize({
+      url: posterURL,
+      ratio: ratios[isInitiallySmallViewport ? 'sm' : 'md']
+    })}")`;
   }
 
   // If we're on mobile, and have more than one high resolution source, use the second
@@ -106,7 +115,7 @@ function VideoPlayer({
     return 0;
   });
   const source = (highResSources.length ? highResSources : sources)[
-    highResSources.length > 1 && window.matchMedia(MQ.SM).matches ? 1 : 0
+    highResSources.length > 1 && isInitiallySmallViewport ? 1 : 0
   ];
 
   if (source) {
