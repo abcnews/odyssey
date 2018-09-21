@@ -337,7 +337,7 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
         }
 
         const sharedProps = Object.assign(metadata, {
-          isAmbient: true
+          isInvariablyAmbient: true
         });
 
         const replacementMediaEl = VideoPlayer(

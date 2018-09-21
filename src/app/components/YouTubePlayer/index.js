@@ -26,16 +26,29 @@ const FUZZY_INCREMENT_FPS = 30;
 const FUZZY_INCREMENT_INTERVAL = 1000 / FUZZY_INCREMENT_FPS;
 const DEFAULT_RATIO = '16x9';
 
-let youtubeIframeAPI;
 const players = [];
 let nextId = 0;
 
-function YouTubePlayer({ videoId, ratios = {}, title, isAmbient, isContained, isLoop, isMuted, scrollplayPct }) {
+function YouTubePlayer({
+  videoId,
+  ratios = {},
+  title,
+  isAmbient,
+  isContained,
+  isInvariablyAmbient,
+  isLoop,
+  isMuted,
+  scrollplayPct
+}) {
   ratios = {
     sm: ratios.sm || DEFAULT_RATIO,
     md: ratios.md || DEFAULT_RATIO,
     lg: ratios.lg || DEFAULT_RATIO
   };
+
+  if (isInvariablyAmbient) {
+    isAmbient = true;
+  }
 
   if (isAmbient) {
     isLoop = true;
@@ -58,9 +71,10 @@ function YouTubePlayer({ videoId, ratios = {}, title, isAmbient, isContained, is
     <div class="u-sizer-sm-${ratios.sm} u-sizer-md-${ratios.md} u-sizer-lg-${ratios.lg}"></div>
   `;
   const posterEl = html`<img src="${posterURL}" />`;
-  let youtubeEl = html`<div id="youtube-player-${id}"></div>`;
+  let videoEl = html`<div id="youtube-video-${id}"></div>`;
   let youtube;
-  let playerEl;
+  let youTubePlayerEl;
+  let videoControlsEl;
   let player;
   let fuzzyCurrentTime = 0;
   let fuzzyTimeout;
@@ -68,7 +82,7 @@ function YouTubePlayer({ videoId, ratios = {}, title, isAmbient, isContained, is
   function nextFuzzyIncrement() {
     const duration = youtube.getDuration();
 
-    if (!videoControlsEl || youtubeEl.hasAttribute('paused') || !duration) {
+    if (!videoControlsEl || videoEl.hasAttribute('paused') || !duration) {
       return;
     }
 
@@ -91,7 +105,7 @@ function YouTubePlayer({ videoId, ratios = {}, title, isAmbient, isContained, is
   }
 
   loadYouTubeAPI(YT => {
-    youtube = new YT.Player(`youtube-player-${id}`, {
+    youtube = new YT.Player(`youtube-video-${id}`, {
       width: '100%',
       height: '100%',
       videoId,
@@ -104,12 +118,12 @@ function YouTubePlayer({ videoId, ratios = {}, title, isAmbient, isContained, is
         DEFAULT_YOUTUBE_CONFIG
       ),
       events: {
-        onReady: event => {
-          youtubeEl = youtube.getIframe();
-          youtubeEl.setAttribute('paused', '');
+        onReady: () => {
+          videoEl = youtube.getIframe();
+          videoEl.setAttribute('paused', '');
 
           if (!isMuted) {
-            youtubeEl.classList.add('has-audio');
+            videoEl.classList.add('has-audio');
           }
 
           setInterval(() => {
@@ -138,9 +152,9 @@ function YouTubePlayer({ videoId, ratios = {}, title, isAmbient, isContained, is
           switch (event.data) {
             case YT.PlayerState.ENDED:
               player.isUserInControl = true;
-              youtubeEl.setAttribute('ended', '');
-              youtubeEl.setAttribute('paused', '');
-              toggleAttribute(youtubeEl, 'muted', isMuted);
+              videoEl.setAttribute('ended', '');
+              videoEl.setAttribute('paused', '');
+              toggleAttribute(videoEl, 'muted', isMuted);
 
               if (videoControlsEl) {
                 videoControlsEl.api.setPlaybackLabel('Replay');
@@ -149,7 +163,7 @@ function YouTubePlayer({ videoId, ratios = {}, title, isAmbient, isContained, is
               break;
             case YT.PlayerState.PLAYING:
               if (posterEl.parentElement) {
-                playerEl.removeChild(posterEl);
+                youTubePlayerEl.removeChild(posterEl);
               }
 
               if (videoControlsEl && videoControlsEl.api.isScrubbing()) {
@@ -165,11 +179,11 @@ function YouTubePlayer({ videoId, ratios = {}, title, isAmbient, isContained, is
                 });
               }
 
-              if (youtubeEl.hasAttribute('ended')) {
-                youtubeEl.removeAttribute('ended');
+              if (videoEl.hasAttribute('ended')) {
+                videoEl.removeAttribute('ended');
               }
 
-              youtubeEl.removeAttribute('paused');
+              videoEl.removeAttribute('paused');
 
               if (videoControlsEl) {
                 videoControlsEl.api.setPlaybackLabel('Pause');
@@ -184,7 +198,7 @@ function YouTubePlayer({ videoId, ratios = {}, title, isAmbient, isContained, is
                 return;
               }
 
-              youtubeEl.setAttribute('paused', '');
+              videoEl.setAttribute('paused', '');
 
               if (videoControlsEl) {
                 videoControlsEl.api.setPlaybackLabel('Play');
@@ -212,21 +226,21 @@ function YouTubePlayer({ videoId, ratios = {}, title, isAmbient, isContained, is
     scrollplayPct,
     getTitle: () => title,
     getRect: () => {
-      const position = window.getComputedStyle(playerEl).position;
-      const el = position === 'fixed' ? playerEl.parentElement : playerEl;
+      const position = window.getComputedStyle(youTubePlayerEl).position;
+      const el = position === 'fixed' ? youTubePlayerEl.parentElement : youTubePlayerEl;
 
       return el.getBoundingClientRect();
     },
     resize: () => {
-      const { width, height } = playerEl.getBoundingClientRect();
+      const { width, height } = youTubePlayerEl.getBoundingClientRect();
 
-      youtubeEl.style.width = `${height * 1.77778}px`;
-      youtubeEl.style.height = `${width * 0.5625}px`;
+      videoEl.style.width = `${height * 1.77778}px`;
+      videoEl.style.height = `${width * 0.5625}px`;
     },
     isMuted: () => (youtube ? youtube.isMuted() : isMuted),
     setMuted: shouldBeMuted => {
       player.isUserInControl = true;
-      toggleAttribute(youtubeEl, 'muted', shouldBeMuted);
+      toggleAttribute(videoEl, 'muted', shouldBeMuted);
       youtube[shouldBeMuted ? 'mute' : 'unMute']();
 
       if (videoControlsEl) {
@@ -288,22 +302,18 @@ function YouTubePlayer({ videoId, ratios = {}, title, isAmbient, isContained, is
     }
   }
 
-  let videoControlsEl = null;
+  videoControlsEl = VideoControls(player, isInvariablyAmbient);
 
-  if (!isAmbient) {
-    videoControlsEl = VideoControls(player);
-  }
-
-  playerEl = html`
+  youTubePlayerEl = html`
     <div class="YouTubePlayer${isContained ? ' is-contained' : ''}">
       ${placeholderEl}
-      ${youtubeEl}
-      ${videoControlsEl}
+      ${videoEl}
+      ${isInvariablyAmbient ? null : videoControlsEl}
       ${posterEl}
     </div>
   `;
 
-  return playerEl;
+  return youTubePlayerEl;
 }
 
 subscribe(function _checkIfPlayersNeedToBeResized(client) {
