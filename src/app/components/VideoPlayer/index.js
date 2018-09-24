@@ -100,6 +100,7 @@ function VideoPlayer({
     // changes, but it's not a priority right now.
     videoEl.style.backgroundImage = `url("${resize({
       url: posterURL,
+      size: 'sm',
       ratio: ratios[isInitiallySmallViewport ? 'sm' : 'md']
     })}")`;
   }
