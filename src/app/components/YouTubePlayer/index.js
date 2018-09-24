@@ -302,13 +302,13 @@ function YouTubePlayer({
     }
   }
 
-  videoControlsEl = VideoControls(player, isInvariablyAmbient);
+  videoControlsEl = VideoControls(player, isAmbient);
 
   youTubePlayerEl = html`
     <div class="YouTubePlayer${isContained ? ' is-contained' : ''}">
       ${placeholderEl}
       ${videoEl}
-      ${isInvariablyAmbient ? null : videoControlsEl}
+      ${isAmbient ? null : videoControlsEl}
       ${posterEl}
     </div>
   `;

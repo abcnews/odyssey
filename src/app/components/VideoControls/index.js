@@ -8,7 +8,7 @@ require('./index.scss');
 
 const STEP_SECONDS = 5;
 
-function VideoControls(player, hasInvariablyAmbientParent) {
+function VideoControls(player, hasAmbientParent) {
   let steppingKeysHeldDown = [];
   let wasPlayingBeforeStepping;
   let isScrubbing;
@@ -81,24 +81,24 @@ function VideoControls(player, hasInvariablyAmbientParent) {
   const playbackEl = html`<button
     class="VideoControls-playback"
     aria-label="${`Play video, ${player.getTitle()}`}"
-    onkeydown=${hasInvariablyAmbientParent ? null : whenKeyIn([37, 38, 39, 40], steppingKeyDown)}
-    onkeyup=${hasInvariablyAmbientParent ? null : whenKeyIn([37, 38, 39, 40], steppingKeyUp)}
+    onkeydown=${hasAmbientParent ? null : whenKeyIn([37, 38, 39, 40], steppingKeyDown)}
+    onkeyup=${hasAmbientParent ? null : whenKeyIn([37, 38, 39, 40], steppingKeyUp)}
     onclick=${player.togglePlayback}
   ></button>`;
-  const muteEl = hasInvariablyAmbientParent
+  const muteEl = hasAmbientParent
     ? null
     : html`<button
     class="VideoControls-mute"
     aria-label="${player.isMuted() ? 'Unmute' : 'Mute'}"
     onclick=${player.toggleMutePreference}
   ></button>`;
-  const timeRemainingEl = hasInvariablyAmbientParent
+  const timeRemainingEl = hasAmbientParent
     ? null
     : html`<time
     class="VideoControls-timeRemaining"
     aria-label="Time Remaining"
   ></time>`;
-  const progressBarEl = hasInvariablyAmbientParent
+  const progressBarEl = hasAmbientParent
     ? null
     : html`<progress
     class="VideoControls-progressBar"
@@ -106,7 +106,7 @@ function VideoControls(player, hasInvariablyAmbientParent) {
     max="100"
     draggable="false"
   ></progress>`;
-  const progressEl = hasInvariablyAmbientParent
+  const progressEl = hasAmbientParent
     ? null
     : html`<div class="VideoControls-progress">
     ${progressBarEl}
@@ -118,7 +118,7 @@ function VideoControls(player, hasInvariablyAmbientParent) {
     ${timeRemainingEl}
   </div>`;
 
-  if (!hasInvariablyAmbientParent) {
+  if (!hasAmbientParent) {
     progressEl.addEventListener('mousedown', scrubStart);
     progressEl.addEventListener('touchstart', scrubStart, { passive: true });
     document.addEventListener('mousemove', scrub);

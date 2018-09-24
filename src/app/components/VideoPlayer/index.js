@@ -243,7 +243,9 @@ function VideoPlayer({
       if (isAmbient && !isInvariablyAmbient && playback != null) {
         playback
           .then(() => {
-            videoControlsEl.parentElement && videoPlayerEl.removeChild(videoControlsEl);
+            if (videoControlsEl.parentElement) {
+              videoPlayerEl.removeChild(videoControlsEl);
+            }
           })
           .catch(err => {
             if (String(err).indexOf('NotAllowedError') === 0) {
@@ -273,7 +275,7 @@ function VideoPlayer({
 
   registerPlayer(player);
 
-  videoControlsEl = VideoControls(player, isInvariablyAmbient);
+  videoControlsEl = VideoControls(player, isAmbient);
 
   function jumpTo(time) {
     if (isNaN(videoEl.duration) || videoEl.duration === videoEl.currentTime) {
@@ -304,7 +306,7 @@ function VideoPlayer({
     <div class="VideoPlayer${isContained ? ' is-contained' : ''}">
       ${placeholderEl}
       ${videoEl}
-      ${isInvariablyAmbient ? null : videoControlsEl}
+      ${isAmbient ? null : videoControlsEl}
     </div>
   `;
 
