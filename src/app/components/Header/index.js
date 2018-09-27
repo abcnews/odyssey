@@ -5,9 +5,9 @@ const { formatUIGRelative } = require('inn-abcdatetime-lib');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const { IS_PREVIEW, MS_VERSION, VIDEO_MARKER_PATTERN } = require('../../../constants');
+const { MS_VERSION, VIDEO_MARKER_PATTERN } = require('../../../constants');
 const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
-const { $, append, detach, isElement, prepend, substitute } = require('../../utils/dom');
+const { $, detach, isElement, substitute } = require('../../utils/dom');
 const { dePx, getRatios, slug, trim } = require('../../utils/misc');
 const ScrollHint = require('../ScrollHint');
 const Picture = require('../Picture');
@@ -201,6 +201,15 @@ function Header({
             headerEl.style.height = heightOverride + 'px';
           });
         }
+      }
+    });
+  }
+
+  // Ensure title is in view
+  if (!isLayered && mediaEl) {
+    setTimeout(() => {
+      if (window.scrollY === 0 && headerEl.parentElement.firstElementChild === headerEl) {
+        headerContentEl.querySelector('h1').scrollIntoView(false);
       }
     });
   }

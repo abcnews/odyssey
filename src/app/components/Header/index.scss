@@ -151,8 +151,9 @@
 
   &::after {
     content: '';
+    transform: translate(0, 100%);
     display: block;
-    margin: 1.25rem auto;
+    margin: 1.125rem auto;
     width: 9rem;
     height: 0.125rem;
     background-color: $color-grey-300-transparent-70;
