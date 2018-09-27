@@ -29,6 +29,6 @@
     "xhr": "^2.4.0"
   },
   "devDependencies": {
-    "@abcnews/aunty": "^9.8.0"
+    "@abcnews/aunty": "^9.8.1"
   }
 }
