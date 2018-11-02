@@ -19,7 +19,6 @@ require('./index.scss');
 function Header({
   meta = {},
   videoElOrId,
-  isVideoMarker,
   isVideoYouTube,
   imgEl,
   interactiveEl,
@@ -81,7 +80,7 @@ function Header({
       }
     } else {
       mediaEl = html`<div></div>`;
-      VideoPlayer[`getMetadata${isVideoMarker ? 'FromDetailPage' : ''}`](videoElOrId, (err, metadata) => {
+      VideoPlayer.getMetadata(videoElOrId, (err, metadata) => {
         if (err) {
           return;
         }
@@ -267,7 +266,6 @@ function transformSection(section, meta) {
         if (videoEl) {
           config.videoElOrId = videoEl;
         } else if (node.name && !!node.name.match(VIDEO_MARKER_PATTERN)) {
-          config.isVideoMarker = true;
           config.isVideoYouTube = node.name.split('youtube')[1];
           config.videoElOrId = videoId = node.name.match(VIDEO_MARKER_PATTERN)[1];
         } else {

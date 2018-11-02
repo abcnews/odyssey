@@ -76,7 +76,7 @@ function transformEl(el) {
   const playerEl = isYouTube ? YouTubePlayer(Object.assign(playerOptions, { videoId })) : html`<div></div>`;
 
   if (!isYouTube) {
-    VideoPlayer[`getMetadata${isMarker ? 'FromDetailPage' : ''}`](videoId, (err, metadata) => {
+    VideoPlayer.getMetadata(videoId, (err, metadata) => {
       if (err) {
         return;
       }

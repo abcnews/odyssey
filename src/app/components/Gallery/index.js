@@ -331,7 +331,7 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
     `;
 
     if (mediaEl.hasAttribute('data-video-player-placeholder')) {
-      VideoPlayer.getMetadataFromDetailPage(id, (err, metadata) => {
+      VideoPlayer.getMetadata(id, (err, metadata) => {
         if (err) {
           return;
         }

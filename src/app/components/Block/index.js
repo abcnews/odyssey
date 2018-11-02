@@ -34,7 +34,6 @@ function Block({
   isLight,
   alignment,
   videoId,
-  isVideoMarker,
   isVideoYouTube,
   imgEl,
   ratios = {},
@@ -159,7 +158,7 @@ function Block({
       });
     } else {
       mediaEl = html`<div></div>`;
-      VideoPlayer[`getMetadata${isVideoMarker ? 'FromDetailPage' : ''}`](videoId, (err, metadata) => {
+      VideoPlayer.getMetadata(videoId, (err, metadata) => {
         if (err) {
           return;
         }
@@ -454,7 +453,6 @@ function transformSection(section) {
   } else {
     // Transitions are not being used so business as usual
     config = section.betweenNodes.reduce((_config, node) => {
-      let classList;
       let videoId;
       let imgEl;
 
@@ -462,7 +460,6 @@ function transformSection(section) {
         classList = node.className.split(' ');
 
         if (node.name && !!node.name.match(VIDEO_MARKER_PATTERN)) {
-          _config.isVideoMarker = true;
           _config.isVideoYouTube = node.name.split('youtube')[1];
           _config.videoElOrId = videoId = node.name.match(VIDEO_MARKER_PATTERN)[1];
         } else {
