@@ -80,6 +80,13 @@ body {
   }
 }
 
+/* Until the Presentation Layer masthead is consistent across all phases, retain the classic ABC global header */
+
 #abcHeader.global {
+  display: block !important;
   max-width: inherit;
+}
+
+.masthead-container {
+  display: none !important;
 }
