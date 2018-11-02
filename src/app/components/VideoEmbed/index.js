@@ -73,20 +73,17 @@ function transformEl(el) {
     scrollplayPct
   };
 
-  const playerEl = isYouTube ? YouTubePlayer(Object.assign(playerOptions, { videoId })) : html`<div></div>`;
-
-  if (!isYouTube) {
-    VideoPlayer.getMetadata(videoId, (err, metadata) => {
-      if (err) {
-        return;
-      }
-
-      substitute(playerEl, VideoPlayer(Object.assign(playerOptions, metadata)));
-      invalidateClient();
-    });
-  }
-
-  substitute(el, VideoEmbed(Object.assign(options, { playerEl, captionEl })));
+  substitute(
+    el,
+    VideoEmbed(
+      Object.assign(options, {
+        playerEl: isYouTube
+          ? YouTubePlayer(Object.assign(playerOptions, { videoId }))
+          : VideoPlayer(Object.assign(playerOptions, { videoElOrId: videoId })),
+        captionEl
+      })
+    )
+  );
 }
 
 function transformMarker(marker) {

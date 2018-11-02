@@ -4,11 +4,10 @@ const html = require('bel');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const { ALIGNMENT_PATTERN, VIDEO_MARKER_PATTERN, IS_PREVIEW } = require('../../../constants');
-const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
-const { $, detach, isElement, substitute } = require('../../utils/dom');
+const { ALIGNMENT_PATTERN, VIDEO_MARKER_PATTERN } = require('../../../constants');
+const { enqueue, subscribe } = require('../../scheduler');
+const { $, detach, isElement } = require('../../utils/dom');
 const { getRatios, trim } = require('../../utils/misc');
-const Caption = require('../Caption');
 const Picture = require('../Picture');
 const VideoPlayer = require('../VideoPlayer');
 const YouTubePlayer = require('../YouTubePlayer');
@@ -93,37 +92,11 @@ function Block({
             ratios
           });
         } else {
-          backgroundEl = html`<div></div>`;
-          VideoPlayer.getMetadata(element.videoId, (err, metadata) => {
-            if (err) {
-              return;
-            }
-
-            const replacementMediaEl = VideoPlayer(
-              Object.assign(metadata, {
-                ratios,
-                isContained,
-                isInvariablyAmbient: true
-              })
-            );
-
-            // Reapply the classes that handle transitions
-            replacementMediaEl.classList.add('background-transition');
-            if (TRANSITIONS.indexOf(transition) > -1) {
-              replacementMediaEl.classList.add(transition);
-            } else {
-              replacementMediaEl.classList.add('colour');
-            }
-
-            substitute(backgroundEl, replacementMediaEl);
-
-            // Make sure we swap in our new video element
-            backgrounds = backgrounds.map(b => {
-              if (b === backgroundEl) return replacementMediaEl;
-              return b;
-            });
-
-            invalidateClient();
+          backgroundEl = VideoPlayer({
+            videoElOrId: element.videoId,
+            ratios,
+            isContained,
+            isInvariablyAmbient: true
           });
         }
       }
@@ -157,22 +130,11 @@ function Block({
         ratios
       });
     } else {
-      mediaEl = html`<div></div>`;
-      VideoPlayer.getMetadata(videoId, (err, metadata) => {
-        if (err) {
-          return;
-        }
-
-        const replacementMediaEl = VideoPlayer(
-          Object.assign(metadata, {
-            ratios,
-            isContained: isContained,
-            isInvariablyAmbient: true
-          })
-        );
-
-        substitute(mediaEl, replacementMediaEl);
-        invalidateClient();
+      mediaEl = VideoPlayer({
+        videoElOrId: videoId,
+        ratios,
+        isContained: isContained,
+        isInvariablyAmbient: true
       });
     }
   }

@@ -4,7 +4,7 @@ const html = require('bel');
 // Ours
 const { MQ, MS_VERSION, SMALLEST_IMAGE } = require('../../../constants');
 const { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } = require('../../media');
-const { enqueue, subscribe } = require('../../scheduler');
+const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
 const { toggleAttribute, toggleBooleanAttributes } = require('../../utils/dom');
 const { PLACEHOLDER_PROPERTY, resize } = require('../Picture');
 const { blurImage } = require('../Picture/blur');
@@ -18,9 +18,8 @@ const FUZZY_INCREMENT_INTERVAL = 1000 / FUZZY_INCREMENT_FPS;
 const DEFAULT_RATIO = '16x9';
 
 function VideoPlayer({
-  posterURL,
+  videoElOrId,
   ratios = {},
-  sources = [],
   title,
   isAmbient,
   isContained,
@@ -66,18 +65,6 @@ function VideoPlayer({
 
   const isInitiallySmallViewport = window.matchMedia(MQ.SM).matches;
 
-  if (isContained) {
-    enqueue(function _createAndAddPlaceholderImage() {
-      blurImage(posterURL, (err, blurredImageURL) => {
-        if (err) {
-          return;
-        }
-
-        placeholderEl.style.setProperty(PLACEHOLDER_PROPERTY, `url("${blurredImageURL}")`);
-      });
-    });
-  }
-
   toggleBooleanAttributes(videoEl, {
     loop: isLoop,
     muted: isMuted,
@@ -89,43 +76,6 @@ function VideoPlayer({
   // Firefox doesn't respect the muted attribute initially.
   if (isMuted && !videoEl.muted) {
     videoEl.muted = true;
-  }
-
-  function attachAssets() {
-    if (posterURL) {
-      videoEl.poster = SMALLEST_IMAGE;
-      // Pick the aspect ratio based on config and the current viewport
-      // size (similar to how the video source is chosen below).
-      // Eventually, we'd like to update both of these as the viewport
-      // changes, but it's not a priority right now.
-      videoEl.style.backgroundImage = `url("${resize({
-        url: posterURL,
-        size: 'sm',
-        ratio: ratios[isInitiallySmallViewport ? 'sm' : 'lg']
-      })}")`;
-    }
-
-    // If we're on mobile, and have more than one high resolution source, use the second
-    // highest; otherwise, use the first source (of any resolution).
-    // Note: Only Phase 1 (Desktop) sources have width/height defined, making it the
-    // only template that can differentiate its high resolution sources.
-    const highResSources = sources.filter(source => source.width >= 1080).sort((a, b) => {
-      // Wide videos should come before squares
-      if (a.width > b.width) return -1;
-      if (b.width > a.width) return 1;
-      return 0;
-    });
-    const source = (highResSources.length ? highResSources : sources)[
-      highResSources.length > 1 && isInitiallySmallViewport ? 1 : 0
-    ];
-
-    if (source) {
-      videoEl.src = source.src;
-    }
-  }
-
-  if (sources.length) {
-    attachAssets();
   }
 
   function nextFuzzyIncrement() {
@@ -279,7 +229,67 @@ function VideoPlayer({
     jumpBy: time => jumpTo(videoEl.currentTime + time)
   };
 
-  registerPlayer(player);
+  getMetadata(videoElOrId, (err, metadata) => {
+    if (err) {
+      return;
+    }
+
+    const { alternativeText, posterURL, sources } = metadata;
+
+    if (alternativeText) {
+      player.alternativeText = alternativeText;
+    }
+
+    if (posterURL) {
+      videoEl.poster = SMALLEST_IMAGE;
+      // Pick the aspect ratio based on config and the current viewport
+      // size (similar to how the video source is chosen below).
+      // Eventually, we'd like to update both of these as the viewport
+      // changes, but it's not a priority right now.
+      videoEl.style.backgroundImage = `url("${resize({
+        url: posterURL,
+        size: 'sm',
+        ratio: ratios[isInitiallySmallViewport ? 'sm' : 'lg']
+      })}")`;
+
+      if (isContained) {
+        enqueue(function _createAndAddPlaceholderImage() {
+          blurImage(posterURL, (err, blurredImageURL) => {
+            if (err) {
+              return;
+            }
+
+            placeholderEl.style.setProperty(PLACEHOLDER_PROPERTY, `url("${blurredImageURL}")`);
+          });
+        });
+      }
+    }
+
+    // If we're on mobile, and have more than one high resolution source, use the second
+    // highest; otherwise, use the first source (of any resolution).
+    // Note: Only Phase 1 (Desktop) sources have width/height defined, making it the
+    // only template that can differentiate its high resolution sources.
+    const highResSources = sources.filter(source => source.width >= 1080).sort((a, b) => {
+      // Wide videos should come before squares
+      if (a.width > b.width) return -1;
+      if (b.width > a.width) return 1;
+      return 0;
+    });
+    const source = (highResSources.length ? highResSources : sources)[
+      highResSources.length > 1 && isInitiallySmallViewport ? 1 : 0
+    ];
+
+    if (source) {
+      videoEl.src = source.src;
+    }
+
+    registerPlayer(player);
+    invalidateClient();
+
+    if (player.metadataHook) {
+      player.metadataHook(metadata);
+    }
+  });
 
   videoControlsEl = VideoControls(player, isAmbient);
 
@@ -379,4 +389,3 @@ subscribe(function _checkIfVideoPlayersNeedToUpdateUIBasedOnMedia() {
 });
 
 module.exports = VideoPlayer;
-module.exports.getMetadata = getMetadata;

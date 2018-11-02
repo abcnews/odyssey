@@ -7,7 +7,7 @@ const url2cmid = require('util-url2cmid');
 // Ours
 const { REM, SUPPORTS_PASSIVE, VIDEO_MARKER_PATTERN } = require('../../../constants');
 const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
-const { $, append, detach, isElement, setText, substitute } = require('../../utils/dom');
+const { $, append, detach, isElement, setText } = require('../../utils/dom');
 const { dePx, getRatios, returnFalse } = require('../../utils/misc');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
@@ -330,49 +330,6 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
       </div>
     `;
 
-    if (mediaEl.hasAttribute('data-video-player-placeholder')) {
-      VideoPlayer.getMetadata(id, (err, metadata) => {
-        if (err) {
-          return;
-        }
-
-        const sharedProps = Object.assign(metadata, {
-          isInvariablyAmbient: true
-        });
-
-        const replacementMediaEl = VideoPlayer(
-          Object.assign({}, sharedProps, {
-            ratios: {
-              sm: mediaEl.getAttribute('data-ratio-sm'),
-              md: mediaEl.getAttribute('data-ratio-md'),
-              lg: mediaEl.getAttribute('data-ratio-lg')
-            }
-          })
-        );
-
-        const replacementMosaicMediaEl = VideoPlayer(
-          Object.assign({}, sharedProps, {
-            ratios: {
-              sm: mosaicMediaEl.getAttribute('data-ratio-sm'),
-              md: mosaicMediaEl.getAttribute('data-ratio-md'),
-              lg: mosaicMediaEl.getAttribute('data-ratio-lg')
-            }
-          })
-        );
-
-        mediaEls.splice(mediaEls.indexOf(mediaEl), 1, replacementMediaEl);
-
-        substitute(mediaEl, replacementMediaEl);
-        substitute(mosaicMediaEl, replacementMosaicMediaEl);
-
-        if (!captionEl && metadata.alternativeText) {
-          append(itemEl, Caption({ text: metadata.alternativeText, attribution: 'ABC News' }));
-        }
-
-        measureDimensions();
-      });
-    }
-
     mediaEl.addEventListener('touchend', swipeIntent, false);
 
     if (mediaEl.hasAttribute('href')) {
@@ -404,7 +361,7 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
     return itemEl;
   });
 
-  mediaEls = itemEls.map(itemEl => $('.Picture, [data-video-player-placeholder]', itemEl));
+  mediaEls = itemEls.map(itemEl => $('.Picture, .VideoPlayer', itemEl));
 
   const itemsEl = html`
     <div class="Gallery-items"
@@ -509,19 +466,60 @@ function transformSection(section) {
             url2cmid($('a', node).getAttribute('href'));
 
       if (videoId) {
+        const videoPlayerEl = VideoPlayer({
+          videoElOrId: videoId,
+          ratios: {
+            sm: ratios.sm || '3x4',
+            md: ratios.md,
+            lg: ratios.lg
+          },
+          isInvariablyAmbient: true
+        });
+        const mosaidVideoPlayerEls = [
+          VideoPlayer({
+            videoElOrId: videoId,
+            ratios: {
+              sm: ratios.sm || '3x2',
+              md: ratios.md || '16x9',
+              lg: ratios.lg
+            },
+            isInvariablyAmbient: true
+          }),
+          VideoPlayer({
+            videoElOrId: videoId,
+            ratios: {
+              sm: ratios.sm || '1x1',
+              md: ratios.md,
+              lg: ratios.lg || '3x2'
+            },
+            isInvariablyAmbient: true
+          }),
+          VideoPlayer({
+            videoElOrId: videoId,
+            ratios: {
+              sm: ratios.sm || '3x4',
+              md: ratios.md || '4x3',
+              lg: ratios.lg || '4x3'
+            },
+            isInvariablyAmbient: true
+          })
+        ];
+        const videoCaptionEl = Caption.createFromEl(node, unlink);
+
+        // Videos that don't have captions right now can append them them later using metadata
+        if (!videoCaptionEl) {
+          videoPlayerEl.api.metadataHook = ({ alternativeText }) => {
+            if (alternativeText) {
+              append(videoPlayerEl.parentElement, Caption({ text: alternativeText, attribution: 'ABC News' }));
+            }
+          };
+        }
+
         config.items.push({
           id: videoId,
-          mediaEl: html`<div data-video-player-placeholder="" data-ratio-sm="${ratios.sm ||
-            '3x4'}" data-ratio-md="${ratios.md || ''}" data-ratio-lg="${ratios.lg || ''}"></div>`,
-          mosaicMediaEls: [
-            html`<div data-video-player-placeholder="" data-ratio-sm="${ratios.sm ||
-              '3x2'}" data-ratio-md="${ratios.md || '16x9'}" data-ratio-lg="${ratios.lg || ''}"></div>`,
-            html`<div data-video-player-placeholder="" data-ratio-sm="${ratios.sm ||
-              '1x1'}" data-ratio-md="${ratios.md || ''}" data-ratio-lg="${ratios.lg || '3x2'}"></div>`,
-            html`<div data-video-player-placeholder="" data-ratio-sm="${ratios.sm ||
-              '3x4'}" data-ratio-md="${ratios.md || '4x3'}" data-ratio-lg="${ratios.lg || '4x3'}"></div>`
-          ],
-          captionEl: Caption.createFromEl(node, unlink)
+          mediaEl: videoPlayerEl,
+          mosaicMediaEls: mosaidVideoPlayerEls,
+          captionEl: videoCaptionEl
         });
       } else if (imgEl) {
         const src = imgEl.src;

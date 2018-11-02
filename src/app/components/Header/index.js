@@ -6,8 +6,8 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const { MS_VERSION, VIDEO_MARKER_PATTERN } = require('../../../constants');
-const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
-const { $, detach, isElement, substitute } = require('../../utils/dom');
+const { enqueue, subscribe } = require('../../scheduler');
+const { $, detach, isElement } = require('../../utils/dom');
 const { dePx, getRatios, slug, trim } = require('../../utils/misc');
 const ScrollHint = require('../ScrollHint');
 const Picture = require('../Picture');
@@ -62,46 +62,23 @@ function Header({
       alt: imgEl.getAttribute('alt'),
       ratios
     });
-
-    if (!isLayered) {
-      mediaEl.classList.add('u-parallax');
-    }
   } else if (videoElOrId) {
-    if (isVideoYouTube) {
-      mediaEl = YouTubePlayer({
-        videoId: videoElOrId,
-        isAmbient: true,
-        ratios
-      });
+    mediaEl = isVideoYouTube
+      ? YouTubePlayer({
+          videoId: videoElOrId,
+          isAmbient: true,
+          ratios
+        })
+      : VideoPlayer({
+          videoElOrId,
+          ratios,
+          isInvariablyAmbient: true
+        });
+  }
 
-      if (!isLayered) {
-        mediaEl.classList.add('u-parallax');
-        UParallax.activate(mediaEl);
-      }
-    } else {
-      mediaEl = html`<div></div>`;
-      VideoPlayer.getMetadata(videoElOrId, (err, metadata) => {
-        if (err) {
-          return;
-        }
-
-        const replacementMediaEl = VideoPlayer(
-          Object.assign(metadata, {
-            ratios,
-            isInvariablyAmbient: true
-          })
-        );
-
-        substitute(mediaEl, replacementMediaEl);
-
-        if (!isLayered) {
-          replacementMediaEl.classList.add('u-parallax');
-          UParallax.activate(replacementMediaEl);
-        }
-
-        invalidateClient();
-      });
-    }
+  if (mediaEl && !interactiveEl && !isLayered) {
+    mediaEl.classList.add('u-parallax');
+    UParallax.activate(mediaEl);
   }
 
   const clonedMiscContentEls = miscContentEls.map(el => {
