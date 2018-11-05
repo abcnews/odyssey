@@ -29,5 +29,8 @@ module.exports.getDocument = (cmid, done) => {
   );
 };
 
-// The Content API is not returning https-enabled asset URLs (yet)
-module.exports.rewriteAssetURL = url => url.replace('http://mpegmedia.abc.net.au', 'https://abcmedia.akamaized.net');
+const REAL_MEDIA_HOST = 'mpegmedia.abc.net.au';
+const PROXIED_MEDIA_HOST = 'abcmedia.akamaized.net';
+
+// The Content API is not returning proxied asset URLs (yet)
+module.exports.rewriteAssetURL = url => url.replace(REAL_MEDIA_HOST, PROXIED_MEDIA_HOST);
