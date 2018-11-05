@@ -29,8 +29,5 @@ module.exports.getDocument = (cmid, done) => {
   );
 };
 
-const UNSAFE_MEDIA_HOST = 'http://mpegmedia.abc.net.au';
-const SECURE_MEDIA_HOST = 'https://abcmedia.akamaized.net';
-
 // The Content API is not returning https-enabled asset URLs (yet)
-module.exports.rewriteAssetURL = url => url.replace(UNSAFE_MEDIA_HOST, SECURE_MEDIA_HOST);
+module.exports.rewriteAssetURL = url => url.replace('http://mpegmedia.abc.net.au', 'https://abcmedia.akamaized.net');
