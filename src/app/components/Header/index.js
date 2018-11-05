@@ -6,8 +6,8 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const { MS_VERSION, VIDEO_MARKER_PATTERN } = require('../../../constants');
-const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
-const { $, detach, isElement, substitute } = require('../../utils/dom');
+const { enqueue, subscribe } = require('../../scheduler');
+const { $, detach, isElement } = require('../../utils/dom');
 const { dePx, getRatios, slug, trim } = require('../../utils/misc');
 const ScrollHint = require('../ScrollHint');
 const Picture = require('../Picture');
@@ -18,8 +18,7 @@ require('./index.scss');
 
 function Header({
   meta = {},
-  videoElOrId,
-  isVideoMarker,
+  videoId,
   isVideoYouTube,
   imgEl,
   interactiveEl,
@@ -31,7 +30,7 @@ function Header({
   isKicker,
   miscContentEls = []
 }) {
-  isFloating = isFloating || (isLayered && !imgEl && !videoElOrId && !interactiveEl);
+  isFloating = isFloating || (isLayered && !imgEl && !videoId && !interactiveEl);
   isLayered = isLayered || isFloating;
   isDark = meta.isDarkMode || isLayered || isDark;
 
@@ -63,46 +62,23 @@ function Header({
       alt: imgEl.getAttribute('alt'),
       ratios
     });
+  } else if (videoId) {
+    mediaEl = isVideoYouTube
+      ? YouTubePlayer({
+          videoId,
+          isAmbient: true,
+          ratios
+        })
+      : VideoPlayer({
+          videoId,
+          ratios,
+          isInvariablyAmbient: true
+        });
+  }
 
-    if (!isLayered) {
-      mediaEl.classList.add('u-parallax');
-    }
-  } else if (videoElOrId) {
-    if (isVideoYouTube) {
-      mediaEl = YouTubePlayer({
-        videoId: videoElOrId,
-        isAmbient: true,
-        ratios
-      });
-
-      if (!isLayered) {
-        mediaEl.classList.add('u-parallax');
-        UParallax.activate(mediaEl);
-      }
-    } else {
-      mediaEl = html`<div></div>`;
-      VideoPlayer[`getMetadata${isVideoMarker ? 'FromDetailPage' : ''}`](videoElOrId, (err, metadata) => {
-        if (err) {
-          return;
-        }
-
-        const replacementMediaEl = VideoPlayer(
-          Object.assign(metadata, {
-            ratios,
-            isInvariablyAmbient: true
-          })
-        );
-
-        substitute(mediaEl, replacementMediaEl);
-
-        if (!isLayered) {
-          replacementMediaEl.classList.add('u-parallax');
-          UParallax.activate(replacementMediaEl);
-        }
-
-        invalidateClient();
-      });
-    }
+  if (mediaEl && !interactiveEl && !isLayered) {
+    mediaEl.classList.add('u-parallax');
+    UParallax.activate(mediaEl);
   }
 
   const clonedMiscContentEls = miscContentEls.map(el => {
@@ -240,7 +216,6 @@ function transformSection(section, meta) {
   const config = candidateNodes.reduce(
     (config, node) => {
       let classList = node.className ? node.className.split(' ') : [];
-      let videoEl;
       let videoId;
       let imgEl;
       let interactiveEl;
@@ -261,15 +236,20 @@ function transformSection(section, meta) {
         }
       }
 
-      if (!isNoMedia && !config.videoElOrId && !config.imgEl && !config.interactiveEl && isElement(node)) {
-        videoEl = $('video', node);
+      if (!isNoMedia && !config.videoId && !config.imgEl && !config.interactiveEl && isElement(node)) {
+        const leadVideoEl = $('video', node); // Phase 1 (Mobile) renders lead videos (Media field) as <video> elements
 
-        if (videoEl) {
-          config.videoElOrId = videoEl;
+        if (leadVideoEl) {
+          let parentEl = leadVideoEl.parentElement;
+
+          while (parentEl.className.indexOf('media-wrapper-dl') === -1 && parentEl !== document.documentElement) {
+            parentEl = parentEl.parentElement;
+          }
+
+          config.videoId = ((parentEl.getAttribute('data-uri') || '').match(/\d+/) || [null])[0];
         } else if (node.name && !!node.name.match(VIDEO_MARKER_PATTERN)) {
-          config.isVideoMarker = true;
           config.isVideoYouTube = node.name.split('youtube')[1];
-          config.videoElOrId = videoId = node.name.match(VIDEO_MARKER_PATTERN)[1];
+          config.videoId = videoId = node.name.match(VIDEO_MARKER_PATTERN)[1];
         } else {
           videoId =
             ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
@@ -279,7 +259,7 @@ function transformSection(section, meta) {
             url2cmid($('a', node).getAttribute('href'));
 
           if (videoId) {
-            config.videoElOrId = videoId;
+            config.videoId = videoId;
           } else {
             imgEl = $('img', node);
 
@@ -291,7 +271,6 @@ function transformSection(section, meta) {
       }
 
       if (
-        !videoEl &&
         !videoId &&
         !imgEl &&
         !interactiveEl &&

@@ -4,11 +4,10 @@ const html = require('bel');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const { ALIGNMENT_PATTERN, VIDEO_MARKER_PATTERN, IS_PREVIEW } = require('../../../constants');
-const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
-const { $, detach, isElement, substitute } = require('../../utils/dom');
+const { ALIGNMENT_PATTERN, VIDEO_MARKER_PATTERN } = require('../../../constants');
+const { enqueue, subscribe } = require('../../scheduler');
+const { $, detach, isElement } = require('../../utils/dom');
 const { getRatios, trim } = require('../../utils/misc');
-const Caption = require('../Caption');
 const Picture = require('../Picture');
 const VideoPlayer = require('../VideoPlayer');
 const YouTubePlayer = require('../YouTubePlayer');
@@ -34,7 +33,6 @@ function Block({
   isLight,
   alignment,
   videoId,
-  isVideoMarker,
   isVideoYouTube,
   imgEl,
   ratios = {},
@@ -89,42 +87,16 @@ function Block({
         if (element.isVideoYouTube) {
           backgroundEl = YouTubePlayer({
             videoId: element.videoId,
+            ratios,
             isAmbient: true,
-            isContained,
-            ratios
+            isContained
           });
         } else {
-          backgroundEl = html`<div></div>`;
-          VideoPlayer.getMetadata(element.videoId, (err, metadata) => {
-            if (err) {
-              return;
-            }
-
-            const replacementMediaEl = VideoPlayer(
-              Object.assign(metadata, {
-                ratios,
-                isContained,
-                isInvariablyAmbient: true
-              })
-            );
-
-            // Reapply the classes that handle transitions
-            replacementMediaEl.classList.add('background-transition');
-            if (TRANSITIONS.indexOf(transition) > -1) {
-              replacementMediaEl.classList.add(transition);
-            } else {
-              replacementMediaEl.classList.add('colour');
-            }
-
-            substitute(backgroundEl, replacementMediaEl);
-
-            // Make sure we swap in our new video element
-            backgrounds = backgrounds.map(b => {
-              if (b === backgroundEl) return replacementMediaEl;
-              return b;
-            });
-
-            invalidateClient();
+          backgroundEl = VideoPlayer({
+            videoId: element.videoId,
+            ratios,
+            isContained,
+            isInvariablyAmbient: true
           });
         }
       }
@@ -153,27 +125,16 @@ function Block({
     if (isVideoYouTube) {
       mediaEl = YouTubePlayer({
         videoId,
+        ratios,
         isAmbient: true,
-        isContained,
-        ratios
+        isContained
       });
     } else {
-      mediaEl = html`<div></div>`;
-      VideoPlayer[`getMetadata${isVideoMarker ? 'FromDetailPage' : ''}`](videoId, (err, metadata) => {
-        if (err) {
-          return;
-        }
-
-        const replacementMediaEl = VideoPlayer(
-          Object.assign(metadata, {
-            ratios,
-            isContained: isContained,
-            isInvariablyAmbient: true
-          })
-        );
-
-        substitute(mediaEl, replacementMediaEl);
-        invalidateClient();
+      mediaEl = VideoPlayer({
+        videoId,
+        ratios,
+        isContained: isContained,
+        isInvariablyAmbient: true
       });
     }
   }
@@ -384,9 +345,8 @@ function transformSection(section) {
         if (node.name && !!node.name.match(VIDEO_MARKER_PATTERN)) {
           videoMarker = {
             isVideoYouTube: node.name.split('youtube')[1],
-            videoElOrId: node.name.match(VIDEO_MARKER_PATTERN)[1]
+            videoId: node.name.match(VIDEO_MARKER_PATTERN)[1]
           };
-          videoMarker.videoId = videoMarker.videoElOrId;
         } else {
           videoMarker.videoId = detectVideoId(node);
         }
@@ -454,7 +414,6 @@ function transformSection(section) {
   } else {
     // Transitions are not being used so business as usual
     config = section.betweenNodes.reduce((_config, node) => {
-      let classList;
       let videoId;
       let imgEl;
 
@@ -462,9 +421,8 @@ function transformSection(section) {
         classList = node.className.split(' ');
 
         if (node.name && !!node.name.match(VIDEO_MARKER_PATTERN)) {
-          _config.isVideoMarker = true;
           _config.isVideoYouTube = node.name.split('youtube')[1];
-          _config.videoElOrId = videoId = node.name.match(VIDEO_MARKER_PATTERN)[1];
+          _config.videoId = videoId = node.name.match(VIDEO_MARKER_PATTERN)[1];
         } else {
           videoId = detectVideoId(node);
         }
