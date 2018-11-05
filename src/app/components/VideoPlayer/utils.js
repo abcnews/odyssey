@@ -36,19 +36,7 @@ function getSources(item, sortProp = 'bitrate') {
   }));
 }
 
-function getMetadata(videoElOrId, done) {
-  let [videoEl, videoId] = isElement(videoElOrId) ? [videoElOrId, null] : [null, videoElOrId];
-
-  if (videoEl) {
-    let parentEl = videoEl.parentElement;
-
-    while (parentEl.className.indexOf('media-wrapper-dl') === -1 && parentEl !== document.documentElement) {
-      parentEl = parentEl.parentElement;
-    }
-
-    videoId = ((parentEl.getAttribute('data-uri') || '').match(/\d+/) || [null])[0];
-  }
-
+function getMetadata(videoId, done) {
   if (!videoId) {
     return done(new Error(NO_CMID_ERROR));
   }

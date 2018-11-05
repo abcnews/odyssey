@@ -467,7 +467,7 @@ function transformSection(section) {
 
       if (videoId) {
         const videoPlayerEl = VideoPlayer({
-          videoElOrId: videoId,
+          videoId,
           ratios: {
             sm: ratios.sm || '3x4',
             md: ratios.md,
@@ -477,7 +477,7 @@ function transformSection(section) {
         });
         const mosaidVideoPlayerEls = [
           VideoPlayer({
-            videoElOrId: videoId,
+            videoId,
             ratios: {
               sm: ratios.sm || '3x2',
               md: ratios.md || '16x9',
@@ -486,7 +486,7 @@ function transformSection(section) {
             isInvariablyAmbient: true
           }),
           VideoPlayer({
-            videoElOrId: videoId,
+            videoId,
             ratios: {
               sm: ratios.sm || '1x1',
               md: ratios.md,
@@ -495,7 +495,7 @@ function transformSection(section) {
             isInvariablyAmbient: true
           }),
           VideoPlayer({
-            videoElOrId: videoId,
+            videoId,
             ratios: {
               sm: ratios.sm || '3x4',
               md: ratios.md || '4x3',

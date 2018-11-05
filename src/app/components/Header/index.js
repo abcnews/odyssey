@@ -18,7 +18,7 @@ require('./index.scss');
 
 function Header({
   meta = {},
-  videoElOrId,
+  videoId,
   isVideoYouTube,
   imgEl,
   interactiveEl,
@@ -30,7 +30,7 @@ function Header({
   isKicker,
   miscContentEls = []
 }) {
-  isFloating = isFloating || (isLayered && !imgEl && !videoElOrId && !interactiveEl);
+  isFloating = isFloating || (isLayered && !imgEl && !videoId && !interactiveEl);
   isLayered = isLayered || isFloating;
   isDark = meta.isDarkMode || isLayered || isDark;
 
@@ -62,15 +62,15 @@ function Header({
       alt: imgEl.getAttribute('alt'),
       ratios
     });
-  } else if (videoElOrId) {
+  } else if (videoId) {
     mediaEl = isVideoYouTube
       ? YouTubePlayer({
-          videoId: videoElOrId,
+          videoId,
           isAmbient: true,
           ratios
         })
       : VideoPlayer({
-          videoElOrId,
+          videoId,
           ratios,
           isInvariablyAmbient: true
         });
@@ -216,7 +216,6 @@ function transformSection(section, meta) {
   const config = candidateNodes.reduce(
     (config, node) => {
       let classList = node.className ? node.className.split(' ') : [];
-      let videoEl;
       let videoId;
       let imgEl;
       let interactiveEl;
@@ -237,14 +236,20 @@ function transformSection(section, meta) {
         }
       }
 
-      if (!isNoMedia && !config.videoElOrId && !config.imgEl && !config.interactiveEl && isElement(node)) {
-        videoEl = $('video', node);
+      if (!isNoMedia && !config.videoId && !config.imgEl && !config.interactiveEl && isElement(node)) {
+        const leadVideoEl = $('video', node); // Phase 1 (Mobile) renders lead videos (Media field) as <video> elements
 
-        if (videoEl) {
-          config.videoElOrId = videoEl;
+        if (leadVideoEl) {
+          let parentEl = leadVideoEl.parentElement;
+
+          while (parentEl.className.indexOf('media-wrapper-dl') === -1 && parentEl !== document.documentElement) {
+            parentEl = parentEl.parentElement;
+          }
+
+          config.videoId = ((parentEl.getAttribute('data-uri') || '').match(/\d+/) || [null])[0];
         } else if (node.name && !!node.name.match(VIDEO_MARKER_PATTERN)) {
           config.isVideoYouTube = node.name.split('youtube')[1];
-          config.videoElOrId = videoId = node.name.match(VIDEO_MARKER_PATTERN)[1];
+          config.videoId = videoId = node.name.match(VIDEO_MARKER_PATTERN)[1];
         } else {
           videoId =
             ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
@@ -254,7 +259,7 @@ function transformSection(section, meta) {
             url2cmid($('a', node).getAttribute('href'));
 
           if (videoId) {
-            config.videoElOrId = videoId;
+            config.videoId = videoId;
           } else {
             imgEl = $('img', node);
 
@@ -266,7 +271,6 @@ function transformSection(section, meta) {
       }
 
       if (
-        !videoEl &&
         !videoId &&
         !imgEl &&
         !interactiveEl &&

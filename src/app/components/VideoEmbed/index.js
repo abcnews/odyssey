@@ -65,6 +65,7 @@ function transformEl(el) {
   const scrollplayPct = scrollplayPctString.length > 0 && Math.max(0, Math.min(100, +scrollplayPctString));
 
   const playerOptions = {
+    videoId,
     ratios: getRatios(configSC),
     title,
     isAmbient: configSC.indexOf('ambient') > -1,
@@ -77,9 +78,7 @@ function transformEl(el) {
     el,
     VideoEmbed(
       Object.assign(options, {
-        playerEl: isYouTube
-          ? YouTubePlayer(Object.assign(playerOptions, { videoId }))
-          : VideoPlayer(Object.assign(playerOptions, { videoElOrId: videoId })),
+        playerEl: (isYouTube ? YouTubePlayer : VideoPlayer)(playerOptions),
         captionEl
       })
     )

@@ -87,13 +87,13 @@ function Block({
         if (element.isVideoYouTube) {
           backgroundEl = YouTubePlayer({
             videoId: element.videoId,
+            ratios,
             isAmbient: true,
-            isContained,
-            ratios
+            isContained
           });
         } else {
           backgroundEl = VideoPlayer({
-            videoElOrId: element.videoId,
+            videoId: element.videoId,
             ratios,
             isContained,
             isInvariablyAmbient: true
@@ -125,13 +125,13 @@ function Block({
     if (isVideoYouTube) {
       mediaEl = YouTubePlayer({
         videoId,
+        ratios,
         isAmbient: true,
-        isContained,
-        ratios
+        isContained
       });
     } else {
       mediaEl = VideoPlayer({
-        videoElOrId: videoId,
+        videoId,
         ratios,
         isContained: isContained,
         isInvariablyAmbient: true
@@ -345,9 +345,8 @@ function transformSection(section) {
         if (node.name && !!node.name.match(VIDEO_MARKER_PATTERN)) {
           videoMarker = {
             isVideoYouTube: node.name.split('youtube')[1],
-            videoElOrId: node.name.match(VIDEO_MARKER_PATTERN)[1]
+            videoId: node.name.match(VIDEO_MARKER_PATTERN)[1]
           };
-          videoMarker.videoId = videoMarker.videoElOrId;
         } else {
           videoMarker.videoId = detectVideoId(node);
         }
@@ -423,7 +422,7 @@ function transformSection(section) {
 
         if (node.name && !!node.name.match(VIDEO_MARKER_PATTERN)) {
           _config.isVideoYouTube = node.name.split('youtube')[1];
-          _config.videoElOrId = videoId = node.name.match(VIDEO_MARKER_PATTERN)[1];
+          _config.videoId = videoId = node.name.match(VIDEO_MARKER_PATTERN)[1];
         } else {
           videoId = detectVideoId(node);
         }

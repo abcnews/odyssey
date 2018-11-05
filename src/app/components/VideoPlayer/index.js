@@ -18,7 +18,7 @@ const FUZZY_INCREMENT_INTERVAL = 1000 / FUZZY_INCREMENT_FPS;
 const DEFAULT_RATIO = '16x9';
 
 function VideoPlayer({
-  videoElOrId,
+  videoId,
   ratios = {},
   title,
   isAmbient,
@@ -229,7 +229,7 @@ function VideoPlayer({
     jumpBy: time => jumpTo(videoEl.currentTime + time)
   };
 
-  getMetadata(videoElOrId, (err, metadata) => {
+  getMetadata(videoId, (err, metadata) => {
     if (err) {
       return;
     }
