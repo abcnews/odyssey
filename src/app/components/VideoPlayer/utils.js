@@ -1,6 +1,5 @@
 // Ours
-const { getDocument } = require('../../utils/capi');
-const { isElement } = require('../../utils/dom');
+const { getDocument, rewriteAssetURL } = require('../../utils/capi');
 
 const NO_CMID_ERROR = 'No CMID available for video';
 
@@ -29,7 +28,7 @@ function getPosterURL(item, done) {
 
 function getSources(item, sortProp = 'bitrate') {
   return item.renditions.sort((a, b) => +b[sortProp] - +a[sortProp]).map(rendition => ({
-    src: rendition.src || rendition.url,
+    src: rewriteAssetURL(rendition.src || rendition.url),
     type: rendition.type || rendition.contentType,
     width: +rendition.width || 0,
     height: +rendition.height || 0
