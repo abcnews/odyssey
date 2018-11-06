@@ -29,8 +29,8 @@ module.exports.getDocument = (cmid, done) => {
   );
 };
 
-const REAL_MEDIA_HOST = 'mpegmedia.abc.net.au';
-const PROXIED_MEDIA_HOST = 'abcmedia.akamaized.net';
-
-// The Content API is not returning proxied asset URLs (yet)
-module.exports.rewriteAssetURL = url => url.replace(REAL_MEDIA_HOST, PROXIED_MEDIA_HOST);
+// The Content API is not returning proxied asset URLs (yet). However, this built JS
+// asset _is_ rewritten on-the-fly, so we need to obscure the host somewhat
+const GENIUNE_MEDIA_ORIGIN = ['http', '://', 'mpegmedia', '.abc.net.au'].join('');
+const PROXIED_MEDIA_ORIGIN = 'https://abcmedia.akamaized.net';
+module.exports.rewriteAssetURL = url => url.replace(GENIUNE_MEDIA_ORIGIN, PROXIED_MEDIA_ORIGIN);
