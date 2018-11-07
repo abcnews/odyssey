@@ -7,13 +7,6 @@ html {
   -moz-text-size-adjust: none;
   -ms-text-size-adjust: none;
   text-size-adjust: none;
-
-  // Phase 1 (Standard)
-  &.fixed {
-    @media (max-width: $p1s-fixed-width) {
-      overflow-x: auto;
-    }
-  }
 }
 
 @media print {
@@ -24,6 +17,7 @@ html {
 
 body {
   overflow: hidden;
+  min-width: 0; /* Override Phase 1 (Standard)'s 1000px */
   min-height: 102vh;
   width: 100vw;
   width: var(--root-width, 100vw);
@@ -35,13 +29,10 @@ body {
     background-color: var(--bg, #{$color-black});
   }
 
-  main + .page_margins ::before,
-  main + .page_margins ::after,
-  main + .content ::before,
-  main + .content ::after {
-    content: '';
-    position: absolute;
-    background-color: inherit;
+  /* Remove margin & padding applied by preview tools */
+  &.preview.no-uig {
+    margin-left: 0;
+    padding-right: 0;
   }
 
   main + .page_margins,

@@ -20,18 +20,6 @@
   a[name]:first-child + & {
     margin-top: 0;
   }
-
-  // Phase 1 (Standard)
-  html.fixed & {
-    @media (max-width: $p1s-fixed-width) {
-      min-width: $p1s-fixed-width;
-      margin-left: -.625rem !important;
-    }
-
-    @media #{$mq-not-lg} {
-      margin-left: 0 !important;
-    }
-  }
 }
 
 .u-layout > .u-full:not(.Gallery) + .u-full:not(.Gallery),
