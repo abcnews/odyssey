@@ -96,7 +96,21 @@ function start() {
   window.addEventListener('scroll', onScroll, false);
   window.addEventListener('resize', onDebouncedResize, false);
   window.addEventListener('orientationchange', onDebouncedResize, false);
+  attachZoomSensor();
   invalidateClient();
+}
+
+function attachZoomSensor() {
+  const zoomSensor = document.createElement('iframe');
+
+  zoomSensor.style.visibility = 'hidden';
+  zoomSensor.style.position = 'fixed';
+  zoomSensor.style.top = '0';
+  zoomSensor.style.left = '0';
+  zoomSensor.style.width = '1px';
+  zoomSensor.style.height = '1px';
+  document.body.appendChild(zoomSensor);
+  zoomSensor.contentWindow.addEventListener('resize', () => setTimeout(setCSSCustomProperties, 100), false);
 }
 
 function subscribe(subscriber) {
