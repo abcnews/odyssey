@@ -24,13 +24,11 @@ const UPull = require('./components/UPull');
 const VideoEmbed = require('./components/VideoEmbed');
 const { start } = require('./scheduler');
 const { getMeta } = require('./meta');
-const { prepare, reset } = require('./reset');
+const { reset } = require('./reset');
 const { getMarkers, getSections } = require('./utils/anchors');
-const { $, $$, after, append, before, detach, detachAll, isElement, prepend, substitute } = require('./utils/dom');
+const { $, $$, after, append, detach, detachAll, prepend, substitute } = require('./utils/dom');
 
 function app() {
-  prepare();
-
   const meta = getMeta();
   const storyEl = reset($(SELECTORS.STORY), meta);
 
