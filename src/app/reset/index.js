@@ -67,11 +67,16 @@ const P2_FLOAT = {
 };
 
 function resetMetaViewport() {
-  const el = $('meta[name="viewport"]');
+  let el = $('meta[name="viewport"]');
 
-  if (el) {
-    el.setAttribute('content', 'width=device-width, initial-scale=1, minimum-scale=1');
+  if (!el) {
+    // Phase 1 (Standard) doesn't have the tag. Let's make one.
+    el = document.createElement('meta');
+    el.setAttribute('name', 'viewport');
+    document.head.appendChild(el);
   }
+
+  el.setAttribute('content', 'width=device-width, initial-scale=1, minimum-scale=1');
 }
 
 function promoteToMain(storyEl, meta) {
@@ -89,13 +94,6 @@ function promoteToMain(storyEl, meta) {
   before(existingMainEl, mainEl);
 
   return mainEl;
-}
-
-function prepare() {
-  // Tag indices of Phase 1 (Standard) video embeds, so we can resolve them later
-  $$('.inline-content.video:not(.expired)').forEach((el, index) =>
-    el.setAttribute('data-inline-video-data-index', index)
-  );
 }
 
 function reset(storyEl, meta) {
@@ -176,4 +174,3 @@ function reset(storyEl, meta) {
 }
 
 module.exports.reset = reset;
-module.exports.prepare = prepare;
