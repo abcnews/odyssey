@@ -30,6 +30,6 @@
     "xhr": "^2.4.0"
   },
   "devDependencies": {
-    "@abcnews/aunty": "^9.8.2"
+    "@abcnews/aunty": "^9.9.0"
   }
 }
