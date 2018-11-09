@@ -5,6 +5,7 @@ require('core-js/fn/object/assign');
 require('core-js/fn/string/includes');
 require('core-js/fn/symbol');
 // Browser APIs
-require('custom-event-polyfill');
+require('custom-event-polyfill'); // new CustomEvent()
+require('ric'); // window.requestIdleCallback()
 // CSS
 require('objectFitPolyfill');

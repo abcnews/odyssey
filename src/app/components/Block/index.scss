@@ -15,7 +15,6 @@
 
   @media #{$mq-landscape} and #{$mq-not-lg}, #{$mq-lg} {
     min-height: 56.25vw;
-    min-height: calc(var(--root-width) * 9 / 16);
   }
 
   &.is-heading,

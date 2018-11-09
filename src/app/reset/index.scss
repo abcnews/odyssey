@@ -10,18 +10,11 @@ html {
   scroll-behavior: auto;
 }
 
-@media print {
-  html {
-    --root-width: 100% !important;
-  }
-}
-
 body {
   overflow: hidden;
   min-width: 0; /* Override Phase 1 (Standard)'s 1000px */
   min-height: 102vh;
-  width: 100vw;
-  width: var(--root-width, 100vw);
+  width: 100%;
   background-color: $color-grey-50;
   background-color: var(--bg, #{$color-grey-50});
 

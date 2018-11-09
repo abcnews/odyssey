@@ -2,9 +2,6 @@
 const debounce = require('debounce');
 const raf = require('raf');
 
-// Ours
-const { REM } = require('../../constants');
-
 const now = window.performance ? performance.now.bind(performance) : Date.now;
 
 const BUDGETED_MILLISECONDS_PER_FRAME = 12;
@@ -51,7 +48,7 @@ function onScroll() {
 }
 
 function setCSSCustomProperties() {
-  document.documentElement.style.setProperty('--root-width', `${client.width / REM}rem`);
+  document.documentElement.style.setProperty('--scrollbar-width', `${window.innerWidth - client.width}px`);
 }
 
 function onResize(event) {
@@ -77,7 +74,7 @@ function onResize(event) {
   enqueue(notifySubscribers.bind(null, hasChanged));
 
   if (hasChanged) {
-    enqueue(setCSSCustomProperties);
+    window.requestIdleCallback(setCSSCustomProperties);
   }
 }
 
@@ -96,21 +93,7 @@ function start() {
   window.addEventListener('scroll', onScroll, false);
   window.addEventListener('resize', onDebouncedResize, false);
   window.addEventListener('orientationchange', onDebouncedResize, false);
-  attachZoomSensor();
   invalidateClient();
-}
-
-function attachZoomSensor() {
-  const zoomSensor = document.createElement('iframe');
-
-  zoomSensor.style.visibility = 'hidden';
-  zoomSensor.style.position = 'fixed';
-  zoomSensor.style.top = '0';
-  zoomSensor.style.left = '0';
-  zoomSensor.style.width = '1px';
-  zoomSensor.style.height = '1px';
-  document.body.appendChild(zoomSensor);
-  zoomSensor.contentWindow.addEventListener('resize', () => setTimeout(setCSSCustomProperties, 100), false);
 }
 
 function subscribe(subscriber) {
