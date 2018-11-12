@@ -44,7 +44,7 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 100%;
+      height: 100vh; // https://github.com/bokand/URLBarSizing
 
       // Safari (7.1+)
       _::-webkit-full-page-media,
