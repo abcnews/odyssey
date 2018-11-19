@@ -142,16 +142,13 @@ function Block({
   let mediaContainerEl;
   if (backgrounds) {
     mediaContainerEl = html`
-      <div class="${mediaClassName}">
-        ${backgrounds}
-      </div>`;
+      <div class="${mediaClassName}">${backgrounds}</div>
+    `;
   } else {
     mediaContainerEl = mediaEl
       ? html`
-      <div class="${mediaClassName}">
-        ${mediaEl}
-      </div>
-    `
+          <div class="${mediaClassName}">${mediaEl}</div>
+        `
       : null;
   }
 
@@ -186,11 +183,15 @@ function Block({
                   break;
               }
 
-              return html`<div class="${actualContentClassName}">${contentEl}</div>`;
+              return html`
+                <div class="${actualContentClassName}">${contentEl}</div>
+              `;
             })
           : contentEls.length > 0
-            ? html`<div class="${contentClassName}">${contentEls}</div>`
-            : null
+          ? html`
+              <div class="${contentClassName}">${contentEls}</div>
+            `
+          : null
       }
     </div>
   `;
@@ -245,6 +246,13 @@ function Block({
               background.style.removeProperty('display');
             } else {
               background.style.setProperty('display', 'none');
+            }
+
+            // Keep the next image in context but don't show it just yet
+            if (index === activeIndex + 1) {
+              background.style.setProperty('visibility', 'hidden');
+            } else {
+              background.style.removeProperty('visibility');
             }
 
             // Transition between the images
@@ -396,6 +404,9 @@ function transformSection(section) {
 
           // Remove this anchor from the flow
           node.parentElement.removeChild(node);
+          return null;
+        } else if (node.tagName && node.tagName === 'A') {
+          // Remove any extra orphan anchor tags
           return null;
         }
 
