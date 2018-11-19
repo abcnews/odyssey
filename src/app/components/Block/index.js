@@ -249,7 +249,8 @@ function Block({
             }
 
             // Keep the next image in context but don't show it just yet
-            if (index === activeIndex + 1) {
+            // TODO: Need to find a way that works for both crossfade and non-crossfade transitions
+            if (index === activeIndex + 1 || index == activeIndex - 1) {
               background.style.setProperty('visibility', 'hidden');
             } else {
               background.style.removeProperty('visibility');
