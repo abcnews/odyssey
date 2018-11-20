@@ -154,7 +154,7 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
     }
   }
 
-  function swipeIntent(event) {
+  function swipeIntent() {
     if (swipeAxis != null) {
       return;
     }
@@ -193,9 +193,7 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
       // a link or something else with an event handler
       if (galleryEl.className.indexOf('is-mosaic') === -1) {
         shouldIgnoreClicks = true;
-        setTimeout(function() {
-          shouldIgnoreClicks = false;
-        }, 50);
+        setTimeout(() => (shouldIgnoreClicks = false), 50);
       }
 
       if (absDiffX > SWIPE_THRESHOLD) {
@@ -242,7 +240,9 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
   }
 
   if (items.length === 0) {
-    return html`<div class="Gallery is-empty"></div>`;
+    return html`
+      <div class="Gallery is-empty"></div>
+    `;
   }
 
   subscribe(measureDimensions);
@@ -316,17 +316,17 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
     }
 
     const itemEl = html`
-      <div class="Gallery-item"
+      <div
+        class="Gallery-item"
         style="flex: 0 1 ${flexBasisPct}%; max-width: ${flexBasisPct}%"
         data-id="${id}"
         data-index="${index}"
         tabindex="-1"
-        ondragstart=${returnFalse}
-        onmouseup=${swipeIntent}
-        onclick=${stopIfIgnoringClicks}>
-        ${mediaEl}
-        ${mosaicMediaEl}
-        ${captionEl}
+        ondragstart="${returnFalse}"
+        onmouseup="${swipeIntent}"
+        onclick="${stopIfIgnoringClicks}"
+      >
+        ${mediaEl} ${mosaicMediaEl} ${captionEl}
       </div>
     `;
 
@@ -364,11 +364,13 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
   mediaEls = itemEls.map(itemEl => $('.Picture, .VideoPlayer', itemEl));
 
   const itemsEl = html`
-    <div class="Gallery-items"
-      onmousedown=${pointerHandler(swipeBegin)}
-      onmousemove=${pointerHandler(swipeUpdate)}
-      onmouseup=${swipeComplete}
-      onmouseleave=${swipeComplete}>
+    <div
+      class="Gallery-items"
+      onmousedown="${pointerHandler(swipeBegin)}"
+      onmousemove="${pointerHandler(swipeUpdate)}"
+      onmouseup="${swipeComplete}"
+      onmouseleave="${swipeComplete}"
+    >
       ${itemEls}
     </div>
   `;
@@ -379,9 +381,7 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
   itemsEl.addEventListener('touchcancel', swipeComplete, false);
 
   const paneEl = html`
-    <div class="Gallery-pane">
-      ${itemsEl}
-    </div>
+    <div class="Gallery-pane">${itemsEl}</div>
   `;
 
   const indexEl = html`
@@ -389,36 +389,32 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
   `;
 
   const prevEl = html`
-    <button class="Gallery-step-prev"
+    <button
+      class="Gallery-step-prev"
       aria-label="View the previous item"
-      onfocus=${() => goToItem(currentIndex)}
-      onclick=${() => goToItem(currentIndex - 1)}></button>
+      onfocus="${() => goToItem(currentIndex)}"
+      onclick="${() => goToItem(currentIndex - 1)}"
+    ></button>
   `;
 
   const nextEl = html`
-    <button class="Gallery-step-next"
+    <button
+      class="Gallery-step-next"
       aria-label="View the next item"
-      onfocus=${() => goToItem(currentIndex)}
-      onclick=${() => goToItem(currentIndex + 1)}></button>
+      onfocus="${() => goToItem(currentIndex)}"
+      onclick="${() => goToItem(currentIndex + 1)}"
+    ></button>
   `;
 
   const controlsEl = html`
     <div class="Gallery-controls">
       ${indexEl}
-      <div class="Gallery-steps">
-        ${prevEl}${nextEl}
-      </div>
+      <div class="Gallery-steps">${prevEl}${nextEl}</div>
     </div>
   `;
 
   const galleryEl = html`
-    <div class="${className}">
-      <div class="Gallery-layout">
-        ${controlsEl}
-        ${paneEl}
-        ${masterCaptionEl}
-      </div>
-    </div>
+    <div class="${className}"><div class="Gallery-layout">${controlsEl} ${paneEl} ${masterCaptionEl}</div></div>
   `;
 
   galleryEl.api = { goToItem, measureDimensions };

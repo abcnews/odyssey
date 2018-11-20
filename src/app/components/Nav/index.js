@@ -6,18 +6,15 @@ const { enqueue, subscribe } = require('../../scheduler');
 const ShareLinks = require('../ShareLinks');
 require('./index.scss');
 
-module.exports = function Nav({ homeHref = '/news/', shareLinks }) {
+module.exports = function Nav({ homeHref = '/news/' } = {}) {
   const navBarEl = html`
     <div class="Nav-bar">
-      <a class="Nav-home" href="${homeHref}" aria-label="Return to the ABC News homepage">ABC News</a>
-      ${ShareLinks({ links: shareLinks })}
+      <a class="Nav-home" href="${homeHref}" aria-label="Return to the ABC News homepage">ABC News</a> ${ShareLinks()}
     </div>
   `;
 
   const navEl = html`
-    <div class="Nav">
-      ${navBarEl}
-    </div>
+    <div class="Nav">${navBarEl}</div>
   `;
 
   let state = {};

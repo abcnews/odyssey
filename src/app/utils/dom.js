@@ -127,6 +127,7 @@ function toggleBooleanAttributes(node, map) {
 module.exports = {
   isText,
   isElement,
+  isInlineElement,
   isDocument,
   $,
   $$,

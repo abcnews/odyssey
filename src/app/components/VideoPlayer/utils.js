@@ -27,12 +27,14 @@ function getPosterURL(item, done) {
 }
 
 function getSources(item, sortProp = 'bitrate') {
-  return item.renditions.sort((a, b) => +b[sortProp] - +a[sortProp]).map(rendition => ({
-    src: rewriteAssetURL(rendition.src || rendition.url),
-    type: rendition.type || rendition.contentType,
-    width: +rendition.width || 0,
-    height: +rendition.height || 0
-  }));
+  return item.renditions
+    .sort((a, b) => +b[sortProp] - +a[sortProp])
+    .map(rendition => ({
+      src: rewriteAssetURL(rendition.src || rendition.url),
+      type: rendition.type || rendition.contentType,
+      width: +rendition.width || 0,
+      height: +rendition.height || 0
+    }));
 }
 
 function getMetadata(videoId, done) {

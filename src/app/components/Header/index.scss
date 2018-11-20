@@ -149,7 +149,7 @@
     }
   }
 
-  &::after {
+  .Header:not(.has-inset-media) &::after {
     content: '';
     transform: translate(0, 100%);
     display: block;
@@ -162,6 +162,10 @@
       width: 18rem;
     }
   }
+}
+
+.Header-content > .u-full {
+  margin-top: 0;
 }
 
 .Header-content > h2 {

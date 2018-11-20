@@ -1,0 +1,8 @@
+@import '../../../constants';
+
+.RestrictedFeatureWarning {
+  padding: 3rem 2em;
+  background-color: $color-grey-300-transparent-70;
+  font-family: monospace;
+  font-size: 1rem;
+}

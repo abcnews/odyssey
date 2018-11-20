@@ -142,16 +142,13 @@ function Block({
   let mediaContainerEl;
   if (backgrounds) {
     mediaContainerEl = html`
-      <div class="${mediaClassName}">
-        ${backgrounds}
-      </div>`;
+      <div class="${mediaClassName}">${backgrounds}</div>
+    `;
   } else {
     mediaContainerEl = mediaEl
       ? html`
-      <div class="${mediaClassName}">
-        ${mediaEl}
-      </div>
-    `
+          <div class="${mediaClassName}">${mediaEl}</div>
+        `
       : null;
   }
 
@@ -186,11 +183,15 @@ function Block({
                   break;
               }
 
-              return html`<div class="${actualContentClassName}">${contentEl}</div>`;
+              return html`
+                <div class="${actualContentClassName}">${contentEl}</div>
+              `;
             })
           : contentEls.length > 0
-            ? html`<div class="${contentClassName}">${contentEls}</div>`
-            : null
+          ? html`
+              <div class="${contentClassName}">${contentEls}</div>
+            `
+          : null
       }
     </div>
   `;

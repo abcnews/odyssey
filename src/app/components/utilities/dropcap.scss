@@ -20,7 +20,7 @@
 
   &::first-letter {
     @media #{$mq-not-sm} {
-      margin-left: -.4em;
+      margin-left: -0.4em;
     }
   }
 }

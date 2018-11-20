@@ -14,8 +14,22 @@ function Caption({ url, text, attribution, unlink }) {
 
   return html`
     <p class="Caption" title="${text}${attribution ? ` (${attribution})` : ''}">
-      ${url && !unlink ? html`<a href="${url}">${text}</a>` : html`<span>${text}</span>`}
-      ${attribution ? html`<em class="Caption-attribution">${attribution}</em>` : null}
+      ${
+        url && !unlink
+          ? html`
+              <a href="${url}">${text}</a>
+            `
+          : html`
+              <span>${text}</span>
+            `
+      }
+      ${
+        attribution
+          ? html`
+              <em class="Caption-attribution">${attribution}</em>
+            `
+          : null
+      }
     </p>
   `;
 }

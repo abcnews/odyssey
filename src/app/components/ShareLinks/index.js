@@ -2,13 +2,13 @@
 const html = require('bel');
 
 // Ours
+const { shareLinks } = require('../../env');
 const ShareLink = require('../ShareLink');
+
 require('./index.scss');
 
-module.exports = function ShareLinks({ links, shouldBlend }) {
+module.exports = function ShareLinks({ shouldBlend } = {}) {
   return html`
-    <div class="ShareLinks">
-      ${links.map(link => ShareLink({ link, shouldBlend }))}
-    </div>
+    <div class="ShareLinks">${shareLinks.map(link => ShareLink({ link, shouldBlend }))}</div>
   `;
 };

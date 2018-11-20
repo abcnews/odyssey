@@ -6,6 +6,7 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const { MS_VERSION, VIDEO_MARKER_PATTERN } = require('../../../constants');
+const { bylineNodes, edition, infoSource, isDarkMode, published, relatedMedia, title, updated } = require('../../env');
 const { enqueue, subscribe } = require('../../scheduler');
 const { $, detach, isElement } = require('../../utils/dom');
 const { dePx, getRatios, slug, trim } = require('../../utils/misc');
@@ -17,7 +18,6 @@ const YouTubePlayer = require('../YouTubePlayer');
 require('./index.scss');
 
 function Header({
-  meta = {},
   videoId,
   isVideoYouTube,
   imgEl,
@@ -32,18 +32,7 @@ function Header({
 }) {
   isFloating = isFloating || (isLayered && !imgEl && !videoId && !interactiveEl);
   isLayered = isLayered || isFloating;
-  isDark = meta.isDarkMode || isLayered || isDark;
-
-  const className = cn(
-    'Header',
-    {
-      'is-dark': isDark,
-      'is-pale': isPale,
-      'is-floating': isFloating,
-      'is-layered': isLayered
-    },
-    'u-full'
-  );
+  isDark = isDarkMode || isLayered || isDark;
 
   ratios = {
     sm: ratios.sm || (isLayered ? '3x4' : undefined),
@@ -76,7 +65,7 @@ function Header({
         });
   }
 
-  if (mediaEl && !interactiveEl && !isLayered) {
+  if (mediaEl && !interactiveEl && !isLayered && edition === 'epic') {
     mediaEl.classList.add('u-parallax');
     UParallax.activate(mediaEl);
   }
@@ -89,70 +78,96 @@ function Header({
     return clonedEl;
   });
 
-  const clonedBylineNodes = meta.bylineNodes ? meta.bylineNodes.map(node => node.cloneNode(true)) : null;
-  const infoSource = meta.infoSource
-    ? meta.infoSource.url
-      ? html`<a href="${meta.infoSource.url}">${meta.infoSource.name}</a>`
-      : meta.infoSource.name
+  const clonedBylineNodes = bylineNodes ? bylineNodes.map(node => node.cloneNode(true)) : null;
+  const infoSourceNode = infoSource
+    ? infoSource.url
+      ? html`
+          <a href="${infoSource.url}">${infoSource.name}</a>
+        `
+      : infoSource.name
     : null;
-  const updated = typeof meta.updated === 'string' ? meta.updated : formatUIGRelative(meta.updated);
-  const published = typeof meta.published === 'string' ? meta.published : formatUIGRelative(meta.published);
+  const updatedText = typeof updated === 'string' ? updated : formatUIGRelative(updated);
+  const publishedText = typeof published === 'string' ? published : formatUIGRelative(published);
 
   const contentEls = [
-    html`<h1>${
-      isKicker && meta.title.indexOf(': ') > -1
-        ? meta.title.split(': ').map((text, index) => (index === 0 ? html`<small>${text}</small>` : text))
-        : meta.title
-    }</h1>`
+    html`
+      <h1>
+        ${
+          isKicker && title.indexOf(': ') > -1
+            ? title.split(': ').map((text, index) =>
+                index === 0
+                  ? html`
+                      <small>${text}</small>
+                    `
+                  : text
+              )
+            : title
+        }
+      </h1>
+    `
   ]
+    .concat(
+      mediaEl && edition !== 'epic'
+        ? [
+            html`
+              <div class="u-full">
+                <div class="u-layout"><div class="u-pull">${mediaEl}</div></div>
+              </div>
+            `
+          ]
+        : []
+    )
     .concat(clonedMiscContentEls)
     .concat([
       clonedBylineNodes
         ? html`
-      <p class="Header-byline">
-        ${clonedBylineNodes}
-      </p>
-    `
+            <p class="Header-byline">${clonedBylineNodes}</p>
+          `
         : null,
-      infoSource
+      infoSourceNode
         ? html`
-      <p class="Header-infoSource Header-infoSource--${slug(meta.infoSource.name)}">
-        ${infoSource}
-      </p>
-    `
+            <p class="Header-infoSource Header-infoSource--${slug(infoSource.name)}">${infoSourceNode}</p>
+          `
         : null,
-      updated
+      updatedText
         ? html`
-      <div class="Header-updated">
-        Updated
-        <time datetime="${meta.updated}">${updated}</time>
-      </div>
-    `
+            <div class="Header-updated">Updated <time datetime="${updated}">${updatedText}</time></div>
+          `
         : null,
-      published
+      publishedText
         ? html`
-      <div class="Header-published">
-        Published
-        <time datetime="${meta.published}">${published}</time>
-      </div>
-    `
+            <div class="Header-published">Published <time datetime="${published}">${publishedText}</time></div>
+          `
         : null
     ]);
 
   const headerContentEl = html`
-    <div class="Header-content u-richtext${isDark ? '-invert' : ''}">
-      ${contentEls}
-    </div>
+    <div class="Header-content u-richtext${isDark ? '-invert' : ''}">${contentEls}</div>
   `;
 
   const headerEl = html`
-    <div class="${className}">
+    <div
+      class="${
+        cn(
+          'Header',
+          {
+            'has-inset-media': mediaEl && edition !== 'epic',
+            'is-dark': isDark,
+            'is-pale': isPale,
+            'is-floating': isFloating,
+            'is-layered': isLayered
+          },
+          'u-full'
+        )
+      }"
+    >
       ${
-        mediaEl
-          ? html`<div class="Header-media${isLayered && mediaEl.tagName !== 'DIV' ? ' u-parallax' : ''}">
-              ${!isLayered ? ScrollHint() : null}
-              ${mediaEl}
-            </div>`
+        mediaEl && edition === 'epic'
+          ? html`
+              <div class="Header-media${isLayered && mediaEl.tagName !== 'DIV' ? ' u-parallax' : ''}">
+                ${!isLayered ? ScrollHint() : null} ${mediaEl}
+              </div>
+            `
           : null
       }
       ${headerContentEl}
@@ -193,20 +208,20 @@ function Header({
   return headerEl;
 }
 
-function transformSection(section, meta) {
+function transformSection(section) {
   const ratios = getRatios(section.configSC);
-  const isFloating = section.configSC.indexOf('floating') > -1;
-  const isLayered = isFloating || section.configSC.indexOf('layered') > -1;
-  const isDark = isLayered || section.configSC.indexOf('dark') > -1;
-  const isPale = section.configSC.indexOf('pale') > -1;
+  const isFloating = edition === 'epic' && section.configSC.indexOf('floating') > -1;
+  const isLayered = edition === 'epic' && (isFloating || section.configSC.indexOf('layered') > -1);
+  const isDark = edition === 'epic' && (isLayered || section.configSC.indexOf('dark') > -1);
+  const isPale = edition === 'epic' && section.configSC.indexOf('pale') > -1;
   const isNoMedia = isFloating || section.configSC.indexOf('nomedia') > -1;
   const isKicker = section.configSC.indexOf('kicker') > -1;
-  const shouldSupplant = section.configSC.indexOf('supplant') > -1;
+  const shouldSupplant = edition === 'epic' && section.configSC.indexOf('supplant') > -1;
 
   let candidateNodes = section.betweenNodes;
 
-  if (!isNoMedia && meta.relatedMedia != null) {
-    candidateNodes = [meta.relatedMedia.cloneNode(true)].concat(candidateNodes);
+  if (!isNoMedia && relatedMedia != null) {
+    candidateNodes = [relatedMedia.cloneNode(true)].concat(candidateNodes);
   }
 
   if (shouldSupplant && candidateNodes.length) {
@@ -221,7 +236,7 @@ function transformSection(section, meta) {
       let interactiveEl;
 
       // If we found an init-interactive then it takes over being the header media
-      if (!isNoMedia && !config.interactiveEl && isElement(node)) {
+      if (!isNoMedia && !config.interactiveEl && isElement(node) && edition === 'epic') {
         // special case for parallax hash markers
         const isParallax = node.tagName === 'A' && node.getAttribute('name').indexOf('parallax') === 0;
 
@@ -275,7 +290,8 @@ function transformSection(section, meta) {
         !imgEl &&
         !interactiveEl &&
         isElement(node) &&
-        (trim(node.textContent).length > 0 || node.tagName === 'A')
+        (trim(node.textContent).length > 0 || node.tagName === 'A') &&
+        (edition === 'epic' || node.tagName === 'P')
       ) {
         config.miscContentEls.push(node);
       }
@@ -283,7 +299,6 @@ function transformSection(section, meta) {
       return config;
     },
     {
-      meta,
       ratios,
       isDark,
       isPale,

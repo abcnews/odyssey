@@ -3,22 +3,28 @@ const html = require('bel');
 
 // Ours
 const { EMBED_TAGNAMES } = require('../../../constants');
+const { isDarkMode } = require('../../env');
 const { isElement } = require('../../utils/dom');
 
-function UPull({ meta = {}, type, nodes = [] }) {
+function UPull({ type, nodes = [] }) {
   const isRichtext = nodes.length > 0 && isElement(nodes[0]) && EMBED_TAGNAMES.indexOf(nodes[0].tagName) === -1;
 
   return html`
     <div class="u-pull${type ? `-${type}` : ''}">
-      ${isRichtext ? html`<div class="u-richtext${meta.isDarkMode ? '-invert' : ''}">${nodes}</div>` : nodes}
+      ${
+        isRichtext
+          ? html`
+              <div class="u-richtext${isDarkMode ? '-invert' : ''}">${nodes}</div>
+            `
+          : nodes
+      }
     </div>
   `;
 }
 
-function transformSection(section, meta) {
+function transformSection(section) {
   section.substituteWith(
     UPull({
-      meta,
       type: section.configSC,
       nodes: section.betweenNodes
     }),

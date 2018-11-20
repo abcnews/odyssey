@@ -5,6 +5,7 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const { ALIGNMENT_PATTERN } = require('../../../constants');
+const { edition } = require('../../env');
 const { grabConfigSC } = require('../../utils/anchors');
 const { $, substitute } = require('../../utils/dom');
 const { getRatios } = require('../../utils/misc');
@@ -26,10 +27,7 @@ function ImageEmbed({ pictureEl, captionEl, alignment, isFull, isCover, isAnon }
   });
 
   return html`
-    <div class="${className}">
-      ${pictureEl}
-      ${isAnon ? null : captionEl}
-    </div>
+    <div class="${className}">${pictureEl} ${isAnon ? null : captionEl}</div>
   `;
 }
 
@@ -64,8 +62,8 @@ function transformEl(el, preserveOriginalRatio) {
     }),
     captionEl: Caption.createFromEl(el, unlink),
     alignment,
-    isFull: configSC.indexOf('full') > -1,
-    isCover: configSC.indexOf('cover') > -1,
+    isFull: edition === 'epic' && configSC.indexOf('full') > -1,
+    isCover: edition === 'epic' && configSC.indexOf('cover') > -1,
     isAnon: configSC.indexOf('anon') > -1
   });
 
