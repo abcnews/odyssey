@@ -225,6 +225,7 @@ function Block({
     // keep a list of marked nodes for switching backgrounds
     let markers = contentEls.filter(element => element.getAttribute('data-background-index'));
     let activeIndex = -1;
+    let previousActiveIndex = -1;
 
     subscribe(function _checkIfBackgroundShouldChange(client) {
       // get the last marker that has a bottom above the fold
@@ -237,32 +238,31 @@ function Block({
 
       const newActiveIndex = parseInt(marker.getAttribute('data-background-index'), 10);
       if (activeIndex !== newActiveIndex) {
+        previousActiveIndex = activeIndex;
         activeIndex = newActiveIndex;
 
         enqueue(function _updateBackground() {
           backgrounds.forEach((background, index) => {
-            // Only keep the previous 2 and next 2 in the context
-            if (index > activeIndex - 2 && index < activeIndex + 2) {
+            // Only keep the previous 1 and next 1 in the context
+            if (index >= activeIndex - 1 && index <= activeIndex + 1) {
               background.style.removeProperty('display');
             } else {
               background.style.setProperty('display', 'none');
             }
 
-            // Keep the next image in context but don't show it just yet
-            // TODO: Need to find a way that works for both crossfade and non-crossfade transitions
-            if (index === activeIndex + 1 || index == activeIndex - 1) {
-              background.style.setProperty('visibility', 'hidden');
-            } else {
-              background.style.removeProperty('visibility');
-            }
-
             // Transition between the images
             if (index === activeIndex) {
+              background.style.removeProperty('visibility');
               background.classList.add('transition-in');
               background.classList.remove('transition-out');
-            } else {
+            } else if (index === previousActiveIndex) {
+              background.style.removeProperty('visibility');
               background.classList.add('transition-out');
               background.classList.remove('transition-in');
+            } else {
+              background.style.setProperty('visibility', 'hidden');
+              background.classList.remove('transition-in');
+              background.classList.remove('transition-out');
             }
           });
         });
