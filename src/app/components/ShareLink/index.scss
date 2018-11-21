@@ -32,11 +32,6 @@
   margin-left: $size-control-margin;
 }
 
-.Nav .ShareLink {
-  flex: 0 1 ($size-control - $size-control-margin);
-  background-color: transparent;
-}
-
 .ShareLink--email {
   @media #{$mq-sm} {
     display: none;
@@ -48,10 +43,6 @@
     .u-richtext-invert & {
       background-image: url(./email--inverted.svg);
     }
-
-    .Nav & {
-      background-image: url(./email--nav.svg);
-    }
   }
 }
 
@@ -61,10 +52,6 @@
 
     .u-richtext-invert & {
       background-image: url(./facebook--inverted.svg);
-    }
-
-    .Nav & {
-      background-image: url(./facebook--nav.svg);
     }
   }
 }
@@ -80,10 +67,6 @@
     .u-richtext-invert & {
       background-image: url(./reddit--inverted.svg);
     }
-
-    .Nav & {
-      background-image: url(./reddit--nav.svg);
-    }
   }
 }
 
@@ -93,10 +76,6 @@
 
     .u-richtext-invert & {
       background-image: url(./twitter--inverted.svg);
-    }
-
-    .Nav & {
-      background-image: url(./twitter--nav.svg);
     }
   }
 }
@@ -111,10 +90,6 @@
 
     .u-richtext-invert & {
       background-image: url(./whatsapp--inverted.svg);
-    }
-
-    .Nav & {
-      background-image: url(./whatsapp--nav.svg);
     }
   }
 }

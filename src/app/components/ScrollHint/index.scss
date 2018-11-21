@@ -22,8 +22,12 @@
 
   .Header & {
     position: absolute;
-    top: calc(100vh - #{$abc-nav-height + $size-bar + 3rem});
+    top: calc(100vh - #{$abc-nav-height + 3rem});
     bottom: auto;
+
+    @media #{$mq-pl-sm} {
+      top: calc(100vh - #{$abc-nav-height--mq-pl-sm + 3rem});
+    }
   }
 
   &.leaving {

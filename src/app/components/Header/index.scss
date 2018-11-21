@@ -22,13 +22,21 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    min-height: calc(100vh - #{$abc-nav-height + $size-bar});
+    min-height: calc(100vh - #{$abc-nav-height});
+
+    @media #{$mq-pl-sm} {
+      min-height: calc(100vh - #{$abc-nav-height--mq-pl-sm});
+    }
   }
 
   &.is-floating {
     z-index: 2;
-    margin-bottom: calc(-100vh + #{$abc-nav-height + $size-bar}) !important;
+    margin-bottom: calc(-100vh + #{$abc-nav-height}) !important;
     background-color: transparent;
+
+    @media #{$mq-pl-sm} {
+      margin-bottom: calc(-100vh + #{$abc-nav-height--mq-pl-sm}) !important;
+    }
   }
 }
 
@@ -45,7 +53,11 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    max-height: calc(100vh - #{$abc-nav-height + $size-bar});
+    max-height: calc(100vh - #{$abc-nav-height});
+
+    @media #{$mq-pl-sm} {
+      max-height: calc(100vh - #{$abc-nav-height--mq-pl-sm});
+    }
   }
 
   .is-layered > & {
@@ -65,7 +77,11 @@
   }
 
   .Header-interactive > div > div {
-    height: calc(100vh - #{$abc-nav-height + $size-bar});
+    height: calc(100vh - #{$abc-nav-height});
+
+    @media #{$mq-pl-sm} {
+      height: calc(100vh - #{$abc-nav-height--mq-pl-sm});
+    }
   }
 
   &::after {

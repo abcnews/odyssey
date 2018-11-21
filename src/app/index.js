@@ -4,6 +4,7 @@ const html = require('bel');
 // Ours
 const { SELECTORS, RICHTEXT_BLOCK_TAGNAMES } = require('../constants');
 const api = require('./api');
+const { PresentationLayerAsyncComponent } = require('./async-components/loader');
 const Caption = require('./components/Caption');
 const Comments = require('./components/Comments');
 const Block = require('./components/Block');
@@ -11,7 +12,6 @@ const Gallery = require('./components/Gallery');
 const Header = require('./components/Header');
 const ImageEmbed = require('./components/ImageEmbed');
 const MasterGallery = require('./components/MasterGallery');
-const Nav = require('./components/Nav');
 const Quote = require('./components/Quote');
 const Recirculation = require('./components/Recirculation');
 const ScrollHint = require('./components/ScrollHint');
@@ -32,7 +32,9 @@ function app() {
   const meta = getMeta();
   const storyEl = reset($(SELECTORS.STORY), meta);
 
-  after($(SELECTORS.GLOBAL_NAV), Nav({ shareLinks: meta.shareLinks }));
+  if (!$('[data-component="Masthead"]')) {
+    after($(SELECTORS.GLOBAL_NAV), PresentationLayerAsyncComponent('Nav'));
+  }
 
   start(); // loop
 
@@ -98,7 +100,9 @@ function app() {
         detach(marker.node);
         break;
       case 'hr':
-        el = html`<hr>`;
+        el = html`
+          <hr />
+        `;
         marker.substituteWith(el);
         UDropcap.conditionallyApply(el.nextElementSibling);
         break;
