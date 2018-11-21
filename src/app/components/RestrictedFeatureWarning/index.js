@@ -5,7 +5,7 @@ const html = require('bel');
 const { IS_PREVIEW } = require('../../../constants');
 require('./index.scss');
 
-const SHOULD_SHOW_WARNINGS = false;
+const SHOULD_SHOW_WARNINGS = true;
 
 function RestrictedFeatureWarning({ name }) {
   const message = `Usage of the ${name} feature is restricted`;

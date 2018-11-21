@@ -53,7 +53,7 @@ function transformEl(el, preserveOriginalRatio) {
       src,
       alt,
       ratios: {
-        sm: ratios.sm || '3x4',
+        sm: ratios.sm || (edition === 'epic' ? '3x4' : '1x1'),
         md: ratios.md || '4x3',
         lg: ratios.lg
       },

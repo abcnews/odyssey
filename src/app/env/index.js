@@ -23,8 +23,7 @@ function getEdition() {
   const el = $(`[${EDITION_ATTRIBUTE}]`);
   const value = el && el.getAttribute(EDITION_ATTRIBUTE);
 
-  // return value || 'epic';
-  return value || 'narrative';
+  return value || 'epic';
 }
 
 function getMetaContent(name) {

@@ -40,19 +40,19 @@ function Header({
     lg: ratios.lg
   };
 
-  let mediaEl;
+  let mediaChildEl;
 
   if (interactiveEl) {
-    mediaEl = interactiveEl.cloneNode(true);
-    mediaEl.classList.add('Header-interactive');
+    mediaChildEl = interactiveEl.cloneNode(true);
+    mediaChildEl.classList.add('Header-interactive');
   } else if (imgEl) {
-    mediaEl = Picture({
+    mediaChildEl = Picture({
       src: imgEl.src,
       alt: imgEl.getAttribute('alt'),
       ratios
     });
   } else if (videoId) {
-    mediaEl = isVideoYouTube
+    mediaChildEl = isVideoYouTube
       ? YouTubePlayer({
           videoId,
           isAmbient: true,
@@ -65,19 +65,55 @@ function Header({
         });
   }
 
-  if (mediaEl && !interactiveEl && !isLayered && edition === 'epic') {
-    mediaEl.classList.add('u-parallax');
-    UParallax.activate(mediaEl);
+  if (mediaChildEl && !interactiveEl && !isLayered && edition === 'epic') {
+    mediaChildEl.classList.add('u-parallax');
+    UParallax.activate(mediaChildEl);
   }
 
-  const clonedMiscContentEls = miscContentEls.map(el => {
+  const mediaEl =
+    mediaChildEl && edition === 'epic'
+      ? html`
+          <div class="Header-media${isLayered && mediaChildEl.tagName !== 'DIV' ? ' u-parallax' : ''}">
+            ${!isLayered ? ScrollHint() : null} ${mediaEl}
+          </div>
+        `
+      : null;
+  const insetMediaEl =
+    mediaChildEl && !mediaEl
+      ? html`
+          <div class="Header-insetMedia u-full">
+            <div class="u-layout"><div class="u-pull">${mediaChildEl}</div></div>
+          </div>
+        `
+      : null;
+  const miscEls = miscContentEls.map(el => {
     const clonedEl = el.cloneNode(true);
 
     clonedEl.classList.add('Header-miscEl');
 
     return clonedEl;
   });
-
+  const titleEl = html`
+    <h1
+      class="${
+        cn('Header-title', {
+          'is-break': !insetMediaEl || !miscEls.length
+        })
+      }"
+    >
+      ${
+        isKicker && title.indexOf(': ') > -1
+          ? title.split(': ').map((text, index) =>
+              index === 0
+                ? html`
+                    <small>${text}</small>
+                  `
+                : text
+            )
+          : title
+      }
+    </h1>
+  `;
   const clonedBylineNodes = bylineNodes ? bylineNodes.map(node => node.cloneNode(true)) : null;
   const infoSourceNode = infoSource
     ? infoSource.url
@@ -88,61 +124,47 @@ function Header({
     : null;
   const updatedText = typeof updated === 'string' ? updated : formatUIGRelative(updated);
   const publishedText = typeof published === 'string' ? published : formatUIGRelative(published);
+  const aboutEls = [
+    clonedBylineNodes
+      ? html`
+          <p class="Header-byline">
+            ${
+              infoSourceNode && edition !== 'epic'
+                ? html`
+                    <span class="Header-bylineInfoSource">${infoSourceNode}</span>
+                  `
+                : null
+            }
+            ${clonedBylineNodes}
+          </p>
+        `
+      : null,
+    infoSourceNode && edition === 'epic'
+      ? html`
+          <p class="Header-infoSource Header-infoSource--${slug(infoSource.name)}">${infoSourceNode}</p>
+        `
+      : null,
+    updatedText
+      ? html`
+          <div class="Header-updated">Updated <time datetime="${updated}">${updatedText}</time></div>
+        `
+      : null,
+    publishedText
+      ? html`
+          <div class="Header-published">Published <time datetime="${published}">${publishedText}</time></div>
+        `
+      : null
+  ];
+  const contentChildEls = [].concat(miscEls).concat(aboutEls);
 
-  const contentEls = [
-    html`
-      <h1>
-        ${
-          isKicker && title.indexOf(': ') > -1
-            ? title.split(': ').map((text, index) =>
-                index === 0
-                  ? html`
-                      <small>${text}</small>
-                    `
-                  : text
-              )
-            : title
-        }
-      </h1>
-    `
-  ]
-    .concat(
-      mediaEl && edition !== 'epic'
-        ? [
-            html`
-              <div class="u-full">
-                <div class="u-layout"><div class="u-pull">${mediaEl}</div></div>
-              </div>
-            `
-          ]
-        : []
-    )
-    .concat(clonedMiscContentEls)
-    .concat([
-      clonedBylineNodes
-        ? html`
-            <p class="Header-byline">${clonedBylineNodes}</p>
-          `
-        : null,
-      infoSourceNode
-        ? html`
-            <p class="Header-infoSource Header-infoSource--${slug(infoSource.name)}">${infoSourceNode}</p>
-          `
-        : null,
-      updatedText
-        ? html`
-            <div class="Header-updated">Updated <time datetime="${updated}">${updatedText}</time></div>
-          `
-        : null,
-      publishedText
-        ? html`
-            <div class="Header-published">Published <time datetime="${published}">${publishedText}</time></div>
-          `
-        : null
-    ]);
+  if (insetMediaEl) {
+    contentChildEls[miscEls.length ? 'unshift' : 'push'](insetMediaEl);
+  }
 
-  const headerContentEl = html`
-    <div class="Header-content u-richtext${isDark ? '-invert' : ''}">${contentEls}</div>
+  contentChildEls.unshift(titleEl);
+
+  const contentEl = html`
+    <div class="Header-content u-richtext${isDark ? '-invert' : ''}">${contentChildEls}</div>
   `;
 
   const headerEl = html`
@@ -151,7 +173,6 @@ function Header({
         cn(
           'Header',
           {
-            'has-inset-media': mediaEl && edition !== 'epic',
             'is-dark': isDark,
             'is-pale': isPale,
             'is-floating': isFloating,
@@ -161,16 +182,7 @@ function Header({
         )
       }"
     >
-      ${
-        mediaEl && edition === 'epic'
-          ? html`
-              <div class="Header-media${isLayered && mediaEl.tagName !== 'DIV' ? ' u-parallax' : ''}">
-                ${!isLayered ? ScrollHint() : null} ${mediaEl}
-              </div>
-            `
-          : null
-      }
-      ${headerContentEl}
+      ${mediaEl} ${contentEl}
     </div>
   `;
 
