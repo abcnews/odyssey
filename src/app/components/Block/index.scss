@@ -62,12 +62,12 @@
       top: 50vh;
       right: calc(30% - 17.5rem);
       left: auto;
-      width: 35rem;
+      width: 33rem;
       height: auto;
     }
 
     @media (min-width: 112.5rem) {
-      right: calc(30% - 24.75rem);
+      right: calc(30% - 25.75rem);
       width: 49.5rem;
     }
   }
@@ -586,6 +586,7 @@
     .is-richtext > &.is-left {
       margin-left: calc(30% - 24.75rem);
     }
+
     .is-richtext.is-right > &,
     .is-richtext > &.is-right {
       margin-right: calc(30% - 24.75rem);
@@ -595,6 +596,11 @@
       width: 61.25rem;
       margin-right: auto;
       margin-left: auto;
+    }
+
+    .has-inset-media.is-richtext.is-left > &,
+    .has-inset-media.is-richtext > &.is-left {
+      margin-left: calc(27% - 24.75rem);
     }
   }
 
