@@ -55,6 +55,30 @@
     }
   }
 
+  .has-inset-media & > * {
+    @media #{$mq-not-sm} {
+      position: fixed;
+      transform: translate(0, -50%);
+      top: 50vh;
+      left: auto;
+      height: auto;
+    }
+
+    @media #{$mq-lg} {
+      right: calc(30% - 17.5rem);
+      width: 35rem;
+    }
+
+    @media (min-width: 112.5rem) {
+      right: calc(30% - 24.75rem);
+      width: 49.5rem;
+    }
+  }
+
+  .has-inset-media &:not(.is-fixed) > * {
+    position: absolute;
+  }
+
   &.is-beyond {
     position: absolute;
     top: auto;
@@ -521,6 +545,10 @@
         font-size: 1.375rem;
       }
     }
+  }
+
+  .is-piecemeal.has-inset-media > &:nth-child(2) {
+    margin-top: 40vh;
   }
 
   .is-richtext > & [class*='u-pull'] {
