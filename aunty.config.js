@@ -15,7 +15,6 @@ module.exports = {
     const rules = config.module.rules;
     const stylesRule = rules.find(x => x.__hint__ === 'styles');
 
-    // stylesRule.test = /\.scss$/;
     stylesRule.include = /(src\/*)/;
 
     rules.splice(rules.indexOf(stylesRule), 0, {
@@ -42,18 +41,6 @@ module.exports = {
           }
         }
       ]
-      // use: stylesRule.use.slice(0, -1)
-      // use: stylesRule.use.slice(0, -1).concat([
-      //   {
-      //     loader: require.resolve('postcss-loader'),
-      //     options: {
-      //       config: {
-      //         path: postcssConfig,
-      //         ctx: getContext(config.mode === 'development')
-      //       }
-      //     }
-      //   }
-      // ])
     });
 
     return config;
