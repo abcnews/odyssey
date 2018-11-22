@@ -27,10 +27,11 @@ const TRANSITIONS = [
 
 function Block({
   type = 'richtext',
+  hasInsetMedia,
   isContained,
   isDocked,
-  isPiecemeal,
   isLight,
+  isPiecemeal,
   alignment,
   videoId,
   isVideoYouTube,
@@ -40,10 +41,16 @@ function Block({
   transition,
   backgrounds
 }) {
+  if (hasInsetMedia) {
+    isDocked = true;
+    alignment = 'left';
+  }
+
   const className = cn(
     'Block',
     `is-${type}`,
     {
+      'has-inset-media': hasInsetMedia,
       'is-piecemeal': type === 'richtext' && isPiecemeal,
       [`is-${alignment}`]: alignment
     },
@@ -113,7 +120,6 @@ function Block({
   } else if (imgEl) {
     const src = imgEl.src;
     const alt = imgEl.getAttribute('alt');
-    const id = url2cmid(src);
 
     mediaEl = Picture({
       src,
@@ -274,23 +280,27 @@ function Block({
 }
 
 function transformSection(section) {
+  const hasInsetMedia = section.configSC.indexOf('inset') > -1;
   const isContained = section.configSC.indexOf('contain') > -1;
   const isDocked = section.configSC.indexOf('docked') > -1;
-  const isPiecemeal = section.configSC.indexOf('piecemeal') > -1;
   const isLight = section.configSC.indexOf('light') > -1;
+  const isPiecemeal = section.configSC.indexOf('piecemeal') > -1;
   const shouldSupplant = section.configSC.indexOf('supplant') > -1;
 
   let transition;
-  TRANSITIONS.forEach(t => {
-    if (section.configSC.indexOf('transition' + t) > -1) {
-      if (t === 'colour') {
-        transition = section.configSC.match(/colour([a-f0-9]+)/)[1];
-      } else {
-        transition = t;
+
+  if (!hasInsetMedia) {
+    TRANSITIONS.forEach(t => {
+      if (section.configSC.indexOf('transition' + t) > -1) {
+        if (t === 'colour') {
+          transition = section.configSC.match(/colour([a-f0-9]+)/)[1];
+        } else {
+          transition = t;
+        }
       }
-    }
-  });
-  // fallback for just basic default transition
+    });
+  }
+  // fallback for just basic default transition or if we have inset transitioning media
   if (!transition && section.configSC.indexOf('transition') > -1) {
     transition = 'black';
   }
@@ -307,6 +317,7 @@ function transformSection(section) {
   }
 
   let config = {
+    hasInsetMedia,
     isContained,
     isDocked,
     isPiecemeal,
@@ -388,14 +399,17 @@ function transformSection(section) {
             lightDarkConfig = 'dark';
           }
 
-          if (config.indexOf('left') > -1) {
-            leftRightConfig = 'left';
-          }
-          if (config.indexOf('right') > -1) {
-            leftRightConfig = 'right';
-          }
-          if (config.indexOf('center') > -1) {
-            leftRightConfig = 'center';
+          // Blocks with transitioning inset media always have left aligned text, so skip alignment checks
+          if (!hasInsetMedia) {
+            if (config.indexOf('left') > -1) {
+              leftRightConfig = 'left';
+            }
+            if (config.indexOf('right') > -1) {
+              leftRightConfig = 'right';
+            }
+            if (config.indexOf('center') > -1) {
+              leftRightConfig = 'center';
+            }
           }
 
           // If an image gave us this config we can pass it onto the actual paragraph
