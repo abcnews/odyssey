@@ -56,17 +56,14 @@
   }
 
   .has-inset-media & > * {
-    @media #{$mq-not-sm} {
+    @media #{$mq-lg} {
       position: fixed;
       transform: translate(0, -50%);
       top: 50vh;
-      left: auto;
-      height: auto;
-    }
-
-    @media #{$mq-lg} {
       right: calc(30% - 17.5rem);
+      left: auto;
       width: 35rem;
+      height: auto;
     }
 
     @media (min-width: 112.5rem) {
@@ -75,8 +72,23 @@
     }
   }
 
+  .has-inset-media &:not(.is-fixed) {
+    @media #{$mq-not-lg} {
+      clip: rect(0, auto, auto, 0);
+      -webkit-clip-path: inset(0 0 0 0);
+    }
+  }
+
   .has-inset-media &:not(.is-fixed) > * {
     position: absolute;
+
+    @media #{$mq-not-lg} {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+    }
   }
 
   &.is-beyond {
