@@ -5,8 +5,10 @@ const dewysiwyg = require('util-dewysiwyg');
 // Ours
 const { SELECTORS } = require('../../constants');
 const Main = require('../components/Main');
+const { edition, isDarkMode, theme } = require('../env');
 const { $, $$, append, before, detach, detachAll } = require('../utils/dom');
 const { literalList, trim } = require('../utils/misc');
+const narrative = require('./narrative');
 require('./index.scss');
 
 const TEMPLATE_REMOVABLES = {
@@ -79,10 +81,10 @@ function resetMetaViewport() {
   el.setAttribute('content', 'width=device-width, initial-scale=1, minimum-scale=1');
 }
 
-function promoteToMain(storyEl, meta) {
+function promoteToMain(storyEl) {
   const existingMainEl = $(SELECTORS.MAIN);
   const id = existingMainEl.getAttribute('id');
-  const mainEl = Main(Array.from(storyEl.childNodes), meta);
+  const mainEl = Main(Array.from(storyEl.childNodes));
 
   if (id) {
     mainEl.setAttribute('id', id);
@@ -96,13 +98,18 @@ function promoteToMain(storyEl, meta) {
   return mainEl;
 }
 
-function reset(storyEl, meta) {
+function reset(storyEl) {
   // Update (or add) the meta viewport tag so that touch devices don't introduce a click delay
   resetMetaViewport();
 
+  // Apply adapter to known editions
+  if (edition === 'narrative') {
+    narrative();
+  }
+
   // Apply theme, if defined
-  if (typeof meta.theme === 'string') {
-    meta.theme.split(';').forEach(definition => {
+  if (typeof theme === 'string') {
+    theme.split(';').forEach(definition => {
       const [prop, value] = definition.split(':');
 
       if (prop && value) {
@@ -112,11 +119,11 @@ function reset(storyEl, meta) {
   }
 
   // Enable dark mode, if required
-  if (meta.isDarkMode) {
+  if (isDarkMode) {
     document.documentElement.classList.add('is-dark-mode');
   }
 
-  storyEl = promoteToMain(storyEl, meta);
+  storyEl = promoteToMain(storyEl);
 
   Object.keys(TEMPLATE_REMOVABLES).forEach(templateBodySelector => {
     if ($(templateBodySelector)) {
@@ -132,12 +139,14 @@ function reset(storyEl, meta) {
 
   $$(SELECTORS.WYSIWYG_EMBED, storyEl).forEach(el => {
     dewysiwyg.normalise(el);
-    el.className = `${el.className} u-richtext${meta.isDarkMode ? '-invert' : ''}`;
+    el.className = `${el.className} u-richtext${isDarkMode ? '-invert' : ''}`;
   });
 
   $$(P1S_FLOAT.SELECTOR, storyEl).forEach(el => {
     const [, side] = el.className.match(P1S_FLOAT.PATTERN);
-    const pullEl = html`<div class="u-pull-${side}"></div>`;
+    const pullEl = html`
+      <div class="u-pull-${side}"></div>
+    `;
 
     el.classList.remove(side);
     el.classList.add('full');
@@ -148,7 +157,9 @@ function reset(storyEl, meta) {
   $$(P2_FLOAT.SELECTOR, storyEl).forEach(el => {
     if (el.className.indexOf('view-') > -1) {
       const [, , side] = el.className.match(P2_FLOAT.PATTERN);
-      const pullEl = html`<div class="u-pull-${side}"></div>`;
+      const pullEl = html`
+        <div class="u-pull-${side}"></div>
+      `;
 
       el.classList.remove(side);
       el.classList.add('full');

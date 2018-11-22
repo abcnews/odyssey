@@ -2,6 +2,7 @@
 const html = require('bel');
 
 // Ours
+const { relatedStoriesIds } = require('../../env');
 const { invalidateClient } = require('../../scheduler');
 const { getDocument } = require('../../utils/capi');
 const Picture = require('../Picture');
@@ -14,13 +15,16 @@ const PICTURE_RATIOS = {
 };
 
 function Recirculation({ ids, pull }) {
-  const itemEls = ids.map(id => html`<a class="Recirculation-item" href="/news/${id}"></a>`);
+  const itemEls = ids.map(
+    id =>
+      html`
+        <a class="Recirculation-item" href="/news/${id}"></a>
+      `
+  );
 
   const el = html`
-  <aside class="Recirculation${pull ? ` u-pull-${pull}` : ''}" role="complementary">
-    ${itemEls}
-  </aside>
-`;
+    <aside class="Recirculation${pull ? ` u-pull-${pull}` : ''}" role="complementary">${itemEls}</aside>
+  `;
 
   el.classList.add('has-children');
   ids.forEach((id, index) =>
@@ -35,7 +39,11 @@ function Recirculation({ ids, pull }) {
       const title = item.shortTeaserTitle || item.teaserTitle || item.title;
       const teaserText = item.shortTeaserTextPlain || item.teaserTextPlain;
 
-      itemEl.appendChild(html`<h2>${title}</h2>`);
+      itemEl.appendChild(
+        html`
+          <h2>${title}</h2>
+        `
+      );
 
       if (item.thumbnailLink) {
         itemEl.appendChild(Picture({ src: item.thumbnailLink.media[0].url, ratios: PICTURE_RATIOS }));
@@ -43,10 +51,18 @@ function Recirculation({ ids, pull }) {
       }
 
       if (item.textPlain.indexOf(teaserText) !== 0) {
-        itemEl.appendChild(html`<p>${teaserText}</p>`);
+        itemEl.appendChild(
+          html`
+            <p>${teaserText}</p>
+          `
+        );
       }
 
-      itemEl.appendChild(html`<div>Read more →</div>`);
+      itemEl.appendChild(
+        html`
+          <div>Read more →</div>
+        `
+      );
 
       el.classList.add('has-children');
     })
@@ -59,7 +75,7 @@ const DIGITS_PATTERN = /\d+/;
 const PULL_PATTERN = /[a-z]+/;
 let nextRelatedStoriesIdsIndex = 0;
 
-function transformMarker(marker, meta) {
+function transformMarker(marker) {
   const [digits] = marker.configSC.match(DIGITS_PATTERN) || [1];
   const [pull] = marker.configSC.match(PULL_PATTERN) || ['right'];
   let ids;
@@ -71,7 +87,7 @@ function transformMarker(marker, meta) {
       }
       break;
     case 'related':
-      ids = meta.relatedStoriesIds.slice(nextRelatedStoriesIdsIndex, +digits + nextRelatedStoriesIdsIndex);
+      ids = relatedStoriesIds.slice(nextRelatedStoriesIdsIndex, +digits + nextRelatedStoriesIdsIndex);
       nextRelatedStoriesIdsIndex += ids.length;
       break;
     default:

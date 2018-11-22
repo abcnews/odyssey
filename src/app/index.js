@@ -14,6 +14,7 @@ const MasterGallery = require('./components/MasterGallery');
 const Nav = require('./components/Nav');
 const Quote = require('./components/Quote');
 const Recirculation = require('./components/Recirculation');
+const RestrictedFeatureWarning = require('./components/RestrictedFeatureWarning');
 const ScrollHint = require('./components/ScrollHint');
 const Series = require('./components/Series');
 const Share = require('./components/Share');
@@ -23,16 +24,15 @@ const UParallax = require('./components/UParallax');
 const UPull = require('./components/UPull');
 const VideoEmbed = require('./components/VideoEmbed');
 const { start } = require('./scheduler');
-const { getMeta } = require('./meta');
+const { edition, hasCommentsEnabled } = require('./env');
 const { reset } = require('./reset');
 const { getMarkers, getSections } = require('./utils/anchors');
-const { $, $$, after, append, detach, detachAll, prepend, substitute } = require('./utils/dom');
+const { $, $$, after, append, before, detach, detachAll, prepend, substitute } = require('./utils/dom');
 
 function app() {
-  const meta = getMeta();
-  const storyEl = reset($(SELECTORS.STORY), meta);
+  const storyEl = reset($(SELECTORS.STORY));
 
-  after($(SELECTORS.GLOBAL_NAV), Nav({ shareLinks: meta.shareLinks }));
+  after($(SELECTORS.GLOBAL_NAV), Nav());
 
   start(); // loop
 
@@ -45,10 +45,14 @@ function app() {
 
   // Transform sections
   getSections(['header', 'remove', 'block', 'gallery', 'mosaic', 'pull']).forEach(section => {
+    if (edition !== 'epic' && ['block'].includes(section.name)) {
+      return before(section.startNode, RestrictedFeatureWarning(section));
+    }
+
     switch (section.name) {
       case 'header':
         hasHeader = true;
-        Header.transformSection(section, meta);
+        Header.transformSection(section);
         break;
       case 'remove':
         detachAll([section.startNode, section.endNode].concat(section.betweenNodes));
@@ -61,7 +65,7 @@ function app() {
         Gallery.transformSection(section);
         break;
       case 'pull':
-        UPull.transformSection(section, meta);
+        UPull.transformSection(section);
         break;
       default:
         break;
@@ -69,7 +73,7 @@ function app() {
   });
 
   if (!hasHeader) {
-    prepend(storyEl, Header({ meta }));
+    prepend(storyEl, Header());
   }
 
   // Enable drop-caps after headers
@@ -90,6 +94,10 @@ function app() {
 
   // Transform markers
   getMarkers(['cta', 'hr', 'scrollhint', 'series', 'share', 'video', 'youtube', 'related', 'tease']).forEach(marker => {
+    if (edition !== 'epic' && ['series', 'share', 'related', 'tease'].includes(marker.name)) {
+      return marker.substituteWith(RestrictedFeatureWarning(marker));
+    }
+
     let el;
 
     switch (marker.name) {
@@ -98,7 +106,9 @@ function app() {
         detach(marker.node);
         break;
       case 'hr':
-        el = html`<hr>`;
+        el = html`
+          <hr />
+        `;
         marker.substituteWith(el);
         UDropcap.conditionallyApply(el.nextElementSibling);
         break;
@@ -109,7 +119,7 @@ function app() {
         Series.transformMarker(marker);
         break;
       case 'share':
-        Share.transformMarker(marker, meta.shareLinks);
+        Share.transformMarker(marker);
         break;
       case 'video':
       case 'youtube':
@@ -117,7 +127,7 @@ function app() {
         break;
       case 'related':
       case 'tease':
-        Recirculation.transformMarker(marker, meta);
+        Recirculation.transformMarker(marker);
         break;
       default:
         break;
@@ -181,15 +191,12 @@ function app() {
   })();
 
   // Embed comments, if enabled
-  if (meta.hasCommentsEnabled) {
+  if (hasCommentsEnabled) {
     append(storyEl, Comments());
   }
 
   // Embed master gallery
   append(storyEl, MasterGallery());
-
-  // Allow garbage collection
-  delete meta.bylineNodes;
 
   // Expose API, then notify interested parties
   window.__ODYSSEY__ = api;

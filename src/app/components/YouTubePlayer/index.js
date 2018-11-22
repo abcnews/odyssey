@@ -70,8 +70,12 @@ function YouTubePlayer({
   const placeholderEl = html`
     <div class="u-sizer-sm-${ratios.sm} u-sizer-md-${ratios.md} u-sizer-lg-${ratios.lg}"></div>
   `;
-  const posterEl = html`<img src="${posterURL}" />`;
-  let videoEl = html`<div id="youtube-video-${id}"></div>`;
+  const posterEl = html`
+    <img src="${posterURL}" />
+  `;
+  let videoEl = html`
+    <div id="youtube-video-${id}"></div>
+  `;
   let youtube;
   let youTubePlayerEl;
   let videoControlsEl;
@@ -306,10 +310,7 @@ function YouTubePlayer({
 
   youTubePlayerEl = html`
     <div class="YouTubePlayer${isContained ? ' is-contained' : ''}">
-      ${placeholderEl}
-      ${videoEl}
-      ${isAmbient ? null : videoControlsEl}
-      ${posterEl}
+      ${placeholderEl} ${videoEl} ${isAmbient ? null : videoControlsEl} ${posterEl}
     </div>
   `;
 

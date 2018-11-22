@@ -4,10 +4,10 @@ const html = require('bel');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const { IS_PREVIEW, ALIGNMENT_PATTERN, VIDEO_MARKER_PATTERN, SCROLLPLAY_PCT_PATTERN } = require('../../../constants');
-const { invalidateClient } = require('../../scheduler');
+const { ALIGNMENT_PATTERN, VIDEO_MARKER_PATTERN, SCROLLPLAY_PCT_PATTERN } = require('../../../constants');
+const { edition } = require('../../env');
 const { grabConfigSC } = require('../../utils/anchors');
-const { $, $$, substitute } = require('../../utils/dom');
+const { $, substitute } = require('../../utils/dom');
 const { getRatios } = require('../../utils/misc');
 const Caption = require('../Caption');
 const VideoPlayer = require('../VideoPlayer');
@@ -28,10 +28,7 @@ function VideoEmbed({ playerEl, captionEl, alignment, isFull, isCover, isAnon })
   });
 
   return html`
-    <div class="${className}">
-      ${playerEl}
-      ${isAnon ? null : captionEl}
-    </div>
+    <div class="${className}">${playerEl} ${isAnon ? null : captionEl}</div>
   `;
 }
 
@@ -53,8 +50,8 @@ function transformEl(el) {
 
   const options = {
     alignment,
-    isFull: configSC.indexOf('full') > -1,
-    isCover: configSC.indexOf('cover') > -1,
+    isFull: edition === 'epic' && configSC.indexOf('full') > -1,
+    isCover: edition === 'epic' && configSC.indexOf('cover') > -1,
     isAnon: configSC.indexOf('anon') > -1
   };
 
@@ -71,7 +68,7 @@ function transformEl(el) {
     isAmbient: configSC.indexOf('ambient') > -1,
     isLoop: configSC.indexOf('loop') > -1,
     isMuted: configSC.indexOf('muted') > -1,
-    scrollplayPct
+    scrollplayPct: scrollplayPct
   };
 
   substitute(

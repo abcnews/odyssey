@@ -7,6 +7,7 @@ const { MOCK_ELEMENT, SELECTORS } = require('../../constants');
 const { $, $$, detach } = require('../utils/dom');
 const { trim } = require('../utils/misc');
 
+const EDITION_ATTRIBUTE = 'data-odyssey-edition';
 const STARTS_WITH_YEAR_PATTERN = /^\d{4}-/;
 const ROGUE_YEAR_COLON_PATTERN = /:(\d+)$/;
 
@@ -18,7 +19,12 @@ const EMAIL = /mailto:/;
 
 const SHARE_ORDERING = ['facebook', 'twitter', 'whatsapp', 'reddit', 'email'];
 
-let meta = null; // singleton
+function getEdition() {
+  const el = $(`[${EDITION_ATTRIBUTE}]`);
+  const value = el && el.getAttribute(EDITION_ATTRIBUTE);
+
+  return value || 'epic';
+}
 
 function getMetaContent(name) {
   const el = $(`meta[name="${name}"]`);
@@ -135,27 +141,20 @@ function getRelatedMedia() {
   return detach(relatedMediaEl);
 }
 
-function getMeta() {
-  if (!meta) {
-    meta = {
-      title: getMetaContent('replacement-title') || $(SELECTORS.TITLE).textContent,
-      published: getDate('DCTERMS.issued', 'original'),
-      updated: getDate('DCTERMS.modified', 'updated'),
-      bylineNodes: getBylineNodes(),
-      infoSource: getInfoSource(),
-      shareLinks: getShareLinks(),
-      relatedMedia: getRelatedMedia(),
-      relatedStoriesIds: getRelatedStoriesIds(),
-      theme: getMetaContent('theme'),
-      hasCaptionAttributions: getMetaContent('caption-attributions') !== 'false',
-      hasCommentsEnabled: getMetaContent('showLivefyreComments') === 'true',
-      isDarkMode: getMetaContent('dark-mode') === 'true'
-    };
-  }
+const edition = getEdition();
 
-  return meta;
-}
-
-module.exports = {
-  getMeta
-};
+module.exports = Object.freeze({
+  title: getMetaContent('replacement-title') || $(SELECTORS.TITLE).textContent,
+  published: getDate('DCTERMS.issued', 'original'),
+  updated: getDate('DCTERMS.modified', 'updated'),
+  bylineNodes: getBylineNodes(),
+  infoSource: getInfoSource(),
+  shareLinks: getShareLinks(),
+  relatedMedia: getRelatedMedia(),
+  relatedStoriesIds: getRelatedStoriesIds(),
+  edition,
+  theme: edition === 'epic' ? getMetaContent('theme') : null,
+  hasCaptionAttributions: getMetaContent('caption-attributions') !== 'false',
+  hasCommentsEnabled: getMetaContent('showLivefyreComments') === 'true',
+  isDarkMode: edition === 'epic' && getMetaContent('dark-mode') === 'true'
+});

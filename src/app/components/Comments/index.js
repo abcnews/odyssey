@@ -11,7 +11,12 @@ function Comments() {
   `;
 
   if (ABC.News.Mobile) {
-    append(livefyreRootEl, html`<h2>Have your say</h2>`);
+    append(
+      livefyreRootEl,
+      html`
+        <h2>Have your say</h2>
+      `
+    );
   }
 
   if (ABC.News.initLivefyre) {
@@ -26,9 +31,7 @@ function Comments() {
   }
 
   return html`
-    <div class="Comments u-full">
-      ${livefyreRootEl}
-    </div>
+    <div class="Comments u-full">${livefyreRootEl}</div>
   `;
 }
 

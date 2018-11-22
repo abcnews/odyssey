@@ -18,7 +18,7 @@ function ScrollHint() {
     scrollHintEl.addEventListener('click', () => {
       window.scrollTo({
         behavior: 'smooth',
-        top: window.innerHeight / 4 * 3
+        top: (window.innerHeight / 4) * 3
       });
     });
   }

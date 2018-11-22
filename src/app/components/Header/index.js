@@ -6,6 +6,7 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const { MS_VERSION, VIDEO_MARKER_PATTERN } = require('../../../constants');
+const { bylineNodes, edition, infoSource, isDarkMode, published, relatedMedia, title, updated } = require('../../env');
 const { enqueue, subscribe } = require('../../scheduler');
 const { $, detach, isElement } = require('../../utils/dom');
 const { dePx, getRatios, slug, trim } = require('../../utils/misc');
@@ -17,7 +18,6 @@ const YouTubePlayer = require('../YouTubePlayer');
 require('./index.scss');
 
 function Header({
-  meta = {},
   videoId,
   isVideoYouTube,
   imgEl,
@@ -32,18 +32,7 @@ function Header({
 }) {
   isFloating = isFloating || (isLayered && !imgEl && !videoId && !interactiveEl);
   isLayered = isLayered || isFloating;
-  isDark = meta.isDarkMode || isLayered || isDark;
-
-  const className = cn(
-    'Header',
-    {
-      'is-dark': isDark,
-      'is-pale': isPale,
-      'is-floating': isFloating,
-      'is-layered': isLayered
-    },
-    'u-full'
-  );
+  isDark = isDarkMode || isLayered || isDark;
 
   ratios = {
     sm: ratios.sm || (isLayered ? '3x4' : undefined),
@@ -51,19 +40,19 @@ function Header({
     lg: ratios.lg
   };
 
-  let mediaEl;
+  let mediaChildEl;
 
   if (interactiveEl) {
-    mediaEl = interactiveEl.cloneNode(true);
-    mediaEl.classList.add('Header-interactive');
+    mediaChildEl = interactiveEl.cloneNode(true);
+    mediaChildEl.classList.add('Header-interactive');
   } else if (imgEl) {
-    mediaEl = Picture({
+    mediaChildEl = Picture({
       src: imgEl.src,
       alt: imgEl.getAttribute('alt'),
       ratios
     });
   } else if (videoId) {
-    mediaEl = isVideoYouTube
+    mediaChildEl = isVideoYouTube
       ? YouTubePlayer({
           videoId,
           isAmbient: true,
@@ -76,86 +65,124 @@ function Header({
         });
   }
 
-  if (mediaEl && !interactiveEl && !isLayered) {
-    mediaEl.classList.add('u-parallax');
-    UParallax.activate(mediaEl);
+  if (mediaChildEl && !interactiveEl && !isLayered && edition === 'epic') {
+    mediaChildEl.classList.add('u-parallax');
+    UParallax.activate(mediaChildEl);
   }
 
-  const clonedMiscContentEls = miscContentEls.map(el => {
+  const mediaEl =
+    mediaChildEl && edition === 'epic'
+      ? html`
+          <div class="Header-media${isLayered && mediaChildEl.tagName !== 'DIV' ? ' u-parallax' : ''}">
+            ${!isLayered ? ScrollHint() : null} ${mediaEl}
+          </div>
+        `
+      : null;
+  const insetMediaEl =
+    mediaChildEl && !mediaEl
+      ? html`
+          <div class="Header-insetMedia u-full">
+            <div class="u-layout"><div class="u-pull">${mediaChildEl}</div></div>
+          </div>
+        `
+      : null;
+  const miscEls = miscContentEls.map(el => {
     const clonedEl = el.cloneNode(true);
 
     clonedEl.classList.add('Header-miscEl');
 
     return clonedEl;
   });
-
-  const clonedBylineNodes = meta.bylineNodes ? meta.bylineNodes.map(node => node.cloneNode(true)) : null;
-  const infoSource = meta.infoSource
-    ? meta.infoSource.url
-      ? html`<a href="${meta.infoSource.url}">${meta.infoSource.name}</a>`
-      : meta.infoSource.name
+  const titleEl = html`
+    <h1
+      class="${
+        cn('Header-title', {
+          'is-break': !insetMediaEl || !miscEls.length
+        })
+      }"
+    >
+      ${
+        isKicker && title.indexOf(': ') > -1
+          ? title.split(': ').map((text, index) =>
+              index === 0
+                ? html`
+                    <small>${text}</small>
+                  `
+                : text
+            )
+          : title
+      }
+    </h1>
+  `;
+  const clonedBylineNodes = bylineNodes ? bylineNodes.map(node => node.cloneNode(true)) : null;
+  const infoSourceNode = infoSource
+    ? infoSource.url
+      ? html`
+          <a href="${infoSource.url}">${infoSource.name}</a>
+        `
+      : infoSource.name
     : null;
-  const updated = typeof meta.updated === 'string' ? meta.updated : formatUIGRelative(meta.updated);
-  const published = typeof meta.published === 'string' ? meta.published : formatUIGRelative(meta.published);
+  const updatedText = typeof updated === 'string' ? updated : formatUIGRelative(updated);
+  const publishedText = typeof published === 'string' ? published : formatUIGRelative(published);
+  const aboutEls = [
+    clonedBylineNodes
+      ? html`
+          <p class="Header-byline">
+            ${
+              infoSourceNode && edition !== 'epic'
+                ? html`
+                    <span class="Header-bylineInfoSource">${infoSourceNode}</span>
+                  `
+                : null
+            }
+            ${clonedBylineNodes}
+          </p>
+        `
+      : null,
+    infoSourceNode && edition === 'epic'
+      ? html`
+          <p class="Header-infoSource Header-infoSource--${slug(infoSource.name)}">${infoSourceNode}</p>
+        `
+      : null,
+    updatedText
+      ? html`
+          <div class="Header-updated">Updated <time datetime="${updated}">${updatedText}</time></div>
+        `
+      : null,
+    publishedText
+      ? html`
+          <div class="Header-published">Published <time datetime="${published}">${publishedText}</time></div>
+        `
+      : null
+  ];
+  const contentChildEls = [].concat(miscEls).concat(aboutEls);
 
-  const contentEls = [
-    html`<h1>${
-      isKicker && meta.title.indexOf(': ') > -1
-        ? meta.title.split(': ').map((text, index) => (index === 0 ? html`<small>${text}</small>` : text))
-        : meta.title
-    }</h1>`
-  ]
-    .concat(clonedMiscContentEls)
-    .concat([
-      clonedBylineNodes
-        ? html`
-      <p class="Header-byline">
-        ${clonedBylineNodes}
-      </p>
-    `
-        : null,
-      infoSource
-        ? html`
-      <p class="Header-infoSource Header-infoSource--${slug(meta.infoSource.name)}">
-        ${infoSource}
-      </p>
-    `
-        : null,
-      updated
-        ? html`
-      <div class="Header-updated">
-        Updated
-        <time datetime="${meta.updated}">${updated}</time>
-      </div>
-    `
-        : null,
-      published
-        ? html`
-      <div class="Header-published">
-        Published
-        <time datetime="${meta.published}">${published}</time>
-      </div>
-    `
-        : null
-    ]);
+  if (insetMediaEl) {
+    contentChildEls[miscEls.length ? 'unshift' : 'push'](insetMediaEl);
+  }
 
-  const headerContentEl = html`
-    <div class="Header-content u-richtext${isDark ? '-invert' : ''}">
-      ${contentEls}
-    </div>
+  contentChildEls.unshift(titleEl);
+
+  const contentEl = html`
+    <div class="Header-content u-richtext${isDark ? '-invert' : ''}">${contentChildEls}</div>
   `;
 
   const headerEl = html`
-    <div class="${className}">
-      ${
-        mediaEl
-          ? html`<div class="Header-media${isLayered && mediaEl.tagName !== 'DIV' ? ' u-parallax' : ''}">
-              ${!isLayered ? ScrollHint() : null}
-              ${mediaEl}
-            </div>`
-          : null
-      }
-      ${headerContentEl}
+    <div
+      class="${
+        cn(
+          'Header',
+          {
+            'is-dark': isDark,
+            'is-pale': isPale,
+            'is-floating': isFloating,
+            'is-layered': isLayered
+          },
+          'u-full'
+        )
+      }"
+    >
+      ${mediaEl} ${contentEl}
     </div>
   `;
 
@@ -193,20 +220,20 @@ function Header({
   return headerEl;
 }
 
-function transformSection(section, meta) {
+function transformSection(section) {
   const ratios = getRatios(section.configSC);
-  const isFloating = section.configSC.indexOf('floating') > -1;
-  const isLayered = isFloating || section.configSC.indexOf('layered') > -1;
-  const isDark = isLayered || section.configSC.indexOf('dark') > -1;
-  const isPale = section.configSC.indexOf('pale') > -1;
+  const isFloating = edition === 'epic' && section.configSC.indexOf('floating') > -1;
+  const isLayered = edition === 'epic' && (isFloating || section.configSC.indexOf('layered') > -1);
+  const isDark = edition === 'epic' && (isLayered || section.configSC.indexOf('dark') > -1);
+  const isPale = edition === 'epic' && section.configSC.indexOf('pale') > -1;
   const isNoMedia = isFloating || section.configSC.indexOf('nomedia') > -1;
   const isKicker = section.configSC.indexOf('kicker') > -1;
-  const shouldSupplant = section.configSC.indexOf('supplant') > -1;
+  const shouldSupplant = edition === 'epic' && section.configSC.indexOf('supplant') > -1;
 
   let candidateNodes = section.betweenNodes;
 
-  if (!isNoMedia && meta.relatedMedia != null) {
-    candidateNodes = [meta.relatedMedia.cloneNode(true)].concat(candidateNodes);
+  if (!isNoMedia && relatedMedia != null) {
+    candidateNodes = [relatedMedia.cloneNode(true)].concat(candidateNodes);
   }
 
   if (shouldSupplant && candidateNodes.length) {
@@ -221,7 +248,7 @@ function transformSection(section, meta) {
       let interactiveEl;
 
       // If we found an init-interactive then it takes over being the header media
-      if (!isNoMedia && !config.interactiveEl && isElement(node)) {
+      if (!isNoMedia && !config.interactiveEl && isElement(node) && edition === 'epic') {
         // special case for parallax hash markers
         const isParallax = node.tagName === 'A' && node.getAttribute('name').indexOf('parallax') === 0;
 
@@ -275,7 +302,8 @@ function transformSection(section, meta) {
         !imgEl &&
         !interactiveEl &&
         isElement(node) &&
-        (trim(node.textContent).length > 0 || node.tagName === 'A')
+        (trim(node.textContent).length > 0 || node.tagName === 'A') &&
+        (edition === 'epic' || node.tagName === 'P')
       ) {
         config.miscContentEls.push(node);
       }
@@ -283,7 +311,6 @@ function transformSection(section, meta) {
       return config;
     },
     {
-      meta,
       ratios,
       isDark,
       isPale,

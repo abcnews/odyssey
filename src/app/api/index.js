@@ -7,10 +7,13 @@ module.exports.components = {
   ShareLinks: require('../components/ShareLinks'),
   VideoPlayer: require('../components/VideoPlayer')
 };
-module.exports.meta = require('../meta');
+module.exports.env = require('../env');
 module.exports.scheduler = require('../scheduler');
 module.exports.utils = {
   anchors: require('../utils/anchors'),
   dom: require('../utils/dom'),
   misc: require('../utils/misc')
 };
+
+// Backwards compatibility
+module.exports.meta = { getMeta: () => module.exports.env };

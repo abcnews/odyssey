@@ -3,18 +3,17 @@ const cn = require('classnames');
 const html = require('bel');
 
 // Ours
+const { edition, hasCaptionAttributions, isDarkMode } = require('../../env');
 require('./index.scss');
 
-module.exports = function Main(childNodes, meta) {
+module.exports = function Main(childNodes) {
   const className = cn('Main', 'u-layout', {
-    'u-richtext': !meta.isDarkMode,
-    'u-richtext-invert': meta.isDarkMode,
-    'has-caption-attributions': meta.hasCaptionAttributions
+    'u-richtext': !isDarkMode,
+    'u-richtext-invert': isDarkMode,
+    'has-caption-attributions': hasCaptionAttributions
   });
 
   return html`
-    <main class="${className}">
-      ${childNodes}
-    </main>
+    <main class="${className}" data-edition="${edition}">${childNodes}</main>
   `;
 };
