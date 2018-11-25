@@ -60,15 +60,34 @@
       position: fixed;
       transform: translate(0, -50%);
       top: 50vh;
-      right: calc(30% - 17.5rem);
-      left: auto;
       width: 33rem;
       height: auto;
     }
 
     @media (min-width: 112.5rem) {
-      right: calc(30% - 25.75rem);
       width: 44rem;
+    }
+  }
+
+  .has-inset-media.is-left & > * {
+    @media #{$mq-lg} {
+      right: calc(30% - 17.5rem);
+      left: auto;
+    }
+
+    @media (min-width: 112.5rem) {
+      right: calc(30% - 25.75rem);
+    }
+  }
+
+  .has-inset-media.is-right & > * {
+    @media #{$mq-lg} {
+      right: auto;
+      left: calc(30% - 17.5rem);
+    }
+
+    @media (min-width: 112.5rem) {
+      left: calc(30% - 25.75rem);
     }
   }
 
@@ -601,6 +620,11 @@
     .has-inset-media.is-richtext.is-left > &,
     .has-inset-media.is-richtext > &.is-left {
       margin-left: calc(27% - 24.75rem);
+    }
+
+    .has-inset-media.is-richtext.is-right > &,
+    .has-inset-media.is-richtext > &.is-right {
+      margin-right: calc(27% - 24.75rem);
     }
   }
 

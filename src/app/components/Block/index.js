@@ -43,7 +43,7 @@ function Block({
 }) {
   if (hasInsetMedia) {
     isDocked = true;
-    alignment = 'left';
+    alignment = alignment || 'right';
   }
 
   const className = cn(
