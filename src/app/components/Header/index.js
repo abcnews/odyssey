@@ -92,67 +92,68 @@ function Header({
   const clonedBylineNodes = meta.bylineNodes ? meta.bylineNodes.map(node => node.cloneNode(true)) : null;
   const infoSource = meta.infoSource
     ? meta.infoSource.url
-      ? html`<a href="${meta.infoSource.url}">${meta.infoSource.name}</a>`
+      ? html`
+          <a href="${meta.infoSource.url}">${meta.infoSource.name}</a>
+        `
       : meta.infoSource.name
     : null;
   const updated = typeof meta.updated === 'string' ? meta.updated : formatUIGRelative(meta.updated);
   const published = typeof meta.published === 'string' ? meta.published : formatUIGRelative(meta.published);
 
   const contentEls = [
-    html`<h1>${
-      isKicker && meta.title.indexOf(': ') > -1
-        ? meta.title.split(': ').map((text, index) => (index === 0 ? html`<small>${text}</small>` : text))
-        : meta.title
-    }</h1>`
+    html`
+      <h1>
+        ${
+          isKicker && meta.title.indexOf(': ') > -1
+            ? meta.title.split(': ').map((text, index) =>
+                index === 0
+                  ? html`
+                      <small>${text}</small>
+                    `
+                  : text
+              )
+            : meta.title
+        }
+      </h1>
+    `
   ]
     .concat(clonedMiscContentEls)
     .concat([
       clonedBylineNodes
         ? html`
-      <p class="Header-byline">
-        ${clonedBylineNodes}
-      </p>
-    `
+            <p class="Header-byline">${clonedBylineNodes}</p>
+          `
         : null,
       infoSource
         ? html`
-      <p class="Header-infoSource Header-infoSource--${slug(meta.infoSource.name)}">
-        ${infoSource}
-      </p>
-    `
+            <p class="Header-infoSource Header-infoSource--${slug(meta.infoSource.name)}">${infoSource}</p>
+          `
         : null,
       updated
         ? html`
-      <div class="Header-updated">
-        Updated
-        <time datetime="${meta.updated}">${updated}</time>
-      </div>
-    `
+            <div class="Header-updated">Updated <time datetime="${meta.updated}">${updated}</time></div>
+          `
         : null,
       published
         ? html`
-      <div class="Header-published">
-        Published
-        <time datetime="${meta.published}">${published}</time>
-      </div>
-    `
+            <div class="Header-published">Published <time datetime="${meta.published}">${published}</time></div>
+          `
         : null
     ]);
 
   const headerContentEl = html`
-    <div class="Header-content u-richtext${isDark ? '-invert' : ''}">
-      ${contentEls}
-    </div>
+    <div class="Header-content u-richtext${isDark ? '-invert' : ''}">${contentEls}</div>
   `;
 
   const headerEl = html`
     <div class="${className}">
       ${
         mediaEl
-          ? html`<div class="Header-media${isLayered && mediaEl.tagName !== 'DIV' ? ' u-parallax' : ''}">
-              ${!isLayered ? ScrollHint() : null}
-              ${mediaEl}
-            </div>`
+          ? html`
+              <div class="Header-media${isLayered && mediaEl.tagName !== 'DIV' ? ' u-parallax' : ''}">
+                ${!isLayered ? ScrollHint() : null} ${mediaEl}
+              </div>
+            `
           : null
       }
       ${headerContentEl}
@@ -184,7 +185,12 @@ function Header({
   // Ensure title is in view
   if (!isLayered && mediaEl) {
     setTimeout(() => {
-      if (window.scrollY === 0 && headerEl.parentElement.firstElementChild === headerEl) {
+      if (
+        window.scrollY === 0 &&
+        headerEl && // Don't assume it is still in the DOM
+        headerEl.parentElement &&
+        headerEl.parentElement.firstElementChild === headerEl
+      ) {
         headerContentEl.querySelector('h1').scrollIntoView(false);
       }
     });
