@@ -2,6 +2,14 @@
   display: none;
 }
 
+[data-component='Masthead'] > div > div > a {
+  &:focus,
+  &:hover,
+  &:active {
+    text-decoration: none;
+  }
+}
+
 [data-component='Masthead'] > div > div + div > a {
   &:link,
   &:hover,
