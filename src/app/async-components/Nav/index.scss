@@ -40,10 +40,6 @@
   [aria-controls='globalnav'] {
     font-size: 1.75rem;
 
-    & > svg {
-      vertical-align: top;
-    }
-
     & + a:hover {
       color: inherit;
     }
