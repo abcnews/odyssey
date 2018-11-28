@@ -1,5 +1,7 @@
 @import '../../../constants';
 
+$header-content-peek: 6rem;
+
 .Header {
   overflow: hidden;
   position: relative;
@@ -53,10 +55,10 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    max-height: calc(100vh - #{$abc-nav-height + 4rem});
+    max-height: calc(100vh - #{$abc-nav-height + $header-content-peek});
 
     @media #{$mq-pl-sm} {
-      max-height: calc(100vh - #{$abc-nav-height--mq-pl-sm + 4rem});
+      max-height: calc(100vh - #{$abc-nav-height--mq-pl-sm + $header-content-peek});
     }
   }
 
@@ -150,7 +152,6 @@
 
   > small {
     display: block;
-    margin-top: 1rem;
     color: #80999d;
     font-family: $font-sans;
     font-size: 0.4285714286em;
