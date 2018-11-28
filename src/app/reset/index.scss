@@ -29,6 +29,10 @@ body {
     padding-right: 0;
   }
 
+  &::before {
+    content: none;
+  }
+
   main + .page_margins,
   main + .content {
     position: relative;
@@ -65,13 +69,19 @@ body {
   }
 }
 
-/* Until the Presentation Layer masthead is consistent across all phases, retain the classic ABC global header */
-
 #abcHeader.global {
-  display: block !important;
-  max-width: inherit;
+  display: none !important;
 }
 
-.masthead-container {
-  display: none !important;
+#abcHeader.global + [data-presentation-layer-async-component] {
+  height: 4rem;
+  background-color: #0f1010;
+
+  @media #{$mq-pl-sm} {
+    height: 3rem;
+  }
+}
+
+[data-component='SiteNavigation'] {
+  display: none;
 }

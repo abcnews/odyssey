@@ -520,10 +520,14 @@
     padding-bottom: 5rem;
 
     .Header.is-floating + & {
-      margin-top: calc(140vh - #{$abc-nav-height + $size-bar});
+      margin-top: calc(140vh - #{$abc-nav-height});
       margin-bottom: calc(40vh);
       padding-top: 1.5rem;
       padding-bottom: 1.5rem;
+
+      @media #{$mq-pl-sm} {
+        margin-top: calc(140vh - #{$abc-nav-height--mq-pl-sm});
+      }
 
       @media #{$mq-lg} {
         padding-top: 2.25rem;
@@ -547,7 +551,11 @@
       margin-top: 100vh;
 
       .Header.is-floating + & {
-        margin-top: calc(180vh - #{$abc-nav-height + $size-bar});
+        margin-top: calc(180vh - #{$abc-nav-height});
+
+        @media #{$mq-pl-sm} {
+          margin-top: calc(180vh - #{$abc-nav-height--mq-pl-sm});
+        }
       }
     }
 
