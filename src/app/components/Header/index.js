@@ -182,20 +182,6 @@ function Header({
     });
   }
 
-  // Ensure title is in view
-  if (!isLayered && mediaEl) {
-    setTimeout(() => {
-      if (
-        window.scrollY === 0 &&
-        headerEl && // Don't assume it is still in the DOM
-        headerEl.parentElement &&
-        headerEl.parentElement.firstElementChild === headerEl
-      ) {
-        headerContentEl.querySelector('h1').scrollIntoView(false);
-      }
-    });
-  }
-
   return headerEl;
 }
 
