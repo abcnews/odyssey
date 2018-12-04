@@ -62,6 +62,13 @@
       top: 50vh;
       width: 33rem;
       height: auto;
+
+      // Safari (7.1+)
+      _::-webkit-full-page-media,
+      _:future,
+      :root & {
+        -webkit-transform: translate(0, -50%);
+      }
     }
 
     @media (min-width: 112.5rem) {
