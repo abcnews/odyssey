@@ -1,6 +1,5 @@
 // External
 const Masthead = require('@abcaustralia/abc-components/cjs/Masthead/Masthead').default;
-const Navigation = require('@abcaustralia/abc-components/cjs/Navigation/Navigation').default;
 const React = require('react');
 
 // Ours
@@ -10,7 +9,7 @@ const DOMAIN = window.location.origin;
 
 const GLOBAL_NAV = [
   {
-    linkTo: 'https://www.abc.net.au/news',
+    linkTo: 'https://www.abc.net.au/news/',
     linkText: 'News',
     active: true
   },
@@ -19,11 +18,11 @@ const GLOBAL_NAV = [
     linkText: 'Life'
   },
   {
-    linkTo: 'http://radio.abc.net.au/',
+    linkTo: 'https://radio.abc.net.au/',
     linkText: 'Radio'
   },
   {
-    linkTo: 'https://iview.abc.net.au',
+    linkTo: 'https://iview.abc.net.au/',
     linkText: 'iview'
   }
 ];
@@ -36,9 +35,4 @@ const NAVIGATION_DATA = [
   }
 ];
 
-module.exports = ({ name }) => (
-  <Masthead primaryHeading="News" navigation={NAVIGATION_DATA} globalNav={GLOBAL_NAV} domain={DOMAIN}>
-    {name}
-    <Navigation domain={DOMAIN} navigation={NAVIGATION_DATA} />
-  </Masthead>
-);
+module.exports = () => <Masthead domain={DOMAIN} globalNav={GLOBAL_NAV} navigation={NAVIGATION_DATA} />;
