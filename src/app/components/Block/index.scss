@@ -469,7 +469,6 @@
     transform: translateX(-50%);
     width: calc(#{cells(10)} + 0.75rem);
     height: 100%;
-    background-color: $color-black-transparent-30;
 
     @media #{$mq-md} {
       width: calc(#{cells(10)} + 1.75rem);
@@ -480,8 +479,12 @@
     }
   }
 
-  &.u-richtext:before {
+  &.u-richtext::before {
     background-color: $color-white-transparent-90;
+  }
+
+  &.u-richtext-invert::before {
+    background-color: $color-black-transparent-30;
   }
 
   & > * {
@@ -542,10 +545,6 @@
       margin-bottom: 50vh;
     }
 
-    &::before {
-      background-color: $color-black-transparent-60;
-    }
-
     & > :last-child {
       margin-bottom: 0;
     }
@@ -596,12 +595,6 @@
     .is-right > &,
     &.is-right {
       margin-right: calc(30% - 24.75rem);
-    }
-
-    &.is-center {
-      width: 61.25rem;
-      margin-right: auto;
-      margin-left: auto;
     }
 
     .has-inset-media.is-left > &,

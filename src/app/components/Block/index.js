@@ -50,14 +50,16 @@ function Block({
     {
       'has-inset-media': hasInsetMedia,
       'is-piecemeal': isPiecemeal,
-      [`is-${alignment}`]: alignment
+      [`has-${alignment}`]: alignment
     },
     'u-full'
   );
   const mediaClassName = cn('Block-media', {
     'is-fixed': !isDocked
   });
-  const contentClassName = `Block-content u-layout u-richtext${isLight ? '' : '-invert'}`;
+  const contentClassName = `Block-content${alignment ? ` is-${alignment}` : ''} u-layout u-richtext${
+    isLight ? '' : '-invert'
+  }`;
 
   ratios = {
     sm: ratios.sm || '3x4',
@@ -161,33 +163,28 @@ function Block({
       ${
         isPiecemeal
           ? contentEls.map(contentEl => {
-              let actualContentClassName = contentClassName;
+              const piecemealLightDark = contentEl.getAttribute('data-lightdark');
+              const piecemeallAlignment = contentEl.getAttribute('data-alignment');
+              let piecemealContentClassName = contentClassName;
 
               // Override the light/dark from the Block if a marker was given
-              switch (contentEl.getAttribute('data-lightdark')) {
-                case 'light':
-                  actualContentClassName = actualContentClassName.replace('u-richtext-invert', 'u-richtext');
-                  break;
-                case 'dark':
-                  actualContentClassName = actualContentClassName.replace('u-richtext', 'u-richtext-invert');
-                  break;
+              if (piecemealLightDark) {
+                piecemealContentClassName = piecemealContentClassName.replace(
+                  /\su-richtext(?:-invert)?/,
+                  ` u-richtext${piecemealLightDark === 'light' ? '' : '-invert'}`
+                );
               }
 
               // Override the left/right from the Block if marker has it
-              switch (contentEl.getAttribute('data-alignment')) {
-                case 'left':
-                  actualContentClassName = actualContentClassName += ' is-left';
-                  break;
-                case 'right':
-                  actualContentClassName = actualContentClassName += ' is-right';
-                  break;
-                case 'center':
-                  actualContentClassName = actualContentClassName += ' is-center';
-                  break;
+              if (piecemeallAlignment) {
+                piecemealContentClassName = piecemealContentClassName.replace(
+                  /\sis-(?:left|right)?/,
+                  `${piecemeallAlignment === 'center' ? '' : ` is-${piecemeallAlignment}`}`
+                );
               }
 
               return html`
-                <div class="${actualContentClassName}">${contentEl}</div>
+                <div class="${piecemealContentClassName}">${contentEl}</div>
               `;
             })
           : contentEls.length > 0
