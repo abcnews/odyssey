@@ -26,7 +26,6 @@ const TRANSITIONS = [
 ];
 
 function Block({
-  type = 'richtext',
   hasInsetMedia,
   isContained,
   isDocked,
@@ -48,23 +47,21 @@ function Block({
 
   const className = cn(
     'Block',
-    `is-${type}`,
     {
       'has-inset-media': hasInsetMedia,
-      'is-piecemeal': type === 'richtext' && isPiecemeal,
+      'is-piecemeal': isPiecemeal,
       [`is-${alignment}`]: alignment
     },
     'u-full'
   );
   const mediaClassName = cn('Block-media', {
-    'u-parallax': type === 'heading',
-    'is-fixed': type === 'richtext' && !isDocked
+    'is-fixed': !isDocked
   });
   const contentClassName = `Block-content u-layout u-richtext${isLight ? '' : '-invert'}`;
 
   ratios = {
-    sm: ratios.sm || (type === 'heading' ? '3x2' : '3x4'),
-    md: ratios.md || (type === 'heading' ? '16x9' : '1x1'),
+    sm: ratios.sm || '3x4',
+    md: ratios.md || '1x1',
     lg: ratios.lg
   };
 
@@ -202,7 +199,7 @@ function Block({
     </div>
   `;
 
-  if (mediaContainerEl && type === 'richtext' && isDocked) {
+  if (mediaContainerEl && isDocked) {
     let state = {};
 
     subscribe(function _checkIfBlockPropertiesShouldBeUpdated(client) {
@@ -475,10 +472,6 @@ function transformSection(section) {
 
       return _config;
     }, config);
-  }
-
-  if (config.contentEls.length === 1 && config.contentEls[0].tagName === 'H2') {
-    config.type = 'heading';
   }
 
   section.substituteWith(Block(config), sourceMediaEl ? [sourceMediaEl] : []);
