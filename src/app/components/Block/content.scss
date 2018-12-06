@@ -39,6 +39,10 @@
     }
   }
 
+  .Header.is-floating + .Block > & {
+    margin-top: calc(100vh - #{$abc-nav-height});
+  }
+
   & > * {
     margin: 0 !important;
     padding: 0.75rem 1.75rem;
@@ -54,7 +58,7 @@
     }
 
     &:nth-child(2) > :first-child {
-      margin-top: 100vh !important;
+      margin-top: 80vh !important;
     }
 
     & > :last-child {
@@ -108,10 +112,6 @@
 
   & > a[name] {
     padding: 0;
-  }
-
-  .Header.is-floating + .Block &:nth-child(2) {
-    margin-top: calc(100vh - #{$abc-nav-height});
   }
 
   .is-piecemeal > & {
