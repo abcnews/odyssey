@@ -40,6 +40,10 @@ function Block({
   transition,
   backgrounds
 }) {
+  if (contentEls.length === 1) {
+    isPiecemeal = true;
+  }
+
   if (hasInsetMedia) {
     isDocked = true;
     alignment = alignment || 'right';
@@ -49,17 +53,18 @@ function Block({
     'Block',
     {
       'has-inset-media': hasInsetMedia,
-      'is-piecemeal': isPiecemeal,
-      [`has-${alignment}`]: alignment
+      [`has-${alignment}`]: alignment,
+      'has-dark': !isLight,
+      'has-light': isLight,
+      'is-not-piecemeal': !isPiecemeal,
+      'is-piecemeal': isPiecemeal
     },
     'u-full'
   );
   const mediaClassName = cn('Block-media', {
     'is-fixed': !isDocked
   });
-  const contentClassName = `Block-content${alignment ? ` is-${alignment}` : ''} u-layout u-richtext${
-    isLight ? '' : '-invert'
-  }`;
+  const contentClassName = `Block-content${alignment ? ` is-${alignment}` : ''} u-richtext${isLight ? '' : '-invert'}`;
 
   ratios = {
     sm: ratios.sm || '3x4',
@@ -70,16 +75,6 @@ function Block({
   let mediaEl;
 
   if (backgrounds) {
-    // const productionUnit = document.querySelector('meta[name="ABC.productionUnit"]');
-    // if (!productionUnit || productionUnit.getAttribute('content') !== 'Interactive Digital Storytelling team') {
-    //   alert(
-    //     "In order to use Block transitions you need to set the production unit to 'Interactive Digital Storytelling team'."
-    //   );
-
-    //   transition = null;
-    //   backgrounds = [];
-    // }
-
     backgrounds = backgrounds.map(element => {
       // Try to resolve the background element
       let backgroundEl;
@@ -170,7 +165,7 @@ function Block({
               // Override the light/dark from the Block if a marker was given
               if (piecemealLightDark) {
                 piecemealContentClassName = piecemealContentClassName.replace(
-                  /\su-richtext(?:-invert)?/,
+                  /\su-richtext(-invert)?/,
                   ` u-richtext${piecemealLightDark === 'light' ? '' : '-invert'}`
                 );
               }
@@ -178,7 +173,7 @@ function Block({
               // Override the left/right from the Block if marker has it
               if (piecemeallAlignment) {
                 piecemealContentClassName = piecemealContentClassName.replace(
-                  /\sis-(?:left|right)?/,
+                  /\sis-(left|right)/,
                   `${piecemeallAlignment === 'center' ? '' : ` is-${piecemeallAlignment}`}`
                 );
               }
@@ -217,7 +212,6 @@ function Block({
 
   if (backgrounds) {
     // In theory, this could be any colour
-    // if (transition === 'white') {
     if (transition.length === 6 && transition.match(/^[0-9a-f]{6}$/)) {
       blockEl.style.setProperty('background-color', '#' + transition);
     }

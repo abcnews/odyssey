@@ -199,6 +199,34 @@ function app() {
   window.__ODYSSEY__ = api;
   window.dispatchEvent(new CustomEvent('odyssey:api', { detail: api }));
 
+  // Fix Block classNames on non-updated scrollyteller instances
+  setTimeout(() => {
+    const alignmentPattern = /\sis-(left|right)/;
+    const blockEls = $$('.Block.is-richtext');
+
+    blockEls.forEach(el => {
+      const [, , alignment] = el.className.match(alignmentPattern) || [];
+
+      el.className = el.className.replace(' is-richtext', '');
+
+      if (alignment) {
+        el.className = el.className.replace(` is-${alignment}`, ` has-${alignment}`);
+      }
+
+      $$('.Block-content', el).forEach(el => {
+        el.className = el.className.replace(' u-layout', '');
+
+        if (alignment && !el.className.match(alignmentPattern)) {
+          el.className = `${el.className} is-${alignment}`;
+        }
+      });
+    });
+
+    if (blockEls.length) {
+      console.debug(`[Odyssey] Fixed classNames of deprecated scrollyteller Blocks`);
+    }
+  }, 2000);
+
   // Notify console of deprecated anchors
   setTimeout(() => {
     const deprecated = {};
