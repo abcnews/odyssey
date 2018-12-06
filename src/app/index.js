@@ -205,12 +205,12 @@ function app() {
     const blockEls = $$('.Block.is-richtext');
 
     blockEls.forEach(el => {
-      const [, , alignment] = el.className.match(alignmentPattern) || [];
+      const [, alignment] = el.className.match(alignmentPattern) || [];
 
       el.className = el.className.replace(' is-richtext', '');
 
       if (alignment) {
-        el.className = el.className.replace(` is-${alignment}`, ` has-${alignment}`);
+        el.className = `${el.className} has-${alignment}`;
       }
 
       $$('.Block-content', el).forEach(el => {
