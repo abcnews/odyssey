@@ -199,7 +199,9 @@ function app() {
   window.__ODYSSEY__ = api;
   window.dispatchEvent(new CustomEvent('odyssey:api', { detail: api }));
 
-  // Fix Block classNames on non-updated scrollyteller instances
+  // Fix Block classNames on non-updated scrollyteller instances.
+  // Stories which depend on this polyfill are tracked here:
+  // https://github.com/abcnews/odyssey/pull/64#issuecomment-444763314
   setTimeout(() => {
     const alignmentPattern = /\sis-(left|right)/;
     const blockEls = $$('.Block.is-richtext');
