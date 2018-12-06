@@ -70,12 +70,14 @@
       margin-top: 40vh !important;
     }
 
-    &:nth-child(2) > :first-child {
-      margin-top: 80vh !important;
-    }
-
     & > :last-child {
       margin-bottom: 40vh !important;
+    }
+  }
+
+  .is-piecemeal:not(.has-inset-media) > & {
+    &:nth-child(2) > :first-child {
+      margin-top: 80vh !important;
     }
   }
 
