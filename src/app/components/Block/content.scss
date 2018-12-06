@@ -17,15 +17,28 @@
     &.is-right {
       max-width: 35rem;
     }
+
+    .has-inset-media > &.is-left,
+    .has-inset-media > &.is-right {
+      max-width: 30rem;
+    }
   }
 
   @media #{$mq-lg} {
     &.is-left {
       margin-left: calc(25% - 12.5rem);
+
+      .has-inset-media > & {
+        margin-left: calc(25% - 14rem);
+      }
     }
 
     &.is-right {
       margin-right: calc(25% - 12.5rem);
+
+      .has-inset-media > & {
+        margin-right: calc(25% - 14rem);
+      }
     }
   }
 
