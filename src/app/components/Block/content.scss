@@ -52,7 +52,7 @@
     }
   }
 
-  .Header.is-floating + .Block > & {
+  .Header.is-floating + .Block > &:nth-child(2) {
     margin-top: calc(100vh - #{$abc-nav-height});
   }
 
