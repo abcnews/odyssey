@@ -66,9 +66,11 @@ const MQ = {
   SM: '(max-width: 43.6875rem)',
   MD: '(min-width: 43.75rem) and (max-width: 61.1875rem)',
   LG: '(min-width: 61.25rem)',
+  XL: '(min-width: 112.5rem)',
   NOT_SM: '(min-width: 43.75rem)',
   NOT_MD: '(max-width: 43.6875rem), (min-width: 61.25rem)',
   NOT_LG: '(max-width: 61.1875rem)',
+  NOT_XL: '(max-width: 112.4375rem)',
   PORTRAIT: '(orientation: portrait)',
   LANDSCAPE: '(orientation: landscape)',
   GT_4_3: '(min-aspect-ratio: 4/3)'

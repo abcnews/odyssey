@@ -6,6 +6,7 @@ $font-serif: 'ABCSerif', 'Book Antiqua', 'Palatino Linotype', Palatino, serif;
 $color-white: #fff;
 $color-white-transparent: rgba(255, 255, 255, 0);
 $color-white-transparent-30: rgba(255, 255, 255, 0.3);
+$color-white-transparent-45: rgba(255, 255, 255, 0.45);
 $color-white-transparent-60: rgba(255, 255, 255, 0.6);
 $color-white-transparent-75: rgba(255, 255, 255, 0.75);
 $color-white-transparent-90: rgba(255, 255, 255, 0.9);
@@ -40,6 +41,16 @@ $gradient-white-vertical-0-0-100-60: linear-gradient(
   to bottom,
   $color-white-transparent 0%,
   $color-white-transparent-60 100%
+);
+$gradient-white-vertical-50-0-100-60: linear-gradient(
+  to bottom,
+  $color-white-transparent 50%,
+  $color-white-transparent-60 100%
+);
+$gradient-white-horizontal-40-45-65-0: linear-gradient(
+  to right,
+  $color-white-transparent-45 40%,
+  $color-white-transparent 65%
 );
 
 $gradient-black-vertical-0-0-100-60: linear-gradient(
@@ -77,9 +88,11 @@ $layout-fixed-padding: $layout-fixed-gutter / 2;
 $mq-sm: '(max-width: 43.6875rem)';
 $mq-md: '(min-width: 43.75rem) and (max-width: 61.1875rem)';
 $mq-lg: '(min-width: 61.25rem)';
+$mq-xl: '(min-width: 112.5rem)';
 $mq-not-sm: '(min-width: 43.75rem)';
 $mq-not-md: '(max-width: 43.6875rem), (min-width: 61.25rem)';
 $mq-not-lg: '(max-width: 61.1875rem)';
+$mq-not-xl: '(max-width: 112.4375rem)';
 $mq-portrait: '(orientation: portrait)';
 $mq-landscape: '(orientation: landscape)';
 $mq-gt-4-3: '(min-aspect-ratio: 4/3)';
