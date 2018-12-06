@@ -2,7 +2,7 @@
 const html = require('bel');
 
 // Ours
-const { SELECTORS, RICHTEXT_BLOCK_TAGNAMES } = require('../constants');
+const { IS_PREVIEW, RICHTEXT_BLOCK_TAGNAMES, SELECTORS } = require('../constants');
 const api = require('./api');
 const { PresentationLayerAsyncComponent } = require('./async-components/loader');
 const Caption = require('./components/Caption');
@@ -222,7 +222,7 @@ function app() {
       });
     });
 
-    if (blockEls.length) {
+    if (IS_PREVIEW && blockEls.length) {
       console.debug(`[Odyssey] Fixed classNames of deprecated scrollyteller Blocks`);
     }
   }, 2000);
@@ -235,7 +235,7 @@ function app() {
 
     const keys = Object.keys(deprecated);
 
-    if (keys.length) {
+    if (IS_PREVIEW && keys.length) {
       console.debug(`[Odyssey] Deprecated anchors used: ${Object.keys(deprecated).join(', ')}`);
     }
   }, 5000);
