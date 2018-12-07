@@ -6,6 +6,7 @@ $font-serif: 'ABCSerif', 'Book Antiqua', 'Palatino Linotype', Palatino, serif;
 $color-white: #fff;
 $color-white-transparent: rgba(255, 255, 255, 0);
 $color-white-transparent-30: rgba(255, 255, 255, 0.3);
+$color-white-transparent-45: rgba(255, 255, 255, 0.45);
 $color-white-transparent-60: rgba(255, 255, 255, 0.6);
 $color-white-transparent-75: rgba(255, 255, 255, 0.75);
 $color-white-transparent-90: rgba(255, 255, 255, 0.9);
@@ -20,19 +21,16 @@ $color-black-transparent-93: rgba(0, 0, 0, 0.93);
 
 $color-grey-50: #f9f9f9;
 $color-grey-100: #d2d2d2;
-$color-grey-200: #c4c4c4;
 $color-grey-200-transparent-30: rgba(196, 196, 196, 0.3);
 $color-grey-300: #b3b3b3;
 $color-grey-300-transparent-15: rgba(179, 179, 179, 0.15);
 $color-grey-300-transparent-70: rgba(179, 179, 179, 0.7);
 $color-grey-500: #666;
 $color-grey-500-transparent-65: rgba(102, 102, 102, 0.65);
-$color-grey-800: #1c1c1c;
 $color-grey-900: #111;
 
 $color-lighterPrimary: #a5daf3;
 $color-lightPrimary: #68e1ff;
-$color-primary: #007aff;
 $color-darkPrimary: #0073a8;
 $color-darkerPrimary: #315768;
 
@@ -43,6 +41,16 @@ $gradient-white-vertical-0-0-100-60: linear-gradient(
   to bottom,
   $color-white-transparent 0%,
   $color-white-transparent-60 100%
+);
+$gradient-white-vertical-50-0-100-60: linear-gradient(
+  to bottom,
+  $color-white-transparent 50%,
+  $color-white-transparent-60 100%
+);
+$gradient-white-horizontal-40-45-65-0: linear-gradient(
+  to right,
+  $color-white-transparent-45 40%,
+  $color-white-transparent 65%
 );
 
 $gradient-black-vertical-0-0-100-60: linear-gradient(
@@ -59,11 +67,6 @@ $gradient-black-vertical-0-45-100-75: linear-gradient(
   to bottom,
   $color-black-transparent-45 0%,
   $color-black-transparent-75 100%
-);
-$gradient-black-vertical-40-0-80-60: linear-gradient(
-  to bottom,
-  $color-black-transparent 40%,
-  $color-black-transparent-60 80%
 );
 $gradient-black-horizontal-40-45-65-0: linear-gradient(
   to right,
@@ -85,9 +88,11 @@ $layout-fixed-padding: $layout-fixed-gutter / 2;
 $mq-sm: '(max-width: 43.6875rem)';
 $mq-md: '(min-width: 43.75rem) and (max-width: 61.1875rem)';
 $mq-lg: '(min-width: 61.25rem)';
+$mq-xl: '(min-width: 112.5rem)';
 $mq-not-sm: '(min-width: 43.75rem)';
 $mq-not-md: '(max-width: 43.6875rem), (min-width: 61.25rem)';
 $mq-not-lg: '(max-width: 61.1875rem)';
+$mq-not-xl: '(max-width: 112.4375rem)';
 $mq-portrait: '(orientation: portrait)';
 $mq-landscape: '(orientation: landscape)';
 $mq-gt-4-3: '(min-aspect-ratio: 4/3)';

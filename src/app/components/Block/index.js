@@ -26,7 +26,6 @@ const TRANSITIONS = [
 ];
 
 function Block({
-  type = 'richtext',
   hasInsetMedia,
   isContained,
   isDocked,
@@ -41,6 +40,10 @@ function Block({
   transition,
   backgrounds
 }) {
+  if (contentEls.length === 1) {
+    isPiecemeal = true;
+  }
+
   if (hasInsetMedia) {
     isDocked = true;
     alignment = alignment || 'right';
@@ -48,39 +51,30 @@ function Block({
 
   const className = cn(
     'Block',
-    `is-${type}`,
     {
       'has-inset-media': hasInsetMedia,
-      'is-piecemeal': type === 'richtext' && isPiecemeal,
-      [`is-${alignment}`]: alignment
+      [`has-${alignment}`]: alignment,
+      'has-dark': !isLight,
+      'has-light': isLight,
+      'is-not-piecemeal': !isPiecemeal,
+      'is-piecemeal': isPiecemeal
     },
     'u-full'
   );
   const mediaClassName = cn('Block-media', {
-    'u-parallax': type === 'heading',
-    'is-fixed': type === 'richtext' && !isDocked
+    'is-fixed': !isDocked
   });
-  const contentClassName = `Block-content u-layout u-richtext${isLight ? '' : '-invert'}`;
+  const contentClassName = `Block-content${alignment ? ` is-${alignment}` : ''} u-richtext${isLight ? '' : '-invert'}`;
 
   ratios = {
-    sm: ratios.sm || (type === 'heading' ? '3x2' : '3x4'),
-    md: ratios.md || (type === 'heading' ? '16x9' : '1x1'),
+    sm: ratios.sm || '3x4',
+    md: ratios.md || '1x1',
     lg: ratios.lg
   };
 
   let mediaEl;
 
   if (backgrounds) {
-    // const productionUnit = document.querySelector('meta[name="ABC.productionUnit"]');
-    // if (!productionUnit || productionUnit.getAttribute('content') !== 'Interactive Digital Storytelling team') {
-    //   alert(
-    //     "In order to use Block transitions you need to set the production unit to 'Interactive Digital Storytelling team'."
-    //   );
-
-    //   transition = null;
-    //   backgrounds = [];
-    // }
-
     backgrounds = backgrounds.map(element => {
       // Try to resolve the background element
       let backgroundEl;
@@ -164,33 +158,28 @@ function Block({
       ${
         isPiecemeal
           ? contentEls.map(contentEl => {
-              let actualContentClassName = contentClassName;
+              const piecemealLightDark = contentEl.getAttribute('data-lightdark');
+              const piecemeallAlignment = contentEl.getAttribute('data-alignment');
+              let piecemealContentClassName = contentClassName;
 
               // Override the light/dark from the Block if a marker was given
-              switch (contentEl.getAttribute('data-lightdark')) {
-                case 'light':
-                  actualContentClassName = actualContentClassName.replace('u-richtext-invert', 'u-richtext');
-                  break;
-                case 'dark':
-                  actualContentClassName = actualContentClassName.replace('u-richtext', 'u-richtext-invert');
-                  break;
+              if (piecemealLightDark) {
+                piecemealContentClassName = piecemealContentClassName.replace(
+                  /\su-richtext(-invert)?/,
+                  ` u-richtext${piecemealLightDark === 'light' ? '' : '-invert'}`
+                );
               }
 
               // Override the left/right from the Block if marker has it
-              switch (contentEl.getAttribute('data-alignment')) {
-                case 'left':
-                  actualContentClassName = actualContentClassName += ' is-left';
-                  break;
-                case 'right':
-                  actualContentClassName = actualContentClassName += ' is-right';
-                  break;
-                case 'center':
-                  actualContentClassName = actualContentClassName += ' is-center';
-                  break;
+              if (piecemeallAlignment) {
+                piecemealContentClassName = piecemealContentClassName.replace(
+                  /\sis-(left|right)/,
+                  `${piecemeallAlignment === 'center' ? '' : ` is-${piecemeallAlignment}`}`
+                );
               }
 
               return html`
-                <div class="${actualContentClassName}">${contentEl}</div>
+                <div class="${piecemealContentClassName}">${contentEl}</div>
               `;
             })
           : contentEls.length > 0
@@ -202,7 +191,7 @@ function Block({
     </div>
   `;
 
-  if (mediaContainerEl && type === 'richtext' && isDocked) {
+  if (mediaContainerEl && isDocked) {
     let state = {};
 
     subscribe(function _checkIfBlockPropertiesShouldBeUpdated(client) {
@@ -223,7 +212,6 @@ function Block({
 
   if (backgrounds) {
     // In theory, this could be any colour
-    // if (transition === 'white') {
     if (transition.length === 6 && transition.match(/^[0-9a-f]{6}$/)) {
       blockEl.style.setProperty('background-color', '#' + transition);
     }
@@ -475,10 +463,6 @@ function transformSection(section) {
 
       return _config;
     }, config);
-  }
-
-  if (config.contentEls.length === 1 && config.contentEls[0].tagName === 'H2') {
-    config.type = 'heading';
   }
 
   section.substituteWith(Block(config), sourceMediaEl ? [sourceMediaEl] : []);
