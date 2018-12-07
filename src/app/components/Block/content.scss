@@ -66,18 +66,22 @@
   }
 
   .is-piecemeal > & {
-    & > :first-child {
+    > :first-child {
       margin-top: 40vh !important;
     }
 
-    & > :last-child {
+    &:nth-child(2) > :first-child {
+      margin-top: 80vh !important;
+    }
+
+    > :last-child {
       margin-bottom: 40vh !important;
     }
   }
 
-  .is-piecemeal:not(.has-inset-media) > & {
-    &:nth-child(2) > :first-child {
-      margin-top: 80vh !important;
+  .is-piecemeal.has-inset-media > &:nth-child(2) > :first-child {
+    @media #{$mq-lg} {
+      margin-top: 40vh !important;
     }
   }
 
