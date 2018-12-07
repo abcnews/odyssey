@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "@abcaustralia/postcss-config": "^3.2.6",
-    "@abcnews/aunty": "^9.10.0",
+    "@abcnews/aunty": "^9.11.0",
     "postcss-loader": "^3.0.0"
   },
   "abc": {
