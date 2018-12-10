@@ -26,19 +26,20 @@ const TRANSITIONS = [
 ];
 
 function Block({
+  alignment,
+  backgrounds,
+  contentEls = [],
   hasInsetMedia,
+  imgEl,
   isContained,
   isDocked,
+  isGrouped,
   isLight,
   isPiecemeal,
-  alignment,
-  videoId,
   isVideoYouTube,
-  imgEl,
   ratios = {},
-  contentEls = [],
   transition,
-  backgrounds
+  videoId
 }) {
   if (contentEls.length === 1) {
     isPiecemeal = true;
@@ -157,9 +158,10 @@ function Block({
       ${mediaContainerEl}
       ${
         isPiecemeal
-          ? contentEls.map(contentEl => {
-              const piecemealLightDark = contentEl.getAttribute('data-lightdark');
+          ? contentEls.reduce((memo, contentEl) => {
               const piecemeallAlignment = contentEl.getAttribute('data-alignment');
+              const piecemealBackgroundIndex = contentEl.getAttribute('data-background-index');
+              const piecemealLightDark = contentEl.getAttribute('data-lightdark');
               let piecemealContentClassName = contentClassName;
 
               // Override the light/dark from the Block if a marker was given
@@ -178,10 +180,16 @@ function Block({
                 );
               }
 
-              return html`
-                <div class="${piecemealContentClassName}">${contentEl}</div>
-              `;
-            })
+              if (memo.length === 0 || !isGrouped || (piecemealBackgroundIndex && piecemealBackgroundIndex.length)) {
+                memo.push(html`
+                  <div class="${piecemealContentClassName}">${contentEl}</div>
+                `);
+              } else {
+                memo[memo.length - 1].appendChild(contentEl);
+              }
+
+              return memo;
+            }, [])
           : contentEls.length > 0
           ? html`
               <div class="${contentClassName}">${contentEls}</div>
@@ -271,6 +279,7 @@ function transformSection(section) {
   const hasInsetMedia = section.configSC.indexOf('inset') > -1;
   const isContained = section.configSC.indexOf('contain') > -1;
   const isDocked = section.configSC.indexOf('docked') > -1;
+  const isGrouped = section.configSC.indexOf('grouped') > -1;
   const isLight = section.configSC.indexOf('light') > -1;
   const isPiecemeal = section.configSC.indexOf('piecemeal') > -1;
   const shouldSupplant = section.configSC.indexOf('supplant') > -1;
@@ -305,13 +314,14 @@ function transformSection(section) {
   }
 
   let config = {
+    alignment,
+    contentEls: [],
     hasInsetMedia,
     isContained,
     isDocked,
-    isPiecemeal,
+    isGrouped,
     isLight,
-    alignment,
-    contentEls: []
+    isPiecemeal
   };
 
   // if the 'transition' flag is set then assume its a slide show
