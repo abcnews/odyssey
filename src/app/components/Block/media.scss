@@ -145,8 +145,11 @@
     }
   }
 
-  video {
-    z-index: -1;
+  .is-not-piecemeal & {
+    img,
+    video {
+      z-index: -1;
+    }
   }
 
   .background-transition {
