@@ -8,7 +8,7 @@ const { getMeta } = require('../meta');
 const clients = {};
 
 module.exports.track = function(name, value, cb) {
-  if (typeof name !== 'string' || typeof value !== 'string') {
+  if (name == null || value == null) {
     throw new Error('Behaviour tracking requires a name and value');
   }
 
