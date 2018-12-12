@@ -3,6 +3,7 @@ const html = require('bel');
 
 // Ours
 const { invalidateClient } = require('../../scheduler');
+const { track } = require('../../utils/behaviour');
 const { getDocument } = require('../../utils/capi');
 const Picture = require('../Picture');
 require('./index.scss');
@@ -14,13 +15,16 @@ const PICTURE_RATIOS = {
 };
 
 function Recirculation({ ids, pull }) {
-  const itemEls = ids.map(id => html`<a class="Recirculation-item" href="/news/${id}"></a>`);
+  const itemEls = ids.map(
+    id =>
+      html`
+        <a class="Recirculation-item" href="/news/${id}" onclick="${() => track('recirculation-link', id)}"></a>
+      `
+  );
 
   const el = html`
-  <aside class="Recirculation${pull ? ` u-pull-${pull}` : ''}" role="complementary">
-    ${itemEls}
-  </aside>
-`;
+    <aside class="Recirculation${pull ? ` u-pull-${pull}` : ''}" role="complementary">${itemEls}</aside>
+  `;
 
   el.classList.add('has-children');
   ids.forEach((id, index) =>
@@ -35,7 +39,11 @@ function Recirculation({ ids, pull }) {
       const title = item.shortTeaserTitle || item.teaserTitle || item.title;
       const teaserText = item.shortTeaserTextPlain || item.teaserTextPlain;
 
-      itemEl.appendChild(html`<h2>${title}</h2>`);
+      itemEl.appendChild(
+        html`
+          <h2>${title}</h2>
+        `
+      );
 
       if (item.thumbnailLink) {
         itemEl.appendChild(Picture({ src: item.thumbnailLink.media[0].url, ratios: PICTURE_RATIOS }));
@@ -43,10 +51,18 @@ function Recirculation({ ids, pull }) {
       }
 
       if (item.textPlain.indexOf(teaserText) !== 0) {
-        itemEl.appendChild(html`<p>${teaserText}</p>`);
+        itemEl.appendChild(
+          html`
+            <p>${teaserText}</p>
+          `
+        );
       }
 
-      itemEl.appendChild(html`<div>Read more →</div>`);
+      itemEl.appendChild(
+        html`
+          <div>Read more →</div>
+        `
+      );
 
       el.classList.add('has-children');
     })

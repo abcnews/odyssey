@@ -138,6 +138,7 @@ function getRelatedMedia() {
 function getMeta() {
   if (!meta) {
     meta = {
+      id: getMetaContent('ContentId'),
       title: getMetaContent('replacement-title') || $(SELECTORS.TITLE).textContent,
       published: getDate('DCTERMS.issued', 'original'),
       updated: getDate('DCTERMS.modified', 'updated'),

@@ -61,7 +61,9 @@ function VideoPlayer({
   const placeholderEl = html`
     <div class="u-sizer-sm-${ratios.sm} u-sizer-md-${ratios.md} u-sizer-lg-${ratios.lg}"></div>
   `;
-  const videoEl = html`<video preload="none" tabindex="-1" aria-label="${title}"></video>`;
+  const videoEl = html`
+    <video preload="none" tabindex="-1" aria-label="${title}"></video>
+  `;
 
   const isInitiallySmallViewport = window.matchMedia(MQ.SM).matches;
 
@@ -269,12 +271,14 @@ function VideoPlayer({
     // highest; otherwise, use the first source (of any resolution).
     // Note: Only Phase 1 (Desktop) sources have width/height defined, making it the
     // only template that can differentiate its high resolution sources.
-    const highResSources = sources.filter(source => source.width >= 1080).sort((a, b) => {
-      // Wide videos should come before squares
-      if (a.width > b.width) return -1;
-      if (b.width > a.width) return 1;
-      return 0;
-    });
+    const highResSources = sources
+      .filter(source => source.width >= 1080)
+      .sort((a, b) => {
+        // Wide videos should come before squares
+        if (a.width > b.width) return -1;
+        if (b.width > a.width) return 1;
+        return 0;
+      });
     const source = (highResSources.length ? highResSources : sources)[
       highResSources.length > 1 && isInitiallySmallViewport ? 1 : 0
     ];
@@ -315,14 +319,12 @@ function VideoPlayer({
 
     updateUI(player);
 
-    trackProgress(videoEl);
+    trackProgress(videoId, videoEl);
   }
 
   videoPlayerEl = html`
     <div class="VideoPlayer${isContained ? ' is-contained' : ''}">
-      ${placeholderEl}
-      ${videoEl}
-      ${isAmbient ? null : videoControlsEl}
+      ${placeholderEl} ${videoEl} ${isAmbient ? null : videoControlsEl}
     </div>
   `;
 

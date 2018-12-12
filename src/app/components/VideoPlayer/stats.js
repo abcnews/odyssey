@@ -1,7 +1,10 @@
+// Ours
+const { track } = require('../../utils/behaviour');
+
 const WT__CLIP_T = 'Odyssey_VideoPlayer';
 const WT__DL = '110';
 
-module.exports.trackProgress = el => {
+module.exports.trackProgress = (id, el) => {
   const sentEvents = {};
   let eventTimes = {};
   let previousTime = 0;
@@ -33,6 +36,7 @@ module.exports.trackProgress = el => {
         // probably jumped elsewhere in the video. Skip any event
         // times in this round since we haven't played through them.
         if (currentTime - previousTime < 5) {
+          track('video-progress', `${id}_${eventName}`);
           sendWebtrendsClipEvent(el, eventName);
         }
       } else if (sentEvents[eventName] && !isCurrentTimeBeyondEventTime) {

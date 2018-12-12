@@ -4,6 +4,7 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const { enqueue, invalidateClient } = require('../../scheduler');
+const { track } = require('../../utils/behaviour');
 const { $, $$, prepend } = require('../../utils/dom');
 const Caption = require('../Caption');
 const Gallery = require('../Gallery');
@@ -22,7 +23,9 @@ function MasterGallery() {
   }
 
   if (items.length === 0) {
-    return html`<div class="MasterGallery is-empty"></div>`;
+    return html`
+      <div class="MasterGallery is-empty"></div>
+    `;
   }
 
   const galleryEl = Gallery({ items });
@@ -67,6 +70,7 @@ function MasterGallery() {
 
     event.preventDefault();
 
+    track('master-gallery-open', id);
     goToId(id);
   });
 
@@ -83,18 +87,22 @@ function MasterGallery() {
   }
 
   const closeEl = html`
-    <button class="MasterGallery-close"
+    <button
+      class="MasterGallery-close"
       aria-label="Close the gallery"
-      onkeydown=${event => {
-        if (event.shiftKey && event.keyCode === TAB_KEY) {
-          event.preventDefault();
+      onkeydown="${
+        event => {
+          if (event.shiftKey && event.keyCode === TAB_KEY) {
+            event.preventDefault();
 
-          if (lastCaptionLinkEl) {
-            lastCaptionLinkEl.focus();
+            if (lastCaptionLinkEl) {
+              lastCaptionLinkEl.focus();
+            }
           }
         }
-      }}
-      onclick=${close}></button>
+      }"
+      onclick="${close}"
+    ></button>
   `;
 
   prepend($('.Gallery-layout', galleryEl), closeEl);
@@ -105,14 +113,15 @@ function MasterGallery() {
       role="dialog"
       aria-label="Gallery of all photos in this story"
       tabindex="-1"
-      onclick=${function(event) {
-        if (this === event.target) {
-          close();
+      onclick="${
+        function(event) {
+          if (this === event.target) {
+            close();
+          }
         }
-      }}>
-      <div class="MasterGallery-container u-richtext-invert">
-        ${galleryEl}
-      </div>
+      }"
+    >
+      <div class="MasterGallery-container u-richtext-invert">${galleryEl}</div>
     </div>
   `;
 

@@ -5,7 +5,8 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const { MOCK_ELEMENT } = require('../../../constants');
-const { $, $$, detach, isElement, substitute } = require('../../utils/dom');
+const { track } = require('../../utils/behaviour');
+const { $, $$, detach, substitute } = require('../../utils/dom');
 require('./index.scss');
 
 const CURRENT_STORY_ID = url2cmid(window.location.href);
@@ -19,24 +20,49 @@ function Series({ stories, options = {} }) {
 
   return html`
     <div role="navigation" class="${className}">
-      ${stories.filter(({ isCurrent }) => !options.isRest || !isCurrent).map(
-        ({ isCurrent, kicker, thumbnail, title, url }) =>
-          url && !isCurrent
-            ? html`
-              <a href="${url}" aria-current="false">
-                ${thumbnail}
-                ${kicker ? html`<label>${kicker}</label>` : null}
-                <span>${title}</span>
-              </a>
-            `
-            : html`
-              <div aria-current="${isCurrent ? 'page' : 'false'}">
-                ${thumbnail}
-                ${kicker ? html`<label>${kicker}</label>` : null}
-                <span>${title}${isCurrent ? [' ', html`<i></i>`] : null}</span>
-              </div>
-            `
-      )}
+      ${
+        stories
+          .filter(({ isCurrent }) => !options.isRest || !isCurrent)
+          .map(({ isCurrent, kicker, thumbnail, title, url }) =>
+            url && !isCurrent
+              ? html`
+                  <a href="${url}" onclick="${() => track('series-link', url2cmid(url))}" aria-current="false">
+                    ${thumbnail}
+                    ${
+                      kicker
+                        ? html`
+                            <label>${kicker}</label>
+                          `
+                        : null
+                    } <span>${title}</span>
+                  </a>
+                `
+              : html`
+                  <div aria-current="${isCurrent ? 'page' : 'false'}">
+                    ${thumbnail}
+                    ${
+                      kicker
+                        ? html`
+                            <label>${kicker}</label>
+                          `
+                        : null
+                    }
+                    <span
+                      >${title}${
+                        isCurrent
+                          ? [
+                              ' ',
+                              html`
+                                <i></i>
+                              `
+                            ]
+                          : null
+                      }</span
+                    >
+                  </div>
+                `
+          )
+      }
     </div>
   `;
 }

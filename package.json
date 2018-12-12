@@ -16,6 +16,7 @@
     "@abcaustralia/abc-components": "^4.3.4",
     "@abcaustralia/dls-components": "^10.4.4",
     "@abcaustralia/profiles": "^3.1.2",
+    "@abcnews/poll-counters-client": "^1.1.0",
     "bel": "^4.5.1",
     "classnames": "^2.2.5",
     "core-js": "^2.5.7",

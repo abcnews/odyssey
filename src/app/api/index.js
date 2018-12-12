@@ -11,6 +11,7 @@ module.exports.meta = require('../meta');
 module.exports.scheduler = require('../scheduler');
 module.exports.utils = {
   anchors: require('../utils/anchors'),
+  behaviour: require('../utils/behaviour'),
   dom: require('../utils/dom'),
   misc: require('../utils/misc')
 };
