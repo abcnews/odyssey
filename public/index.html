@@ -1,32 +1,29 @@
 <style>
-html[veiled] {
-  overflow: hidden;
-  max-height: 100%;
-}
-html:not([veiled]) > body {
-  will-change: opacity;
-  transition: opacity 1s cubic-bezier(.25, .46, .45, .94);
-}
-html[veiled] > body {
-  opacity: 0;
-  pointer-events: none;
-}
+  html[veiled] {
+    overflow: hidden;
+    max-height: 100%;
+  }
+  html:not([veiled]) > body {
+    will-change: opacity;
+    transition: opacity 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  html[veiled] > body {
+    opacity: 0;
+    pointer-events: none;
+  }
 </style>
 <script>
-(function () {
-  var html = document.documentElement;
-  var timeout;
+  (function() {
+    var html = document.documentElement;
+    var timeout;
 
-  window.unveil = function () {
-    clearTimeout(timeout);
-    html.removeAttribute('veiled');
-  };
-  html.setAttribute('veiled', '');
-  timeout = setTimeout(window.unveil, 2000);
-  window.addEventListener('odyssey:api', unveil);
-})();
+    window.unveil = function() {
+      clearTimeout(timeout);
+      html.removeAttribute('veiled');
+    };
+    html.setAttribute('veiled', '');
+    timeout = setTimeout(window.unveil, 2000);
+    window.addEventListener('odyssey:api', unveil);
+  })();
 </script>
-<div class="init-interactive"
-  data-no-support-msg="true"
-  data-scripts="index.js"
-  data-styles="index.css" ></div>
+<div class="init-interactive" data-no-support-msg="true" data-scripts="index.js"></div>
