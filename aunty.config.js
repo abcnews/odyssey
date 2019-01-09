@@ -7,17 +7,13 @@ module.exports = {
     hot: false
   },
   webpack: config => {
-    // 1) Add the narrative adapter entry point
-    config.entry['adapter-narrative'] = require.resolve('./src/adapter-narrative.js');
-
-    // 2) Update the rules
     const rules = config.module.rules;
     const stylesRule = rules.find(x => x.__hint__ === 'styles');
 
-    // 2a) Limit the styles rule to the `src` directory
+    // Limit the styles rule to the `src` directory
     stylesRule.include = /(src\/*)/;
 
-    // 2b) Add a rule for @abcaustralia CSS
+    // Add a rule for @abcaustralia CSS
     rules.splice(rules.indexOf(stylesRule), 0, {
       test: /\.css$/,
       include: /(node_modules\/@abcaustralia\/*)/,
