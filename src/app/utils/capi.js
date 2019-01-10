@@ -8,6 +8,10 @@ const ENDPOINT =
   !IS_PREVIEW || window.location.search.indexOf('prod') > -1
     ? 'https://content-gateway.abc-prod.net.au'
     : 'http://nucwed.aus.aunty.abc.net.au';
+// The Content API is not returning proxied asset URLs (yet). However, this built JS
+// asset _is_ rewritten on-the-fly, so we need to obscure the host somewhat
+const GENIUNE_MEDIA_ORIGIN_PATTERN = new RegExp(['http', '://', 'mpegmedia', '.abc.net.au'].join(''), 'g');
+const PROXIED_MEDIA_ORIGIN = 'https://abcmedia.akamaized.net';
 
 module.exports.getDocument = (cmid, done) => {
   if (!cmid.length && cmid != +cmid) {
@@ -16,7 +20,6 @@ module.exports.getDocument = (cmid, done) => {
 
   xhr(
     {
-      responseType: 'json',
       uri: `${ENDPOINT}/api/v2/content/id/${cmid}`
     },
     (error, response, content) => {
@@ -24,13 +27,7 @@ module.exports.getDocument = (cmid, done) => {
         return done(error || new Error(response.statusCode));
       }
 
-      done(null, typeof content === 'object' ? content : JSON.parse(content));
+      done(null, JSON.parse(content.replace(GENIUNE_MEDIA_ORIGIN_PATTERN, PROXIED_MEDIA_ORIGIN)));
     }
   );
 };
-
-// The Content API is not returning proxied asset URLs (yet). However, this built JS
-// asset _is_ rewritten on-the-fly, so we need to obscure the host somewhat
-const GENIUNE_MEDIA_ORIGIN = ['http', '://', 'mpegmedia', '.abc.net.au'].join('');
-const PROXIED_MEDIA_ORIGIN = 'https://abcmedia.akamaized.net';
-module.exports.rewriteAssetURL = url => url.replace(GENIUNE_MEDIA_ORIGIN, PROXIED_MEDIA_ORIGIN);
