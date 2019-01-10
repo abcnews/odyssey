@@ -1,7 +1,6 @@
 // External
 const html = require('bel');
 const load = require('load-script');
-const raf = require('raf');
 
 // Ours
 const { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } = require('../../media');
@@ -70,8 +69,12 @@ function YouTubePlayer({
   const placeholderEl = html`
     <div class="u-sizer-sm-${ratios.sm} u-sizer-md-${ratios.md} u-sizer-lg-${ratios.lg}"></div>
   `;
-  const posterEl = html`<img src="${posterURL}" />`;
-  let videoEl = html`<div id="youtube-video-${id}"></div>`;
+  const posterEl = html`
+    <img src="${posterURL}" />
+  `;
+  let videoEl = html`
+    <div id="youtube-video-${id}"></div>
+  `;
   let youtube;
   let youTubePlayerEl;
   let videoControlsEl;
@@ -306,10 +309,7 @@ function YouTubePlayer({
 
   youTubePlayerEl = html`
     <div class="YouTubePlayer${isContained ? ' is-contained' : ''}">
-      ${placeholderEl}
-      ${videoEl}
-      ${isAmbient ? null : videoControlsEl}
-      ${posterEl}
+      ${placeholderEl} ${videoEl} ${isAmbient ? null : videoControlsEl} ${posterEl}
     </div>
   `;
 
@@ -324,7 +324,7 @@ subscribe(function _checkIfPlayersNeedToBeResized(client) {
 
 function loadYouTubeAPI(cb) {
   if (window.YT && window.YT.Player && window.YT.Player instanceof Function) {
-    raf(() => cb(window.YT));
+    requestAnimationFrame(() => cb(window.YT));
   }
 
   const previous = window.onYouTubeIframeAPIReady;

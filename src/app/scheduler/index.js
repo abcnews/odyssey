@@ -1,6 +1,5 @@
 // External
 const debounce = require('debounce');
-const raf = require('raf');
 
 const now = window.performance ? performance.now.bind(performance) : Date.now;
 
@@ -23,13 +22,13 @@ function flush() {
   }
 
   if (queue.length > 0) {
-    raf(flush);
+    requestAnimationFrame(flush);
   }
 }
 
 function enqueue(task) {
   if (hasStarted && queue.length === 0) {
-    raf(flush);
+    requestAnimationFrame(flush);
   }
 
   queue.push(task);
