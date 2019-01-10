@@ -1,5 +1,5 @@
 // External
-const Masthead = require('@abcaustralia/abc-components/cjs/Masthead/Masthead').default;
+const Masthead = require('@abcaustralia/abc-components/es6/Masthead/Masthead').default;
 const React = require('react');
 
 // Ours

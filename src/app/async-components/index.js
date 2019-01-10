@@ -1,5 +1,5 @@
 // External
-const App = require('@abcaustralia/dls-components/cjs/App/App').default;
+const App = require('@abcaustralia/dls-components/es6/App/App').default;
 const React = require('react');
 const ReactDOM = require('react-dom');
 
@@ -15,7 +15,7 @@ let shouldIncludeIcons = true;
 
 module.exports.render = (componentName, props = {}, el) => {
   ReactDOM.render(
-    <App brand="news" flexContainer={false}>
+    <App brand="news" externalIconFile={false} flexContainer={false}>
       {(shouldIncludeIcons = shouldIncludeIcons && <Icons />)}
       {React.createElement(components[componentName], props)}
     </App>,
