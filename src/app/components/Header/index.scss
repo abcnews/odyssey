@@ -22,8 +22,7 @@ $header-content-peek: 5.5rem;
 
   &.is-layered {
     display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
+    flex-direction: column-reverse;
     min-height: calc(100vh - #{$abc-nav-height});
 
     @media #{$mq-pl-sm} {
@@ -120,7 +119,6 @@ $header-content-peek: 5.5rem;
   }
 
   .is-layered > & {
-    margin-top: auto;
     background-image: $gradient-black-vertical-0-45-100-75;
   }
 
