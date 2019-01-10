@@ -1,3 +1,6 @@
+const path = require('path');
+const DuplicatePackageCheckerPlugin = require('duplicate-package-checker-webpack-plugin');
+
 module.exports = {
   type: 'react',
   build: {
@@ -38,6 +41,17 @@ module.exports = {
           }
         }
       ]
+    });
+
+    // Help us identify things we dan try to dedupe imports
+    config.plugins.push(new DuplicatePackageCheckerPlugin({ showHelp: false }));
+
+    // Use resolve.alias to dedupe
+    config.resolve = config.resolve || {};
+    config.resolve.alias = Object.assign(config.resolve.alias || {}, {
+      'performance-now': path.resolve(__dirname, 'node_modules/performance-now'),
+      react: path.resolve(__dirname, 'node_modules/react'),
+      'react-dom': path.resolve(__dirname, 'node_modules/react-dom')
     });
 
     return config;
