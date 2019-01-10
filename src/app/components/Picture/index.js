@@ -1,6 +1,6 @@
 // External
 const html = require('bel');
-const picturefill = require('picturefill');
+const picturefill = require('picturefill/dist/picturefill.min');
 
 // Ours
 const { MQ, RATIO_PATTERN, SMALLEST_IMAGE, MS_VERSION } = require('../../../constants');
@@ -69,7 +69,9 @@ function Picture({
     .replace(RATIO_PATTERN, ratios.lg)
     .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratios.lg].md}`);
 
-  const placeholderEl = html`<div class="${sizerClassName}"></div>`;
+  const placeholderEl = html`
+    <div class="${sizerClassName}"></div>
+  `;
 
   const picturePictureEl = html`
     <picture>
@@ -81,10 +83,7 @@ function Picture({
   `;
 
   const pictureEl = html`
-    <a class="Picture${isContained ? ' is-contained' : ''}">
-      ${placeholderEl}
-      ${picturePictureEl}
-    </a>
+    <a class="Picture${isContained ? ' is-contained' : ''}"> ${placeholderEl} ${picturePictureEl} </a>
   `;
 
   if (linkUrl) {
@@ -114,7 +113,9 @@ function Picture({
       }
 
       picture.isLoading = true;
-      imgEl = html`<img alt="${alt}" data-object-fit="" />`;
+      imgEl = html`
+        <img alt="${alt}" data-object-fit="" />
+      `;
       imgEl.addEventListener('load', picture.loaded, false);
       append(picturePictureEl, imgEl);
 
