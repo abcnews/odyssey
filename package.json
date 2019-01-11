@@ -35,7 +35,7 @@
 	},
 	"devDependencies": {
 		"@abcaustralia/postcss-config": "^3.2.6",
-		"@abcnews/aunty": "^10.1.1",
+		"@abcnews/aunty": "^10.1.2",
 		"duplicate-package-checker-webpack-plugin": "^3.0.0",
 		"postcss-loader": "^3.0.0",
 		"webpack-bundle-analyzer": "^3.0.3"
