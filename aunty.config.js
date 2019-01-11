@@ -45,7 +45,7 @@ module.exports = {
     });
 
     // Help us analyse our bundle
-    if (config.mode === 'development' && process.env.ODYSSEY_DEBUG) {
+    if (process.env.ODYSSEY_DEBUG) {
       config.plugins.push(new BundleAnalyzerPlugin());
     }
 
