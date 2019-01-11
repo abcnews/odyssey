@@ -1,9 +1,10 @@
 const smartquotes = require('./smartquotes');
 const { HYPHEN, NEWLINE, SM_RATIO_PATTERN, MD_RATIO_PATTERN, LG_RATIO_PATTERN } = require('../../constants');
 
-const TRIM_PATTERN = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
 const SLUG_ALLOWED_PATTERN = /[^\w\s\-\_]/g;
 const SLUG_REPLACE_PATTERN = /[-\s]+/g;
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const TRIM_PATTERN = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
 
 function returnFalse() {
   return false;
@@ -22,6 +23,15 @@ function slug(str) {
 
 function twoDigits(number) {
   return `${number < 10 ? '0' : ''}${number}`;
+}
+
+function formattedDate(date) {
+  const hours = date.getHours();
+  const minutes = date.getHours();
+
+  return `${date.getDate()} ${MONTHS[date.getMonth()]} ${date.getFullYear()}, ${hours}:${
+    minutes < 10 ? '0' : ''
+  }${minutes}${hours < 12 ? 'a' : 'p'}m`;
 }
 
 function flatten(lists) {
@@ -87,6 +97,7 @@ module.exports = {
   trim,
   slug,
   twoDigits,
+  formattedDate,
   flatten,
   literalList,
   getRatios,

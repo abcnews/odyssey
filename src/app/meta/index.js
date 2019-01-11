@@ -1,14 +1,11 @@
 // External
-const { parseDate } = require('inn-abcdatetime-lib');
+const parseDate = require('date-fns/parse');
 const url2cmid = require('util-url2cmid');
 
 // Ours
 const { MOCK_ELEMENT, SELECTORS } = require('../../constants');
 const { $, $$, detach } = require('../utils/dom');
 const { trim } = require('../utils/misc');
-
-const STARTS_WITH_YEAR_PATTERN = /^\d{4}-/;
-const ROGUE_YEAR_COLON_PATTERN = /:(\d+)$/;
 
 const FACEBOOK = /facebook\.com/;
 const TWITTER = /twitter\.com/;
@@ -27,19 +24,11 @@ function getMetaContent(name) {
 }
 
 function getDate(metaElName, timeElClassName) {
-  let datetime = getMetaContent(metaElName);
-
-  if (datetime) {
-    return parseDate(datetime);
-  }
-
-  datetime = ($(`time.${timeElClassName}`) || MOCK_ELEMENT).getAttribute('datetime') || '';
-
-  if (STARTS_WITH_YEAR_PATTERN.test(datetime)) {
-    return parseDate(datetime);
-  }
-
-  return datetime.replace(ROGUE_YEAR_COLON_PATTERN, '$1');
+  return (
+    parseDate(
+      getMetaContent(metaElName) || (($(`time.${timeElClassName}`) || MOCK_ELEMENT).getAttribute('datetime') || '')
+    ) || null
+  );
 }
 
 function getBylineNodes() {

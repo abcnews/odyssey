@@ -1,14 +1,13 @@
 // External
 const cn = require('classnames');
 const html = require('bel');
-const { formatUIGRelative } = require('inn-abcdatetime-lib');
 const url2cmid = require('util-url2cmid');
 
 // Ours
 const { MS_VERSION, VIDEO_MARKER_PATTERN } = require('../../../constants');
 const { enqueue, subscribe } = require('../../scheduler');
 const { $, detach, isElement } = require('../../utils/dom');
-const { dePx, getRatios, slug, trim } = require('../../utils/misc');
+const { dePx, formattedDate, getRatios, slug, trim } = require('../../utils/misc');
 const ScrollHint = require('../ScrollHint');
 const Picture = require('../Picture');
 const UParallax = require('../UParallax');
@@ -97,8 +96,14 @@ function Header({
         `
       : meta.infoSource.name
     : null;
-  const updated = typeof meta.updated === 'string' ? meta.updated : formatUIGRelative(meta.updated);
-  const published = typeof meta.published === 'string' ? meta.published : formatUIGRelative(meta.published);
+  const [published, updated] = [meta.published, meta.updated].map(date =>
+    date
+      ? {
+          datetime: date.toISOString(),
+          text: formattedDate(date)
+        }
+      : null
+  );
 
   const contentEls = [
     html`
@@ -131,12 +136,14 @@ function Header({
         : null,
       updated
         ? html`
-            <div class="Header-updated">Updated <time datetime="${meta.updated}">${updated}</time></div>
+            <div class="Header-updated">Updated <time datetime="${updated.datetime}">${updated.text}</time></div>
           `
         : null,
       published
         ? html`
-            <div class="Header-published">Published <time datetime="${meta.published}">${published}</time></div>
+            <div class="Header-published">
+              Published <time datetime="${published.datetime}">${published.text}</time>
+            </div>
           `
         : null
     ]);
