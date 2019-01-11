@@ -1,6 +1,3 @@
-// External
-const ns = require('util-news-selectors');
-
 const NEWLINE = '\n';
 const HYPHEN = '-';
 const CSS_URL = /url\('?"?(.*?)"?'?\)/;
@@ -14,17 +11,14 @@ const SCROLLPLAY_PCT_PATTERN = /scrollplay(\d+)/;
 
 const SELECTORS = {
   GLOBAL_NAV: '#abcHeader.global',
-  MAIN: ns('main'),
-  STORY: ns('story'),
-  SHARE_TOOLS: '.share-tools-list, .share, .tools',
-  TITLE: '.article h1, header > h1, h1[itemprop="name"]',
-  BYLINE: '.view-byline, header > .attribution, .byline',
-  INFO_SOURCE: '.bylinepromo, .program',
-  INFO_SOURCE_LINK: '.bylinepromo > a, .program > a',
-  EMBED: ns('embed'),
-  LEFT_EMBED: ns('embed:left'),
-  RIGHT_EMBED: ns('embed:right'),
-  WYSIWYG_EMBED: ns('embed:wysiwyg')
+  MAIN: '.page_margins#main_content,body>.content,.main-content-container',
+  STORY: '.article.section,article>.story.richtext,.article-detail-page .article-text',
+  SHARE_TOOLS: '.share-tools-list,.share,.tools',
+  TITLE: '.article h1,header>h1,h1[itemprop="name"]',
+  BYLINE: '.view-byline,header>.attribution,.byline',
+  INFO_SOURCE: '.bylinepromo,.program',
+  INFO_SOURCE_LINK: '.bylinepromo>a,.program>a',
+  WYSIWYG_EMBED: '.inline-content.wysiwyg,.embed-wysiwyg.richtext,.view-wysiwyg'
 };
 
 const RICHTEXT_BLOCK_TAGNAMES = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'OL', 'UL'];
