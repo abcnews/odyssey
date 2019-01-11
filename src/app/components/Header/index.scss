@@ -83,6 +83,14 @@ $header-content-peek: 5.5rem;
     @media #{$mq-pl-sm} {
       height: calc(100vh - #{$abc-nav-height--mq-pl-sm});
     }
+
+    :not(.is-layered) > & {
+      height: calc(100vh - #{$abc-nav-height + $header-content-peek});
+
+      @media #{$mq-pl-sm} {
+        height: calc(100vh - #{$abc-nav-height--mq-pl-sm + $header-content-peek});
+      }
+    }
   }
 
   &::after {
