@@ -24,11 +24,11 @@ function getMetaContent(name) {
 }
 
 function getDate(metaElName, timeElClassName) {
-  return (
-    parseDate(
-      getMetaContent(metaElName) || (($(`time.${timeElClassName}`) || MOCK_ELEMENT).getAttribute('datetime') || '')
-    ) || null
+  const date = parseDate(
+    getMetaContent(metaElName) || (($(`time.${timeElClassName}`) || MOCK_ELEMENT).getAttribute('datetime') || '')
   );
+
+  return isNaN(date) ? null : date;
 }
 
 function getBylineNodes() {
