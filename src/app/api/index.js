@@ -5,7 +5,8 @@ module.exports.components = {
   Picture: require('../components/Picture'),
   Quote: require('../components/Quote'),
   ShareLinks: require('../components/ShareLinks'),
-  VideoPlayer: require('../components/VideoPlayer')
+  VideoPlayer: require('../components/VideoPlayer'),
+  YouTubePlayer: require('../components/YouTubePlayer')
 };
 module.exports.meta = require('../meta');
 module.exports.scheduler = require('../scheduler');

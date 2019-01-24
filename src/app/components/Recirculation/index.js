@@ -2,9 +2,9 @@
 const html = require('bel');
 
 // Ours
+const capiFetch = require('@abcnews/capi-fetch').default;
 const { invalidateClient } = require('../../scheduler');
 const { track } = require('../../utils/behaviour');
-const { getDocument } = require('../../utils/capi');
 const Picture = require('../Picture');
 require('./index.scss');
 
@@ -28,7 +28,7 @@ function Recirculation({ ids, pull }) {
 
   el.classList.add('has-children');
   ids.forEach((id, index) =>
-    getDocument(id, (err, item) => {
+    capiFetch(id, (err, item) => {
       if (err) {
         itemEl.classList.add('is-missing');
 

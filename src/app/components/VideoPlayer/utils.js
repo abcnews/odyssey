@@ -1,5 +1,5 @@
-// Ours
-const { getDocument } = require('../../utils/capi');
+// External
+const capiFetch = require('@abcnews/capi-fetch').default;
 
 const NO_CMID_ERROR = 'No CMID available for video';
 
@@ -17,7 +17,7 @@ function getPosterURL(item, done) {
 
     if (relatedImage) {
       // Must fetch image to get renditions. Allowed to fail.
-      return getDocument(relatedImage.id, (err, item) => {
+      return capiFetch(relatedImage.id, (err, item) => {
         done(item ? pickImageURL(item.media) : null);
       });
     }
@@ -42,7 +42,7 @@ function getMetadata(videoId, done) {
     return done(new Error(NO_CMID_ERROR));
   }
 
-  getDocument(videoId, (err, item) => {
+  capiFetch(videoId, (err, item) => {
     if (err) {
       return done(err);
     }

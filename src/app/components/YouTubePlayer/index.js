@@ -1,6 +1,5 @@
 // External
 const html = require('bel');
-const load = require('load-script');
 
 // Ours
 const { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } = require('../../media');
@@ -337,7 +336,11 @@ function loadYouTubeAPI(cb) {
     cb(window.YT);
   };
 
-  load('//www.youtube.com/iframe_api');
+  const script = document.createElement('script');
+
+  script.async = true;
+  script.src = '//www.youtube.com/iframe_api';
+  document.head.appendChild(script);
 }
 
 module.exports = YouTubePlayer;
