@@ -63,7 +63,7 @@ function $$(selector, roots) {
     if ('querySelectorAll' in root) {
       const results = root.querySelectorAll(selector);
 
-      return acc.concat([...results]);
+      return acc.concat(Array.from(results));
     }
 
     return acc;
