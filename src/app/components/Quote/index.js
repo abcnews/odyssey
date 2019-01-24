@@ -17,10 +17,18 @@ function Quote({ isPullquote = false, alignment, parEls = [], attributionNodes =
   });
   const attributionEl = attributionNodes.length
     ? html`
-    <footer>${Array.from(attributionNodes).map(node => {
-      return node.tagName === 'A' ? html`<cite>${node}</cite>` : node;
-    })}</footer>
-  `
+        <footer>
+          ${
+            Array.from(attributionNodes).map(node => {
+              return node.tagName === 'A'
+                ? html`
+                    <cite>${node}</cite>
+                  `
+                : node;
+            })
+          }
+        </footer>
+      `
     : null;
 
   // Smart double quotes & indentation
@@ -29,11 +37,7 @@ function Quote({ isPullquote = false, alignment, parEls = [], attributionNodes =
   }
 
   return html`
-    <div class="${className}">
-      <blockquote>
-        ${parEls.concat(attributionEl)}
-      </blockquote>
-    </div>
+    <div class="${className}"><blockquote>${parEls.concat(attributionEl)}</blockquote></div>
   `;
 }
 
@@ -102,7 +106,9 @@ function createFromEl(el) {
         return;
       }
 
-      const parEl = html`<p></p>`;
+      const parEl = html`
+        <p></p>
+      `;
 
       while (stack.length > 0) {
         prepend(stack.pop(), parEl);

@@ -137,7 +137,9 @@ function reset(storyEl, meta) {
 
   $$(P1S_FLOAT.SELECTOR, storyEl).forEach(el => {
     const [, side] = el.className.match(P1S_FLOAT.PATTERN);
-    const pullEl = html`<div class="u-pull-${side}"></div>`;
+    const pullEl = html`
+      <div class="u-pull-${side}"></div>
+    `;
 
     el.classList.remove(side);
     el.classList.add('full');
@@ -148,7 +150,9 @@ function reset(storyEl, meta) {
   $$(P2_FLOAT.SELECTOR, storyEl).forEach(el => {
     if (el.className.indexOf('view-') > -1) {
       const [, , side] = el.className.match(P2_FLOAT.PATTERN);
-      const pullEl = html`<div class="u-pull-${side}"></div>`;
+      const pullEl = html`
+        <div class="u-pull-${side}"></div>
+      `;
 
       el.classList.remove(side);
       el.classList.add('full');

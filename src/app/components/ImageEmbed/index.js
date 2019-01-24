@@ -26,10 +26,7 @@ function ImageEmbed({ pictureEl, captionEl, alignment, isFull, isCover, isAnon }
   });
 
   return html`
-    <div class="${className}">
-      ${pictureEl}
-      ${isAnon ? null : captionEl}
-    </div>
+    <div class="${className}">${pictureEl} ${isAnon ? null : captionEl}</div>
   `;
 }
 

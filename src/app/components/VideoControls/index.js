@@ -78,45 +78,47 @@ function VideoControls(player, hasAmbientParent) {
     isScrubbing = false;
   }
 
-  const playbackEl = html`<button
-    class="VideoControls-playback"
-    aria-label="${`Play video, ${player.getTitle()}`}"
-    onkeydown=${hasAmbientParent ? null : whenKeyIn([37, 38, 39, 40], steppingKeyDown)}
-    onkeyup=${hasAmbientParent ? null : whenKeyIn([37, 38, 39, 40], steppingKeyUp)}
-    onclick=${player.togglePlayback}
-  ></button>`;
+  const playbackEl = html`
+    <button
+      class="VideoControls-playback"
+      aria-label="${`Play video, ${player.getTitle()}`}"
+      onkeydown=${hasAmbientParent ? null : whenKeyIn([37, 38, 39, 40], steppingKeyDown)}
+      onkeyup=${hasAmbientParent ? null : whenKeyIn([37, 38, 39, 40], steppingKeyUp)}
+      onclick=${player.togglePlayback}
+    ></button>
+  `;
   const muteEl = hasAmbientParent
     ? null
-    : html`<button
-    class="VideoControls-mute"
-    aria-label="${player.isMuted() ? 'Unmute' : 'Mute'}"
-    onclick=${player.toggleMutePreference}
-  ></button>`;
+    : html`
+        <button
+          class="VideoControls-mute"
+          aria-label="${player.isMuted() ? 'Unmute' : 'Mute'}"
+          onclick=${player.toggleMutePreference}
+        ></button>
+      `;
   const timeRemainingEl = hasAmbientParent
     ? null
-    : html`<time
-    class="VideoControls-timeRemaining"
-    aria-label="Time Remaining"
-  ></time>`;
+    : html`
+        <time class="VideoControls-timeRemaining" aria-label="Time Remaining"></time>
+      `;
   const progressBarEl = hasAmbientParent
     ? null
-    : html`<progress
-    class="VideoControls-progressBar"
-    aria-label="Percentage Complete"
-    max="100"
-    draggable="false"
-  ></progress>`;
+    : html`
+        <progress
+          class="VideoControls-progressBar"
+          aria-label="Percentage Complete"
+          max="100"
+          draggable="false"
+        ></progress>
+      `;
   const progressEl = hasAmbientParent
     ? null
-    : html`<div class="VideoControls-progress">
-    ${progressBarEl}
-  </div>`;
-  const videoControlsEl = html`<div class="VideoControls">
-    ${playbackEl}
-    ${muteEl}
-    ${progressEl}
-    ${timeRemainingEl}
-  </div>`;
+    : html`
+        <div class="VideoControls-progress">${progressBarEl}</div>
+      `;
+  const videoControlsEl = html`
+    <div class="VideoControls">${playbackEl} ${muteEl} ${progressEl} ${timeRemainingEl}</div>
+  `;
 
   if (!hasAmbientParent) {
     progressEl.addEventListener('mousedown', scrubStart);

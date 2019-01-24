@@ -7,8 +7,6 @@ require('./index.scss');
 
 module.exports = function ShareLinks({ links, shouldBlend }) {
   return html`
-    <div class="ShareLinks">
-      ${links.map(link => ShareLink({ link, shouldBlend }))}
-    </div>
+    <div class="ShareLinks">${links.map(link => ShareLink({ link, shouldBlend }))}</div>
   `;
 };

@@ -28,10 +28,7 @@ function VideoEmbed({ playerEl, captionEl, alignment, isFull, isCover, isAnon })
   });
 
   return html`
-    <div class="${className}">
-      ${playerEl}
-      ${isAnon ? null : captionEl}
-    </div>
+    <div class="${className}">${playerEl} ${isAnon ? null : captionEl}</div>
   `;
 }
 

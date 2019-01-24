@@ -13,8 +13,6 @@ module.exports = function Main(childNodes, meta) {
   });
 
   return html`
-    <main class="${className}">
-      ${childNodes}
-    </main>
+    <main class="${className}">${childNodes}</main>
   `;
 };
