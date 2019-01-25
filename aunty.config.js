@@ -1,6 +1,5 @@
 const path = require('path');
 const DuplicatePackageCheckerPlugin = require('duplicate-package-checker-webpack-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = {
   type: 'react',
@@ -43,11 +42,6 @@ module.exports = {
         }
       ]
     });
-
-    // Help us analyse our bundle
-    if (process.env.ODYSSEY_DEBUG) {
-      config.plugins.push(new BundleAnalyzerPlugin());
-    }
 
     // Help us identify things we dan try to dedupe imports
     config.plugins.push(new DuplicatePackageCheckerPlugin({ showHelp: false }));
