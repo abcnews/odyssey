@@ -1,14 +1,14 @@
 // External
-const html = require('bel');
+import html from 'bel';
 
 // Ours
-const { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } = require('../../media');
-const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
-const { toggleAttribute } = require('../../utils/dom');
-const { PLACEHOLDER_PROPERTY } = require('../Picture');
-const { blurImage } = require('../Picture/blur');
-const VideoControls = require('../VideoControls');
-require('./index.scss');
+import { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } from '../../media';
+import { enqueue, invalidateClient, subscribe } from '../../scheduler';
+import { toggleAttribute } from '../../utils/dom';
+import { blur } from '../../utils/images';
+import { PLACEHOLDER_PROPERTY } from '../Picture';
+import VideoControls from '../VideoControls';
+import './index.scss';
 
 const DEFAULT_YOUTUBE_CONFIG = {
   controls: 0,
@@ -96,7 +96,7 @@ function YouTubePlayer({
 
   if (isContained) {
     enqueue(function _createAndAddPlaceholderImage() {
-      blurImage(posterURL, (err, blurredImageURL) => {
+      blur(posterURL, (err, blurredImageURL) => {
         if (err) {
           return;
         }
@@ -343,4 +343,4 @@ function loadYouTubeAPI(cb) {
   document.head.appendChild(script);
 }
 
-module.exports = YouTubePlayer;
+export default YouTubePlayer;

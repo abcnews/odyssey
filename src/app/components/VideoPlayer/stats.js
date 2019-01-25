@@ -1,10 +1,10 @@
 // Ours
-const { track } = require('../../utils/behaviour');
+import { track } from '../../utils/behaviour';
 
 const WT__CLIP_T = 'Odyssey_VideoPlayer';
 const WT__DL = '110';
 
-module.exports.trackProgress = (id, el) => {
+export const trackProgress = (id, el) => {
   const sentEvents = {};
   let eventTimes = {};
   let previousTime = 0;

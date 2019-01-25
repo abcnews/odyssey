@@ -1,14 +1,14 @@
 // External
-const cn = require('classnames');
-const html = require('bel');
+import html from 'bel';
+import cn from 'classnames';
 
 // Ours
-const { ALIGNMENT_PATTERN, MOCK_NODE } = require('../../../constants');
-const { grabConfigSC } = require('../../utils/anchors');
-const { $, $$, append, detach, isElement, isInlineElement, isText, prepend, substitute } = require('../../utils/dom');
-const { trim } = require('../../utils/misc');
-const UQuote = require('../UQuote');
-require('./index.scss');
+import { ALIGNMENT_PATTERN, MOCK_NODE } from '../../../constants';
+import { grabConfigSC } from '../../utils/anchors';
+import { $, $$, append, detach, isElement, isInlineElement, isText, prepend, substitute } from '../../utils/dom';
+import { trim } from '../../utils/misc';
+import { conditionallyApply as conditionallyApplyUQuote } from '../UQuote';
+import './index.scss';
 
 function Quote({ isPullquote = false, alignment, parEls = [], attributionNodes = [] }) {
   const className = cn('Quote', {
@@ -33,7 +33,7 @@ function Quote({ isPullquote = false, alignment, parEls = [], attributionNodes =
 
   // Smart double quotes & indentation
   if (parEls.length) {
-    parEls.forEach(UQuote.conditionallyApply);
+    parEls.forEach(conditionallyApplyUQuote);
   }
 
   return html`
@@ -41,7 +41,7 @@ function Quote({ isPullquote = false, alignment, parEls = [], attributionNodes =
   `;
 }
 
-function createFromEl(el) {
+export function createFromEl(el) {
   if (!isElement(el)) {
     return null;
   }
@@ -143,7 +143,7 @@ function createFromEl(el) {
   return null;
 }
 
-function transformEl(el) {
+export function transformEl(el) {
   substitute(el, createFromEl(el));
 }
 
@@ -219,6 +219,4 @@ function linebreaksToParagraphs(el) {
   return el;
 }
 
-module.exports = Quote;
-module.exports.createFromEl = createFromEl;
-module.exports.transformEl = transformEl;
+export default Quote;

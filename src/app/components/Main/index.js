@@ -1,11 +1,11 @@
 // External
-const cn = require('classnames');
-const html = require('bel');
+import html from 'bel';
+import cn from 'classnames';
 
 // Ours
-require('./index.scss');
+import './index.scss';
 
-module.exports = function Main(childNodes, meta) {
+function Main(childNodes, meta) {
   const className = cn('Main', 'u-layout', {
     'u-richtext': !meta.isDarkMode,
     'u-richtext-invert': meta.isDarkMode,
@@ -15,4 +15,6 @@ module.exports = function Main(childNodes, meta) {
   return html`
     <main class="${className}">${childNodes}</main>
   `;
-};
+}
+
+export default Main;

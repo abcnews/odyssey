@@ -1,10 +1,12 @@
 // Polyfills
-require('./polyfills');
+import './polyfills';
 
 // Global styles
-require('./fonts.scss');
-require('./keyframes.scss');
-require('./app/components/utilities/index.scss');
+import './fonts.scss';
+import './keyframes.scss';
+import './app/components/utilities/index.scss';
 
 // App
-require('./app')();
+import app from './app';
+
+app();

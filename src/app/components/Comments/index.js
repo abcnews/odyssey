@@ -1,9 +1,9 @@
 // External
-const html = require('bel');
+import html from 'bel';
 
 // Ours
-const { append } = require('../../utils/dom');
-require('./index.scss');
+import { append } from '../../utils/dom';
+import './index.scss';
 
 function Comments() {
   const livefyreRootEl = html`
@@ -35,6 +35,6 @@ function Comments() {
   `;
 }
 
-module.exports = Comments;
+export default Comments;
 
 // [1] Config options: https://stash.abc-dev.net.au/projects/NEWS/repos/interactive-livefyre/browse/src/initComments.js

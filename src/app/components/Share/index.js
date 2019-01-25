@@ -1,12 +1,12 @@
 // External
-const html = require('bel');
+import html from 'bel';
 
 // Ours
-const { track } = require('../../utils/behaviour');
-const { proximityCheck } = require('../../utils/misc');
-const { subscribe, unsubscribe } = require('../../scheduler');
-const ShareLinks = require('../ShareLinks');
-require('./index.scss');
+import { track } from '../../utils/behaviour';
+import { proximityCheck } from '../../utils/misc';
+import { subscribe, unsubscribe } from '../../scheduler';
+import ShareLinks from '../ShareLinks';
+import './index.scss';
 
 const DEFAULT_TYPE = 'story';
 const INVITATION_RANGE = 0;
@@ -29,7 +29,7 @@ function Share({ type, links }) {
   return el;
 }
 
-function transformMarker(marker, links) {
+export function transformMarker(marker, links) {
   marker.substituteWith(Share({ type: marker.configSC, links }));
 }
 
@@ -42,5 +42,4 @@ subscribe(function __reportFirstInvitation(client) {
   });
 });
 
-module.exports = Share;
-module.exports.transformMarker = transformMarker;
+export default Share;

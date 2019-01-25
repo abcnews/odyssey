@@ -1,10 +1,10 @@
 // External
-const html = require('bel');
+import html from 'bel';
 
 // Ours
-const { setText } = require('../../utils/dom');
-const { twoDigits, whenKeyIn } = require('../../utils/misc');
-require('./index.scss');
+import { setText } from '../../utils/dom';
+import { twoDigits, whenKeyIn } from '../../utils/misc';
+import './index.scss';
 
 const STEP_SECONDS = 5;
 
@@ -153,4 +153,4 @@ function VideoControls(player, hasAmbientParent) {
   return videoControlsEl;
 }
 
-module.exports = VideoControls;
+export default VideoControls;

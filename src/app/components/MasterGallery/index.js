@@ -1,15 +1,15 @@
 // External
-const html = require('bel');
-const url2cmid = require('util-url2cmid');
+import html from 'bel';
+import url2cmid from 'util-url2cmid';
 
 // Ours
-const { enqueue, invalidateClient } = require('../../scheduler');
-const { track } = require('../../utils/behaviour');
-const { $, $$, prepend } = require('../../utils/dom');
-const Caption = require('../Caption');
-const Gallery = require('../Gallery');
-const Picture = require('../Picture');
-require('./index.scss');
+import { enqueue, invalidateClient } from '../../scheduler';
+import { track } from '../../utils/behaviour';
+import { $, $$, prepend } from '../../utils/dom';
+import { createFromEl as createCaptionFromEl } from '../Caption';
+import Gallery from '../Gallery';
+import Picture from '../Picture';
+import './index.scss';
 
 const TAB_KEY = 9;
 
@@ -153,7 +153,7 @@ function has(id) {
   return items.filter(item => item.id === id).length > 0;
 }
 
-function register(el) {
+export function register(el) {
   const imgEl = $('img', el);
 
   if (!imgEl) {
@@ -179,9 +179,8 @@ function register(el) {
         md: '4x3'
       }
     }),
-    captionEl: Caption.createFromEl(el)
+    captionEl: createCaptionFromEl(el)
   });
 }
 
-module.exports = MasterGallery;
-module.exports.register = register;
+export default MasterGallery;

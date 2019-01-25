@@ -1,9 +1,9 @@
 // External
-const html = require('bel');
+import html from 'bel';
 
 // Ours
-const { EMBED_TAGNAMES } = require('../../../constants');
-const { isElement } = require('../../utils/dom');
+import { EMBED_TAGNAMES } from '../../../constants';
+import { isElement } from '../../utils/dom';
 
 function UPull({ meta = {}, type, nodes = [] }) {
   const isRichtext = nodes.length > 0 && isElement(nodes[0]) && EMBED_TAGNAMES.indexOf(nodes[0].tagName) === -1;
@@ -21,7 +21,7 @@ function UPull({ meta = {}, type, nodes = [] }) {
   `;
 }
 
-function transformSection(section, meta) {
+export function transformSection(section, meta) {
   section.substituteWith(
     UPull({
       meta,
@@ -32,5 +32,4 @@ function transformSection(section, meta) {
   );
 }
 
-module.exports = UPull;
-module.exports.transformSection = transformSection;
+export default UPull;

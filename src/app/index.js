@@ -1,32 +1,35 @@
 // External
-const html = require('bel');
+import html from 'bel';
 
 // Ours
-const { IS_PREVIEW, RICHTEXT_BLOCK_TAGNAMES, SELECTORS } = require('../constants');
-const api = require('./api');
-const { PresentationLayerAsyncComponent } = require('./async-components/loader');
-const Caption = require('./components/Caption');
-const Comments = require('./components/Comments');
-const Block = require('./components/Block');
-const Gallery = require('./components/Gallery');
-const Header = require('./components/Header');
-const ImageEmbed = require('./components/ImageEmbed');
-const MasterGallery = require('./components/MasterGallery');
-const Quote = require('./components/Quote');
-const Recirculation = require('./components/Recirculation');
-const ScrollHint = require('./components/ScrollHint');
-const Series = require('./components/Series');
-const Share = require('./components/Share');
-const UDropcap = require('./components/UDropcap');
-const UQuote = require('./components/UQuote');
-const UParallax = require('./components/UParallax');
-const UPull = require('./components/UPull');
-const VideoEmbed = require('./components/VideoEmbed');
-const { start } = require('./scheduler');
-const { getMeta } = require('./meta');
-const { reset } = require('./reset');
-const { getMarkers, getSections } = require('./utils/anchors');
-const { $, $$, after, append, detach, detachAll, prepend, substitute } = require('./utils/dom');
+import { IS_PREVIEW, RICHTEXT_BLOCK_TAGNAMES, SELECTORS } from '../constants';
+import api from './api';
+import { PresentationLayerAsyncComponent } from './async-components/loader';
+import { createFromEl as createCaptionFromEl } from './components/Caption';
+import Comments from './components/Comments';
+import { transformSection as transformSectionIntoBlock } from './components/Block';
+import { transformSection as transformSectionIntoGallery } from './components/Gallery';
+import Header, { transformSection as transformSectionIntoHeader } from './components/Header';
+import { transformEl as transformElIntoImageEmbed } from './components/ImageEmbed';
+import MasterGallery, { register as registerWithMasterGallery } from './components/MasterGallery';
+import { transformEl as transformElIntoQuote } from './components/Quote';
+import { transformMarker as transformSectionIntoRecirculation } from './components/Recirculation';
+import { transformMarker as transformSectionIntoScrollHint } from './components/ScrollHint';
+import { transformMarker as transformSectionIntoSeries } from './components/Series';
+import { transformMarker as transformSectionIntoShare } from './components/Share';
+import { conditionallyApply as conditionallyApplyUDropcap } from './components/UDropcap';
+import { conditionallyApply as conditionallyApplyUQuote } from './components/UQuote';
+import { activate as activateUParallax } from './components/UParallax';
+import { transformSection as transformSectionIntoUPull } from './components/UPull';
+import {
+  transformEl as transformElIntoVideoEmbed,
+  transformMarker as transformMarkerIntoVideoEmbed
+} from './components/VideoEmbed';
+import { start } from './scheduler';
+import { getMeta } from './meta';
+import { reset } from './reset';
+import { getMarkers, getSections } from './utils/anchors';
+import { $, $$, after, append, detach, detachAll, prepend, substitute } from './utils/dom';
 
 function app() {
   const meta = getMeta();
@@ -41,7 +44,7 @@ function app() {
   // Register all embedded images with MasterGallery
   $$('.inline-content.photo, [class*="view-image-embed"]', storyEl)
     .concat($$('.embed-content', storyEl).filter(el => $('.type-photo', el)))
-    .forEach(MasterGallery.register);
+    .forEach(registerWithMasterGallery);
 
   let hasHeader = false;
 
@@ -50,20 +53,20 @@ function app() {
     switch (section.name) {
       case 'header':
         hasHeader = true;
-        Header.transformSection(section, meta);
+        transformSectionIntoHeader(section, meta);
         break;
       case 'remove':
         detachAll([section.startNode, section.endNode].concat(section.betweenNodes));
         break;
       case 'block':
-        Block.transformSection(section);
+        transformSectionIntoBlock(section);
         break;
       case 'gallery':
       case 'mosaic':
-        Gallery.transformSection(section);
+        transformSectionIntoGallery(section);
         break;
       case 'pull':
-        UPull.transformSection(section, meta);
+        transformSectionIntoUPull(section, meta);
         break;
       default:
         break;
@@ -82,13 +85,13 @@ function app() {
       nextEl = nextEl.nextElementSibling;
     }
 
-    UDropcap.conditionallyApply(nextEl);
+    conditionallyApplyUDropcap(nextEl);
   });
 
   // Enable outdented quotes on direct descendants of richtext elements
   $$('[class*="u-richtext"] > *')
     .filter(el => RICHTEXT_BLOCK_TAGNAMES.indexOf(el.tagName) > -1)
-    .forEach(UQuote.conditionallyApply);
+    .forEach(conditionallyApplyUQuote);
 
   // Transform markers
   getMarkers(['cta', 'hr', 'scrollhint', 'series', 'share', 'video', 'youtube', 'related', 'tease']).forEach(marker => {
@@ -104,24 +107,24 @@ function app() {
           <hr />
         `;
         marker.substituteWith(el);
-        UDropcap.conditionallyApply(el.nextElementSibling);
+        conditionallyApplyUDropcap(el.nextElementSibling);
         break;
       case 'scrollhint':
-        ScrollHint.transformMarker(marker);
+        transformMarkerIntoScrollHint(marker);
         break;
       case 'series':
-        Series.transformMarker(marker);
+        transformMarkerIntoSeries(marker);
         break;
       case 'share':
-        Share.transformMarker(marker, meta.shareLinks);
+        transformMarkerIntoShare(marker, meta.shareLinks);
         break;
       case 'video':
       case 'youtube':
-        VideoEmbed.transformMarker(marker);
+        transformMarkerIntoVideoEmbed(marker);
         break;
       case 'related':
       case 'tease':
-        Recirculation.transformMarker(marker, meta);
+        transformMarkerIntoRecirculation(marker, meta);
         break;
       default:
         break;
@@ -129,7 +132,7 @@ function app() {
   });
 
   // Activate existing parallaxes
-  $$('.u-parallax').forEach(UParallax.activate);
+  $$('.u-parallax').forEach(activateUParallax);
 
   // Transform image embeds
   const sidePulls = $$('.u-pull-left, .u-pull-right');
@@ -139,19 +142,19 @@ function app() {
     .forEach(el => {
       const isSidePulled = sidePulls.filter(pEl => pEl.contains(el)).length > 0;
 
-      ImageEmbed.transformEl(el, isSidePulled);
+      transformElIntoImageEmbed(el, isSidePulled);
     });
 
   // Transform video embeds
   $$('.inline-content.video, .view-inlineMediaPlayer', storyEl)
     .concat($$('.embed-content', storyEl).filter(el => $('.type-video', el)))
-    .forEach(VideoEmbed.transformEl);
+    .forEach(transformElIntoVideoEmbed);
 
   // Transform quotes (native and embedded)
   $$(
     'blockquote:not([class]), .quote--pullquote, .inline-content.quote, .embed-quote, .comp-rich-text-blockquote, .view-inline-pullquote',
     storyEl
-  ).forEach(Quote.transformEl);
+  ).forEach(transformElIntoQuote);
 
   // Nullify nested pulls (outer always wins)
   $$('[class*="u-pull"] [class*="u-pull"]').forEach(
@@ -166,7 +169,7 @@ function app() {
   (function transformRemainingEELs() {
     eels = eels.reduce((memo, el) => {
       if (el.className.indexOf(' embedded') > -1 || $('.embedded', el)) {
-        const captionEl = Caption.createFromEl(el);
+        const captionEl = createCaptionFromEl(el);
         const originalCaptionEl = $('.embed-caption, .inline-caption, a', el);
 
         if (captionEl && originalCaptionEl) {
@@ -243,4 +246,4 @@ function app() {
   }, 5000);
 }
 
-module.exports = app;
+export default app;

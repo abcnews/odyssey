@@ -3,7 +3,7 @@ const BLUR_RADIUS = 4;
 
 const cache = {};
 
-function blurImage(url, done) {
+export function blur(url, done) {
   if (cache[url]) {
     done(null, cache[url]);
   }
@@ -42,8 +42,6 @@ function blurImage(url, done) {
   imgEl.crossOrigin = 'Anonymous';
   imgEl.src = url;
 }
-
-module.exports.blurImage = blurImage;
 
 /*
 
@@ -180,7 +178,7 @@ function stackBlurCanvasRGB(context, top_x, top_y, width, height, radius) {
   var widthMinus1 = width - 1;
   var heightMinus1 = height - 1;
   var radiusPlus1 = radius + 1;
-  var sumFactor = radiusPlus1 * (radiusPlus1 + 1) / 2;
+  var sumFactor = (radiusPlus1 * (radiusPlus1 + 1)) / 2;
 
   var stackStart = new BlurStack();
   var stack = stackStart;

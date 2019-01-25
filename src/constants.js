@@ -1,15 +1,15 @@
-const NEWLINE = '\n';
-const HYPHEN = '-';
-const CSS_URL = /url\('?"?(.*?)"?'?\)/;
-const ALIGNMENT_PATTERN = /(left|right)/;
-const RATIO_PATTERN = /(\d+x\d+)/;
-const SM_RATIO_PATTERN = /sm(\d+x\d+)/;
-const MD_RATIO_PATTERN = /md(\d+x\d+)/;
-const LG_RATIO_PATTERN = /lg(\d+x\d+)/;
-const VIDEO_MARKER_PATTERN = /(?:video|youtube)(\w+)/;
-const SCROLLPLAY_PCT_PATTERN = /scrollplay(\d+)/;
+export const NEWLINE = '\n';
+export const HYPHEN = '-';
+export const CSS_URL = /url\('?"?(.*?)"?'?\)/;
+export const ALIGNMENT_PATTERN = /(left|right)/;
+export const RATIO_PATTERN = /(\d+x\d+)/;
+export const SM_RATIO_PATTERN = /sm(\d+x\d+)/;
+export const MD_RATIO_PATTERN = /md(\d+x\d+)/;
+export const LG_RATIO_PATTERN = /lg(\d+x\d+)/;
+export const VIDEO_MARKER_PATTERN = /(?:video|youtube)(\w+)/;
+export const SCROLLPLAY_PCT_PATTERN = /scrollplay(\d+)/;
 
-const SELECTORS = {
+export const SELECTORS = {
   GLOBAL_NAV: '#abcHeader.global',
   MAIN: '.page_margins#main_content,body>.content,.main-content-container',
   STORY: '.article.section,article>.story.richtext,.article-detail-page .article-text',
@@ -21,10 +21,10 @@ const SELECTORS = {
   WYSIWYG_EMBED: '.inline-content.wysiwyg,.embed-wysiwyg.richtext,.view-wysiwyg'
 };
 
-const RICHTEXT_BLOCK_TAGNAMES = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'OL', 'UL'];
-const EMBED_TAGNAMES = ['ASIDE', 'BLOCKQUOTE', 'DIV', 'FIGURE'];
+export const RICHTEXT_BLOCK_TAGNAMES = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'OL', 'UL'];
+export const EMBED_TAGNAMES = ['ASIDE', 'BLOCKQUOTE', 'DIV', 'FIGURE'];
 
-const MOCK_NODE = {
+export const MOCK_NODE = {
   parentNode: null,
   parentElement: null,
   previousSibling: null,
@@ -35,7 +35,7 @@ const MOCK_NODE = {
   textContent: ''
 };
 
-const MOCK_ELEMENT = Object.assign(
+export const MOCK_ELEMENT = Object.assign(
   {
     tagName: 'MOCK-ELEMENT',
     attributes: [],
@@ -55,8 +55,8 @@ const MOCK_ELEMENT = Object.assign(
   MOCK_NODE
 );
 
-const REM = 16; // (px)
-const MQ = {
+export const REM = 16; // (px)
+export const MQ = {
   SM: '(max-width: 43.6875rem)',
   MD: '(min-width: 43.75rem) and (max-width: 61.1875rem)',
   LG: '(min-width: 61.25rem)',
@@ -70,11 +70,11 @@ const MQ = {
   GT_4_3: '(min-aspect-ratio: 4/3)'
 };
 
-const SMALLEST_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAAAADs=';
+export const SMALLEST_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAAAADs=';
 
-const IS_PREVIEW = window.location.hostname.indexOf('nucwed') > -1;
+export const IS_PREVIEW = window.location.hostname.indexOf('nucwed') > -1;
 
-const MS_VERSION = (ua => {
+export const MS_VERSION = (ua => {
   const msie = ua.indexOf('MSIE ');
 
   if (msie > 0) {
@@ -98,7 +98,7 @@ const MS_VERSION = (ua => {
   }
 })(window.navigator.userAgent);
 
-const SUPPORTS_PASSIVE = (isSupported => {
+export const SUPPORTS_PASSIVE = (isSupported => {
   try {
     const options = Object.defineProperty({}, 'passive', {
       get: function() {
@@ -111,27 +111,3 @@ const SUPPORTS_PASSIVE = (isSupported => {
 
   return isSupported;
 })(false);
-
-module.exports = {
-  NEWLINE,
-  HYPHEN,
-  CSS_URL,
-  ALIGNMENT_PATTERN,
-  RATIO_PATTERN,
-  SM_RATIO_PATTERN,
-  MD_RATIO_PATTERN,
-  LG_RATIO_PATTERN,
-  VIDEO_MARKER_PATTERN,
-  SCROLLPLAY_PCT_PATTERN,
-  SELECTORS,
-  RICHTEXT_BLOCK_TAGNAMES,
-  EMBED_TAGNAMES,
-  MOCK_NODE,
-  MOCK_ELEMENT,
-  REM,
-  MQ,
-  SMALLEST_IMAGE,
-  IS_PREVIEW,
-  MS_VERSION,
-  SUPPORTS_PASSIVE
-};

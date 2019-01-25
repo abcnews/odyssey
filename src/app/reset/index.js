@@ -1,13 +1,13 @@
 // External
-const html = require('bel');
-const dewysiwyg = require('util-dewysiwyg');
+import html from 'bel';
+import dewysiwyg from 'util-dewysiwyg';
 
 // Ours
-const { SELECTORS } = require('../../constants');
-const Main = require('../components/Main');
-const { $, $$, append, before, detach, detachAll } = require('../utils/dom');
-const { literalList, trim } = require('../utils/misc');
-require('./index.scss');
+import { SELECTORS } from '../../constants';
+import Main from '../components/Main';
+import { $, $$, append, before, detach, detachAll } from '../utils/dom';
+import { literalList, trim } from '../utils/misc';
+import './index.scss';
 
 const TEMPLATE_REMOVABLES = {
   '.platform-standard:not(.platform-mobile)': literalList(`
@@ -177,4 +177,4 @@ function reset(storyEl, meta) {
   return storyEl;
 }
 
-module.exports.reset = reset;
+export { reset };

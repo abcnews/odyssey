@@ -1,5 +1,5 @@
 // External
-const debounce = require('debounce');
+import debounce from 'debounce';
 
 const now = window.performance ? performance.now.bind(performance) : Date.now;
 
@@ -111,8 +111,4 @@ function unsubscribe(subscriber) {
   return subscribers.splice(subscribers.indexOf(subscriber), 1);
 }
 
-module.exports.enqueue = enqueue;
-module.exports.invalidateClient = invalidateClient;
-module.exports.start = start;
-module.exports.subscribe = subscribe;
-module.exports.unsubscribe = unsubscribe;
+export { enqueue, invalidateClient, start, subscribe, unsubscribe };

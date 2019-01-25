@@ -1,5 +1,5 @@
 // External
-const capiFetch = require('@abcnews/capi-fetch').default;
+import capiFetch from '@abcnews/capi-fetch';
 
 const NO_CMID_ERROR = 'No CMID available for video';
 
@@ -37,7 +37,7 @@ function getSources(item, sortProp = 'bitrate') {
     }));
 }
 
-function getMetadata(videoId, done) {
+export function getMetadata(videoId, done) {
   if (!videoId) {
     return done(new Error(NO_CMID_ERROR));
   }
@@ -57,9 +57,6 @@ function getMetadata(videoId, done) {
   });
 }
 
-function hasAudio(el) {
+export function hasAudio(el) {
   return el.mozHasAudio || !!el.webkitAudioDecodedByteCount || !!(el.audioTracks && el.audioTracks.length);
 }
-
-module.exports.getMetadata = getMetadata;
-module.exports.hasAudio = hasAudio;

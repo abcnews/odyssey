@@ -1,31 +1,30 @@
-const smartquotes = require('./smartquotes');
-const { HYPHEN, NEWLINE, SM_RATIO_PATTERN, MD_RATIO_PATTERN, LG_RATIO_PATTERN } = require('../../constants');
+import { HYPHEN, NEWLINE, SM_RATIO_PATTERN, MD_RATIO_PATTERN, LG_RATIO_PATTERN } from '../../constants';
 
 const SLUG_ALLOWED_PATTERN = /[^\w\s\-\_]/g;
 const SLUG_REPLACE_PATTERN = /[-\s]+/g;
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const TRIM_PATTERN = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
 
-function returnFalse() {
+export function returnFalse() {
   return false;
 }
 
-function trim(str) {
+export function trim(str) {
   return str.replace(TRIM_PATTERN, '');
 }
 
-function slug(str) {
+export function slug(str) {
   return str
     .toLowerCase()
     .replace(SLUG_ALLOWED_PATTERN, '')
     .replace(SLUG_REPLACE_PATTERN, HYPHEN);
 }
 
-function twoDigits(number) {
+export function twoDigits(number) {
   return `${number < 10 ? '0' : ''}${number}`;
 }
 
-function formattedDate(date) {
+export function formattedDate(date) {
   const hours = date.getHours();
   const minutes = date.getHours();
 
@@ -34,13 +33,13 @@ function formattedDate(date) {
   }${minutes}${hours < 12 ? 'a' : 'p'}m`;
 }
 
-function flatten(lists) {
+export function flatten(lists) {
   return lists.reduce((acc, list) => {
     return acc.concat(list);
   }, []);
 }
 
-function literalList(str, { skipTrim, allowEmpty } = {}) {
+export function literalList(str, { skipTrim, allowEmpty } = {}) {
   return str
     .split(NEWLINE)
     .map(x => (skipTrim ? x : x.trim()))
@@ -48,7 +47,7 @@ function literalList(str, { skipTrim, allowEmpty } = {}) {
     .join();
 }
 
-function getRatios(str) {
+export function getRatios(str) {
   const [, sm] = str.match(SM_RATIO_PATTERN) || [];
   const [, md] = str.match(MD_RATIO_PATTERN) || [];
   const [, lg] = str.match(LG_RATIO_PATTERN) || [];
@@ -56,11 +55,11 @@ function getRatios(str) {
   return { sm, md, lg };
 }
 
-function dePx(px) {
+export function dePx(px) {
   return +px.replace('px', '');
 }
 
-function proximityCheck(rect, client, range = 0) {
+export function proximityCheck(rect, client, range = 0) {
   // `rect` is #getBoundingClientRect of element
   // `client` is visible width & height dimensions
   // `range` is amount extend (or reduce) the perimeter as a multiple of each dimension
@@ -84,25 +83,10 @@ function proximityCheck(rect, client, range = 0) {
   );
 }
 
-function whenKeyIn(keys, fn) {
+export function whenKeyIn(keys, fn) {
   return function(event) {
     if (event.target === this && keys.indexOf(event.keyCode) > -1) {
       fn(event);
     }
   };
 }
-
-module.exports = {
-  returnFalse,
-  trim,
-  slug,
-  twoDigits,
-  formattedDate,
-  flatten,
-  literalList,
-  getRatios,
-  dePx,
-  proximityCheck,
-  whenKeyIn,
-  smartquotes
-};

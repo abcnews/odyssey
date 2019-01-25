@@ -1,17 +1,17 @@
 // External
-const cn = require('classnames');
-const html = require('bel');
-const url2cmid = require('util-url2cmid');
+import html from 'bel';
+import cn from 'classnames';
+import url2cmid from 'util-url2cmid';
 
 // Ours
-const { ALIGNMENT_PATTERN, VIDEO_MARKER_PATTERN } = require('../../../constants');
-const { enqueue, subscribe } = require('../../scheduler');
-const { $, detach, isElement } = require('../../utils/dom');
-const { getRatios, trim } = require('../../utils/misc');
-const Picture = require('../Picture');
-const VideoPlayer = require('../VideoPlayer');
-const YouTubePlayer = require('../YouTubePlayer');
-require('./index.scss');
+import { ALIGNMENT_PATTERN, VIDEO_MARKER_PATTERN } from '../../../constants';
+import { enqueue, subscribe } from '../../scheduler';
+import { $, detach, isElement } from '../../utils/dom';
+import { getRatios, trim } from '../../utils/misc';
+import Picture from '../Picture';
+import VideoPlayer from '../VideoPlayer';
+import YouTubePlayer from '../YouTubePlayer';
+import './index.scss';
 
 const TRANSITIONS = [
   'colour',
@@ -275,7 +275,7 @@ function Block({
   return blockEl;
 }
 
-function transformSection(section) {
+export function transformSection(section) {
   const hasInsetMedia = section.configSC.indexOf('inset') > -1;
   const isContained = section.configSC.indexOf('contain') > -1;
   const isDocked = section.configSC.indexOf('docked') > -1;
@@ -488,5 +488,4 @@ function detectVideoId(node) {
   );
 }
 
-module.exports = Block;
-module.exports.transformSection = transformSection;
+export default Block;

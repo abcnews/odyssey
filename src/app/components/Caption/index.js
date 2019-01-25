@@ -1,11 +1,11 @@
 // External
-const html = require('bel');
+import html from 'bel';
 
 // Ours
-const { MOCK_ELEMENT } = require('../../../constants');
-const { $, detach, isElement } = require('../../utils/dom');
-const { trim } = require('../../utils/misc');
-require('./index.scss');
+import { MOCK_ELEMENT } from '../../../constants';
+import { $, detach, isElement } from '../../utils/dom';
+import { trim } from '../../utils/misc';
+import './index.scss';
 
 function Caption({ url, text, attribution, unlink }) {
   if (!text && !attribution) {
@@ -34,7 +34,9 @@ function Caption({ url, text, attribution, unlink }) {
   `;
 }
 
-function createFromEl(el, unlink) {
+export default Caption;
+
+export function createfromEl(el, unlink) {
   if (!isElement(el)) {
     return null;
   }
@@ -102,6 +104,3 @@ function createFromEl(el, unlink) {
 
   return null;
 }
-
-module.exports = Caption;
-module.exports.createFromEl = createFromEl;

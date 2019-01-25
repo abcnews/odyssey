@@ -1,12 +1,11 @@
 // External
-const html = require('bel');
+import html from 'bel';
 
 // Ours
-const { track } = require('../../utils/behaviour');
+import { track } from '../../utils/behaviour';
+import './index.scss';
 
-require('./index.scss');
-
-module.exports = function ShareLink({ link, shouldBlend }) {
+function ShareLink({ link, shouldBlend }) {
   return html`
     <a
       class="ShareLink ShareLink--${link.id}${shouldBlend ? ' u-blend-luminosity' : ''}"
@@ -15,4 +14,6 @@ module.exports = function ShareLink({ link, shouldBlend }) {
       aria-label="Share this story via ${link.id}"
     ></a>
   `;
-};
+}
+
+export default ShareLink;

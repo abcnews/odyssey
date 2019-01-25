@@ -1,16 +1,16 @@
 // External
-const cn = require('classnames');
-const html = require('bel');
-const url2cmid = require('util-url2cmid');
+import html from 'bel';
+import cn from 'classnames';
+import url2cmid from 'util-url2cmid';
 
 // Ours
-const { ALIGNMENT_PATTERN } = require('../../../constants');
-const { grabConfigSC } = require('../../utils/anchors');
-const { $, substitute } = require('../../utils/dom');
-const { getRatios } = require('../../utils/misc');
-const Caption = require('../Caption');
-const Picture = require('../Picture');
-require('./index.scss');
+import { ALIGNMENT_PATTERN } from '../../../constants';
+import { grabConfigSC } from '../../utils/anchors';
+import { $, substitute } from '../../utils/dom';
+import { getRatios } from '../../utils/misc';
+import { createFromEl as createCaptionFromEl } from '../Caption';
+import Picture from '../Picture';
+import './index.scss';
 
 function ImageEmbed({ pictureEl, captionEl, alignment, isFull, isCover, isAnon }) {
   if (isCover) {
@@ -30,7 +30,7 @@ function ImageEmbed({ pictureEl, captionEl, alignment, isFull, isCover, isAnon }
   `;
 }
 
-function transformEl(el, preserveOriginalRatio) {
+export function transformEl(el, preserveOriginalRatio) {
   const imgEl = $('img', el);
 
   if (!imgEl) {
@@ -59,7 +59,7 @@ function transformEl(el, preserveOriginalRatio) {
       preserveOriginalRatio,
       linkUrl
     }),
-    captionEl: Caption.createFromEl(el, unlink),
+    captionEl: createCaptionFromEl(el, unlink),
     alignment,
     isFull: configSC.indexOf('full') > -1,
     isCover: configSC.indexOf('cover') > -1,
@@ -69,5 +69,4 @@ function transformEl(el, preserveOriginalRatio) {
   substitute(el, imageEmbedEl);
 }
 
-module.exports = ImageEmbed;
-module.exports.transformEl = transformEl;
+export default ImageEmbed;

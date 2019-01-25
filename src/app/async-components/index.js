@@ -1,11 +1,11 @@
 // External
-const App = require('@abcaustralia/dls-components/es6/App/App').default;
-const React = require('react');
-const ReactDOM = require('react-dom');
+import App from '@abcaustralia/dls-components/es6/App/App';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 // Ours
-const Icons = require('./Icons');
-const Nav = require('./Nav');
+import Icons from './Icons';
+import Nav from './Nav';
 
 const components = {
   Nav
@@ -13,7 +13,7 @@ const components = {
 
 let shouldIncludeIcons = true;
 
-module.exports.render = (componentName, props = {}, el) => {
+export const render = (componentName, props = {}, el) => {
   ReactDOM.render(
     <App brand="news" externalIconFile={false} flexContainer={false}>
       {(shouldIncludeIcons = shouldIncludeIcons && <Icons />)}

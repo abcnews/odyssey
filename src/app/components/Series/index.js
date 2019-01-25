@@ -1,13 +1,13 @@
 // External
-const cn = require('classnames');
-const html = require('bel');
-const url2cmid = require('util-url2cmid');
+import html from 'bel';
+import cn from 'classnames';
+import url2cmid from 'util-url2cmid';
 
 // Ours
-const { MOCK_ELEMENT } = require('../../../constants');
-const { track } = require('../../utils/behaviour');
-const { $, $$, detach, substitute } = require('../../utils/dom');
-require('./index.scss');
+import { MOCK_ELEMENT } from '../../../constants';
+import { track } from '../../utils/behaviour';
+import { $, $$, detach, substitute } from '../../utils/dom';
+import './index.scss';
 
 const CURRENT_STORY_ID = url2cmid(window.location.href);
 
@@ -67,7 +67,7 @@ function Series({ stories, options = {} }) {
   `;
 }
 
-function transformMarker(marker) {
+export function transformMarker(marker) {
   const nextEl = marker.node.nextElementSibling;
   const listEl = nextEl.tagName === 'OL' || nextEl.tagName === 'UL' ? nextEl : $('ol, ul', nextEl);
 
@@ -104,5 +104,4 @@ function transformMarker(marker) {
   detach(marker.node);
 }
 
-module.exports = Series;
-module.exports.transformMarker = transformMarker;
+export default Series;

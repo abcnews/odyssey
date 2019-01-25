@@ -1,11 +1,11 @@
 // External
-const parseDate = require('date-fns/parse');
-const url2cmid = require('util-url2cmid');
+import parseDate from 'date-fns/parse';
+import url2cmid from 'util-url2cmid';
 
 // Ours
-const { MOCK_ELEMENT, SELECTORS } = require('../../constants');
-const { $, $$, detach } = require('../utils/dom');
-const { trim } = require('../utils/misc');
+import { MOCK_ELEMENT, SELECTORS } from '../../constants';
+import { $, $$, detach } from '../utils/dom';
+import { trim } from '../utils/misc';
 
 const FACEBOOK = /facebook\.com/;
 const TWITTER = /twitter\.com/;
@@ -124,7 +124,7 @@ function getRelatedMedia() {
   return detach(relatedMediaEl);
 }
 
-function getMeta() {
+export function getMeta() {
   if (!meta) {
     meta = {
       id: getMetaContent('ContentId'),
@@ -145,7 +145,3 @@ function getMeta() {
 
   return meta;
 }
-
-module.exports = {
-  getMeta
-};

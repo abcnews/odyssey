@@ -1,12 +1,12 @@
 // External
-const html = require('bel');
+import html from 'bel';
 
 // Ours
-const capiFetch = require('@abcnews/capi-fetch').default;
-const { invalidateClient } = require('../../scheduler');
-const { track } = require('../../utils/behaviour');
-const Picture = require('../Picture');
-require('./index.scss');
+import capiFetch from '@abcnews/capi-fetch';
+import { invalidateClient } from '../../scheduler';
+import { track } from '../../utils/behaviour';
+import Picture from '../Picture';
+import './index.scss';
 
 const PICTURE_RATIOS = {
   sm: '16x9',
@@ -75,7 +75,7 @@ const DIGITS_PATTERN = /\d+/;
 const PULL_PATTERN = /[a-z]+/;
 let nextRelatedStoriesIdsIndex = 0;
 
-function transformMarker(marker, meta) {
+export function transformMarker(marker, meta) {
   const [digits] = marker.configSC.match(DIGITS_PATTERN) || [1];
   const [pull] = marker.configSC.match(PULL_PATTERN) || ['right'];
   let ids;
@@ -99,5 +99,4 @@ function transformMarker(marker, meta) {
   }
 }
 
-module.exports = Recirculation;
-module.exports.transformMarker = transformMarker;
+export default Recirculation;

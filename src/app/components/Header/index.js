@@ -1,19 +1,19 @@
 // External
-const cn = require('classnames');
-const html = require('bel');
-const url2cmid = require('util-url2cmid');
+import html from 'bel';
+import cn from 'classnames';
+import url2cmid from 'util-url2cmid';
 
 // Ours
-const { MS_VERSION, VIDEO_MARKER_PATTERN } = require('../../../constants');
-const { enqueue, subscribe } = require('../../scheduler');
-const { $, detach, isElement } = require('../../utils/dom');
-const { dePx, formattedDate, getRatios, slug, trim } = require('../../utils/misc');
-const ScrollHint = require('../ScrollHint');
-const Picture = require('../Picture');
-const UParallax = require('../UParallax');
-const VideoPlayer = require('../VideoPlayer');
-const YouTubePlayer = require('../YouTubePlayer');
-require('./index.scss');
+import { MS_VERSION, VIDEO_MARKER_PATTERN } from '../../../constants';
+import { enqueue, subscribe } from '../../scheduler';
+import { $, detach, isElement } from '../../utils/dom';
+import { dePx, formattedDate, getRatios, slug, trim } from '../../utils/misc';
+import ScrollHint from '../ScrollHint';
+import Picture from '../Picture';
+import { activate as activateUParallax } from '../UParallax';
+import VideoPlayer from '../VideoPlayer';
+import YouTubePlayer from '../YouTubePlayer';
+import './index.scss';
 
 function Header({
   meta = {},
@@ -77,7 +77,7 @@ function Header({
 
   if (mediaEl && !interactiveEl && !isLayered) {
     mediaEl.classList.add('u-parallax');
-    UParallax.activate(mediaEl);
+    activateUParallax(mediaEl);
   }
 
   const clonedMiscContentEls = miscContentEls.map(el => {
@@ -192,7 +192,7 @@ function Header({
   return headerEl;
 }
 
-function transformSection(section, meta) {
+export function transformSection(section, meta) {
   const ratios = getRatios(section.configSC);
   const isFloating = section.configSC.indexOf('floating') > -1;
   const isLayered = isFloating || section.configSC.indexOf('layered') > -1;
@@ -296,5 +296,4 @@ function transformSection(section, meta) {
   section.substituteWith(Header(config));
 }
 
-module.exports = Header;
-module.exports.transformSection = transformSection;
+export default Header;

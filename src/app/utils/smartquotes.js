@@ -104,4 +104,4 @@ function smartquotes(root) {
   return root;
 }
 
-module.exports = smartquotes;
+export default smartquotes;

@@ -1,10 +1,10 @@
 // External
-const html = require('bel');
+import html from 'bel';
 
 // Ours
-const { enqueue, subscribe } = require('../../scheduler');
-const { detach } = require('../../utils/dom');
-require('./index.scss');
+import { enqueue, subscribe } from '../../scheduler';
+import { detach } from '../../utils/dom';
+import './index.scss';
 
 let scrollHintEl = null;
 
@@ -40,9 +40,8 @@ subscribe(function _checkIfScrollHintNeedsToBeRemoved() {
   });
 });
 
-function transformMarker(marker) {
+export function transformMarker(marker) {
   marker.substituteWith(ScrollHint());
 }
 
-module.exports = ScrollHint;
-module.exports.transformMarker = transformMarker;
+export default ScrollHint;

@@ -1,10 +1,10 @@
 // Ours
-const { MOCK_ELEMENT } = require('../../constants');
-const { $$, detach, detachAll, isElement, substitute } = require('./dom');
+import { MOCK_ELEMENT } from '../../constants';
+import { $$, detach, detachAll, isElement, substitute } from './dom';
 
 const CONFIG_ANCHOR_NAME = 'config';
 
-function grabConfigSC(el) {
+export function grabConfigSC(el) {
   const prevEl = el.previousElementSibling || MOCK_ELEMENT;
   const prevElName = prevEl.getAttribute('name') || '';
 
@@ -25,7 +25,7 @@ function _substituteSectionWith(el, remainingBetweenNodes) {
   return substitute(this.startNode, el);
 }
 
-function getSections(names) {
+export function getSections(names) {
   if (typeof names === 'string') {
     names = [names];
   }
@@ -65,7 +65,7 @@ function getSections(names) {
   return sections;
 }
 
-function getMarkers(names) {
+export function getMarkers(names) {
   if (typeof names === 'string') {
     names = [names];
   }
@@ -88,9 +88,3 @@ function getMarkers(names) {
     );
   }, []);
 }
-
-module.exports = {
-  grabConfigSC,
-  getSections,
-  getMarkers
-};

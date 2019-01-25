@@ -1,17 +1,17 @@
 // External
-const cn = require('classnames');
-const html = require('bel');
-const url2cmid = require('util-url2cmid');
+import html from 'bel';
+import cn from 'classnames';
+import url2cmid from 'util-url2cmid';
 
 // Ours
-const { REM, SUPPORTS_PASSIVE, VIDEO_MARKER_PATTERN } = require('../../../constants');
-const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
-const { $, append, detach, isElement, setText } = require('../../utils/dom');
-const { dePx, getRatios, returnFalse } = require('../../utils/misc');
-const Caption = require('../Caption');
-const Picture = require('../Picture');
-const VideoPlayer = require('../VideoPlayer');
-require('./index.scss');
+import { REM, SUPPORTS_PASSIVE, VIDEO_MARKER_PATTERN } from '../../../constants';
+import { enqueue, invalidateClient, subscribe } from '../../scheduler';
+import { $, append, detach, isElement, setText } from '../../utils/dom';
+import { dePx, getRatios, returnFalse } from '../../utils/misc';
+import Caption, { createFromEl as createCaptionFromEl } from '../Caption';
+import Picture from '../Picture';
+import VideoPlayer from '../VideoPlayer';
+import './index.scss';
 
 const MOSAIC_ROW_LENGTHS_PATTERN = /mosaic(\d+)/;
 const PCT_PATTERN = /(-?[0-9\.]+)%/;
@@ -434,7 +434,7 @@ function offsetBasedOpacity(itemIndex, itemsTransformXPct) {
   );
 }
 
-function transformSection(section) {
+export function transformSection(section) {
   const [, mosaicRowLengthsString] = `${section.name}${section.configSC}`.match(MOSAIC_ROW_LENGTHS_PATTERN) || [
     null,
     ''
@@ -501,7 +501,7 @@ function transformSection(section) {
             isInvariablyAmbient: true
           })
         ];
-        const videoCaptionEl = Caption.createFromEl(node, unlink);
+        const videoCaptionEl = createCaptionFromEl(node, unlink);
 
         // Videos that don't have captions right now can append them them later using metadata
         if (!videoCaptionEl) {
@@ -568,7 +568,7 @@ function transformSection(section) {
               linkUrl
             })
           ],
-          captionEl: Caption.createFromEl(node, unlink)
+          captionEl: createCaptionFromEl(node, unlink)
         });
       } else if (node.tagName === 'P') {
         if (!config.masterCaptionText) {
@@ -602,5 +602,4 @@ function transformSection(section) {
   section.substituteWith(Gallery(config), []);
 }
 
-module.exports = Gallery;
-module.exports.transformSection = transformSection;
+export default Gallery;

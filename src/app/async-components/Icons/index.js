@@ -1,6 +1,6 @@
-const React = require('react');
+import React from 'react';
 
-module.exports = () => (
+const Icons = () => (
   <svg xmlns="http://www.w3.org/2000/svg" style={{ display: 'none' }}>
     <symbol viewBox="0 0 24 24" id="dls-icon-arrow-right">
       <title>arrow-right</title>
@@ -42,4 +42,6 @@ module.exports = () => (
   </svg>
 );
 
-module.exports.displayName = 'Icons';
+Icons.displayName = 'Icons';
+
+export default Icons;

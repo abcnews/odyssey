@@ -1,9 +1,9 @@
 // External
-const Masthead = require('@abcaustralia/abc-components/es6/Masthead/Masthead').default;
-const React = require('react');
+import Masthead from '@abcaustralia/abc-components/es6/Masthead/Masthead';
+import React from 'react';
 
 // Ours
-require('./index.scss');
+import './index.scss';
 
 const DOMAIN = window.location.origin;
 
@@ -35,4 +35,8 @@ const NAVIGATION_DATA = [
   }
 ];
 
-module.exports = () => <Masthead domain={DOMAIN} globalNav={GLOBAL_NAV} navigation={NAVIGATION_DATA} />;
+const Nav = () => <Masthead domain={DOMAIN} globalNav={GLOBAL_NAV} navigation={NAVIGATION_DATA} />;
+
+Nav.displayName = 'Nav';
+
+export default Nav;

@@ -1,18 +1,18 @@
 // External
-const cn = require('classnames');
-const html = require('bel');
-const url2cmid = require('util-url2cmid');
+import html from 'bel';
+import cn from 'classnames';
+import url2cmid from 'util-url2cmid';
 
 // Ours
-const { IS_PREVIEW, ALIGNMENT_PATTERN, VIDEO_MARKER_PATTERN, SCROLLPLAY_PCT_PATTERN } = require('../../../constants');
-const { invalidateClient } = require('../../scheduler');
-const { grabConfigSC } = require('../../utils/anchors');
-const { $, $$, substitute } = require('../../utils/dom');
-const { getRatios } = require('../../utils/misc');
-const Caption = require('../Caption');
-const VideoPlayer = require('../VideoPlayer');
-const YouTubePlayer = require('../YouTubePlayer');
-require('./index.scss');
+import { IS_PREVIEW, ALIGNMENT_PATTERN, VIDEO_MARKER_PATTERN, SCROLLPLAY_PCT_PATTERN } from '../../../constants';
+import { invalidateClient } from '../../scheduler';
+import { grabConfigSC } from '../../utils/anchors';
+import { $, $$, substitute } from '../../utils/dom';
+import { getRatios } from '../../utils/misc';
+import { createFromEl as createCaptionFromEl } from '../Caption';
+import VideoPlayer from '../VideoPlayer';
+import YouTubePlayer from '../YouTubePlayer';
+import './index.scss';
 
 function VideoEmbed({ playerEl, captionEl, alignment, isFull, isCover, isAnon }) {
   if (isCover) {
@@ -32,7 +32,7 @@ function VideoEmbed({ playerEl, captionEl, alignment, isFull, isCover, isAnon })
   `;
 }
 
-function transformEl(el) {
+export function transformEl(el) {
   const isMarker = el.name && !!el.name.match(VIDEO_MARKER_PATTERN);
   const videoId = isMarker ? el.name.match(VIDEO_MARKER_PATTERN)[1] : url2cmid($('a', el).getAttribute('href'));
 
@@ -45,7 +45,7 @@ function transformEl(el) {
   const unlink = configSC.includes('unlink');
 
   const isYouTube = isMarker && el.name.indexOf('youtube') === 0;
-  const captionEl = !isMarker ? Caption.createFromEl(el, unlink) : null;
+  const captionEl = !isMarker ? createCaptionFromEl(el, unlink) : null;
   const title = captionEl ? captionEl.children[0].textContent : null;
 
   const options = {
@@ -82,10 +82,8 @@ function transformEl(el) {
   );
 }
 
-function transformMarker(marker) {
+export function transformMarker(marker) {
   return transformEl(marker.node);
 }
 
-module.exports = VideoEmbed;
-module.exports.transformEl = transformEl;
-module.exports.transformMarker = transformMarker;
+export default VideoEmbed;

@@ -33,11 +33,11 @@ const INLINE_TAG_NAMES = [
   'textarea'
 ];
 
-function isText(node) {
+export function isText(node) {
   return node && node.nodeType === Node.TEXT_NODE;
 }
 
-function isElement(node) {
+export function isElement(node) {
   return node && node.nodeType === Node.ELEMENT_NODE;
 }
 
@@ -45,17 +45,19 @@ function isInlineElement(node) {
   return isElement(node) && INLINE_TAG_NAMES.indexOf(node.tagName.toLowerCase()) > -1;
 }
 
-function isDocument(node) {
+export function isDocument(node) {
   return node && node.nodeType === Node.DOCUMENT_NODE;
 }
 
-function $(selector, root) {
+export function $(selector, root) {
   root = isElement(root) ? root : document;
 
   return root.querySelector(selector);
 }
 
-function $$(selector, roots) {
+export const select = $; // Alias
+
+export function $$(selector, roots) {
   roots = Array.isArray(roots) ? roots : [roots];
   roots = isElement(roots[0]) ? roots : [document];
 
@@ -70,7 +72,9 @@ function $$(selector, roots) {
   }, []);
 }
 
-function detach(node = {}) {
+export const selectAll = $$; // Alias
+
+export function detach(node = {}) {
   if (node != null && node.parentNode) {
     node.parentNode.removeChild(node);
   }
@@ -78,33 +82,33 @@ function detach(node = {}) {
   return node;
 }
 
-function detachAll(nodes) {
+export function detachAll(nodes) {
   return nodes.map(detach);
 }
 
-function append(parent, node) {
+export function append(parent, node) {
   parent.appendChild(node);
 }
 
-function prepend(parent, node) {
+export function prepend(parent, node) {
   parent.insertBefore(node, parent.firstChild);
 }
 
-function before(sibling, node) {
+export function before(sibling, node) {
   sibling.parentNode.insertBefore(node, sibling);
 }
 
-function after(sibling, node) {
+export function after(sibling, node) {
   sibling.parentNode.insertBefore(node, sibling.nextSibling);
 }
 
-function substitute(node, replacementNode) {
+export function substitute(node, replacementNode) {
   before(node, replacementNode);
 
   return detach(node);
 }
 
-function setText(el, text) {
+export function setText(el, text) {
   let node = el.firstChild;
 
   if (node === null || !isText(node)) {
@@ -114,33 +118,12 @@ function setText(el, text) {
   }
 }
 
-function toggleAttribute(node, attribute, shouldBeApplied) {
+export function toggleAttribute(node, attribute, shouldBeApplied) {
   node[`${shouldBeApplied ? 'set' : 'remove'}Attribute`](attribute, '');
 }
 
-function toggleBooleanAttributes(node, map) {
+export function toggleBooleanAttributes(node, map) {
   Object.keys(map).forEach(name => {
     toggleAttribute(node, name, map[name]);
   });
 }
-
-module.exports = {
-  isText,
-  isElement,
-  isDocument,
-  $,
-  $$,
-  detach,
-  detachAll,
-  append,
-  prepend,
-  before,
-  after,
-  substitute,
-  setText,
-  toggleAttribute,
-  toggleBooleanAttributes,
-  // Deprecated API
-  select: $,
-  selectAll: $$
-};

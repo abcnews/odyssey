@@ -1,8 +1,10 @@
 // ECMAScript
-require('core-js/fn/dom-collections/iterator');
-require('core-js/fn/symbol');
+import 'core-js/fn/dom-collections/iterator';
+import 'core-js/fn/symbol';
+
 // Browser APIs
-require('custom-event-polyfill'); // new CustomEvent()
-require('ric'); // window.requestIdleCallback()
+import 'custom-event-polyfill'; // new CustomEvent()
+import 'ric'; // window.requestIdleCallback()
+
 // CSS
-require('objectFitPolyfill');
+import 'objectFitPolyfill';

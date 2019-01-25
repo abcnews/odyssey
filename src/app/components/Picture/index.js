@@ -1,14 +1,14 @@
 // External
-const html = require('bel');
-const picturefill = require('picturefill/dist/picturefill.min');
+import html from 'bel';
+import picturefill from 'picturefill/dist/picturefill.min';
 
 // Ours
-const { MQ, RATIO_PATTERN, SMALLEST_IMAGE, MS_VERSION } = require('../../../constants');
-const { enqueue, subscribe } = require('../../scheduler');
-const { $, $$, append, detach } = require('../../utils/dom');
-const { proximityCheck } = require('../../utils/misc');
-const { blurImage } = require('./blur');
-require('./index.scss');
+import { MQ, RATIO_PATTERN, SMALLEST_IMAGE, MS_VERSION } from '../../../constants';
+import { enqueue, subscribe } from '../../scheduler';
+import { $, $$, append, detach } from '../../utils/dom';
+import { blur } from '../../utils/images';
+import { proximityCheck } from '../../utils/misc';
+import './index.scss';
 
 const SIZES = {
   '16x9': { sm: '700x394', md: '940x529', lg: '2150x1210' },
@@ -25,7 +25,7 @@ const DEFAULTS = {
   MD_RATIO: '3x2',
   LG_RATIO: '16x9'
 };
-const PLACEHOLDER_PROPERTY = '--placeholder-image';
+export const PLACEHOLDER_PROPERTY = '--placeholder-image';
 const IMAGE_LOAD_RANGE = 1;
 
 const pictures = [];
@@ -125,7 +125,7 @@ function Picture({
 
       if (!picture.hasPlaceholder) {
         enqueue(function _createAndAddPlaceholderImage() {
-          blurImage(src, (err, blurredImageURL) => {
+          blur(src, (err, blurredImageURL) => {
             if (err) {
               return;
             }
@@ -183,11 +183,9 @@ subscribe(function _checkIfPicturesNeedToBeLoaded(client) {
   });
 });
 
-module.exports = Picture;
+export default Picture;
 
-module.exports.PLACEHOLDER_PROPERTY = PLACEHOLDER_PROPERTY;
-
-module.exports.resize = ({ url = '', ratio = '16x9', size = 'md' }) =>
+export const resize = ({ url = '', ratio = '16x9', size = 'md' }) =>
   url
     .replace(P2_RATIO_SIZE_PATTERN, '$1-large')
     .replace(RATIO_PATTERN, ratio)

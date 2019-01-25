@@ -1,17 +1,17 @@
 // External
-const html = require('bel');
+import html from 'bel';
 
 // Ours
-const { MQ, MS_VERSION, SMALLEST_IMAGE } = require('../../../constants');
-const { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } = require('../../media');
-const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
-const { toggleAttribute, toggleBooleanAttributes } = require('../../utils/dom');
-const { PLACEHOLDER_PROPERTY, resize } = require('../Picture');
-const { blurImage } = require('../Picture/blur');
-const VideoControls = require('../VideoControls');
-const { trackProgress } = require('./stats');
-const { getMetadata, hasAudio } = require('./utils');
-require('./index.scss');
+import { MQ, MS_VERSION, SMALLEST_IMAGE } from '../../../constants';
+import { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } from '../../media';
+import { enqueue, invalidateClient, subscribe } from '../../scheduler';
+import { toggleAttribute, toggleBooleanAttributes } from '../../utils/dom';
+import { blur } from '../../utils/images';
+import { PLACEHOLDER_PROPERTY, resize } from '../Picture';
+import VideoControls from '../VideoControls';
+import { trackProgress } from './stats';
+import { getMetadata, hasAudio } from './utils';
+import './index.scss';
 
 const FUZZY_INCREMENT_FPS = 30;
 const FUZZY_INCREMENT_INTERVAL = 1000 / FUZZY_INCREMENT_FPS;
@@ -256,7 +256,7 @@ function VideoPlayer({
 
       if (isContained) {
         enqueue(function _createAndAddPlaceholderImage() {
-          blurImage(posterURL, (err, blurredImageURL) => {
+          blur(posterURL, (err, blurredImageURL) => {
             if (err) {
               return;
             }
@@ -390,4 +390,4 @@ subscribe(function _checkIfVideoPlayersNeedToUpdateUIBasedOnMedia() {
   });
 });
 
-module.exports = VideoPlayer;
+export default VideoPlayer;
