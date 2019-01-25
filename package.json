@@ -13,7 +13,7 @@
 		"start": "aunty serve"
 	},
 	"dependencies": {
-		"@abcaustralia/abc-components": "^4.3.7",
+		"@abcaustralia/abc-components": "^4.3.8",
 		"@abcaustralia/dls-components": "^11.1.3",
 		"@abcaustralia/profiles": "^5.0.1",
 		"@abcnews/capi-fetch": "^1.2.0",
