@@ -27,7 +27,7 @@ function ScrollHint() {
 }
 
 subscribe(function _checkIfScrollHintNeedsToBeRemoved() {
-  if (scrollHintEl === null || window.scrollY < 200) {
+  if (scrollHintEl == null || window.scrollY < 200) {
     return;
   }
 
