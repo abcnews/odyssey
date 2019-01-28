@@ -3,7 +3,7 @@ module.exports.PresentationLayerAsyncComponent = (componentName, props) => {
 
   el.setAttribute('data-presentation-layer-async-component', '');
 
-  import(/* webpackChunkName: "pl-components" */ '.').then(({ render }) => render(componentName, props, el));
+  import(/* webpackChunkName: "abc-components" */ '.').then(({ render }) => render(componentName, props, el));
 
   return el;
 };

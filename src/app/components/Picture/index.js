@@ -1,6 +1,5 @@
 // External
 const html = require('bel');
-const picturefill = require('picturefill/dist/picturefill.min');
 
 // Ours
 const { MQ, RATIO_PATTERN, SMALLEST_IMAGE, MS_VERSION } = require('../../../constants');
@@ -120,7 +119,9 @@ function Picture({
       append(picturePictureEl, imgEl);
 
       if (MS_VERSION && MS_VERSION < 13) {
-        picturefill({ elements: [imgEl] });
+        import(/* webpackChunkName: "polyfills" */ '../../../polyfills/async').then(({ picturefill }) => {
+          picturefill({ elements: [imgEl] });
+        });
       }
 
       if (!picture.hasPlaceholder) {
