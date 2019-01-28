@@ -191,13 +191,13 @@
     &.crossfade {
       &.transition-in {
         opacity: 0;
-        z-index: 10;
+        z-index: 1;
         animation: fadeIn 1s ease 0s 1 normal forwards;
       }
 
       &.transition-out {
         opacity: 1;
-        z-index: 9;
+        z-index: 0;
       }
 
       @keyframes fadeIn {
@@ -212,12 +212,12 @@
 
     &.bouncefade {
       &.transition-in {
-        z-index: 10;
+        z-index: 1;
         animation: bounceFadeIn 1s ease 0s 1 normal forwards;
       }
 
       &.transition-out {
-        z-index: 9;
+        z-index: 0;
         animation: bounceFadeOut 1s ease 0s 1 normal forwards;
       }
 
@@ -246,12 +246,12 @@
 
     &.zoomfade {
       &.transition-in {
-        z-index: 9;
+        z-index: 0;
         opacity: 1;
       }
 
       &.transition-out {
-        z-index: 10;
+        z-index: 1;
         animation: zoomFadeOut 1s ease 0s 1 normal forwards;
       }
 
@@ -395,12 +395,12 @@
       // transition: all 1s ease;
 
       &.transition-in {
-        z-index: 9;
+        z-index: 0;
         animation: shuffleIn 1s linear 0s 1 forwards;
       }
 
       &.transition-out {
-        z-index: 10;
+        z-index: 1;
         animation: shuffleOut 1s linear 0s 1 forwards;
       }
 
