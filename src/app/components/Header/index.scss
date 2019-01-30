@@ -92,6 +92,13 @@ $header-content-peek: 5.5rem;
   }
 }
 
+/* In Firefox, parallax headers aren't clipped properly */
+@supports (-moz-appearance: meterbar) {
+  :not(.is-layered) > .Header-media [data-component='OdysseyParallax_App'] > * {
+    height: calc(100vh - #{$header-content-peek});
+  }
+}
+
 .Header-content {
   position: relative;
   margin-left: $layout-fluid-padding;
