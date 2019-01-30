@@ -54,7 +54,6 @@ function Header({
 
   if (interactiveEl) {
     mediaEl = interactiveEl.cloneNode(true);
-    mediaEl.classList.add('Header-interactive');
   } else if (imgEl) {
     mediaEl = Picture({
       src: imgEl.src,
