@@ -14,13 +14,6 @@ function trim(str) {
   return str.replace(TRIM_PATTERN, '');
 }
 
-function slug(str) {
-  return str
-    .toLowerCase()
-    .replace(SLUG_ALLOWED_PATTERN, '')
-    .replace(SLUG_REPLACE_PATTERN, HYPHEN);
-}
-
 function twoDigits(number) {
   return `${number < 10 ? '0' : ''}${number}`;
 }
@@ -95,7 +88,6 @@ function whenKeyIn(keys, fn) {
 module.exports = {
   returnFalse,
   trim,
-  slug,
   twoDigits,
   formattedDate,
   flatten,

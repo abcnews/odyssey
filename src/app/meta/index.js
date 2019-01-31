@@ -17,6 +17,12 @@ const SHARE_ORDERING = ['facebook', 'twitter', 'whatsapp', 'reddit', 'email'];
 
 let meta = null; // singleton
 
+function getDataAttribute(name) {
+  const el = $(`[data-${name}]`);
+
+  return el ? el.getAttribute(`data-${name}`) : null;
+}
+
 function getMetaContent(name) {
   const el = $(`meta[name="${name}"]`);
 
@@ -133,6 +139,7 @@ function getMeta() {
       updated: getDate('DCTERMS.modified', 'updated'),
       bylineNodes: getBylineNodes(),
       infoSource: getInfoSource(),
+      infoSourceLogosDataId: getDataAttribute('info-source-logos'),
       shareLinks: getShareLinks(),
       relatedMedia: getRelatedMedia(),
       relatedStoriesIds: getRelatedStoriesIds(),
