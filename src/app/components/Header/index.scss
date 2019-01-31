@@ -220,15 +220,9 @@ $header-content-peek: 5.5rem;
   margin-left: 0.1em;
 }
 
-// .Header-infoSource--<slug>,
-.Header-infoSource--730,
-.Header-infoSource--australian-story,
-.Header-infoSource--foreign-correspondent,
-.Header-infoSource--four-corners,
-.Header-infoSource--rn {
+.Header-infoSource.has-logo {
   overflow: hidden;
   position: relative;
-  height: 3.125rem;
   background-repeat: no-repeat;
   background-position: center;
   background-size: auto 100%;
@@ -236,32 +230,7 @@ $header-content-peek: 5.5rem;
   text-indent: -100%;
 }
 
-.Header-infoSource--730 {
-  background-image: url(./info-sources/730.png);
-}
-
-.Header-infoSource--australian-story {
-  background-image: url(./info-sources/australian-story.png);
-}
-
-.Header-infoSource--foreign-correspondent {
-  background-image: url(./info-sources/foreign-correspondent.png);
-}
-
-.Header-infoSource--four-corners {
-  background-image: url(./info-sources/four-corners.png);
-}
-
-.Header-infoSource--rn {
-  background-image: url(./info-sources/rn.png);
-}
-
-// .Header-infoSource--<slug> a,
-.Header-infoSource--730 a,
-.Header-infoSource--australian-story a,
-.Header-infoSource--foreign-correspondent a,
-.Header-infoSource--four-corners a,
-.Header-infoSource--rn a {
+.Header-infoSource.has-logo a {
   position: absolute;
   top: 0;
   left: 0;

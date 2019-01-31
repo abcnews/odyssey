@@ -1,4 +1,5 @@
 // External
+const capiFetch = require('@abcnews/capi-fetch').default;
 const cn = require('classnames');
 const html = require('bel');
 const url2cmid = require('util-url2cmid');
@@ -7,7 +8,7 @@ const url2cmid = require('util-url2cmid');
 const { MS_VERSION, VIDEO_MARKER_PATTERN } = require('../../../constants');
 const { enqueue, subscribe } = require('../../scheduler');
 const { $, detach, isElement } = require('../../utils/dom');
-const { dePx, formattedDate, getRatios, slug, trim } = require('../../utils/misc');
+const { dePx, formattedDate, getRatios, trim } = require('../../utils/misc');
 const ScrollHint = require('../ScrollHint');
 const Picture = require('../Picture');
 const UParallax = require('../UParallax');
@@ -88,12 +89,18 @@ function Header({
   });
 
   const clonedBylineNodes = meta.bylineNodes ? meta.bylineNodes.map(node => node.cloneNode(true)) : null;
-  const infoSource = meta.infoSource
-    ? meta.infoSource.url
-      ? html`
-          <a href="${meta.infoSource.url}">${meta.infoSource.name}</a>
-        `
-      : meta.infoSource.name
+  const infoSourceEl = meta.infoSource
+    ? html`
+        <p class="Header-infoSource">
+          ${
+            meta.infoSource.url
+              ? html`
+                  <a href="${meta.infoSource.url}">${meta.infoSource.name}</a>
+                `
+              : meta.infoSource.name
+          }
+        </p>
+      `
     : null;
   const [published, updated] = [meta.published, meta.updated].map(date =>
     date
@@ -128,11 +135,7 @@ function Header({
             <p class="Header-byline">${clonedBylineNodes}</p>
           `
         : null,
-      infoSource
-        ? html`
-            <p class="Header-infoSource Header-infoSource--${slug(meta.infoSource.name)}">${infoSource}</p>
-          `
-        : null,
+      infoSourceEl,
       updated
         ? html`
             <div class="Header-updated">Updated <time datetime="${updated.datetime}">${updated.text}</time></div>
@@ -166,8 +169,10 @@ function Header({
     </div>
   `;
 
-  // https://github.com/philipwalton/flexbugs#3-min-height-on-a-flex-container-wont-apply-to-its-flex-items
+  fetchInfoSourceLogo(meta, infoSourceEl, isLayered ? 'layered' : isDark ? 'dark' : 'light');
+
   if (isLayered && MS_VERSION > 9 && MS_VERSION < 12) {
+    // https://github.com/philipwalton/flexbugs#3-min-height-on-a-flex-container-wont-apply-to-its-flex-items
     let heightOverride;
 
     subscribe(function _checkHeaderHeight(client) {
@@ -189,6 +194,31 @@ function Header({
   }
 
   return headerEl;
+}
+
+function fetchInfoSourceLogo(meta, el, variant) {
+  if (!meta.infoSourceLogosDataId || !el) {
+    return;
+  }
+
+  capiFetch(meta.infoSourceLogosDataId, (err, item) => {
+    if (err) {
+      return;
+    }
+
+    const logoDocs = item.contextSettings['meta.data.name'];
+    const logoDoc = logoDocs[`${meta.infoSource.name} (${variant})`] || logoDocs[meta.infoSource.name];
+
+    if (logoDoc) {
+      capiFetch(logoDoc.id, (err, item) => {
+        const image = item.media[0];
+        el.className = `${el.className} has-logo`;
+        // Assume image@2x, with height clamped between 50px and 75px
+        el.style.height = `${Math.min(75, Math.max(50, Math.round(image.height / 2)))}px`;
+        el.style.backgroundImage = `url(${image.url})`;
+      });
+    }
+  });
 }
 
 function transformSection(section, meta) {

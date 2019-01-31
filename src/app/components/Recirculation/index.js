@@ -1,8 +1,8 @@
 // External
+const capiFetch = require('@abcnews/capi-fetch').default;
 const html = require('bel');
 
 // Ours
-const capiFetch = require('@abcnews/capi-fetch').default;
 const { invalidateClient } = require('../../scheduler');
 const { track } = require('../../utils/behaviour');
 const Picture = require('../Picture');
