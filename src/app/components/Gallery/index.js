@@ -472,7 +472,7 @@ function transformSection(section) {
           },
           isInvariablyAmbient: true
         });
-        const mosaidVideoPlayerEls = [
+        const mosaicVideoPlayerEls = [
           VideoPlayer({
             videoId,
             ratios: {
@@ -515,7 +515,7 @@ function transformSection(section) {
         config.items.push({
           id: videoId,
           mediaEl: videoPlayerEl,
-          mosaicMediaEls: mosaidVideoPlayerEls,
+          mosaicMediaEls: mosaicVideoPlayerEls,
           captionEl: videoCaptionEl
         });
       } else if (imgEl) {
@@ -604,3 +604,4 @@ function transformSection(section) {
 
 module.exports = Gallery;
 module.exports.transformSection = transformSection;
+module.exports.MOSAIC_ROW_LENGTHS_PATTERN = MOSAIC_ROW_LENGTHS_PATTERN;
