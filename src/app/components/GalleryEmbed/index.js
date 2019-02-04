@@ -49,17 +49,33 @@ function transformEl(el) {
 
   const config = {
     items: [],
-    masterCaptionEl: Caption.createFromEl(el, unlink),
     mosaicRowLengths: mosaicRowLengthsString.split('')
   };
 
   capiPromise(galleryId).then(galleryDoc => {
+    // Mosaics should have a master caption
+    if (config.mosaicRowLengths.length > 0) {
+      config.masterCaptionEl = Caption.createFromEl(
+        html`
+          <div
+            data-caption-config="${JSON.stringify({
+              url: galleryDoc.canonicalUrl,
+              text: galleryDoc.teaserTextPlain,
+              attribution: galleryDoc.rightsHolder.join(', '),
+              unlink
+            })}"
+          ></div>
+        `,
+        unlink
+      );
+    }
+
     Promise.all(galleryDoc.items.map(item => capiPromise(item.id))).then(imageDocs => {
       config.items = imageDocs.map(imageDoc => {
         const src = imageDoc.media[0].url;
         const alt = imageDoc.alt;
         const id = imageDoc.id;
-        const linkUrl = `/news/${id}`;
+        const linkUrl = imageDoc.canonicalUrl;
 
         MasterGallery.register(
           html`
