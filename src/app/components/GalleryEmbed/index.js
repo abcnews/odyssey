@@ -59,7 +59,7 @@ function transformEl(el) {
         html`
           <div
             data-caption-config="${JSON.stringify({
-              url: galleryDoc.canonicalUrl,
+              url: `/news/${galleryDoc.id}`,
               text: galleryDoc.teaserTextPlain,
               attribution: galleryDoc.rightsHolder.join(', '),
               unlink
@@ -75,7 +75,7 @@ function transformEl(el) {
         const src = imageDoc.media[0].url;
         const alt = imageDoc.alt;
         const id = imageDoc.id;
-        const linkUrl = imageDoc.canonicalUrl;
+        const linkUrl = `/news/${id}`;
 
         MasterGallery.register(
           html`
