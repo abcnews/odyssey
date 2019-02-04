@@ -5,7 +5,7 @@ const url2cmid = require('util-url2cmid');
 // Ours
 const { enqueue, invalidateClient } = require('../../scheduler');
 const { track } = require('../../utils/behaviour');
-const { $, $$, prepend } = require('../../utils/dom');
+const { $, $$, prepend, substitute } = require('../../utils/dom');
 const Caption = require('../Caption');
 const Gallery = require('../Gallery');
 const Picture = require('../Picture');
@@ -16,16 +16,19 @@ const TAB_KEY = 9;
 const registeredCMIDs = {};
 const items = [];
 let masterGalleryEl = null; // singleton
+let clickHandler = null;
 
-function MasterGallery() {
-  if (masterGalleryEl) {
+function MasterGallery({ isRefresh = false } = {}) {
+  if (masterGalleryEl && !isRefresh) {
     return masterGalleryEl;
   }
 
   if (items.length === 0) {
-    return html`
+    masterGalleryEl = html`
       <div class="MasterGallery is-empty"></div>
     `;
+
+    return masterGalleryEl;
   }
 
   const galleryEl = Gallery({ items });
@@ -41,7 +44,11 @@ function MasterGallery() {
     }
   }
 
-  window.addEventListener('click', event => {
+  if (clickHandler) {
+    window.removeEventListener('click', clickHandler);
+  }
+
+  clickHandler = event => {
     if ((event.button && event.button !== 0) || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) {
       return;
     }
@@ -72,7 +79,9 @@ function MasterGallery() {
 
     track('master-gallery-open', id);
     goToId(id);
-  });
+  };
+
+  window.addEventListener('click', clickHandler);
 
   const captionLinkEls = $$('.Caption a', galleryEl);
   const lastCaptionLinkEl = captionLinkEls[captionLinkEls.length - 1];
@@ -90,17 +99,15 @@ function MasterGallery() {
     <button
       class="MasterGallery-close"
       aria-label="Close the gallery"
-      onkeydown="${
-        event => {
-          if (event.shiftKey && event.keyCode === TAB_KEY) {
-            event.preventDefault();
+      onkeydown="${event => {
+        if (event.shiftKey && event.keyCode === TAB_KEY) {
+          event.preventDefault();
 
-            if (lastCaptionLinkEl) {
-              lastCaptionLinkEl.focus();
-            }
+          if (lastCaptionLinkEl) {
+            lastCaptionLinkEl.focus();
           }
         }
-      }"
+      }}"
       onclick="${close}"
     ></button>
   `;
@@ -113,13 +120,11 @@ function MasterGallery() {
       role="dialog"
       aria-label="Gallery of all photos in this story"
       tabindex="-1"
-      onclick="${
-        function(event) {
-          if (this === event.target) {
-            close();
-          }
+      onclick="${function(event) {
+        if (this === event.target) {
+          close();
         }
-      }"
+      }}"
     >
       <div class="MasterGallery-container u-richtext-invert">${galleryEl}</div>
     </div>
@@ -153,6 +158,17 @@ function has(id) {
   return items.filter(item => item.id === id).length > 0;
 }
 
+function refresh() {
+  if (!masterGalleryEl) {
+    return;
+  }
+
+  const prevMasterGalleryEl = masterGalleryEl;
+
+  MasterGallery({ isRefresh: true }); // Sets masterGalleryEl;
+  substitute(prevMasterGalleryEl, masterGalleryEl);
+}
+
 function register(el) {
   const imgEl = $('img', el);
 
@@ -184,4 +200,5 @@ function register(el) {
 }
 
 module.exports = MasterGallery;
+module.exports.refresh = refresh;
 module.exports.register = register;
