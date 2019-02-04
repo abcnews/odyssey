@@ -74,7 +74,7 @@ function transformEl(el) {
       config.items = imageDocs.map(imageDoc => {
         const src = imageDoc.media[0].url;
         const alt = imageDoc.alt;
-        const id = imageDoc.id;
+        const id = url2cmid(src); // imageDoc.id will be wrong for ImageProxy documents
         const linkUrl = `/news/${id}`;
 
         MasterGallery.register(
@@ -145,7 +145,10 @@ function transformEl(el) {
         };
       });
 
-      substitute(placeholderEl, Gallery(config));
+      const galleryEl = Gallery(config);
+
+      substitute(placeholderEl, galleryEl);
+      setTimeout(galleryEl.api.measureDimensions, 0, { hasChanged: true });
       MasterGallery.refresh();
     });
   });
