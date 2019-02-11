@@ -9,6 +9,7 @@ const Caption = require('./components/Caption');
 const Comments = require('./components/Comments');
 const Block = require('./components/Block');
 const Gallery = require('./components/Gallery');
+const GalleryEmbed = require('./components/GalleryEmbed');
 const Header = require('./components/Header');
 const ImageEmbed = require('./components/ImageEmbed');
 const MasterGallery = require('./components/MasterGallery');
@@ -146,6 +147,12 @@ function app() {
   $$('.inline-content.video, .view-inlineMediaPlayer', storyEl)
     .concat($$('.embed-content', storyEl).filter(el => $('.type-video', el)))
     .forEach(VideoEmbed.transformEl);
+
+  // Transform gallery embeds
+  $$('.inline-content.gallery', storyEl)
+    .concat($$('.embed-content', storyEl).filter(el => $('.type-gallery', el)))
+    .concat($$('[class^="comp-embedded-"]', storyEl).filter(el => $('[data-gallery-id]', el)))
+    .forEach(GalleryEmbed.transformEl);
 
   // Transform quotes (native and embedded)
   $$(

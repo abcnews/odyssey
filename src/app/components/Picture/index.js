@@ -54,7 +54,7 @@ function Picture({
 
   const sizerClassName = `u-sizer-sm-${ratios.sm} u-sizer-md-${ratios.md} u-sizer-lg-${ratios.lg}`;
 
-  const imageURL = src.replace(P2_RATIO_SIZE_PATTERN, '$1-large');
+  const imageURL = ensurePhase1Asset(src);
   const smImageURL = imageURL
     .replace(RATIO_PATTERN, ratios.sm)
     .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratios.sm].sm}`);
@@ -189,7 +189,20 @@ module.exports = Picture;
 module.exports.PLACEHOLDER_PROPERTY = PLACEHOLDER_PROPERTY;
 
 module.exports.resize = ({ url = '', ratio = '16x9', size = 'md' }) =>
-  url
-    .replace(P2_RATIO_SIZE_PATTERN, '$1-large')
+  ensurePhase1Asset(url)
     .replace(RATIO_PATTERN, ratio)
     .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratio][size]}`);
+
+function ensurePhase1Asset(url) {
+  const match = url.match(P2_RATIO_SIZE_PATTERN);
+
+  if (!match) {
+    return url;
+  }
+
+  return url
+    .split('?')[0]
+    .replace('cm/r', 'news/')
+    .replace(match[1], '16x9')
+    .replace(match[2], SIZES['16x9'].md);
+}
