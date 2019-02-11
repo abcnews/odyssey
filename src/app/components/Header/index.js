@@ -46,8 +46,8 @@ function Header({
   );
 
   ratios = {
-    sm: ratios.sm || (isLayered ? '3x4' : undefined),
-    md: ratios.md || (isLayered ? '1x1' : undefined),
+    sm: ratios.sm || (isLayered ? '3x4' : '1x1'),
+    md: ratios.md || (isLayered ? '1x1' : '3x2'),
     lg: ratios.lg
   };
 
@@ -92,13 +92,11 @@ function Header({
   const infoSourceEl = meta.infoSource
     ? html`
         <p class="Header-infoSource">
-          ${
-            meta.infoSource.url
-              ? html`
-                  <a href="${meta.infoSource.url}">${meta.infoSource.name}</a>
-                `
-              : meta.infoSource.name
-          }
+          ${meta.infoSource.url
+            ? html`
+                <a href="${meta.infoSource.url}">${meta.infoSource.name}</a>
+              `
+            : meta.infoSource.name}
         </p>
       `
     : null;
@@ -114,17 +112,15 @@ function Header({
   const contentEls = [
     html`
       <h1>
-        ${
-          isKicker && meta.title.indexOf(': ') > -1
-            ? meta.title.split(': ').map((text, index) =>
-                index === 0
-                  ? html`
-                      <small>${text}</small>
-                    `
-                  : text
-              )
-            : meta.title
-        }
+        ${isKicker && meta.title.indexOf(': ') > -1
+          ? meta.title.split(': ').map((text, index) =>
+              index === 0
+                ? html`
+                    <small>${text}</small>
+                  `
+                : text
+            )
+          : meta.title}
       </h1>
     `
   ]
@@ -156,15 +152,13 @@ function Header({
 
   const headerEl = html`
     <div class="${className}">
-      ${
-        mediaEl
-          ? html`
-              <div class="Header-media${isLayered && mediaEl.tagName !== 'DIV' ? ' u-parallax' : ''}">
-                ${!isLayered ? ScrollHint() : null} ${mediaEl}
-              </div>
-            `
-          : null
-      }
+      ${mediaEl
+        ? html`
+            <div class="Header-media${isLayered && mediaEl.tagName !== 'DIV' ? ' u-parallax' : ''}">
+              ${!isLayered ? ScrollHint() : null} ${mediaEl}
+            </div>
+          `
+        : null}
       ${headerContentEl}
     </div>
   `;
