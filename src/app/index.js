@@ -23,6 +23,7 @@ const UQuote = require('./components/UQuote');
 const UParallax = require('./components/UParallax');
 const UPull = require('./components/UPull');
 const VideoEmbed = require('./components/VideoEmbed');
+const WhatNext = require('./components/WhatNext');
 const { start } = require('./scheduler');
 const { getMeta } = require('./meta');
 const { reset } = require('./reset');
@@ -92,7 +93,18 @@ function app() {
     .forEach(UQuote.conditionallyApply);
 
   // Transform markers
-  getMarkers(['cta', 'hr', 'scrollhint', 'series', 'share', 'video', 'youtube', 'related', 'tease']).forEach(marker => {
+  getMarkers([
+    'cta',
+    'hr',
+    'scrollhint',
+    'series',
+    'share',
+    'video',
+    'youtube',
+    'related',
+    'tease',
+    'whatnext'
+  ]).forEach(marker => {
     let el;
 
     switch (marker.name) {
@@ -123,6 +135,9 @@ function app() {
       case 'related':
       case 'tease':
         Recirculation.transformMarker(marker, meta);
+        break;
+      case 'whatnext':
+        WhatNext.transformMarker(marker);
         break;
       default:
         break;
