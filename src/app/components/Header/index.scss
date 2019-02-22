@@ -39,6 +39,14 @@ $header-content-peek: 5.5rem;
       margin-bottom: calc(-100vh + #{$abc-nav-height--mq-pl-sm}) !important;
     }
   }
+
+  @media #{$mq-lg} {
+    &.is-abreast {
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: space-between;
+    }
+  }
 }
 
 .Header-media {
@@ -48,6 +56,10 @@ $header-content-peek: 5.5rem;
 
   .is-pale > & {
     background-color: $color-white;
+  }
+
+  .is-abreast > & {
+    background-color: transparent;
   }
 
   :not(.is-layered) > & {
@@ -90,6 +102,28 @@ $header-content-peek: 5.5rem;
   .is-pale > &::after {
     background-image: $gradient-white-vertical-0-0-100-60;
   }
+
+  @media #{$mq-lg} {
+    .is-abreast > & {
+      flex-grow: 1;
+      -ms-flex: 1 0 50%;
+      padding: 0;
+      max-width: calc(1080px + 5rem);
+
+      &::after {
+        content: none;
+      }
+    }
+
+    .is-abreast.has-content-taller-than-peek > & {
+      max-height: initial;
+    }
+
+    .is-abreast > & > :not(.ScrollHint) {
+      margin: 2.5rem;
+      height: calc(100% - 5rem);
+    }
+  }
 }
 
 /* In Firefox, parallax headers aren't clipped properly */
@@ -115,6 +149,27 @@ $header-content-peek: 5.5rem;
     margin-left: auto;
     margin-right: auto;
     width: $layout-fixed - $layout-fixed-gutter;
+
+    .is-abreast > & {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      align-self: flex-end;
+      flex-grow: 0;
+      margin-left: 0;
+      margin-right: 0;
+      padding: 2.5rem;
+      width: 30.625rem;
+
+      & > * {
+        margin-left: 0 !important;
+        margin-right: auto !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        width: 100%;
+        text-align: left;
+      }
+    }
   }
 
   .is-layered > & {
@@ -174,6 +229,12 @@ $header-content-peek: 5.5rem;
 
     @media #{$mq-not-sm} {
       width: 18rem;
+    }
+  }
+
+  @media #{$mq-lg} {
+    .is-abreast &::after {
+      margin-left: 0;
     }
   }
 }

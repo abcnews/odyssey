@@ -23,6 +23,7 @@ function Header({
   imgEl,
   interactiveEl,
   ratios = {},
+  isAbreast,
   isDark,
   isPale,
   isFloating,
@@ -33,10 +34,12 @@ function Header({
   isFloating = isFloating || (isLayered && !imgEl && !videoId && !interactiveEl);
   isLayered = isLayered || isFloating;
   isDark = meta.isDarkMode || isLayered || isDark;
+  isAbreast = !isFloating && !isLayered && (imgEl || videoId || interactiveEl) && isAbreast;
 
   const className = cn(
     'Header',
     {
+      'is-abreast': isAbreast,
       'is-dark': isDark,
       'is-pale': isPale,
       'is-floating': isFloating,
@@ -48,7 +51,7 @@ function Header({
   ratios = {
     sm: ratios.sm || (isLayered ? '3x4' : '1x1'),
     md: ratios.md || (isLayered ? '1x1' : '3x2'),
-    lg: ratios.lg
+    lg: ratios.lg || (isAbreast ? '1x1' : null)
   };
 
   let mediaEl;
@@ -75,7 +78,7 @@ function Header({
         });
   }
 
-  if (mediaEl && !interactiveEl && !isLayered) {
+  if (mediaEl && !interactiveEl && !isLayered && !isAbreast) {
     mediaEl.classList.add('u-parallax');
     UParallax.activate(mediaEl);
   }
@@ -154,7 +157,7 @@ function Header({
     <div class="${className}">
       ${mediaEl
         ? html`
-            <div class="Header-media${isLayered && mediaEl.tagName !== 'DIV' ? ' u-parallax' : ''}">
+            <div class="Header-media${isLayered && !isAbreast && mediaEl.tagName !== 'DIV' ? ' u-parallax' : ''}">
               ${!isLayered ? ScrollHint() : null} ${mediaEl}
             </div>
           `
@@ -164,6 +167,18 @@ function Header({
   `;
 
   fetchInfoSourceLogo(meta, infoSourceEl, isLayered ? 'layered' : isDark ? 'dark' : 'light');
+
+  if (isAbreast) {
+    subscribe(function _checkHeaderContentHeight(client) {
+      if (client.hasChanged) {
+        const headerContentElHeight = headerContentEl.getBoundingClientRect().height;
+        const clientHeightMinusHeaderContentPeek = client.height - 152;
+        headerEl.classList[headerContentElHeight > clientHeightMinusHeaderContentPeek ? 'add' : 'remove'](
+          'has-content-taller-than-peek'
+        );
+      }
+    });
+  }
 
   if (isLayered && MS_VERSION > 9 && MS_VERSION < 12) {
     // https://github.com/philipwalton/flexbugs#3-min-height-on-a-flex-container-wont-apply-to-its-flex-items
@@ -221,6 +236,7 @@ function transformSection(section, meta) {
   const isLayered = isFloating || section.configSC.indexOf('layered') > -1;
   const isDark = isLayered || section.configSC.indexOf('dark') > -1;
   const isPale = section.configSC.indexOf('pale') > -1;
+  const isAbreast = section.configSC.indexOf('abreast') > -1;
   const isNoMedia = isFloating || section.configSC.indexOf('nomedia') > -1;
   const isKicker = section.configSC.indexOf('kicker') > -1;
   const shouldSupplant = section.configSC.indexOf('supplant') > -1;
@@ -307,6 +323,7 @@ function transformSection(section, meta) {
     {
       meta,
       ratios,
+      isAbreast,
       isDark,
       isPale,
       isFloating,
