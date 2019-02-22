@@ -124,6 +124,14 @@ $header-content-peek: 5.5rem;
       height: calc(100% - 5rem);
     }
   }
+
+  @media #{$mq-xl} {
+    .is-abreast > & {
+      flex-grow: 0;
+      -ms-flex: 0 0 50%;
+      width: calc(1080px + 5rem);
+    }
+  }
 }
 
 /* In Firefox, parallax headers aren't clipped properly */
@@ -169,6 +177,14 @@ $header-content-peek: 5.5rem;
         width: 100%;
         text-align: left;
       }
+    }
+  }
+
+  @media #{$mq-xl} {
+    .is-abreast > & {
+      align-self: center;
+      margin-left: auto;
+      margin-right: auto;
     }
   }
 
