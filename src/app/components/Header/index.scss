@@ -112,7 +112,7 @@ $header-abreast-margin: 2.5rem;
     .is-abreast > & {
       flex-grow: 1;
       -ms-flex: 1 0 50%;
-      max-width: calc(940px - #{$header-abreast-margin * 2}); // Arbitrary value - max native width of 3:4 image
+      max-width: calc(75vh - 5rem); // Maintain 3:4 aspect ratio, based on max-height (below)
       max-height: calc(100vh - #{$abc-nav-height + $header-content-peek + $header-abreast-margin * 2});
 
       &::after {
