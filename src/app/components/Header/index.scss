@@ -169,11 +169,12 @@ $header-abreast-margin: 2.5rem;
       width: 25rem;
 
       & > * {
-        margin-left: 0 !important;
-        margin-right: auto !important;
         padding-left: 0 !important;
         padding-right: 0 !important;
         width: 100%;
+      }
+
+      & > h1 {
         text-align: left;
       }
     }
@@ -261,6 +262,10 @@ $header-abreast-margin: 2.5rem;
   }
 }
 
+.Header-miscEl > li {
+  font-family: $font-sans;
+}
+
 .Header-byline,
 .Header-infoSource,
 .Header-updated,
@@ -319,4 +324,8 @@ $header-abreast-margin: 2.5rem;
   .is-dark & {
     color: $color-grey-300;
   }
+}
+
+.is-abreast .Header-content > h1 ~ * {
+  text-align: left;
 }
