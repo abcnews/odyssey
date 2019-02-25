@@ -262,8 +262,9 @@ $header-abreast-margin: 2.5rem;
   }
 }
 
-.Header-miscEl > li {
+ul.Header-miscEl > li {
   font-family: $font-sans;
+  font-size: 1rem;
 }
 
 .Header-byline,
