@@ -1,6 +1,7 @@
 @import '../../../constants';
 
 $header-content-peek: 5.5rem;
+$header-abreast-margin: 2.5rem;
 
 .Header {
   overflow: hidden;
@@ -45,6 +46,10 @@ $header-content-peek: 5.5rem;
       display: flex;
       flex-direction: row-reverse;
       justify-content: center;
+
+      > * {
+        margin: $header-abreast-margin;
+      }
     }
   }
 }
@@ -107,8 +112,8 @@ $header-content-peek: 5.5rem;
     .is-abreast > & {
       flex-grow: 1;
       -ms-flex: 1 0 50%;
-      padding: 0;
-      max-width: calc(940px + 5rem);
+      max-width: calc(940px - #{$header-abreast-margin * 2}); // Arbitrary value - max native width of 3:4 image
+      max-height: calc(100vh - #{$abc-nav-height + $header-content-peek + $header-abreast-margin * 2});
 
       &::after {
         content: none;
@@ -116,12 +121,7 @@ $header-content-peek: 5.5rem;
     }
 
     .is-abreast.has-content-taller-than-peek > & {
-      max-height: initial;
-    }
-
-    .is-abreast > & > :not(.ScrollHint) {
-      margin: 2.5rem;
-      height: calc(100% - 5rem);
+      max-height: calc(100vh - #{$abc-nav-height + $header-abreast-margin * 2});
     }
   }
 
@@ -129,7 +129,7 @@ $header-content-peek: 5.5rem;
     .is-abreast > & {
       flex-grow: 0;
       -ms-flex: 0 0 50%;
-      width: calc(940px + 5rem);
+      width: calc(940px - #{$header-abreast-margin * 2});
     }
   }
 }
@@ -157,17 +157,16 @@ $header-content-peek: 5.5rem;
     margin-left: auto;
     margin-right: auto;
     width: $layout-fixed - $layout-fixed-gutter;
+  }
 
+  @media #{$mq-lg} {
     .is-abreast > & {
       display: flex;
       flex-direction: column;
       align-items: stretch;
       align-self: flex-end;
       flex-grow: 0;
-      margin-left: 0;
-      margin-right: 0;
-      padding: 2.5rem;
-      width: 30.625rem;
+      width: 25rem;
 
       & > * {
         margin-left: 0 !important;
