@@ -78,7 +78,7 @@
       }
     }
 
-    @media #{$mq-lg} {
+    @media #{$mq-gt-md} {
       .u-pull &,
       .u-full & {
         margin-top: $size-control * -1;

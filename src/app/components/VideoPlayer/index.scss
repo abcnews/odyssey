@@ -72,7 +72,7 @@
     max-width: none;
   }
 
-  @media #{$mq-not-lg} {
+  @media #{$mq-lt-lg} {
     &.is-contained video {
       background-size: contain;
       object-fit: contain;

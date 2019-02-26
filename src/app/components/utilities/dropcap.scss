@@ -8,7 +8,7 @@
   font-weight: bold;
   line-height: 0.78; // Gecko ignores this
 
-  @media #{$mq-not-sm} {
+  @media #{$mq-gt-sm} {
     padding-top: 0.5rem;
     font-size: 3.625rem;
     line-height: 0.74; // Gecko ignores this
@@ -19,8 +19,8 @@
   text-indent: 0;
 
   &::first-letter {
-    @media #{$mq-not-sm} {
-      margin-left: -.4em;
+    @media #{$mq-gt-sm} {
+      margin-left: -0.4em;
     }
   }
 }

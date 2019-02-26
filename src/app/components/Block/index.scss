@@ -7,7 +7,7 @@
   min-height: 100vh;
   line-height: 1.5;
 
-  @media #{$mq-landscape} and #{$mq-not-lg}, #{$mq-lg} {
+  @media #{$mq-gt-md}, #{$mq-landscape} and #{$mq-lt-lg} {
     min-height: 56.25vw;
   }
 

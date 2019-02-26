@@ -18,7 +18,7 @@
     pointer-events: none;
   }
 
-  @media #{$mq-lg} {
+  @media #{$mq-gt-md} {
     &:not(.is-contained) iframe {
       transform: translate(-50%, -50%);
       top: 50%;
@@ -42,7 +42,7 @@
     object-fit: cover;
   }
 
-  @media #{$mq-not-lg} {
+  @media #{$mq-lt-lg} {
     &.is-contained img {
       object-fit: contain;
     }

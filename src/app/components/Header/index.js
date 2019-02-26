@@ -51,7 +51,8 @@ function Header({
   ratios = {
     sm: ratios.sm || (isLayered ? '3x4' : '1x1'),
     md: ratios.md || (isLayered ? '1x1' : '3x2'),
-    lg: ratios.lg || (isAbreast ? '1x1' : null)
+    lg: isAbreast ? '3x4' : ratios.lg,
+    xl: isAbreast ? '1x1' : ratios.xl
   };
 
   let mediaEl;

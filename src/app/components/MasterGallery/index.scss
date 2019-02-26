@@ -57,7 +57,7 @@ html.is-master-gallery-open {
     width: 100%;
     max-width: $layout-fixed - $layout-fixed-gutter;
 
-    @media #{$mq-lg} {
+    @media #{$mq-gt-md} {
       font-size: 1rem !important;
       line-height: 1.625rem;
 

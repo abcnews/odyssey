@@ -9,13 +9,13 @@
   padding-bottom: 0.4rem;
   font-family: $font-sans;
 
-  @media #{$mq-not-lg} {
+  @media #{$mq-lt-lg} {
     padding-left: $layout-fluid-padding;
     padding-right: $layout-fluid-padding;
   }
 
   .u-full & {
-    @media #{$mq-lg} {
+    @media #{$mq-gt-md} {
       padding-left: $layout-fixed-padding;
       padding-right: $layout-fixed-padding;
     }
@@ -27,7 +27,7 @@
     background-color: $color-black-transparent-60;
     color: $color-white;
 
-    @media #{$mq-lg} {
+    @media #{$mq-gt-md} {
       padding-left: $layout-fluid-padding;
       padding-right: $layout-fluid-padding;
     }
@@ -35,7 +35,7 @@
 
   .u-richtext .u-pull-left &,
   .u-richtext .u-pull-right & {
-    @media #{$mq-not-sm} {
+    @media #{$mq-gt-sm} {
       padding-left: 0;
       padding-right: 0;
     }

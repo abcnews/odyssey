@@ -28,7 +28,7 @@
     will-change: opacity;
   }
 
-  @media #{$mq-not-lg} {
+  @media #{$mq-lt-lg} {
     &.is-contained img {
       object-fit: contain;
     }

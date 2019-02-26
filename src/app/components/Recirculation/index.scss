@@ -77,7 +77,7 @@
 .Recirculation-item:not(.is-missing) ~ .Recirculation-item:not(.is-missing) {
   margin-top: 1.5rem;
 
-  @media #{$mq-lg} {
+  @media #{$mq-gt-md} {
     margin-top: 2.25rem;
   }
 }

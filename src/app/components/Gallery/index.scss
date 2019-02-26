@@ -18,7 +18,7 @@
   padding-left: $layout-fluid-padding;
   padding-right: $layout-fluid-padding;
 
-  @media #{$mq-not-lg} {
+  @media #{$mq-lt-lg} {
     .is-mosaic & {
       padding-left: 0;
       padding-right: 0;
@@ -34,7 +34,7 @@
     width: cells(10);
   }
 
-  @media #{$mq-lg} {
+  @media #{$mq-gt-md} {
     padding-left: $layout-fixed-padding;
     padding-right: $layout-fixed-padding;
     width: $layout-fixed;
@@ -47,7 +47,7 @@
   }
 
   .is-mosaic & > .Caption {
-    @media #{$mq-lg} {
+    @media #{$mq-gt-md} {
       padding-top: 0;
       padding-left: 0;
       padding-right: 0;
@@ -71,7 +71,7 @@
     }
   }
 
-  @media #{$mq-lg} {
+  @media #{$mq-gt-md} {
     margin: 0 -1.25rem;
 
     .is-mosaic & {
@@ -86,7 +86,7 @@
   transition: transform 0.125s ease-out;
   will-change: transform, left;
 
-  @media #{$mq-lg} {
+  @media #{$mq-gt-md} {
     transition-duration: 0.25s;
   }
 
@@ -139,7 +139,7 @@
     }
   }
 
-  @media #{$mq-lg} {
+  @media #{$mq-gt-md} {
     padding: 0 1.25rem;
 
     .is-mosaic & {
@@ -157,7 +157,7 @@
     transition: opacity 0.125s;
     will-change: opacity;
 
-    @media #{$mq-lg} {
+    @media #{$mq-gt-md} {
       transition-duration: 0.25s;
     }
 
@@ -192,7 +192,7 @@
     transition: opacity 0.125s;
     will-change: opacity;
 
-    @media #{$mq-lg} {
+    @media #{$mq-gt-md} {
       margin-left: -$layout-fixed-padding;
       transition-duration: 0.25s;
     }
@@ -203,7 +203,7 @@
     transition-delay: 0.125s;
     pointer-events: all;
 
-    @media #{$mq-lg} {
+    @media #{$mq-gt-md} {
       transition-delay: 0.25s;
     }
   }
@@ -234,7 +234,7 @@
       max-width: calc(100% - 0.5rem);
     }
 
-    @media #{$mq-lg} {
+    @media #{$mq-gt-md} {
       max-width: calc(100% - 0.625rem);
     }
   }
@@ -261,7 +261,7 @@
   width: 100%;
   pointer-events: none;
 
-  @media #{$mq-lg} {
+  @media #{$mq-gt-md} {
     padding: 0 $layout-fixed-padding;
   }
 

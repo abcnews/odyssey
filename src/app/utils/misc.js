@@ -1,5 +1,12 @@
 const smartquotes = require('./smartquotes');
-const { HYPHEN, NEWLINE, SM_RATIO_PATTERN, MD_RATIO_PATTERN, LG_RATIO_PATTERN } = require('../../constants');
+const {
+  HYPHEN,
+  NEWLINE,
+  SM_RATIO_PATTERN,
+  MD_RATIO_PATTERN,
+  LG_RATIO_PATTERN,
+  XL_RATIO_PATTERN
+} = require('../../constants');
 
 const SLUG_ALLOWED_PATTERN = /[^\w\s\-\_]/g;
 const SLUG_REPLACE_PATTERN = /[-\s]+/g;
@@ -45,8 +52,9 @@ function getRatios(str) {
   const [, sm] = str.match(SM_RATIO_PATTERN) || [];
   const [, md] = str.match(MD_RATIO_PATTERN) || [];
   const [, lg] = str.match(LG_RATIO_PATTERN) || [];
+  const [, xl] = str.match(XL_RATIO_PATTERN) || [];
 
-  return { sm, md, lg };
+  return { sm, md, lg, xl };
 }
 
 function dePx(px) {

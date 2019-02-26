@@ -1,13 +1,13 @@
 @import '../../../constants';
 
 [class*='u-pull'] {
-  @media #{$mq-not-sm} {
+  @media #{$mq-gt-sm} {
     clear: both;
   }
 }
 
 .u-pull {
-  @media #{$mq-not-sm} {
+  @media #{$mq-gt-sm} {
     width: 100%;
   }
 }
@@ -17,19 +17,19 @@
     width: cells(8);
   }
 
-  @media #{$mq-lg} {
+  @media #{$mq-gt-md} {
     width: cells(6);
   }
 }
 
 .u-pull-out {
-  @media #{$mq-lg} {
+  @media #{$mq-gt-md} {
     width: cells(10);
   }
 }
 
 .u-pull-left {
-  @media #{$mq-not-sm} {
+  @media #{$mq-gt-sm} {
     clear: left;
     float: left;
     margin-right: ($layout-fixed-padding * 3) !important; // *
@@ -43,7 +43,7 @@
 }
 
 .u-pull-right {
-  @media #{$mq-not-sm} {
+  @media #{$mq-gt-sm} {
     clear: right;
     float: right;
     margin-left: ($layout-fixed-padding * 3) !important; // *
