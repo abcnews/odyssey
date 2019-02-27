@@ -18,6 +18,7 @@ const Recirculation = require('./components/Recirculation');
 const ScrollHint = require('./components/ScrollHint');
 const Series = require('./components/Series');
 const Share = require('./components/Share');
+const StoryTeaserEmbed = require('./components/StoryTeaserEmbed');
 const UDropcap = require('./components/UDropcap');
 const UQuote = require('./components/UQuote');
 const UParallax = require('./components/UParallax');
@@ -179,6 +180,11 @@ function app() {
   $$('[class*="u-pull"] [class*="u-pull"]').forEach(
     el => (el.className = el.className.replace(/u-pull(-\w+)?/, 'n-pull$1'))
   );
+
+  // Transform WYSIWYG story teasers (title+image+description convention)
+  $$(SELECTORS.WYSIWYG_EMBED, storyEl)
+    .filter(StoryTeaserEmbed.doesElMatchConvention)
+    .forEach(StoryTeaserEmbed.transformEl);
 
   // Transform embedded external link captions
   let eels = $$('.inline-content[class*="embed"]', storyEl).concat(

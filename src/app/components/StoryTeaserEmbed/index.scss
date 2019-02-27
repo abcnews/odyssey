@@ -1,0 +1,61 @@
+@import '../../../constants';
+
+.StoryTeaserEmbed {
+  color: $color-black;
+
+  .u-richtext-invert & {
+    color: $color-white;
+  }
+
+  & > a {
+    display: block;
+    border: 0.0625rem solid $color-grey-300-transparent-70;
+    padding: 1rem 1.1875rem 0.75rem;
+
+    &:not(:hover) {
+      color: inherit !important;
+    }
+
+    &:hover,
+    &:active {
+      text-decoration: none !important;
+    }
+
+    & > * {
+      margin: 0 0 0.75rem;
+    }
+
+    & > :last-child {
+      margin-bottom: 0;
+    }
+
+    & > h2,
+    & > p {
+      font-family: $font-sans;
+      font-weight: normal;
+      text-transform: none;
+      transition: color 0.25s;
+    }
+
+    & > h2 {
+      font-size: 1.125rem !important;
+      line-height: 1.294117647;
+      text-transform: none;
+    }
+
+    & > img {
+      width: 100%;
+      height: auto;
+      vertical-align: bottom;
+    }
+
+    & > p {
+      font-size: 0.9375rem;
+      color: $color-black !important;
+    }
+
+    .u-richtext-invert & > p {
+      color: $color-white !important;
+    }
+  }
+}
