@@ -11,7 +11,8 @@ require('./index.scss');
 const PICTURE_RATIOS = {
   sm: '16x9',
   md: '16x9',
-  lg: '16x9'
+  lg: '16x9',
+  xl: '16x9'
 };
 
 function Recirculation({ ids, pull }) {

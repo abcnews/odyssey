@@ -85,18 +85,19 @@ $layout-fixed-gutter: 1.75rem;
 $layout-fluid-padding: $layout-fluid-gutter / 2;
 $layout-fixed-padding: $layout-fixed-gutter / 2;
 
-$mq-sm: '(max-width: 43.6875rem)';
-$mq-md: '(min-width: 43.75rem) and (max-width: 61.1875rem)';
-$mq-lg: '(min-width: 61.25rem)';
-$mq-xl: '(min-width: 112.5rem)';
-$mq-not-sm: '(min-width: 43.75rem)';
-$mq-not-md: '(max-width: 43.6875rem), (min-width: 61.25rem)';
-$mq-not-lg: '(max-width: 61.1875rem)';
-$mq-not-xl: '(max-width: 112.4375rem)';
+$mq-lt-md: '(max-width: 43.6875rem)';
+$mq-gt-sm: '(min-width: 43.75rem)';
+$mq-lt-lg: '(max-width: 61.1875rem)';
+$mq-gt-md: '(min-width: 61.25rem)';
+$mq-lt-xl: '(max-width: 112.4375rem)';
+$mq-gt-lg: '(min-width: 112.5rem)';
+$mq-sm: $mq-lt-md;
+$mq-md: '#{$mq-gt-sm} and #{$mq-lt-lg}';
+$mq-lg: '#{$mq-gt-md} and #{$mq-lt-xl}';
+$mq-xl: $mq-gt-lg;
 $mq-portrait: '(orientation: portrait)';
 $mq-landscape: '(orientation: landscape)';
 $mq-gt-4-3: '(min-aspect-ratio: 4/3)';
-
 $mq-pl-sm: '(max-width: 33.9375em)';
 
 $size-control: 2.5rem;

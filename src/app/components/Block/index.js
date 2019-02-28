@@ -70,7 +70,8 @@ function Block({
   ratios = {
     sm: ratios.sm || '3x4',
     md: ratios.md || '1x1',
-    lg: ratios.lg
+    lg: ratios.lg,
+    xl: ratios.xl
   };
 
   let mediaEl;
@@ -156,46 +157,44 @@ function Block({
   const blockEl = html`
     <div class="${className}">
       ${mediaContainerEl}
-      ${
-        isPiecemeal
-          ? contentEls.reduce((memo, contentEl) => {
-              const piecemeallAlignment = contentEl.getAttribute('data-alignment');
-              const piecemealBackgroundIndex = contentEl.getAttribute('data-background-index');
-              const piecemealLightDark = contentEl.getAttribute('data-lightdark');
-              let piecemealContentClassName = contentClassName;
+      ${isPiecemeal
+        ? contentEls.reduce((memo, contentEl) => {
+            const piecemeallAlignment = contentEl.getAttribute('data-alignment');
+            const piecemealBackgroundIndex = contentEl.getAttribute('data-background-index');
+            const piecemealLightDark = contentEl.getAttribute('data-lightdark');
+            let piecemealContentClassName = contentClassName;
 
-              // Override the light/dark from the Block if a marker was given
-              if (piecemealLightDark) {
-                piecemealContentClassName = piecemealContentClassName.replace(
-                  /\su-richtext(-invert)?/,
-                  ` u-richtext${piecemealLightDark === 'light' ? '' : '-invert'}`
-                );
-              }
+            // Override the light/dark from the Block if a marker was given
+            if (piecemealLightDark) {
+              piecemealContentClassName = piecemealContentClassName.replace(
+                /\su-richtext(-invert)?/,
+                ` u-richtext${piecemealLightDark === 'light' ? '' : '-invert'}`
+              );
+            }
 
-              // Override the left/right from the Block if marker has it
-              if (piecemeallAlignment) {
-                piecemealContentClassName = piecemealContentClassName.replace(
-                  /\sis-(left|right)/,
-                  `${piecemeallAlignment === 'center' ? '' : ` is-${piecemeallAlignment}`}`
-                );
-              }
+            // Override the left/right from the Block if marker has it
+            if (piecemeallAlignment) {
+              piecemealContentClassName = piecemealContentClassName.replace(
+                /\sis-(left|right)/,
+                `${piecemeallAlignment === 'center' ? '' : ` is-${piecemeallAlignment}`}`
+              );
+            }
 
-              if (memo.length === 0 || !isGrouped || (piecemealBackgroundIndex && piecemealBackgroundIndex.length)) {
-                memo.push(html`
-                  <div class="${piecemealContentClassName}">${contentEl}</div>
-                `);
-              } else {
-                memo[memo.length - 1].appendChild(contentEl);
-              }
+            if (memo.length === 0 || !isGrouped || (piecemealBackgroundIndex && piecemealBackgroundIndex.length)) {
+              memo.push(html`
+                <div class="${piecemealContentClassName}">${contentEl}</div>
+              `);
+            } else {
+              memo[memo.length - 1].appendChild(contentEl);
+            }
 
-              return memo;
-            }, [])
-          : contentEls.length > 0
-          ? html`
-              <div class="${contentClassName}">${contentEls}</div>
-            `
-          : null
-      }
+            return memo;
+          }, [])
+        : contentEls.length > 0
+        ? html`
+            <div class="${contentClassName}">${contentEls}</div>
+          `
+        : null}
     </div>
   `;
 

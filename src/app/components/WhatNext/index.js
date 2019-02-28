@@ -14,7 +14,8 @@ require('./index.scss');
 const PICTURE_RATIOS = {
   sm: '3x2',
   md: '3x2',
-  lg: '3x2'
+  lg: '3x2',
+  xl: '3x2'
 };
 
 function WhatNext({ stories }) {

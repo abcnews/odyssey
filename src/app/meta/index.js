@@ -119,6 +119,8 @@ function getRelatedMedia() {
   const relatedMediaEl = $(`
     .view-hero-media,
     .content > article > header + figure,
+    .published + .inline-content.full.photo,
+    .published + .inline-content.full.video,
     .attached-content > .inline-content.photo,
     .attached-content > .inline-content.video
   `);

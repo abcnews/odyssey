@@ -5,7 +5,7 @@
   margin-right: auto;
   width: $layout-fluid;
 
-  @media #{$mq-lg} {
+  @media #{$mq-gt-md} {
     width: $layout-fixed;
   }
 }
@@ -21,7 +21,7 @@
     width: cells(10);
   }
 
-  @media #{$mq-lg} {
+  @media #{$mq-gt-md} {
     padding-left: $layout-fixed-padding;
     padding-right: $layout-fixed-padding;
     width: cells(8);

@@ -468,7 +468,8 @@ function transformSection(section) {
           ratios: {
             sm: ratios.sm || '3x4',
             md: ratios.md,
-            lg: ratios.lg
+            lg: ratios.lg,
+            xl: ratios.xl
           },
           isInvariablyAmbient: true
         });
@@ -478,7 +479,8 @@ function transformSection(section) {
             ratios: {
               sm: ratios.sm || '3x2',
               md: ratios.md || '16x9',
-              lg: ratios.lg
+              lg: ratios.lg,
+              xl: ratios.xl
             },
             isInvariablyAmbient: true
           }),
@@ -487,7 +489,8 @@ function transformSection(section) {
             ratios: {
               sm: ratios.sm || '1x1',
               md: ratios.md,
-              lg: ratios.lg || '3x2'
+              lg: ratios.lg || '3x2',
+              xl: ratios.xl || '3x2'
             },
             isInvariablyAmbient: true
           }),
@@ -496,7 +499,8 @@ function transformSection(section) {
             ratios: {
               sm: ratios.sm || '3x4',
               md: ratios.md || '4x3',
-              lg: ratios.lg || '4x3'
+              lg: ratios.lg || '4x3',
+              xl: ratios.xl || '4x3'
             },
             isInvariablyAmbient: true
           })
@@ -532,7 +536,8 @@ function transformSection(section) {
             ratios: {
               sm: ratios.sm || '3x4',
               md: ratios.md,
-              lg: ratios.lg
+              lg: ratios.lg,
+              xl: ratios.xl
             },
             linkUrl
           }),
@@ -543,7 +548,8 @@ function transformSection(section) {
               ratios: {
                 sm: ratios.sm || '3x2',
                 md: ratios.md || '16x9',
-                lg: ratios.lg
+                lg: ratios.lg,
+                xl: ratios.xl
               },
               linkUrl
             }),
@@ -553,7 +559,8 @@ function transformSection(section) {
               ratios: {
                 sm: ratios.sm || '1x1',
                 md: ratios.md,
-                lg: ratios.lg || '3x2'
+                lg: ratios.lg || '3x2',
+                xl: ratios.xl || '3x2'
               },
               linkUrl
             }),
@@ -563,7 +570,8 @@ function transformSection(section) {
               ratios: {
                 sm: ratios.sm || '3x4',
                 md: ratios.md || '4x3',
-                lg: ratios.lg || '4x3'
+                lg: ratios.lg || '4x3',
+                xl: ratios.xl || '4x3'
               },
               linkUrl
             })

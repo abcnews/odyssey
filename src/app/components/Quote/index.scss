@@ -55,7 +55,7 @@
 .Quote.is-pullquote {
   text-align: center;
 
-  @media #{$mq-not-sm} {
+  @media #{$mq-gt-sm} {
     .u-pull-left &,
     .u-pull-right &,
     &.u-pull-left,
@@ -94,7 +94,7 @@
       font-size: 1.75rem;
     }
 
-    @media #{$mq-lg} {
+    @media #{$mq-gt-md} {
       font-size: 1.875rem;
     }
   }
@@ -108,7 +108,7 @@
       font-size: 1.125rem;
     }
 
-    @media #{$mq-lg} {
+    @media #{$mq-gt-md} {
       font-size: 1.25rem;
     }
 

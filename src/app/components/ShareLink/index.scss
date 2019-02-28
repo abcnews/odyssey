@@ -81,7 +81,7 @@
 }
 
 .ShareLink--whatsapp {
-  @media #{$mq-not-sm} {
+  @media #{$mq-gt-sm} {
     display: none;
   }
 

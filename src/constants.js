@@ -6,6 +6,7 @@ const RATIO_PATTERN = /(\d+x\d+)/;
 const SM_RATIO_PATTERN = /sm(\d+x\d+)/;
 const MD_RATIO_PATTERN = /md(\d+x\d+)/;
 const LG_RATIO_PATTERN = /lg(\d+x\d+)/;
+const XL_RATIO_PATTERN = /xl(\d+x\d+)/;
 const VIDEO_MARKER_PATTERN = /(?:video|youtube)(\w+)/;
 const SCROLLPLAY_PCT_PATTERN = /scrollplay(\d+)/;
 
@@ -56,19 +57,21 @@ const MOCK_ELEMENT = Object.assign(
 );
 
 const REM = 16; // (px)
-const MQ = {
-  SM: '(max-width: 43.6875rem)',
-  MD: '(min-width: 43.75rem) and (max-width: 61.1875rem)',
-  LG: '(min-width: 61.25rem)',
-  XL: '(min-width: 112.5rem)',
-  NOT_SM: '(min-width: 43.75rem)',
-  NOT_MD: '(max-width: 43.6875rem), (min-width: 61.25rem)',
-  NOT_LG: '(max-width: 61.1875rem)',
-  NOT_XL: '(max-width: 112.4375rem)',
-  PORTRAIT: '(orientation: portrait)',
-  LANDSCAPE: '(orientation: landscape)',
-  GT_4_3: '(min-aspect-ratio: 4/3)'
-};
+const MQ = {};
+MQ.LT_MD = '(max-width: 43.6875rem)';
+MQ.GT_SM = '(min-width: 43.75rem)';
+MQ.LT_LG = '(max-width: 61.1875rem)';
+MQ.GT_MD = '(min-width: 61.25rem)';
+MQ.LT_XL = '(max-width: 112.4375rem)';
+MQ.GT_LG = '(min-width: 112.5rem)';
+MQ.SM = MQ.LT_MD;
+MQ.MD = `${MQ.GT_SM} and ${MQ.LT_LG}`;
+MQ.LG = `${MQ.GT_MD} and ${MQ.LT_XL}`;
+MQ.XL = MQ.GT_LG;
+MQ.PORTRAIT = '(orientation: portrait)';
+MQ.LANDSCAPE = '(orientation: landscape)';
+MQ.GT_4_3 = '(min-aspect-ratio: 4/3)';
+MQ.PL_SM = '(max-width: 33.9375em)';
 
 const SMALLEST_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAAAADs=';
 

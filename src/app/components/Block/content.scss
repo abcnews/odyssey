@@ -12,19 +12,7 @@
   max-width: 40rem;
   min-height: 100vh;
 
-  @media #{$mq-lg} and #{$mq-not-xl} {
-    &.is-left,
-    &.is-right {
-      max-width: 35rem;
-    }
-
-    .has-inset-media > &.is-left,
-    .has-inset-media > &.is-right {
-      max-width: 30rem;
-    }
-  }
-
-  @media #{$mq-lg} {
+  @media #{$mq-gt-md} {
     &.is-left {
       margin-left: calc(25% - 12.5rem);
 
@@ -39,6 +27,18 @@
       .has-inset-media > & {
         margin-right: calc(25% - 14rem);
       }
+    }
+  }
+
+  @media #{$mq-lg} {
+    &.is-left,
+    &.is-right {
+      max-width: 35rem;
+    }
+
+    .has-inset-media > &.is-left,
+    .has-inset-media > &.is-right {
+      max-width: 30rem;
     }
   }
 
@@ -61,7 +61,7 @@
     margin: 0 !important;
     padding: 0.75rem 1.75rem;
 
-    @media #{$mq-lg} {
+    @media #{$mq-gt-md} {
       padding: 1.125rem 1.75rem;
     }
   }
@@ -81,7 +81,7 @@
   }
 
   .is-piecemeal.has-inset-media > &:nth-child(2) > :first-child {
-    @media #{$mq-lg} {
+    @media #{$mq-gt-md} {
       margin-top: 40vh !important;
     }
   }
@@ -109,7 +109,7 @@
   & > :first-child {
     padding-top: 1.5rem;
 
-    @media #{$mq-lg} {
+    @media #{$mq-gt-md} {
       padding-top: 2.25rem;
     }
 
@@ -121,7 +121,7 @@
   & > :last-child {
     padding-bottom: 1.5rem;
 
-    @media #{$mq-lg} {
+    @media #{$mq-gt-md} {
       padding-bottom: 2.25rem;
     }
 
@@ -154,7 +154,7 @@
         font-size: 1.25rem;
       }
 
-      @media #{$mq-lg} {
+      @media #{$mq-gt-md} {
         font-size: 1.375rem;
       }
     }

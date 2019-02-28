@@ -36,7 +36,8 @@ function VideoPlayer({
   ratios = {
     sm: ratios.sm || DEFAULT_RATIO,
     md: ratios.md || DEFAULT_RATIO,
-    lg: ratios.lg || DEFAULT_RATIO
+    lg: ratios.lg || DEFAULT_RATIO,
+    xl: ratios.xl || DEFAULT_RATIO
   };
 
   if (isInvariablyAmbient) {
@@ -59,7 +60,7 @@ function VideoPlayer({
   }
 
   const placeholderEl = html`
-    <div class="u-sizer-sm-${ratios.sm} u-sizer-md-${ratios.md} u-sizer-lg-${ratios.lg}"></div>
+    <div class="u-sizer-sm-${ratios.sm} u-sizer-md-${ratios.md} u-sizer-lg-${ratios.lg} u-sizer-xl-${ratios.xl}"></div>
   `;
   const videoEl = html`
     <video preload="none" tabindex="-1" aria-label="${title}"></video>

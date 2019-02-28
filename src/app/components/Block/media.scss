@@ -31,7 +31,7 @@
   }
 
   .has-inset-media & > * {
-    @media #{$mq-lg} {
+    @media #{$mq-gt-md} {
       position: fixed;
       transform: translate(0, -50%);
       top: 50vh;
@@ -53,7 +53,7 @@
   }
 
   .has-inset-media.has-left & > * {
-    @media #{$mq-lg} {
+    @media #{$mq-gt-md} {
       right: calc(30% - 16rem);
       left: auto;
     }
@@ -64,7 +64,7 @@
   }
 
   .has-inset-media.has-right & > * {
-    @media #{$mq-lg} {
+    @media #{$mq-gt-md} {
       right: auto;
       left: calc(30% - 16rem);
     }
@@ -75,7 +75,7 @@
   }
 
   .has-inset-media &:not(.is-fixed) {
-    @media #{$mq-not-lg} {
+    @media #{$mq-lt-lg} {
       clip: rect(0, auto, auto, 0);
       -webkit-clip-path: inset(0 0 0 0);
     }
@@ -84,7 +84,7 @@
   .has-inset-media &:not(.is-fixed) > * {
     position: absolute;
 
-    @media #{$mq-not-lg} {
+    @media #{$mq-lt-lg} {
       position: fixed;
       top: 0;
       left: 0;
@@ -123,7 +123,7 @@
       background-image: $gradient-white-vertical-50-0-100-60;
     }
 
-    @media #{$mq-lg} {
+    @media #{$mq-gt-md} {
       .has-left.is-not-piecemeal &,
       .has-right.is-not-piecemeal & {
         background-color: transparent;

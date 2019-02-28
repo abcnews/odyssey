@@ -9,7 +9,7 @@ $header-abreast-margin: 2.5rem;
   line-height: 1.5;
   background-color: $color-grey-50;
 
-  @media #{$mq-not-sm} {
+  @media #{$mq-gt-sm} {
     font-size: 1.25rem;
   }
 
@@ -41,7 +41,7 @@ $header-abreast-margin: 2.5rem;
     }
   }
 
-  @media #{$mq-lg} {
+  @media #{$mq-gt-md} {
     &.is-abreast {
       display: flex;
       flex-direction: row-reverse;
@@ -108,12 +108,13 @@ $header-abreast-margin: 2.5rem;
     background-image: $gradient-white-vertical-0-0-100-60;
   }
 
-  @media #{$mq-lg} {
+  @media #{$mq-gt-md} {
     .is-abreast > & {
       flex-grow: 1;
       -ms-flex: 1 0 50%;
-      max-width: calc(75vh - 5rem); // Maintain 3:4 aspect ratio, based on max-height (below)
       max-height: calc(100vh - #{$abc-nav-height + $header-content-peek + $header-abreast-margin * 2});
+      // Enforce 3x4 aspect ratio
+      max-width: calc(75vh - #{$abc-nav-height + $header-content-peek + $header-abreast-margin * 2});
 
       &::after {
         content: none;
@@ -129,7 +130,9 @@ $header-abreast-margin: 2.5rem;
     .is-abreast > & {
       flex-grow: 0;
       -ms-flex: 0 0 50%;
-      width: calc(940px - #{$header-abreast-margin * 2});
+      // Enforce 1x1 aspect ratio
+      width: calc(100vh - #{$abc-nav-height + $header-content-peek + $header-abreast-margin * 2});
+      max-width: none;
     }
   }
 }
@@ -153,13 +156,13 @@ $header-abreast-margin: 2.5rem;
     margin-right: calc(#{cells(1)} + #{$layout-fluid-padding});
   }
 
-  @media #{$mq-lg} {
+  @media #{$mq-gt-md} {
     margin-left: auto;
     margin-right: auto;
     width: $layout-fixed - $layout-fixed-gutter;
   }
 
-  @media #{$mq-lg} {
+  @media #{$mq-gt-md} {
     .is-abreast > & {
       display: flex;
       flex-direction: column;
@@ -198,7 +201,7 @@ $header-abreast-margin: 2.5rem;
     padding-right: cells(1, 10);
   }
 
-  @media #{$mq-lg} {
+  @media #{$mq-gt-md} {
     padding-left: calc(#{cells(1)} + #{$layout-fixed-padding});
     padding-right: calc(#{cells(1)} + #{$layout-fixed-padding});
   }
@@ -235,12 +238,12 @@ $header-abreast-margin: 2.5rem;
     height: 0.125rem;
     background-color: $color-grey-300-transparent-70;
 
-    @media #{$mq-not-sm} {
+    @media #{$mq-gt-sm} {
       width: 18rem;
     }
   }
 
-  @media #{$mq-lg} {
+  @media #{$mq-gt-md} {
     .is-abreast &::after {
       margin-left: 0;
     }
@@ -256,7 +259,7 @@ $header-abreast-margin: 2.5rem;
   .Header > .Header-content > & {
     font-size: 1.125rem;
 
-    @media #{$mq-not-sm} {
+    @media #{$mq-gt-sm} {
       font-size: 1.25rem;
     }
   }

@@ -54,7 +54,8 @@ function transformEl(el, preserveOriginalRatio) {
       ratios: {
         sm: ratios.sm || '3x4',
         md: ratios.md || '4x3',
-        lg: ratios.lg
+        lg: ratios.lg,
+        xl: ratios.xl
       },
       preserveOriginalRatio,
       linkUrl

@@ -75,7 +75,7 @@
   }
 }
 
-@media #{$mq-landscape} and #{$mq-not-lg}, #{$mq-lg} {
+@media #{$mq-lg}, #{$mq-landscape} and #{$mq-lt-lg} {
   .u-sizer-lg-16x9 {
     padding-top: 56.25%;
   }
@@ -93,6 +93,28 @@
   }
 
   .u-sizer-lg-3x4 {
+    padding-top: 133.3333333%;
+  }
+}
+
+@media #{$mq-xl} {
+  .u-sizer-xl-16x9 {
+    padding-top: 56.25%;
+  }
+
+  .u-sizer-xl-3x2 {
+    padding-top: 66.6666667%;
+  }
+
+  .u-sizer-xl-4x3 {
+    padding-top: 75%;
+  }
+
+  .u-sizer-xl-1x1 {
+    padding-top: 100%;
+  }
+
+  .u-sizer-xl-3x4 {
     padding-top: 133.3333333%;
   }
 }
