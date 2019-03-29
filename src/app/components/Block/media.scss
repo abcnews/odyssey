@@ -97,6 +97,10 @@
     position: absolute;
     top: auto;
     bottom: 0;
+
+    .transition-out {
+      display: none;
+    }
   }
 
   > * {
