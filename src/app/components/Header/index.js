@@ -290,12 +290,15 @@ function transformSection(section, meta) {
           config.isVideoYouTube = node.name.split('youtube')[1];
           config.videoId = videoId = node.name.match(VIDEO_MARKER_PATTERN)[1];
         } else {
+          const linkEl = $('a[href]', node);
+
           videoId =
+            linkEl &&
             ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
               classList.indexOf('view-inlineMediaPlayer') > -1 ||
               (classList.indexOf('view-hero-media') > -1 && $('.view-inlineMediaPlayer', node)) ||
               (classList.indexOf('embed-content') > -1 && $('.type-video', node))) &&
-            url2cmid($('a', node).getAttribute('href'));
+            url2cmid(linkEl.getAttribute('href'));
 
           if (videoId) {
             config.videoId = videoId;

@@ -479,11 +479,14 @@ function transformSection(section) {
 
 function detectVideoId(node) {
   let classList = node.className.split(' ');
+  const linkEl = $('a[href]', node);
+
   return (
+    linkEl &&
     ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
       classList.indexOf('view-inlineMediaPlayer') > -1 ||
       (classList.indexOf('embed-content') > -1 && $('.type-video', node))) &&
-    url2cmid($('a', node).getAttribute('href'))
+    url2cmid(linkEl.getAttribute('href'))
   );
 }
 

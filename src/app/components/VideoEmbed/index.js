@@ -33,8 +33,9 @@ function VideoEmbed({ playerEl, captionEl, alignment, isFull, isCover, isAnon })
 }
 
 function transformEl(el) {
+  const linkEl = $('a[href]', el);
   const isMarker = el.name && !!el.name.match(VIDEO_MARKER_PATTERN);
-  const videoId = isMarker ? el.name.match(VIDEO_MARKER_PATTERN)[1] : url2cmid($('a', el).getAttribute('href'));
+  const videoId = isMarker ? el.name.match(VIDEO_MARKER_PATTERN)[1] : linkEl && url2cmid(linkEl.getAttribute('href'));
 
   if (!videoId) {
     return;

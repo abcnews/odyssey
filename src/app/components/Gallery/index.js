@@ -454,13 +454,15 @@ function transformSection(section) {
 
       const classList = node.className.split(' ');
       const imgEl = $('img', node);
+      const linkEl = $('a[href]', node);
       const videoId =
         node.name && !!node.name.match(VIDEO_MARKER_PATTERN)
           ? node.name.match(VIDEO_MARKER_PATTERN)[1]
-          : ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
+          : linkEl &&
+            ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
               classList.indexOf('view-inlineMediaPlayer') > -1 ||
               (classList.indexOf('embed-content') > -1 && $('.type-video', node))) &&
-            url2cmid($('a', node).getAttribute('href'));
+            url2cmid(linkEl.getAttribute('href'));
 
       if (videoId) {
         const videoPlayerEl = VideoPlayer({
