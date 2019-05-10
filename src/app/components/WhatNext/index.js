@@ -26,13 +26,17 @@ function WhatNext({ stories }) {
     const lastTwoParts = parts.slice(splitIndex);
 
     return html`
-      <a href="${url}" onclick="${() => track('recirculation-link', id)}">
+      <a href="${url}" onclick="${id ? () => track('recirculation-link', id) : null}">
         <h2>${initialParts.join(' ')} <span>${lastTwoParts.join(' ')}</span></h2>
       </a>
     `;
   });
 
-  stories.forEach(({ id }, index) =>
+  stories.forEach(({ id }, index) => {
+    if (!id) {
+      return;
+    }
+
     capiFetch(id, (err, item) => {
       if (err || !item.thumbnailLink) {
         return;
@@ -40,8 +44,8 @@ function WhatNext({ stories }) {
 
       prepend(itemEls[index], Picture({ src: item.thumbnailLink.media[0].url, ratios: PICTURE_RATIOS }));
       invalidateClient();
-    })
-  );
+    });
+  });
 
   return html`
     <div
