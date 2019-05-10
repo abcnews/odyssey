@@ -51,6 +51,10 @@
     text-transform: none;
     transition: color 0.25s;
 
+    &:first-child {
+      margin: -0.25rem 0 0;
+    }
+
     & > span {
       white-space: nowrap;
 
