@@ -3,6 +3,9 @@
 .ShareLink {
   position: relative;
   flex: 1 1 ($size-control - $size-control-margin);
+  margin: 0;
+  border: 0;
+  padding: 0;
   width: $size-control - $size-control-margin;
   background-color: $color-grey-300;
 
@@ -56,16 +59,12 @@
   }
 }
 
-.ShareLink--reddit {
-  @media #{$mq-sm} {
-    display: none;
-  }
-
+.ShareLink--native {
   &::after {
-    background-image: url(./reddit.svg);
+    background-image: url(./native.svg);
 
     .u-richtext-invert & {
-      background-image: url(./reddit--inverted.svg);
+      background-image: url(./native--inverted.svg);
     }
   }
 }
@@ -76,20 +75,6 @@
 
     .u-richtext-invert & {
       background-image: url(./twitter--inverted.svg);
-    }
-  }
-}
-
-.ShareLink--whatsapp {
-  @media #{$mq-gt-sm} {
-    display: none;
-  }
-
-  &::after {
-    background-image: url(./whatsapp.svg);
-
-    .u-richtext-invert & {
-      background-image: url(./whatsapp--inverted.svg);
     }
   }
 }
