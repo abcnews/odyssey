@@ -9,11 +9,9 @@ const { trim } = require('../utils/misc');
 
 const FACEBOOK = /facebook\.com/;
 const TWITTER = /twitter\.com/;
-const WHATS_APP = /whatsapp:/;
-const REDDIT = /reddit\.com/;
 const EMAIL = /mailto:/;
 
-const SHARE_ORDERING = ['facebook', 'twitter', 'whatsapp', 'reddit', 'email'];
+const SHARE_ORDERING = ['facebook', 'twitter', 'native', 'email'];
 
 let meta = null; // singleton
 
@@ -21,6 +19,12 @@ function getDataAttribute(name) {
   const el = $(`[data-${name}]`);
 
   return el ? el.getAttribute(`data-${name}`) : null;
+}
+
+function getCanonicalURL() {
+  const el = $(`link[rel="canonical"]`);
+
+  return el ? el.getAttribute('href') : document.location.href;
 }
 
 function getMetaContent(name) {
@@ -78,33 +82,31 @@ function getInfoSource() {
     : null;
 }
 
-function getShareLinks() {
+function getShareLinks({ url, title }) {
+  const links = navigator.share ? [{ id: 'native', url, title }] : [];
+
   return $$('a', $(SELECTORS.SHARE_TOOLS))
     .reduce((links, linkEl) => {
-      const href = linkEl.href;
+      const url = linkEl.href;
 
-      switch (href) {
-        case (href.match(FACEBOOK) || {}).input:
-          links.push({ id: 'facebook', href });
+      switch (url) {
+        case (url.match(FACEBOOK) || {}).input:
+          links.push({ id: 'facebook', url });
           break;
-        case (href.match(TWITTER) || {}).input:
-          links.push({ id: 'twitter', href });
+        case (url.match(TWITTER) || {}).input:
+          links.push({ id: 'twitter', url });
           break;
-        case (href.match(WHATS_APP) || {}).input:
-          links.push({ id: 'whatsapp', href });
-          break;
-        case (href.match(REDDIT) || {}).input:
-          links.push({ id: 'reddit', href });
-          break;
-        case (href.match(EMAIL) || {}).input:
-          links.push({ id: 'email', href });
+        case (url.match(EMAIL) || {}).input:
+          if (!navigator.share) {
+            links.push({ id: 'email', url });
+          }
           break;
         default:
           break;
       }
 
       return links;
-    }, [])
+    }, links)
     .sort((a, b) => SHARE_ORDERING.indexOf(a.id) - SHARE_ORDERING.indexOf(b.id));
 }
 
@@ -134,15 +136,21 @@ function getRelatedMedia() {
 
 function getMeta() {
   if (!meta) {
+    const url = getMetaContent('replacement-url') || getCanonicalURL();
+    const title = getMetaContent('replacement-title') || $(SELECTORS.TITLE).textContent;
+    const description = getMetaContent('replacement-description') || getMetaContent('description');
+
     meta = {
       id: getMetaContent('ContentId'),
-      title: getMetaContent('replacement-title') || $(SELECTORS.TITLE).textContent,
+      url,
+      title,
+      description,
       published: getDate('DCTERMS.issued', 'original'),
       updated: getDate('DCTERMS.modified', 'updated'),
       bylineNodes: getBylineNodes(),
       infoSource: getInfoSource(),
       infoSourceLogosDataId: getDataAttribute('info-source-logos'),
-      shareLinks: getShareLinks(),
+      shareLinks: getShareLinks({ url, title, description }),
       relatedMedia: getRelatedMedia(),
       relatedStoriesIds: getRelatedStoriesIds(),
       theme: getMetaContent('theme'),
