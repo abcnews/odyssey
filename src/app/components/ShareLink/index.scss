@@ -60,10 +60,6 @@
 }
 
 .ShareLink--native {
-  @media #{$mq-sm} {
-    display: none;
-  }
-
   &::after {
     background-image: url(./native.svg);
 
