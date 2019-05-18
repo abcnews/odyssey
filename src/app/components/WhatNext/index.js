@@ -18,21 +18,23 @@ const PICTURE_RATIOS = {
   xl: '3x2'
 };
 
+function WhatNextItem({ id, teaser, url }) {
+  const parts = teaser.split(' ');
+  const splitIndex = Math.max(parts.length - 2, 0);
+  const initialParts = parts.slice(0, splitIndex);
+  const lastTwoParts = parts.slice(splitIndex);
+
+  return html`
+    <a href="${url}" onclick="${id ? () => track('recirculation-link', id) : null}">
+      <h2>${initialParts.join(' ')} <span>${lastTwoParts.join(' ')}</span></h2>
+    </a>
+  `;
+}
+
 function WhatNext({ stories }) {
-  const itemEls = stories.map(({ id, teaser, url }, index) => {
-    const parts = teaser.split(' ');
-    const splitIndex = Math.max(parts.length - 2, 0);
-    const initialParts = parts.slice(0, splitIndex);
-    const lastTwoParts = parts.slice(splitIndex);
+  const itemEls = stories.map(WhatNextItem);
 
-    return html`
-      <a href="${url}" onclick="${id ? () => track('recirculation-link', id) : null}">
-        <h2>${initialParts.join(' ')} <span>${lastTwoParts.join(' ')}</span></h2>
-      </a>
-    `;
-  });
-
-  stories.forEach(({ id }, index) => {
+  stories.forEach(({ id, teaser }, index) => {
     if (!id) {
       return;
     }
@@ -40,6 +42,13 @@ function WhatNext({ stories }) {
     capiFetch(id, (err, item) => {
       if (err || !item.thumbnailLink) {
         return;
+      }
+
+      if (item.docType === 'Teaser') {
+        const teasedItem = WhatNextItem({ id: item.target.id, teaser, url: `/news/${item.target.id}` });
+
+        substitute(itemEls[index], teasedItem);
+        itemEls[index] = teasedItem;
       }
 
       prepend(itemEls[index], Picture({ src: item.thumbnailLink.media[0].url, ratios: PICTURE_RATIOS }));
