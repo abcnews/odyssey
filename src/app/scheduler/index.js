@@ -63,7 +63,7 @@ function onResize(event) {
       height: document.documentElement.clientHeight
     };
 
-    if (client === null || nextClient.width !== client.width || nextClient.h !== client.h) {
+    if (client === null || nextClient.width !== client.width || nextClient.height !== client.height) {
       client = nextClient;
     }
   }
