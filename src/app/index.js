@@ -35,10 +35,6 @@ function app() {
   const meta = getMeta();
   const storyEl = reset($(SELECTORS.STORY), meta);
 
-  if (!$('[data-component="Masthead"]')) {
-    after($(SELECTORS.GLOBAL_NAV), PresentationLayerAsyncComponent('Nav'));
-  }
-
   start(); // loop
 
   // Register all embedded images with MasterGallery
@@ -226,6 +222,13 @@ function app() {
   // Expose API, then notify interested parties
   window.__ODYSSEY__ = api;
   window.dispatchEvent(new CustomEvent('odyssey:api', { detail: api }));
+
+  // Add Presentation Layer global nav if it doesn't already exist
+  setTimeout(() => {
+    if (!$('[data-component="Masthead"]')) {
+      after($(SELECTORS.GLOBAL_NAV), PresentationLayerAsyncComponent('Nav'));
+    }
+  }, 0);
 
   // Fix Block classNames on non-updated scrollyteller instances.
   // Stories which depend on this polyfill are tracked here:
