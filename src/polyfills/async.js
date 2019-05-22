@@ -1,6 +1,6 @@
 // ECMAScript
-require('core-js/fn/dom-collections/iterator');
-require('core-js/fn/symbol');
+require('core-js/stable/dom-collections/iterator');
+require('core-js/stable/symbol');
 // Browser APIs
 require('custom-event-polyfill');
 // CSS

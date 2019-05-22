@@ -63,6 +63,10 @@ module.exports = {
       }
     };
 
+    // Allow larger assets sizes than the default (250000)
+    config.performance = config.performance || {};
+    config.performance.maxAssetSize = 500000;
+
     return config;
   }
 };
