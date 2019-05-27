@@ -13,7 +13,7 @@ function StoryTeaserEmbed({ title, description, url, imageURL }) {
 
   return html`
     <aside class="StoryTeaserEmbed">
-      <a href="${url}" onclick="${() => id && track('recirculation-link', id)}">
+      <a href="${url}" onclick="${id ? () => track('recirculation-link', id) : null}">
         <h2>${title}</h2>
         <img src="${imageURL}" />
         <p>${description}</p>
