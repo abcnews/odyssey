@@ -29,6 +29,10 @@ $header-abreast-margin: 2.5rem;
     @media #{$mq-pl-sm} {
       min-height: calc(100vh - #{$abc-nav-height--mq-pl-sm});
     }
+
+    body.platform-app & {
+      min-height: calc(100vh);
+    }
   }
 
   &.is-floating {
@@ -38,6 +42,10 @@ $header-abreast-margin: 2.5rem;
 
     @media #{$mq-pl-sm} {
       margin-bottom: calc(-100vh + #{$abc-nav-height--mq-pl-sm}) !important;
+    }
+
+    body.platform-app & {
+      margin-bottom: calc(-100vh) !important;
     }
   }
 
@@ -75,6 +83,10 @@ $header-abreast-margin: 2.5rem;
 
     @media #{$mq-pl-sm} {
       max-height: calc(100vh - #{$abc-nav-height--mq-pl-sm + $header-content-peek});
+    }
+
+    body.platform-app & {
+      max-height: calc(100vh - #{$header-content-peek});
     }
   }
 
@@ -116,6 +128,11 @@ $header-abreast-margin: 2.5rem;
       // Enforce 3x4 aspect ratio
       max-width: calc(75vh - #{$abc-nav-height + $header-content-peek + $header-abreast-margin * 2});
 
+      body.platform-app & {
+        max-height: calc(100vh - #{$header-content-peek + $header-abreast-margin * 2});
+        max-width: calc(75vh - #{$header-content-peek + $header-abreast-margin * 2});
+      }
+
       &::after {
         content: none;
       }
@@ -123,6 +140,10 @@ $header-abreast-margin: 2.5rem;
 
     .is-abreast.has-content-taller-than-peek > & {
       max-height: calc(100vh - #{$abc-nav-height + $header-abreast-margin * 2});
+
+      body.platform-app & {
+        max-height: calc(100vh - #{$header-abreast-margin * 2});
+      }
     }
   }
 
@@ -133,6 +154,10 @@ $header-abreast-margin: 2.5rem;
       // Enforce 1x1 aspect ratio
       width: calc(100vh - #{$abc-nav-height + $header-content-peek + $header-abreast-margin * 2});
       max-width: none;
+
+      body.platform-app & {
+        width: calc(100vh - #{$header-content-peek + $header-abreast-margin * 2});
+      }
     }
   }
 }

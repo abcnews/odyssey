@@ -28,6 +28,10 @@
     @media #{$mq-pl-sm} {
       top: calc(100vh - #{$abc-nav-height--mq-pl-sm + 3rem});
     }
+
+    body.platform-app & {
+      top: calc(100vh - 3rem);
+    }
   }
 
   &.leaving {
