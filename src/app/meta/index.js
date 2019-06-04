@@ -3,7 +3,7 @@ const parseDate = require('date-fns/parse');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const { MOCK_ELEMENT, SELECTORS } = require('../../constants');
+const { IS_APP, IS_PREVIEW, MOCK_ELEMENT, SELECTORS } = require('../../constants');
 const { $, $$, detach } = require('../utils/dom');
 const { trim } = require('../utils/misc');
 
@@ -156,7 +156,9 @@ function getMeta() {
       theme: getMetaContent('theme'),
       hasCaptionAttributions: getMetaContent('caption-attributions') !== 'false',
       hasCommentsEnabled: getMetaContent('showLivefyreComments') === 'true',
-      isDarkMode: getMetaContent('dark-mode') === 'true'
+      isDarkMode: getMetaContent('dark-mode') === 'true',
+      isApp: IS_APP,
+      isPreview: IS_PREVIEW
     };
   }
 

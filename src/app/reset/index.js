@@ -3,7 +3,7 @@ const html = require('bel');
 const dewysiwyg = require('util-dewysiwyg');
 
 // Ours
-const { SELECTORS } = require('../../constants');
+const { IS_APP, SELECTORS } = require('../../constants');
 const Main = require('../components/Main');
 const { $, $$, append, before, detach, detachAll } = require('../utils/dom');
 const { literalList, trim } = require('../utils/misc');
@@ -34,9 +34,35 @@ const TEMPLATE_REMOVABLES = {
   '.platform-standard.platform-mobile': literalList(`
     #page-header
     .view-navigationPrimary
+    .view-collection-subbanner-placed
     .view-ticker
     .article-detail-page > .container-fluid > div.row
     .view-hero-media
+  `)
+};
+
+const APP_TEMPLATE_REMOVABLES = {
+  '.platform-standard:not(.platform-mobile)': literalList(`
+    link[rel="stylesheet"][href*="/abc.bundle."]
+    .featured-scroller
+    #footer-stories
+    #container_footer
+    #abcFooter
+  `),
+  '.platform-mobile:not(.platform-standard)': literalList(`
+    link[rel="stylesheet"][href*="/abc.bundle."]
+    header[data-component="Masthead"]
+    aside.related
+    footer > .site
+    footer > .global
+    #abcFooter
+  `),
+  '.platform-standard.platform-mobile': literalList(`
+    link[rel="stylesheet"][href*="/abc.bundle."]
+    header[data-component="Masthead"]
+    .article-detail-page > .container-fluid > aside.row
+    #page-footer
+    #abcFooter
   `)
 };
 
@@ -123,6 +149,14 @@ function reset(storyEl, meta) {
       detachAll($$(TEMPLATE_REMOVABLES[templateBodySelector]));
     }
   });
+
+  if (IS_APP) {
+    Object.keys(APP_TEMPLATE_REMOVABLES).forEach(templateBodySelector => {
+      if ($(templateBodySelector)) {
+        detachAll($$(APP_TEMPLATE_REMOVABLES[templateBodySelector]));
+      }
+    });
+  }
 
   $$(WHITESPACE_REMOVABLES, storyEl).forEach(el => {
     if (trim(el.textContent).length === 0) {

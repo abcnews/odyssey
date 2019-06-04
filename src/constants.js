@@ -76,6 +76,7 @@ MQ.PL_SM = '(max-width: 33.9375em)';
 const SMALLEST_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAAAADs=';
 
 const IS_PREVIEW = window.location.hostname.indexOf('nucwed') > -1;
+const IS_APP = window.location.search.indexOf('app=1') > -1;
 
 const MS_VERSION = (ua => {
   const msie = ua.indexOf('MSIE ');
@@ -136,6 +137,7 @@ module.exports = {
   MQ,
   SMALLEST_IMAGE,
   IS_PREVIEW,
+  IS_APP,
   MS_VERSION,
   SUPPORTS_PASSIVE
 };
