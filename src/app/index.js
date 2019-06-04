@@ -2,7 +2,7 @@
 const html = require('bel');
 
 // Ours
-const { IS_APP, IS_PREVIEW, RICHTEXT_BLOCK_TAGNAMES, SELECTORS } = require('../constants');
+const { IS_PREVIEW, RICHTEXT_BLOCK_TAGNAMES, SELECTORS } = require('../constants');
 const api = require('./api');
 const { PresentationLayerAsyncComponent } = require('./async-components/loader');
 const Caption = require('./components/Caption');
@@ -225,7 +225,7 @@ function app() {
 
   // Add Presentation Layer global nav if it doesn't already exist
   setTimeout(() => {
-    if (!IS_APP && !$('[data-component="Masthead"]')) {
+    if (!$('[data-component="Masthead"]')) {
       after($(SELECTORS.GLOBAL_NAV), PresentationLayerAsyncComponent('Nav'));
     }
   }, 0);
