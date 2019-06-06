@@ -15,6 +15,7 @@ const TEMPLATE_REMOVABLES = {
     #container_subheader
     #container_nav
     .ticker
+    .ticker-container
     .page:not(.featured-scroller):not([id])
     h1
     .tools
@@ -27,6 +28,7 @@ const TEMPLATE_REMOVABLES = {
   '.platform-mobile:not(.platform-standard)': literalList(`
     header > .site
     header > .section
+    .ticker-container
     .content > article
     .share
     .related:not(.m-recirc)
