@@ -1,11 +1,8 @@
-module.exports = done => {
-  require('ric');
-
-  try {
-    // Test ES2015 support
-    new Function('(x=``)=>Symbol()');
-    done();
-  } catch (e) {
-    import(/* webpackChunkName: "polyfills" */ './async').then(done);
-  }
-};
+// ECMAScript
+require('core-js/stable/dom-collections/iterator');
+require('core-js/stable/symbol');
+// Browser APIs
+require('custom-event-polyfill');
+require('ric');
+// CSS
+require('objectFitPolyfill');
