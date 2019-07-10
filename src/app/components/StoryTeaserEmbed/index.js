@@ -23,7 +23,9 @@ function StoryTeaserEmbed({ title, description, url, imageURL }) {
 }
 
 function doesElMatchConvention(el) {
-  return !!($('h2', el) && $$('a[target="_self"]', el).length === 3 && $('img', el));
+  // We only accept teasers that have a title, a _self-targeting link and
+  // an image, but not bundle an interactive (such as the podcast player).
+  return !!($('h2', el) && $$('a[target="_self"]', el).length === 3 && $('img', el) && !$('.init-interactive', el));
 }
 
 function transformEl(el) {
