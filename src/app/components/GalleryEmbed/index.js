@@ -1,5 +1,5 @@
 // External
-const capiFetch = require('@abcnews/capi-fetch').default;
+const terminusFetch = require('@abcnews/terminus-fetch').default;
 const cn = require('classnames');
 const html = require('bel');
 const url2cmid = require('util-url2cmid');
@@ -19,9 +19,9 @@ function GalleryEmbed({ galleryEl, captionEl, isAnon }) {
   `;
 }
 
-const capiPromise = id =>
+const terminusPromise = options =>
   new Promise((resolve, reject) =>
-    capiFetch(id, (err, result) => {
+    terminusFetch(options, (err, result) => {
       if (err) {
         return reject(err);
       }
@@ -52,7 +52,7 @@ function transformEl(el) {
     mosaicRowLengths: mosaicRowLengthsString.split('')
   };
 
-  capiPromise(galleryId).then(galleryDoc => {
+  terminusPromise({ id: galleryId, type: 'gallery' }).then(galleryDoc => {
     // Mosaics should have a master caption
     if (config.mosaicRowLengths.length > 0) {
       config.masterCaptionEl = Caption.createFromEl(
@@ -60,7 +60,7 @@ function transformEl(el) {
           <div
             data-caption-config="${JSON.stringify({
               url: `/news/${galleryDoc.id}`,
-              text: galleryDoc.teaserTextPlain,
+              text: galleryDoc.synopsis,
               attribution: galleryDoc.rightsHolder.join(', '),
               unlink
             })}"
@@ -70,9 +70,11 @@ function transformEl(el) {
       );
     }
 
-    Promise.all(galleryDoc.items.map(item => capiPromise(item.id))).then(imageDocs => {
+    Promise.all(
+      galleryDoc._embedded.content.map(item => terminusPromise({ id: item.id, type: item.docType.toLowerCase() }))
+    ).then(imageDocs => {
       config.items = imageDocs.map(imageDoc => {
-        const src = imageDoc.media[0].url;
+        const src = imageDoc.media.image.primary.complete[0].url;
         const alt = imageDoc.alt;
         const id = url2cmid(src); // imageDoc.id will be wrong for ImageProxy documents
         const linkUrl = `/news/${id}`;
@@ -82,8 +84,8 @@ function transformEl(el) {
             <div
               data-caption-config="${JSON.stringify({
                 url: linkUrl,
-                text: imageDoc.captionPlain,
-                attribution: imageDoc.bylinePlain,
+                text: imageDoc.caption,
+                attribution: imageDoc.attribution,
                 unlink
               })}"
             >
@@ -142,8 +144,8 @@ function transformEl(el) {
           ],
           captionEl: Caption({
             url: linkUrl,
-            text: imageDoc.captionPlain,
-            attribution: imageDoc.bylinePlain,
+            text: imageDoc.caption,
+            attribution: imageDoc.attribution,
             unlink
           })
         };

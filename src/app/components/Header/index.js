@@ -1,5 +1,5 @@
 // External
-const capiFetch = require('@abcnews/capi-fetch').default;
+const terminusFetch = require('@abcnews/terminus-fetch').default;
 const cn = require('classnames');
 const html = require('bel');
 const url2cmid = require('util-url2cmid');
@@ -211,7 +211,7 @@ function fetchInfoSourceLogo(meta, el, variant) {
     return;
   }
 
-  capiFetch(meta.infoSourceLogosDataId, (err, item) => {
+  terminusFetch({ id: meta.infoSourceLogosDataId, type: 'htmlfragment' }, (err, item) => {
     if (err) {
       return;
     }
@@ -220,8 +220,8 @@ function fetchInfoSourceLogo(meta, el, variant) {
     const logoDoc = logoDocs[`${meta.infoSource.name} (${variant})`] || logoDocs[meta.infoSource.name];
 
     if (logoDoc) {
-      capiFetch(logoDoc.id, (err, item) => {
-        const image = item.media[0];
+      terminusFetch({ id: logoDoc.id, type: logoDoc.docType.toLowerCase() }, (err, item) => {
+        const image = item.media.image.primary.complete[0];
         el.className = `${el.className} has-logo`;
         // Assume image@2x, with height clamped between 50px and 75px
         el.style.height = `${Math.min(75, Math.max(50, Math.round(image.height / 2)))}px`;
