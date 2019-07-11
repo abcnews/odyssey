@@ -51,7 +51,7 @@ function Recirculation({ ids, pull }) {
         invalidateClient();
       }
 
-      if (JSON.stringify(item.text).indexOf(teaser) !== 0) {
+      if (JSON.stringify(item.text).indexOf(teaser) === -1) {
         itemEl.appendChild(
           html`
             <p>${teaser}</p>
