@@ -19,17 +19,6 @@ function GalleryEmbed({ galleryEl, captionEl, isAnon }) {
   `;
 }
 
-const terminusPromise = options =>
-  new Promise((resolve, reject) =>
-    terminusFetch(options, (err, result) => {
-      if (err) {
-        return reject(err);
-      }
-
-      resolve(result);
-    })
-  );
-
 function transformEl(el) {
   const linkEls = $$('a', el);
   const galleryId = url2cmid(linkEls[linkEls.length - 1].getAttribute('href'));
@@ -52,7 +41,7 @@ function transformEl(el) {
     mosaicRowLengths: mosaicRowLengthsString.split('')
   };
 
-  terminusPromise({ id: galleryId, type: 'gallery' }).then(galleryDoc => {
+  terminusFetch({ id: galleryId, type: 'gallery' }).then(galleryDoc => {
     // Mosaics should have a master caption
     if (config.mosaicRowLengths.length > 0) {
       config.masterCaptionEl = Caption.createFromEl(
@@ -71,7 +60,7 @@ function transformEl(el) {
     }
 
     Promise.all(
-      galleryDoc._embedded.content.map(item => terminusPromise({ id: item.id, type: item.docType.toLowerCase() }))
+      galleryDoc._embedded.content.map(item => terminusFetch({ id: item.id, type: item.docType.toLowerCase() }))
     ).then(imageDocs => {
       config.items = imageDocs.map(imageDoc => {
         const src = imageDoc.media.image.primary.complete[0].url;

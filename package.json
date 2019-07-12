@@ -17,7 +17,7 @@
     "@abcaustralia/dls-components": "^11.7.0",
     "@abcaustralia/profiles": "^5.0.1",
     "@abcnews/poll-counters-client": "^1.3.1",
-    "@abcnews/terminus-fetch": "^1.1.0",
+    "@abcnews/terminus-fetch": "^1.2.1",
     "bel": "^6.0.0",
     "classnames": "^2.2.6",
     "core-js": "^3.1.2",
