@@ -1,10 +1,10 @@
 // External
-const terminusFetch = require('@abcnews/terminus-fetch').default;
 const html = require('bel');
 
 // Ours
 const { invalidateClient } = require('../../scheduler');
 const { track } = require('../../utils/behaviour');
+const { terminusFetch } = require('../../utils/content');
 const Picture = require('../Picture');
 require('./index.scss');
 

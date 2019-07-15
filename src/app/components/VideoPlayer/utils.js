@@ -1,5 +1,5 @@
 // External
-const terminusFetch = require('@abcnews/terminus-fetch').default;
+const { terminusFetch } = require('../../utils/content');
 
 const NO_CMID_ERROR = 'No CMID available for video';
 
@@ -30,7 +30,8 @@ function getMetadata(videoId, done) {
 
     done(null, {
       alternativeText: item.title,
-      posterURL: item._embedded.mediaThumbnail ? pickImageURL(item._embedded.mediaThumbnail.complete) : null,
+      posterURL:
+        item._embedded && item._embedded.mediaThumbnail ? pickImageURL(item._embedded.mediaThumbnail.complete) : null,
       sources: getSources(item)
     });
   });

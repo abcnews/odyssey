@@ -1,11 +1,11 @@
 // External
-const terminusFetch = require('@abcnews/terminus-fetch').default;
 const cn = require('classnames');
 const html = require('bel');
 const url2cmid = require('util-url2cmid');
 
 // Ours
 const { grabConfigSC } = require('../../utils/anchors');
+const { terminusFetch } = require('../../utils/content');
 const { $, $$, substitute } = require('../../utils/dom');
 const { getRatios } = require('../../utils/misc');
 const Caption = require('../Caption');
