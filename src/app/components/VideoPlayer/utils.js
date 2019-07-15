@@ -1,34 +1,15 @@
 // External
-const capiFetch = require('@abcnews/capi-fetch').default;
+const terminusFetch = require('@abcnews/terminus-fetch').default;
 
 const NO_CMID_ERROR = 'No CMID available for video';
 
-function pickImageURL(media) {
-  return (media.filter(thumbnail => thumbnail.ratio === '16x9').sort((a, b) => b.size - a.size)[0] || {}).url;
+function pickImageURL(images) {
+  return (images.filter(image => image.ratio === '16x9').sort((a, b) => b.size - a.size)[0] || {}).url;
 }
 
-function getPosterURL(item, done) {
-  if (item.thumbnailLink) {
-    return done(pickImageURL(item.thumbnailLink.media));
-  }
-
-  if (item.relatedItems) {
-    const relatedImage = item.relatedItems.filter(relatedItem => relatedItem.docType === 'Image')[0];
-
-    if (relatedImage) {
-      // Must fetch image to get renditions. Allowed to fail.
-      return capiFetch(relatedImage.id, (err, item) => {
-        done(item ? pickImageURL(item.media) : null);
-      });
-    }
-  }
-
-  done();
-}
-
-function getSources(item, sortProp = 'bitrate') {
-  return item.renditions
-    .sort((a, b) => +b[sortProp] - +a[sortProp])
+function getSources(item) {
+  return item.media.video.renditions.files
+    .sort((a, b) => +b.bitRate - +a.bitRate)
     .map(rendition => ({
       src: rendition.src || rendition.url,
       type: rendition.type || rendition.contentType,
@@ -42,18 +23,16 @@ function getMetadata(videoId, done) {
     return done(new Error(NO_CMID_ERROR));
   }
 
-  capiFetch(videoId, (err, item) => {
+  terminusFetch({ id: videoId, type: 'video' }, (err, item) => {
     if (err) {
       return done(err);
     }
 
-    getPosterURL(item, posterURL =>
-      done(null, {
-        alternativeText: item.title,
-        posterURL,
-        sources: getSources(item)
-      })
-    );
+    done(null, {
+      alternativeText: item.title,
+      posterURL: item._embedded.mediaThumbnail ? pickImageURL(item._embedded.mediaThumbnail.complete) : null,
+      sources: getSources(item)
+    });
   });
 }
 
