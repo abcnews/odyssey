@@ -1,5 +1,5 @@
 // External
-const capiFetch = require('@abcnews/capi-fetch').default;
+const terminusFetch = require('@abcnews/terminus-fetch').default;
 const cn = require('classnames');
 const html = require('bel');
 const url2cmid = require('util-url2cmid');
@@ -39,8 +39,8 @@ function WhatNext({ stories }) {
       return;
     }
 
-    capiFetch(id, (err, item) => {
-      if (err || !item.thumbnailLink) {
+    terminusFetch(id, (err, item) => {
+      if (err || !item._embedded.mediaThumbnail) {
         return;
       }
 
@@ -51,7 +51,7 @@ function WhatNext({ stories }) {
         itemEls[index] = teasedItem;
       }
 
-      prepend(itemEls[index], Picture({ src: item.thumbnailLink.media[0].url, ratios: PICTURE_RATIOS }));
+      prepend(itemEls[index], Picture({ src: item._embedded.mediaThumbnail.complete[0].url, ratios: PICTURE_RATIOS }));
       invalidateClient();
     });
   });

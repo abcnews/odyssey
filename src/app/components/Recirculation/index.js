@@ -1,5 +1,5 @@
 // External
-const capiFetch = require('@abcnews/capi-fetch').default;
+const terminusFetch = require('@abcnews/terminus-fetch').default;
 const html = require('bel');
 
 // Ours
@@ -29,7 +29,7 @@ function Recirculation({ ids, pull }) {
 
   el.classList.add('has-children');
   ids.forEach((id, index) =>
-    capiFetch(id, (err, item) => {
+    terminusFetch(id, (err, item) => {
       if (err) {
         itemEl.classList.add('is-missing');
 
@@ -37,8 +37,8 @@ function Recirculation({ ids, pull }) {
       }
 
       const itemEl = itemEls[index];
-      const title = item.shortTeaserTitle || item.teaserTitle || item.title;
-      const teaserText = item.shortTeaserTextPlain || item.teaserTextPlain;
+      const title = item.titleAlt.md || item.titleAlt.lg || item.title;
+      const teaser = item.synopsisAlt.md || item.synopsisAlt.lg || item.synopsis;
 
       itemEl.appendChild(
         html`
@@ -46,15 +46,15 @@ function Recirculation({ ids, pull }) {
         `
       );
 
-      if (item.thumbnailLink) {
-        itemEl.appendChild(Picture({ src: item.thumbnailLink.media[0].url, ratios: PICTURE_RATIOS }));
+      if (item._embedded.mediaThumbnail) {
+        itemEl.appendChild(Picture({ src: item._embedded.mediaThumbnail.complete[0].url, ratios: PICTURE_RATIOS }));
         invalidateClient();
       }
 
-      if (item.textPlain.indexOf(teaserText) !== 0) {
+      if (JSON.stringify(item.text).indexOf(teaser) === -1) {
         itemEl.appendChild(
           html`
-            <p>${teaserText}</p>
+            <p>${teaser}</p>
           `
         );
       }
