@@ -1,5 +1,4 @@
 // External
-const terminusFetch = require('@abcnews/terminus-fetch').default;
 const cn = require('classnames');
 const html = require('bel');
 const url2cmid = require('util-url2cmid');
@@ -7,6 +6,7 @@ const url2cmid = require('util-url2cmid');
 // Ours
 const { MS_VERSION, VIDEO_MARKER_PATTERN } = require('../../../constants');
 const { enqueue, subscribe } = require('../../scheduler');
+const { terminusFetch } = require('../../utils/content');
 const { $, detach, isElement } = require('../../utils/dom');
 const { dePx, formattedDate, getRatios, trim } = require('../../utils/misc');
 const ScrollHint = require('../ScrollHint');

@@ -1,5 +1,4 @@
 // External
-const terminusFetch = require('@abcnews/terminus-fetch').default;
 const cn = require('classnames');
 const html = require('bel');
 const url2cmid = require('util-url2cmid');
@@ -7,6 +6,7 @@ const url2cmid = require('util-url2cmid');
 // Ours
 const { invalidateClient } = require('../../scheduler');
 const { track } = require('../../utils/behaviour');
+const { terminusFetch } = require('../../utils/content');
 const { $, $$, detach, prepend, substitute } = require('../../utils/dom');
 const Picture = require('../Picture');
 require('./index.scss');
