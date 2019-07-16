@@ -484,7 +484,7 @@ function detectVideoId(node) {
   return (
     linkEl &&
     ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
-      classList.indexOf('view-inlineMediaPlayer') > -1 ||
+      (classList.indexOf('view-inlineMediaPlayer') > -1 && classList.indexOf('doctype-abcvideo') > -1) ||
       (classList.indexOf('embed-content') > -1 && $('.type-video', node))) &&
     url2cmid(linkEl.getAttribute('href'))
   );

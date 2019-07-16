@@ -460,7 +460,7 @@ function transformSection(section) {
           ? node.name.match(VIDEO_MARKER_PATTERN)[1]
           : linkEl &&
             ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
-              classList.indexOf('view-inlineMediaPlayer') > -1 ||
+              (classList.indexOf('view-inlineMediaPlayer') > -1 && classList.indexOf('doctype-abcvideo') > -1) ||
               (classList.indexOf('embed-content') > -1 && $('.type-video', node))) &&
             url2cmid(linkEl.getAttribute('href'));
 
