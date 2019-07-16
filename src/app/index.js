@@ -156,7 +156,7 @@ function app() {
     });
 
   // Transform video embeds
-  $$('.inline-content.video, .view-inlineMediaPlayer', storyEl)
+  $$('.inline-content.video, .view-inlineMediaPlayer.doctype-abcvideo', storyEl)
     .concat($$('.embed-content', storyEl).filter(el => $('.type-video', el)))
     .forEach(VideoEmbed.transformEl);
 
