@@ -37,6 +37,11 @@ function transformEl(el, preserveOriginalRatio) {
     return;
   }
 
+  // Phase 2 CustomImages appear similar to Images, but their srcsec attribute only has one URL.
+  if (imgEl.hasAttribute('data-srcset') && imgEl.getAttribute('data-srcset').indexOf(', ') === -1) {
+    return;
+  }
+
   const configSC = grabConfigSC(el);
   const [, alignment] = configSC.match(ALIGNMENT_PATTERN) || [];
   const ratios = getRatios(configSC);
