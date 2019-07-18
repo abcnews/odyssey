@@ -33,6 +33,11 @@ body {
     content: none;
   }
 
+  & > .wcms-wrapper {
+    /* Stop Phase 2 from setting a black background */
+    background-color: transparent;
+  }
+
   main + .page_margins,
   main + .content {
     position: relative;
