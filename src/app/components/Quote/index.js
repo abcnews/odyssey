@@ -111,7 +111,7 @@ function createFromEl(el) {
       `;
 
       while (stack.length > 0) {
-        prepend(stack.pop(), parEl);
+        prepend(parEl, stack.pop());
       }
 
       memo.push(parEl);
