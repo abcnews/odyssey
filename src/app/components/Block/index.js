@@ -38,6 +38,7 @@ function Block({
   isPiecemeal,
   isVideoYouTube,
   ratios = {},
+  shouldVideoPlayOnce,
   transition,
   videoId
 }) {
@@ -91,6 +92,7 @@ function Block({
           backgroundEl = YouTubePlayer({
             videoId: element.videoId,
             ratios,
+            isLoop: shouldVideoPlayOnce ? false : undefined,
             isAmbient: true,
             isContained
           });
@@ -99,6 +101,7 @@ function Block({
             videoId: element.videoId,
             ratios,
             isContained,
+            isLoop: shouldVideoPlayOnce ? false : undefined,
             isInvariablyAmbient: true
           });
         }
@@ -128,6 +131,7 @@ function Block({
       mediaEl = YouTubePlayer({
         videoId,
         ratios,
+        isLoop: shouldVideoPlayOnce ? false : undefined,
         isAmbient: true,
         isContained
       });
@@ -136,6 +140,7 @@ function Block({
         videoId,
         ratios,
         isContained: isContained,
+        isLoop: shouldVideoPlayOnce ? false : undefined,
         isInvariablyAmbient: true
       });
     }
@@ -282,6 +287,7 @@ function transformSection(section) {
   const isLight = section.configSC.indexOf('light') > -1;
   const isPiecemeal = section.configSC.indexOf('piecemeal') > -1;
   const shouldSupplant = section.configSC.indexOf('supplant') > -1;
+  const shouldVideoPlayOnce = section.configSC.indexOf('once') > -1;
 
   let transition;
 
@@ -320,7 +326,8 @@ function transformSection(section) {
     isDocked,
     isGrouped,
     isLight,
-    isPiecemeal
+    isPiecemeal,
+    shouldVideoPlayOnce
   };
 
   // if the 'transition' flag is set then assume its a slide show

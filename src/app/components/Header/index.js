@@ -17,19 +17,20 @@ const YouTubePlayer = require('../YouTubePlayer');
 require('./index.scss');
 
 function Header({
-  meta = {},
-  videoId,
-  isVideoYouTube,
   imgEl,
   interactiveEl,
-  ratios = {},
   isAbreast,
   isDark,
-  isPale,
   isFloating,
-  isLayered,
   isKicker,
-  miscContentEls = []
+  isLayered,
+  isPale,
+  isVideoYouTube,
+  meta = {},
+  miscContentEls = [],
+  ratios = {},
+  shouldVideoPlayOnce,
+  videoId
 }) {
   isFloating = isFloating || (isLayered && !imgEl && !videoId && !interactiveEl);
   isLayered = isLayered || isFloating;
@@ -69,12 +70,14 @@ function Header({
     mediaEl = isVideoYouTube
       ? YouTubePlayer({
           videoId,
+          isLoop: shouldVideoPlayOnce ? false : undefined,
           isAmbient: true,
           ratios
         })
       : VideoPlayer({
           videoId,
           ratios,
+          isLoop: shouldVideoPlayOnce ? false : undefined,
           isInvariablyAmbient: true
         });
   }
@@ -241,6 +244,7 @@ function transformSection(section, meta) {
   const isNoMedia = isFloating || section.configSC.indexOf('nomedia') > -1;
   const isKicker = section.configSC.indexOf('kicker') > -1;
   const shouldSupplant = section.configSC.indexOf('supplant') > -1;
+  const shouldVideoPlayOnce = section.configSC.indexOf('once') > -1;
 
   let candidateNodes = section.betweenNodes;
 
@@ -333,7 +337,8 @@ function transformSection(section, meta) {
       isFloating,
       isLayered,
       isKicker,
-      miscContentEls: []
+      miscContentEls: [],
+      shouldVideoPlayOnce
     }
   );
 

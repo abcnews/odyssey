@@ -66,9 +66,9 @@ function transformEl(el) {
     videoId,
     ratios: getRatios(configSC),
     title,
-    isAmbient: configSC.indexOf('ambient') > -1,
-    isLoop: configSC.indexOf('loop') > -1,
-    isMuted: configSC.indexOf('muted') > -1,
+    isAmbient: configSC.indexOf('ambient') > -1 ? true : undefined,
+    isLoop: configSC.indexOf('loop') > -1 ? true : configSC.indexOf('once') > -1 ? false : undefined,
+    isMuted: configSC.indexOf('muted') > -1 ? true : undefined,
     scrollplayPct
   };
 
