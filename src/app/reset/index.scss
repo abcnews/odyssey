@@ -10,6 +10,19 @@ html {
   scroll-behavior: auto;
 }
 
+/*
+  To support dynamic type in iOS (without impacting other
+  environments), we need to initially enforce Apple's
+  system font (overriding the html font-size), and then
+  allow descendant elements to define their own
+  font-family and rem-based font-sizes
+*/
+@supports (font: -apple-system-body) {
+  html {
+    font: -apple-system-body !important;
+  }
+}
+
 body {
   overflow: hidden;
   min-width: 0; /* Override Phase 1 (Standard)'s 1000px */
