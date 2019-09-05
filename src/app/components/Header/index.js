@@ -8,7 +8,7 @@ const { MS_VERSION, VIDEO_MARKER_PATTERN } = require('../../../constants');
 const { enqueue, subscribe } = require('../../scheduler');
 const { terminusFetch } = require('../../utils/content');
 const { $, detach, isElement } = require('../../utils/dom');
-const { dePx, formattedDate, getRatios, trim } = require('../../utils/misc');
+const { clampNumber, dePx, formattedDate, getRatios, trim } = require('../../utils/misc');
 const ScrollHint = require('../ScrollHint');
 const Picture = require('../Picture');
 const UParallax = require('../UParallax');
@@ -226,8 +226,8 @@ function fetchInfoSourceLogo(meta, el, variant) {
       terminusFetch({ id: logoDoc.id, type: logoDoc.docType.toLowerCase() }, (err, item) => {
         const image = item.media.image.primary.complete[0];
         el.className = `${el.className} has-logo`;
-        // Assume image@2x, with height clamped between 50px and 75px
-        el.style.height = `${Math.min(75, Math.max(50, Math.round(image.height / 2)))}px`;
+        // Assume image@2x, with height clamped between 50px and 70px
+        el.style.height = `${clampNumber(Math.round(image.height / 2), 50, 70)}px`;
         el.style.backgroundImage = `url(${image.url})`;
       });
     }
