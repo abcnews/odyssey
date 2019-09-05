@@ -23,7 +23,9 @@ const TEMPLATE_REMOVABLES = {
     .published
     .attached-content
     .authorpromo
+    .statepromo
     .newsFromOtherSites
+    .topics
   `),
   '.platform-mobile:not(.platform-standard)': literalList(`
     header > .site
