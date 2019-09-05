@@ -8,6 +8,7 @@ const { PresentationLayerAsyncComponent } = require('./async-components/loader')
 const Caption = require('./components/Caption');
 const Comments = require('./components/Comments');
 const Block = require('./components/Block');
+const FormatCredit = require('./components/FormatCredit');
 const Gallery = require('./components/Gallery');
 const GalleryEmbed = require('./components/GalleryEmbed');
 const Header = require('./components/Header');
@@ -207,6 +208,9 @@ function app() {
       setTimeout(transformRemainingEELs, 500);
     }
   })();
+
+  // Embed format credit
+  append(storyEl, FormatCredit());
 
   // Embed comments, if enabled
   if (meta.hasCommentsEnabled) {
