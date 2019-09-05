@@ -93,6 +93,10 @@ function whenKeyIn(keys, fn) {
   };
 }
 
+function clampNumber(value, min, max) {
+  return Math.max(min, Math.min(value, max));
+}
+
 module.exports = {
   returnFalse,
   trim,
@@ -104,5 +108,6 @@ module.exports = {
   dePx,
   proximityCheck,
   whenKeyIn,
+  clampNumber,
   smartquotes
 };
