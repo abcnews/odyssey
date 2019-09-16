@@ -97,6 +97,72 @@ function clampNumber(value, min, max) {
   return Math.max(min, Math.min(value, max));
 }
 
+const ABSOLUTE_OR_RELATIVE = new Set(['absolute', 'relative']);
+const FIXED_OR_STICKY = new Set(['fixed', 'sticky']);
+const FLEX_OR_GRID = new Set(['flex', 'grid']);
+const LAYOUT_OR_PAINT_OR_STRICT_OR_CONTENT = new Set(['layout', 'paint', 'strict', 'content']);
+const INITIAL_VALUES_OF_PROPS = {
+  opacity: '1',
+  mixBlendMode: 'normal',
+  transform: 'none',
+  filter: 'none',
+  perspective: 'none',
+  clipPath: 'none',
+  mask: 'none'
+};
+const PROPS_WITH_INITIAL_VALUES = Object.keys(INITIAL_VALUES_OF_PROPS);
+const DASHED_PROPS_WITH_INITIAL_VALUES = new Set(
+  PROPS_WITH_INITIAL_VALUES.map(prop => prop.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase())
+);
+
+function elementLayerPixels(el) {
+  return el.clientWidth * el.clientHeight;
+}
+
+function stackingContextReport() {
+  const allEls = [...document.querySelectorAll('*')];
+  const stackingContextEls = allEls.filter(el => {
+    const style = window.getComputedStyle(el);
+    const parentStyle = el.parentElement && window.getComputedStyle(el.parentElement);
+    const zIndexIsAuto = style.zIndex === 'auto';
+    const willChange = style.willChange.split(',');
+
+    // Rules: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context#The_stacking_context
+    return (
+      el === document.documentElement ||
+      (ABSOLUTE_OR_RELATIVE.has(style.position) && !zIndexIsAuto) ||
+      FIXED_OR_STICKY.has(style.position) ||
+      (parentStyle && FLEX_OR_GRID.has(parentStyle.display) && !zIndexIsAuto) ||
+      PROPS_WITH_INITIAL_VALUES.filter(prop => style[prop] !== INITIAL_VALUES_OF_PROPS[prop]).length > 0 ||
+      style.isolation === 'isolate' ||
+      style.webkitOverflowScrolling === 'touch' ||
+      style.willChange.split(', ').filter(prop => DASHED_PROPS_WITH_INITIAL_VALUES.has(prop)).length > 0 ||
+      LAYOUT_OR_PAINT_OR_STRICT_OR_CONTENT.has(style.contain)
+    );
+  });
+
+  const { clientHeight, clientWidth } = document.documentElement;
+  const intersectingStackingContextEls = stackingContextEls.filter(el => {
+    const { top, right, bottom, left } = el.getBoundingClientRect();
+
+    return top <= clientHeight && right >= 0 && bottom >= 0 && left <= clientWidth;
+  });
+
+  console.table({
+    'Total elements': allEls.length,
+    'Stacking contexts': stackingContextEls.length,
+    'Stacking contexts overlapping viewport': intersectingStackingContextEls.length,
+    'Pixels rendered across stacking contexts': stackingContextEls.reduce(
+      (memo, el) => memo + elementLayerPixels(el),
+      0
+    ),
+    'Pixels rendered across stacking contexts overlapping viewport': intersectingStackingContextEls.reduce(
+      (memo, el) => memo + elementLayerPixels(el),
+      0
+    )
+  });
+}
+
 module.exports = {
   returnFalse,
   trim,
@@ -109,5 +175,6 @@ module.exports = {
   proximityCheck,
   whenKeyIn,
   clampNumber,
-  smartquotes
+  smartquotes,
+  stackingContextReport
 };
