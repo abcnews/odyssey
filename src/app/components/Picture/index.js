@@ -56,9 +56,7 @@ function Picture({
           xl: ratios.xl || DEFAULTS.XL_RATIO
         };
 
-  const sizerClassName = `u-sizer-sm-${ratios.sm} u-sizer-md-${ratios.md} u-sizer-lg-${ratios.lg} u-sizer-xl-${
-    ratios.xl
-  }`;
+  const sizerClassName = `u-sizer-sm-${ratios.sm} u-sizer-md-${ratios.md} u-sizer-lg-${ratios.lg} u-sizer-xl-${ratios.xl}`;
 
   const imageURL = ensurePhase1Asset(src);
   const smImageURL = imageURL
@@ -110,9 +108,10 @@ function Picture({
       return el.getBoundingClientRect();
     },
     unload: () => {
-      picture.isLoaded = false;
       picture.isLoading = false;
-      pictureEl.removeAttribute('loaded', '');
+      picture.isLoaded = false;
+      pictureEl.removeAttribute('loading');
+      pictureEl.removeAttribute('loaded');
       detach(imgEl);
       imgEl = null;
     },
@@ -122,6 +121,7 @@ function Picture({
       }
 
       picture.isLoading = true;
+      pictureEl.setAttribute('loading', '');
       imgEl = html`
         <img alt="${alt}" data-object-fit="" />
       `;
@@ -152,6 +152,7 @@ function Picture({
 
       picture.isLoading = false;
       picture.isLoaded = true;
+      pictureEl.removeAttribute('loading');
       pictureEl.setAttribute('loaded', '');
       imgEl.removeEventListener('load', picture.loaded);
 
