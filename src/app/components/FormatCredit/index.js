@@ -2,20 +2,19 @@
 const html = require('bel');
 
 // Ours
+const { track } = require('../../utils/behaviour');
 require('./index.scss');
 
-const CREDIT = 'Storytelling format by ABC\u00a0News\u00a0Story\u00a0Lab';
+const LINK_URL = '/news/interactives/';
+const LINK_TRACKER = () => track('format-credit-link', '*');
 
-module.exports = function Footer() {
-  const parEl = html`
-    <p></p>
-  `;
-
-  parEl.textContent = CREDIT;
-
+module.exports = function FormatCredit() {
   return html`
     <div class="FormatCredit">
-      ${parEl}
+      <p>
+        <span>Odyssey format by </span>
+        <a href=${LINK_URL} onclick=${LINK_TRACKER}>ABC News Story Lab</a>
+      </p>
     </div>
   `;
 };

@@ -209,8 +209,10 @@ function app() {
     }
   })();
 
-  // Embed format credit
-  append(storyEl, FormatCredit());
+  // Embed format credit for non-DSI stories
+  if (meta.productionUnit !== 'EDL team') {
+    append(storyEl, FormatCredit());
+  }
 
   // Embed comments, if enabled
   if (meta.hasCommentsEnabled) {
