@@ -33,6 +33,14 @@ function getMetaContent(name) {
   return el ? el.getAttribute('content') : null;
 }
 
+function getDataLayerStoryProp(name) {
+  if (!Array.isArray(window.dataLayer)) {
+    return null;
+  }
+
+  return window.dataLayer[0].document[name];
+}
+
 function getDate(metaElName, timeElClassName) {
   const date = parseDate(
     getMetaContent(metaElName) || (($(`time.${timeElClassName}`) || MOCK_ELEMENT).getAttribute('datetime') || '')
@@ -148,6 +156,7 @@ function getMeta() {
       published: getDate('DCTERMS.issued', 'original'),
       updated: getDate('DCTERMS.modified', 'updated'),
       bylineNodes: getBylineNodes(),
+      productionUnit: getDataLayerStoryProp('productionUnit'),
       infoSource: getInfoSource(),
       infoSourceLogosDataId: getDataAttribute('info-source-logos'),
       shareLinks: getShareLinks({ url, title, description }),

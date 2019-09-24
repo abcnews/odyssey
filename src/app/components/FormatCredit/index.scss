@@ -1,0 +1,23 @@
+@import '../../../constants';
+
+.FormatCredit {
+  color: $color-black-transparent-75;
+  font-family: $font-sans;
+  font-size: 1rem;
+  font-weight: bold;
+  line-height: 1.555555556;
+  text-transform: uppercase;
+  letter-spacing: 0.0625em;
+
+  .u-richtext-invert & {
+    color: $color-white-transparent-75;
+  }
+
+  .FormatCredit > * {
+    color: inherit;
+  }
+
+  & a {
+    white-space: nowrap;
+  }
+}
