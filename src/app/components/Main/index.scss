@@ -1,6 +1,8 @@
 @import '../../../constants';
+@import './variables';
 
 .Main {
+  --Main-offsetTop: #{$var--Main-offsetTop};
   display: block;
 
   *,

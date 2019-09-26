@@ -1,9 +1,11 @@
 @import '../../../constants';
+@import '../Main/variables.scss';
+@import './variables.scss';
 
-$header-content-peek: 5.5rem;
-$header-abreast-margin: 2.5rem;
+$abreastChildSpacing: 2.5rem;
 
 .Header {
+  --Header-contentPeek: #{$var--Header-contentPeek};
   overflow: hidden;
   position: relative;
   line-height: 1.5;
@@ -24,28 +26,20 @@ $header-abreast-margin: 2.5rem;
   &.is-layered {
     display: flex;
     flex-direction: column-reverse;
-    min-height: calc(100vh - #{$abc-nav-height});
+    min-height: calc(100vh - var(--Main-offsetTop));
 
-    @media #{$mq-pl-sm} {
-      min-height: calc(100vh - #{$abc-nav-height--mq-pl-sm});
-    }
-
-    body.platform-app & {
-      min-height: calc(100vh);
+    [ie11] & {
+      min-height: calc(100vh - #{$var--Main-offsetTop});
     }
   }
 
   &.is-floating {
     z-index: 2;
-    margin-bottom: calc(-100vh + #{$abc-nav-height}) !important;
+    margin-bottom: calc(-100vh + var(--Main-offsetTop)) !important;
     background-color: transparent;
 
-    @media #{$mq-pl-sm} {
-      margin-bottom: calc(-100vh + #{$abc-nav-height--mq-pl-sm}) !important;
-    }
-
-    body.platform-app & {
-      margin-bottom: calc(-100vh) !important;
+    [ie11] & {
+      margin-bottom: calc(-100vh + #{$var--Main-offsetTop}) !important;
     }
   }
 
@@ -56,7 +50,7 @@ $header-abreast-margin: 2.5rem;
       justify-content: center;
 
       > * {
-        margin: $header-abreast-margin;
+        margin: $abreastChildSpacing;
       }
     }
   }
@@ -76,17 +70,10 @@ $header-abreast-margin: 2.5rem;
   }
 
   :not(.is-layered) > & {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    max-height: calc(100vh - #{$abc-nav-height + $header-content-peek});
+    max-height: calc(100vh - var(--Main-offsetTop) - var(--Header-contentPeek));
 
-    @media #{$mq-pl-sm} {
-      max-height: calc(100vh - #{$abc-nav-height--mq-pl-sm + $header-content-peek});
-    }
-
-    body.platform-app & {
-      max-height: calc(100vh - #{$header-content-peek});
+    [ie11] & {
+      max-height: calc(100vh - #{$var--Main-offsetTop + $var--Header-contentPeek});
     }
   }
 
@@ -106,6 +93,10 @@ $header-abreast-margin: 2.5rem;
     display: none;
   }
 
+  & > .html-fragment {
+    margin: 0;
+  }
+
   &::after {
     content: '';
     position: absolute;
@@ -123,26 +114,17 @@ $header-abreast-margin: 2.5rem;
   @media #{$mq-gt-md} {
     .is-abreast > & {
       flex-grow: 1;
-      -ms-flex: 1 0 50%;
-      max-height: calc(100vh - #{$abc-nav-height + $header-content-peek + $header-abreast-margin * 2});
+      max-height: calc(100vh - var(--Main-offsetTop) - var(--Header-contentPeek) - #{$abreastChildSpacing * 2});
       // Enforce 3x4 aspect ratio
-      max-width: calc(75vh - #{$abc-nav-height + $header-content-peek + $header-abreast-margin * 2});
+      max-width: calc(75vh - var(--Main-offsetTop) - var(--Header-contentPeek) - #{$abreastChildSpacing * 2});
 
-      body.platform-app & {
-        max-height: calc(100vh - #{$header-content-peek + $header-abreast-margin * 2});
-        max-width: calc(75vh - #{$header-content-peek + $header-abreast-margin * 2});
+      [ie11] & {
+        max-height: calc(100vh - #{$var--Main-offsetTop + $var--Header-contentPeek + $abreastChildSpacing * 2});
+        max-width: calc(75vh - #{$var--Main-offsetTop + $var--Header-contentPeek + $abreastChildSpacing * 2});
       }
 
       &::after {
         content: none;
-      }
-    }
-
-    .is-abreast.has-content-taller-than-peek > & {
-      max-height: calc(100vh - #{$abc-nav-height + $header-abreast-margin * 2});
-
-      body.platform-app & {
-        max-height: calc(100vh - #{$header-abreast-margin * 2});
       }
     }
   }
@@ -150,22 +132,25 @@ $header-abreast-margin: 2.5rem;
   @media #{$mq-xl} {
     .is-abreast > & {
       flex-grow: 0;
-      -ms-flex: 0 0 50%;
       // Enforce 1x1 aspect ratio
-      width: calc(100vh - #{$abc-nav-height + $header-content-peek + $header-abreast-margin * 2});
+      width: calc(100vh - var(--Main-offsetTop) - var(--Header-contentPeek) - #{$abreastChildSpacing * 2});
       max-width: none;
 
-      body.platform-app & {
-        width: calc(100vh - #{$header-content-peek + $header-abreast-margin * 2});
+      [ie11] & {
+        width: calc(100vh - #{$var--Main-offsetTop + $var--Header-contentPeek + $abreastChildSpacing * 2});
       }
     }
+  }
+
+  & > .ScrollHint {
+    position: absolute;
   }
 }
 
 /* In Firefox, parallax headers aren't clipped properly */
 @supports (-moz-appearance: meterbar) {
   :not(.is-layered) > .Header-media [data-component='OdysseyParallax_App'] > * {
-    height: calc(100vh - #{$header-content-peek});
+    clip: rect(0, auto, calc(100vh - var(--Main-offsetTop) - var(--Header-contentPeek)), 0);
   }
 }
 

@@ -1,4 +1,7 @@
 @import '../../../constants';
+@import '../Main/variables.scss';
+
+$offsetBottom: 3rem;
 
 @keyframes ScrollHintBounce {
   from {
@@ -19,20 +22,6 @@
   height: 3rem;
   transition: opacity 0.5s;
   cursor: pointer;
-
-  .Header & {
-    position: absolute;
-    top: calc(100vh - #{$abc-nav-height + 3rem});
-    bottom: auto;
-
-    @media #{$mq-pl-sm} {
-      top: calc(100vh - #{$abc-nav-height--mq-pl-sm + 3rem});
-    }
-
-    body.platform-app & {
-      top: calc(100vh - 3rem);
-    }
-  }
 
   &.leaving {
     opacity: 0;
