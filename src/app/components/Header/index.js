@@ -87,6 +87,20 @@ function Header({
     UParallax.activate(mediaEl);
   }
 
+  const titleEl = html`
+    <h1>
+      ${isKicker && meta.title.indexOf(': ') > -1
+        ? meta.title.split(': ').map((text, index) =>
+            index === 0
+              ? html`
+                  <small>${text}</small>
+                `
+              : text
+          )
+        : meta.title}
+    </h1>
+  `;
+
   const clonedMiscContentEls = miscContentEls.map(el => {
     const clonedEl = el.cloneNode(true);
 
@@ -116,42 +130,24 @@ function Header({
       : null
   );
 
-  const contentEls = [
-    html`
-      <h1>
-        ${isKicker && meta.title.indexOf(': ') > -1
-          ? meta.title.split(': ').map((text, index) =>
-              index === 0
-                ? html`
-                    <small>${text}</small>
-                  `
-                : text
-            )
-          : meta.title}
-      </h1>
-    `
-  ]
-    .concat(clonedMiscContentEls)
-    .concat([
-      clonedBylineNodes
-        ? html`
-            <p class="Header-byline">${clonedBylineNodes}</p>
-          `
-        : null,
-      infoSourceEl,
-      updated
-        ? html`
-            <div class="Header-updated">Updated <time datetime="${updated.datetime}">${updated.text}</time></div>
-          `
-        : null,
-      published
-        ? html`
-            <div class="Header-published">
-              Published <time datetime="${published.datetime}">${published.text}</time>
-            </div>
-          `
-        : null
-    ]);
+  const contentEls = [titleEl].concat(clonedMiscContentEls).concat([
+    clonedBylineNodes
+      ? html`
+          <p class="Header-byline">${clonedBylineNodes}</p>
+        `
+      : null,
+    infoSourceEl,
+    updated
+      ? html`
+          <div class="Header-updated">Updated <time datetime="${updated.datetime}">${updated.text}</time></div>
+        `
+      : null,
+    published
+      ? html`
+          <div class="Header-published">Published <time datetime="${published.datetime}">${published.text}</time></div>
+        `
+      : null
+  ]);
 
   const headerContentEl = html`
     <div class="Header-content u-richtext${isDark ? '-invert' : ''}">${contentEls}</div>
@@ -162,7 +158,7 @@ function Header({
       ${mediaEl
         ? html`
             <div class="Header-media${isLayered && !isAbreast && mediaEl.tagName !== 'DIV' ? ' u-parallax' : ''}">
-              ${!isLayered ? ScrollHint() : null} ${mediaEl}
+              ${!isLayered && !isAbreast ? ScrollHint() : null} ${mediaEl}
             </div>
           `
         : null}
@@ -171,18 +167,6 @@ function Header({
   `;
 
   fetchInfoSourceLogo(meta, infoSourceEl, isLayered ? 'layered' : isDark ? 'dark' : 'light');
-
-  if (isAbreast) {
-    subscribe(function _checkHeaderContentHeight(client) {
-      if (client.hasChanged) {
-        const headerContentElHeight = headerContentEl.getBoundingClientRect().height;
-        const clientHeightMinusHeaderContentPeek = client.height - 152;
-        headerEl.classList[headerContentElHeight > clientHeightMinusHeaderContentPeek ? 'add' : 'remove'](
-          'has-content-taller-than-peek'
-        );
-      }
-    });
-  }
 
   if (isLayered && MS_VERSION > 9 && MS_VERSION < 12) {
     // https://github.com/philipwalton/flexbugs#3-min-height-on-a-flex-container-wont-apply-to-its-flex-items
@@ -206,7 +190,27 @@ function Header({
     });
   }
 
+  if (!isLayered && !isAbreast) {
+    subscribe(client => (client.hasChanged ? updateContentPeek(headerEl) : null));
+    window.requestIdleCallback(() => updateContentPeek(headerEl));
+  }
+
   return headerEl;
+}
+
+function updateContentPeek(headerEl) {
+  let titleHeight = 0;
+  let titleBottomMargin = 0;
+  const titleEl = $('h1', headerEl);
+
+  if (titleEl) {
+    titleHeight = titleEl.getBoundingClientRect().height;
+    titleBottomMargin = +window.getComputedStyle(titleEl).marginBottom.replace('px', '');
+  }
+
+  enqueue(() => {
+    headerEl.style.setProperty('--Header-contentPeek', Math.round(titleHeight + titleBottomMargin) + 'px');
+  });
 }
 
 function fetchInfoSourceLogo(meta, el, variant) {
