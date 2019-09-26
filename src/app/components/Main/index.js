@@ -3,6 +3,8 @@ const cn = require('classnames');
 const html = require('bel');
 
 // Ours
+const { $ } = require('../../utils/dom');
+const { enqueue, subscribe } = require('../../scheduler');
 require('./index.scss');
 
 module.exports = function Main(childNodes, meta) {
@@ -12,7 +14,25 @@ module.exports = function Main(childNodes, meta) {
     'has-caption-attributions': meta.hasCaptionAttributions
   });
 
-  return html`
+  const el = html`
     <main class="${className}">${childNodes}</main>
   `;
+
+  subscribe(client => (client.hasChanged ? updateOffsetTop(el) : null));
+  window.requestIdleCallback(() => updateOffsetTop(el));
+
+  return el;
 };
+
+function updateOffsetTop(mainEl) {
+  let previewContainerHeight = 0;
+  const previewContainerEl = $('.preview-container');
+
+  if (previewContainerEl) {
+    previewContainerHeight = previewContainerEl.getBoundingClientRect().height;
+  }
+
+  enqueue(() => {
+    mainEl.style.setProperty('--Main-offsetTop', Math.round(mainEl.offsetTop - previewContainerHeight) + 'px');
+  });
+}
