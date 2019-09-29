@@ -19,7 +19,6 @@ module.exports = function Main(childNodes, meta) {
   `;
 
   subscribe(client => (client.hasChanged ? updateOffsetTop(el) : null));
-  window.requestIdleCallback(() => updateOffsetTop(el));
 
   return el;
 };
