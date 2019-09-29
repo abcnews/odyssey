@@ -9,11 +9,14 @@ const subscribers = [];
 const queue = [];
 let client = null;
 let hasStarted;
+let isFlushing;
 
 function flush() {
   if (queue.length === 0) {
-    return;
+    return (isFlushing = false);
   }
+
+  isFlushing = true;
 
   const beginning = now();
 
@@ -22,12 +25,14 @@ function flush() {
   }
 
   if (queue.length > 0) {
-    requestAnimationFrame(flush);
+    return requestAnimationFrame(flush);
   }
+
+  isFlushing = false;
 }
 
 function enqueue(task) {
-  if (hasStarted && queue.length === 0) {
+  if (hasStarted && !isFlushing) {
     requestAnimationFrame(flush);
   }
 
