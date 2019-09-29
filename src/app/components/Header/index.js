@@ -192,7 +192,6 @@ function Header({
 
   if (!isLayered && !isAbreast) {
     subscribe(client => (client.hasChanged ? updateContentPeek(headerEl) : null));
-    window.requestIdleCallback(() => updateContentPeek(headerEl));
   }
 
   return headerEl;
