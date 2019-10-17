@@ -2,12 +2,13 @@
 const html = require('bel');
 
 // Ours
+
 const { IS_PREVIEW, RICHTEXT_BLOCK_TAGNAMES, SELECTORS } = require('../constants');
 const api = require('./api');
 const { PresentationLayerAsyncComponent } = require('./async-components/loader');
+const Block = require('./components/Block');
 const Caption = require('./components/Caption');
 const Comments = require('./components/Comments');
-const Block = require('./components/Block');
 const FormatCredit = require('./components/FormatCredit');
 const Gallery = require('./components/Gallery');
 const GalleryEmbed = require('./components/GalleryEmbed');
@@ -71,7 +72,7 @@ function app() {
   });
 
   if (!hasHeader) {
-    prepend(storyEl, Header({ meta }));
+    prepend(storyEl, Header.Lite(meta));
   }
 
   // Enable drop-caps after headers

@@ -197,6 +197,10 @@ function Header({
   return headerEl;
 }
 
+function Lite(meta) {
+  return Header({ meta, imgEl: meta.relatedMedia && getChildImage(meta.relatedMedia.cloneNode(true)) });
+}
+
 function updateContentPeek(headerEl) {
   let titleHeight = 0;
   let titleBottomMargin = 0;
@@ -269,13 +273,13 @@ function transformSection(section, meta) {
       // If we found an init-interactive then it takes over being the header media
       if (!isNoMedia && !config.interactiveEl && isElement(node)) {
         // special case for parallax hash markers
-        const isParallax = node.tagName === 'A' && node.getAttribute('name').indexOf('parallax') === 0;
+        const isParallax = node.tagName === 'A' && (node.getAttribute('name') || '').indexOf('parallax') === 0;
 
         // normal init-interactives
         const isInteractive =
           classList.indexOf('init-interactive') > -1 ||
           node.querySelector('[class^="init-interactive"]') ||
-          (node.tagName === 'A' && node.getAttribute('name').indexOf('interactive') === 0);
+          (node.tagName === 'A' && (node.getAttribute('name') || '').indexOf('interactive') === 0);
 
         if (isParallax || isInteractive) {
           config.interactiveEl = interactiveEl = node;
@@ -349,4 +353,5 @@ function transformSection(section, meta) {
 }
 
 module.exports = Header;
+module.exports.Lite = Lite;
 module.exports.transformSection = transformSection;
