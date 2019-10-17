@@ -10,6 +10,7 @@ const { literalList, trim } = require('../utils/misc');
 require('./index.scss');
 
 const TEMPLATE_REMOVABLES = {
+  // P1S
   '.platform-standard:not(.platform-mobile)': literalList(`
     #container_header
     #container_subheader
@@ -27,6 +28,7 @@ const TEMPLATE_REMOVABLES = {
     .newsFromOtherSites
     .topics
   `),
+  // P1M
   '.platform-mobile:not(.platform-standard)': literalList(`
     header > .site
     header > .section
@@ -35,6 +37,7 @@ const TEMPLATE_REMOVABLES = {
     .share
     .related:not(.m-recirc)
   `),
+  // P2
   '.platform-standard.platform-mobile': literalList(`
     #page-header
     .view-navigationPrimary
