@@ -4,6 +4,7 @@
 .Main {
   --Main-offsetTop: #{$var--Main-offsetTop};
   display: block;
+  line-height: normal;
 
   *,
   *::before,
@@ -20,6 +21,10 @@
 
   button {
     border-radius: 0;
+  }
+
+  a {
+    text-decoration: none;
   }
 
   a:hover,

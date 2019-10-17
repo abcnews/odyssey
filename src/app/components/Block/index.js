@@ -6,7 +6,7 @@ const url2cmid = require('util-url2cmid');
 // Ours
 const { ALIGNMENT_PATTERN, VIDEO_MARKER_PATTERN } = require('../../../constants');
 const { enqueue, subscribe } = require('../../scheduler');
-const { $, detach, isElement } = require('../../utils/dom');
+const { $, detach, getChildImage, isElement } = require('../../utils/dom');
 const { getRatios, trim } = require('../../utils/misc');
 const Picture = require('../Picture');
 const VideoPlayer = require('../VideoPlayer');
@@ -344,7 +344,7 @@ function transformSection(section) {
     config.backgrounds = [];
     config.contentEls = section.betweenNodes
       .map(node => {
-        let img = $('img', node);
+        let img = getChildImage(node);
         if (img) {
           // We found an image to use as one of the backgrounds
           config.backgrounds.push(img);
@@ -460,7 +460,7 @@ function transformSection(section) {
         if (videoId) {
           _config.videoId = videoId;
         } else {
-          imgEl = $('img', node);
+          imgEl = getChildImage(node);
 
           if (imgEl) {
             _config.imgEl = imgEl;

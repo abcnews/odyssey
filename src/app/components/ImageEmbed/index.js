@@ -6,7 +6,7 @@ const url2cmid = require('util-url2cmid');
 // Ours
 const { ALIGNMENT_PATTERN } = require('../../../constants');
 const { grabConfigSC } = require('../../utils/anchors');
-const { $, substitute } = require('../../utils/dom');
+const { getChildImage, substitute } = require('../../utils/dom');
 const { getRatios } = require('../../utils/misc');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
@@ -31,14 +31,9 @@ function ImageEmbed({ pictureEl, captionEl, alignment, isFull, isCover, isAnon }
 }
 
 function transformEl(el, preserveOriginalRatio) {
-  const imgEl = $('img', el);
+  const imgEl = getChildImage(el);
 
   if (!imgEl) {
-    return;
-  }
-
-  // Phase 2 CustomImages appear similar to Images, but their srcsec attribute only has one URL.
-  if (imgEl.hasAttribute('data-srcset') && imgEl.getAttribute('data-srcset').indexOf(', ') === -1) {
     return;
   }
 
