@@ -199,6 +199,21 @@ function reset(storyEl, meta) {
     }
   });
 
+  // Clean up Presentation Layer components
+  $$(
+    literalList(`
+      [data-component="ContentLink"]
+      [data-component="Heading"]
+      [data-component="List"]
+      [data-component="ListItem"]
+      p
+    `),
+    storyEl
+  ).forEach(el => {
+    el.removeAttribute('class');
+    el.removeAttribute('data-component');
+  });
+
   $$(PREVIEW_CTX_SELECTOR, storyEl).forEach(el => {
     Array.from(el.children).forEach(childEl => {
       if (childEl.tagName === 'SCRIPT' && childEl.textContent.match(PREVIEW_SCRIPT_PATTERN)) {
