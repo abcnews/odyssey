@@ -33,9 +33,14 @@ function VideoEmbed({ playerEl, captionEl, alignment, isFull, isCover, isAnon })
 }
 
 function transformEl(el) {
-  const linkEl = $('a[href]', el);
   const isMarker = el.name && !!el.name.match(VIDEO_MARKER_PATTERN);
-  const videoId = isMarker ? el.name.match(VIDEO_MARKER_PATTERN)[1] : linkEl && url2cmid(linkEl.getAttribute('href'));
+  const linkEl = $('a[href]', el);
+  const plPlayerIdEl = $('[data-component="Player"] div[id]', el);
+  const videoId = isMarker
+    ? el.name.match(VIDEO_MARKER_PATTERN)[1]
+    : linkEl
+    ? url2cmid(linkEl.getAttribute('href'))
+    : plPlayerIdEl && plPlayerIdEl.id;
 
   if (!videoId) {
     return;
