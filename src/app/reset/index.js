@@ -45,6 +45,12 @@ const TEMPLATE_REMOVABLES = {
     .view-ticker
     .article-detail-page > .container-fluid > div.row
     .view-hero-media
+  `),
+  // PL
+  'meta[property="ABC.Generator"]': literalList(`
+    [data-component="DetailLayout"]
+    [data-component="WebContentWarning"]
+    ul>li>span:first-child
   `)
 };
 
