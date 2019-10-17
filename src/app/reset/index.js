@@ -5,7 +5,7 @@ const dewysiwyg = require('util-dewysiwyg');
 // Ours
 const { SELECTORS } = require('../../constants');
 const Main = require('../components/Main');
-const { $, $$, append, before, detach, detachAll } = require('../utils/dom');
+const { $, $$, append, before, detach, detachAll, setOrAddMetaTag } = require('../utils/dom');
 const { literalList, trim } = require('../utils/misc');
 require('./index.scss');
 
@@ -78,16 +78,8 @@ function addIE11StyleHint() {
 }
 
 function resetMetaViewport() {
-  let el = $('meta[name="viewport"]');
+  setOrAddMetaTag('viewport', 'width=device-width, initial-scale=1, minimum-scale=1');
 
-  if (!el) {
-    // Phase 1 (Standard) doesn't have the tag. Let's make one.
-    el = document.createElement('meta');
-    el.setAttribute('name', 'viewport');
-    document.head.appendChild(el);
-  }
-
-  el.setAttribute('content', 'width=device-width, initial-scale=1, minimum-scale=1');
 }
 
 function promoteToMain(storyEl, meta) {
