@@ -2,8 +2,8 @@
 const html = require('bel');
 
 // Ours
-const { MOCK_ELEMENT } = require('../../../constants');
-const { $, detach, isElement } = require('../../utils/dom');
+const { MOCK_ELEMENT, MOCK_TEXT } = require('../../../constants');
+const { $, detach, isElement, isText } = require('../../utils/dom');
 const { trim } = require('../../utils/misc');
 require('./index.scss');
 
@@ -72,6 +72,16 @@ function createFromEl(el, unlink) {
       url: ($('a', clone) || MOCK_ELEMENT).getAttribute('href'),
       text: trim(($('h3', clone) || MOCK_ELEMENT).textContent),
       attribution: trim(($('.attribution', clone) || MOCK_ELEMENT).textContent)
+    };
+  } else if (clone.getAttribute('data-component') === 'Figure') {
+    // Presentation Layer
+    config = {
+      url: `/news/${clone.getAttribute('id')}`,
+      text: [MOCK_TEXT]
+        .concat(Array.from(($('figcaption', clone) || MOCK_ELEMENT).childNodes))
+        .filter(isText)
+        .sort((a, b) => b.nodeValue.length - a.nodeValue.length)[0].nodeValue,
+      attribution: trim(($('cite', clone) || MOCK_ELEMENT).textContent.slice(1, -1))
     };
   } else if ($('figcaption', clone)) {
     // P2 (image)
