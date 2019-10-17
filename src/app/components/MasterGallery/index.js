@@ -5,7 +5,7 @@ const url2cmid = require('util-url2cmid');
 // Ours
 const { enqueue, invalidateClient } = require('../../scheduler');
 const { track } = require('../../utils/behaviour');
-const { $, $$, prepend, substitute } = require('../../utils/dom');
+const { $, $$, getChildImage, prepend, substitute } = require('../../utils/dom');
 const Caption = require('../Caption');
 const Gallery = require('../Gallery');
 const Picture = require('../Picture');
@@ -170,7 +170,7 @@ function refresh() {
 }
 
 function register(el) {
-  const imgEl = $('img', el);
+  const imgEl = getChildImage(el);
 
   if (!imgEl) {
     return;
