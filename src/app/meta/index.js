@@ -197,7 +197,7 @@ function getMeta() {
       bylineNodes: getBylineNodes(),
       productionUnit: getDataLayerStoryProp('productionUnit'),
       infoSource: getInfoSource(),
-      infoSourceLogosDataId: getDataAttribute('info-source-logos'),
+      infoSourceLogosDataId: getDataAttribute('info-source-logos') || '10766144',
       shareLinks: getShareLinks({ url, title, description }),
       relatedMedia: getRelatedMedia(),
       relatedStoriesIds: getRelatedStoriesIds(),
