@@ -80,6 +80,12 @@ const P2_FLOAT = {
   REPLACEMENT: 'u-pull-$2'
 };
 
+const PL_FLOAT = {
+  SELECTOR: `
+    aside[data-component]
+  `
+};
+
 function addIE11StyleHint() {
   if ('-ms-scroll-limit' in document.documentElement.style && '-ms-ime-align' in document.documentElement.style) {
     document.documentElement.setAttribute('ie11', '');
@@ -95,7 +101,7 @@ function resetPLMarkers() {
     if (el.children.length === 0) {
       el.setAttribute('name', el.id);
       el.removeAttribute('id');
-}
+    }
   });
 }
 
@@ -196,6 +202,12 @@ function reset(storyEl, meta) {
       append(pullEl, el);
     } else {
       el.className = el.className.replace(P2_FLOAT.PATTERN, P2_FLOAT.REPLACEMENT);
+    }
+  });
+
+  $$(PL_FLOAT.SELECTOR, storyEl).forEach(el => {
+    if (el.parentElement === storyEl) {
+      el.className = 'u-pull-right';
     }
   });
 
