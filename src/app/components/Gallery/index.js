@@ -6,7 +6,7 @@ const url2cmid = require('util-url2cmid');
 // Ours
 const { REM, SUPPORTS_PASSIVE, VIDEO_MARKER_PATTERN } = require('../../../constants');
 const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
-const { $, append, detach, getChildImage, isElement, setText } = require('../../utils/dom');
+const { $, append, detach, detectVideoId, getChildImage, isElement, setText } = require('../../utils/dom');
 const { dePx, getRatios, returnFalse } = require('../../utils/misc');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
@@ -454,15 +454,10 @@ function transformSection(section) {
 
       const classList = node.className.split(' ');
       const imgEl = getChildImage(node);
-      const linkEl = $('a[href]', node);
       const videoId =
         node.name && !!node.name.match(VIDEO_MARKER_PATTERN)
           ? node.name.match(VIDEO_MARKER_PATTERN)[1]
-          : linkEl &&
-            ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
-              (classList.indexOf('view-inlineMediaPlayer') > -1 && classList.indexOf('doctype-abcvideo') > -1) ||
-              (classList.indexOf('embed-content') > -1 && $('.type-video', node))) &&
-            url2cmid(linkEl.getAttribute('href'));
+          : detectVideoId(node);
 
       if (videoId) {
         const videoPlayerEl = VideoPlayer({

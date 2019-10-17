@@ -1,3 +1,5 @@
+const url2cmid = require('util-url2cmid');
+
 const INLINE_TAG_NAMES = [
   'b',
   'big',
@@ -163,6 +165,33 @@ function getChildImage(el) {
   return imgEl;
 }
 
+function detectVideoId(node) {
+  const classList = node.className.split(' ');
+  const linkEl = $('a[href]', node);
+  let videoId;
+
+  // P1 & P2
+  if (linkEl) {
+    videoId =
+      ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
+        (classList.indexOf('view-inlineMediaPlayer') > -1 && classList.indexOf('doctype-abcvideo') > -1) ||
+        (classList.indexOf('view-hero-media') > -1 && $('.view-inlineMediaPlayer.doctype-abcvideo', node)) ||
+        (classList.indexOf('embed-content') > -1 && $('.type-video', node))) &&
+      url2cmid(linkEl.getAttribute('href'));
+  }
+
+  // PL
+  if (
+    !videoId &&
+    node.getAttribute('data-component') === 'Figure' &&
+    $('[data-component="PlayerButton"][aria-label*="Video"]', node)
+  ) {
+    videoId = ($('[data-component="Player"] div[id]', node) || {}).id;
+  }
+
+  return videoId;
+}
+
 module.exports = {
   isText,
   isElement,
@@ -181,6 +210,7 @@ module.exports = {
   toggleBooleanAttributes,
   setOrAddMetaTag,
   getChildImage,
+  detectVideoId,
   // Deprecated API
   select: $,
   selectAll: $$
