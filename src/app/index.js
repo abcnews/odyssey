@@ -219,7 +219,7 @@ function app() {
   })();
 
   // Embed format credit for non-DSI stories
-  if (meta.productionUnit !== 'EDL team') {
+  if (meta.productionUnit !== 'EDL team' && (meta.infoSource || {}).name !== 'Digital Story Innovation Team') {
     append(storyEl, FormatCredit());
   }
 
