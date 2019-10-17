@@ -7,7 +7,7 @@ const url2cmid = require('util-url2cmid');
 const { MS_VERSION, VIDEO_MARKER_PATTERN } = require('../../../constants');
 const { enqueue, subscribe } = require('../../scheduler');
 const { terminusFetch } = require('../../utils/content');
-const { $, detach, isElement } = require('../../utils/dom');
+const { $, detach, getChildImage, isElement } = require('../../utils/dom');
 const { clampNumber, dePx, formattedDate, getRatios, trim } = require('../../utils/misc');
 const ScrollHint = require('../ScrollHint');
 const Picture = require('../Picture');
@@ -310,7 +310,7 @@ function transformSection(section, meta) {
           if (videoId) {
             config.videoId = videoId;
           } else {
-            imgEl = $('img', node);
+            imgEl = getChildImage(node);
 
             if (imgEl) {
               config.imgEl = imgEl;

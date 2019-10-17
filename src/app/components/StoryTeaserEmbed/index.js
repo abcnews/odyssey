@@ -4,7 +4,7 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const { track } = require('../../utils/behaviour');
-const { $, $$, substitute } = require('../../utils/dom');
+const { $, $$, getChildImage, substitute } = require('../../utils/dom');
 const { trim } = require('../../utils/misc');
 require('./index.scss');
 
@@ -25,14 +25,19 @@ function StoryTeaserEmbed({ title, description, url, imageURL }) {
 function doesElMatchConvention(el) {
   // We only accept teasers that have a title, a _self-targeting link and
   // an image, but not bundle an interactive (such as the podcast player).
-  return !!($('h2', el) && $$('a[target="_self"]', el).length === 3 && $('img', el) && !$('.init-interactive', el));
+  return !!(
+    $('h2', el) &&
+    $$('a[target="_self"]', el).length === 3 &&
+    getChildImage(el) &&
+    !$('.init-interactive', el)
+  );
 }
 
 function transformEl(el) {
   const title = $('h2', el).textContent;
   const description = trim(String(el.textContent).replace(title, ''));
   const url = $('a', el).getAttribute('href');
-  const imageURL = $('img', el).getAttribute('src');
+  const imageURL = getChildImage(el).getAttribute('src');
 
   if (!title || !description || !url || !imageURL) {
     return;
