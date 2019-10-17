@@ -26,6 +26,7 @@ const RICHTEXT_BLOCK_TAGNAMES = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'OL', 
 const EMBED_TAGNAMES = ['ASIDE', 'BLOCKQUOTE', 'DIV', 'FIGURE'];
 
 const MOCK_NODE = {
+  nodeValue: '',
   parentNode: null,
   parentElement: null,
   previousSibling: null,
@@ -36,25 +37,29 @@ const MOCK_NODE = {
   textContent: ''
 };
 
-const MOCK_ELEMENT = Object.assign(
-  {
-    tagName: 'MOCK-ELEMENT',
-    attributes: [],
-    name: '',
-    className: '',
-    classList: [],
-    previousElementSibling: null,
-    nextElementSibling: null,
-    children: [],
-    childElementCount: 0,
-    firstElementChild: null,
-    lastElementChild: null,
-    innerHTML: '',
-    getAttribute: _ => '',
-    hasAttribute: _ => false
-  },
-  MOCK_NODE
-);
+const MOCK_ELEMENT = {
+  ...MOCK_NODE,
+  nodeType: Node.ELEMENT_NODE,
+  tagName: 'MOCK-ELEMENT',
+  attributes: [],
+  name: '',
+  className: '',
+  classList: [],
+  previousElementSibling: null,
+  nextElementSibling: null,
+  children: [],
+  childElementCount: 0,
+  firstElementChild: null,
+  lastElementChild: null,
+  innerHTML: '',
+  getAttribute: _ => '',
+  hasAttribute: _ => false
+};
+
+const MOCK_TEXT = {
+  ...MOCK_NODE,
+  nodeType: Node.TEXT_NODE
+};
 
 const REM = 16; // (px)
 const MQ = {};
@@ -132,6 +137,7 @@ module.exports = {
   EMBED_TAGNAMES,
   MOCK_NODE,
   MOCK_ELEMENT,
+  MOCK_TEXT,
   REM,
   MQ,
   SMALLEST_IMAGE,

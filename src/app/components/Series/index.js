@@ -6,7 +6,7 @@ const url2cmid = require('util-url2cmid');
 // Ours
 const { MOCK_ELEMENT } = require('../../../constants');
 const { track } = require('../../utils/behaviour');
-const { $, $$, detach, substitute } = require('../../utils/dom');
+const { $, $$, detach, getChildImage, substitute } = require('../../utils/dom');
 require('./index.scss');
 
 const CURRENT_STORY_ID = url2cmid(window.location.href);
@@ -20,49 +20,41 @@ function Series({ stories, options = {} }) {
 
   return html`
     <div role="navigation" class="${className}">
-      ${
-        stories
-          .filter(({ isCurrent }) => !options.isRest || !isCurrent)
-          .map(({ isCurrent, kicker, thumbnail, title, url }) =>
-            url && !isCurrent
-              ? html`
-                  <a href="${url}" onclick="${() => track('series-link', url2cmid(url))}" aria-current="false">
-                    ${thumbnail}
-                    ${
-                      kicker
-                        ? html`
-                            <label>${kicker}</label>
+      ${stories
+        .filter(({ isCurrent }) => !options.isRest || !isCurrent)
+        .map(({ isCurrent, kicker, thumbnail, title, url }) =>
+          url && !isCurrent
+            ? html`
+                <a href="${url}" onclick="${() => track('series-link', url2cmid(url))}" aria-current="false">
+                  ${thumbnail}
+                  ${kicker
+                    ? html`
+                        <label>${kicker}</label>
+                      `
+                    : null} <span>${title}</span>
+                </a>
+              `
+            : html`
+                <div aria-current="${isCurrent ? 'page' : 'false'}">
+                  ${thumbnail}
+                  ${kicker
+                    ? html`
+                        <label>${kicker}</label>
+                      `
+                    : null}
+                  <span
+                    >${title}${isCurrent
+                      ? [
+                          ' ',
+                          html`
+                            <i></i>
                           `
-                        : null
-                    } <span>${title}</span>
-                  </a>
-                `
-              : html`
-                  <div aria-current="${isCurrent ? 'page' : 'false'}">
-                    ${thumbnail}
-                    ${
-                      kicker
-                        ? html`
-                            <label>${kicker}</label>
-                          `
-                        : null
-                    }
-                    <span
-                      >${title}${
-                        isCurrent
-                          ? [
-                              ' ',
-                              html`
-                                <i></i>
-                              `
-                            ]
-                          : null
-                      }</span
-                    >
-                  </div>
-                `
-          )
-      }
+                        ]
+                      : null}</span
+                  >
+                </div>
+              `
+        )}
     </div>
   `;
 }
@@ -85,7 +77,7 @@ function transformMarker(marker) {
     const linkEl = (listItemEl.firstChild || MOCK_ELEMENT).tagName === 'A' ? listItemEl.firstChild : null;
     const isCurrent = linkEl && url2cmid(linkEl.href) === CURRENT_STORY_ID;
     const textParts = (linkEl ? linkEl.textContent : listItemEl.firstChild.nodeValue).split(': ');
-    const thumbnailImageEl = $('img', listItemEl);
+    const thumbnailImageEl = getChildImage(listItemEl);
 
     return {
       isCurrent,

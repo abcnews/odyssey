@@ -124,6 +124,45 @@ function toggleBooleanAttributes(node, map) {
   });
 }
 
+function setOrAddMetaTag(name, content) {
+  let el = $(`meta[name="${name}"]`);
+
+  if (!el) {
+    el = document.createElement('meta');
+    el.setAttribute('name', name);
+    document.head.appendChild(el);
+  }
+
+  el.setAttribute('content', content);
+}
+
+function getChildImage(el) {
+  if (!isElement(el)) {
+    return;
+  }
+
+  let imgEl = $('img', el);
+
+  if (!imgEl) {
+    return;
+  }
+
+  // Phase 2 CustomImages appear similar to Images, but their srcsec attribute only has one URL.
+  if (imgEl.hasAttribute('data-srcset') && imgEl.getAttribute('data-srcset').indexOf(', ') === -1) {
+    return;
+  }
+
+  // Presentation Layer images are lazy-loaded, and need to be replaced by their fallback content
+  if (imgEl.nextSibling && imgEl.nextSibling.tagName === 'NOSCRIPT') {
+    const tempParentEl = document.createElement('div');
+
+    tempParentEl.innerHTML = imgEl.nextSibling.innerHTML;
+    imgEl = $('img', tempParentEl);
+  }
+
+  return imgEl;
+}
+
 module.exports = {
   isText,
   isElement,
@@ -140,6 +179,8 @@ module.exports = {
   setText,
   toggleAttribute,
   toggleBooleanAttributes,
+  setOrAddMetaTag,
+  getChildImage,
   // Deprecated API
   select: $,
   selectAll: $$

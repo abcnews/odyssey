@@ -2,12 +2,13 @@
 const html = require('bel');
 
 // Ours
+
 const { IS_PREVIEW, RICHTEXT_BLOCK_TAGNAMES, SELECTORS } = require('../constants');
 const api = require('./api');
 const { PresentationLayerAsyncComponent } = require('./async-components/loader');
+const Block = require('./components/Block');
 const Caption = require('./components/Caption');
 const Comments = require('./components/Comments');
-const Block = require('./components/Block');
 const FormatCredit = require('./components/FormatCredit');
 const Gallery = require('./components/Gallery');
 const GalleryEmbed = require('./components/GalleryEmbed');
@@ -31,6 +32,7 @@ const { getMeta } = require('./meta');
 const { reset } = require('./reset');
 const { getMarkers, getSections } = require('./utils/anchors');
 const { $, $$, after, append, detach, detachAll, prepend, substitute } = require('./utils/dom');
+const { literalList } = require('./utils/misc');
 
 function app() {
   const meta = getMeta();
@@ -39,7 +41,7 @@ function app() {
   start(); // loop
 
   // Register all embedded images with MasterGallery
-  $$('.inline-content.photo, [class*="view-image-embed"]', storyEl)
+  $$('.inline-content.photo,[class*="view-image-embed"]', storyEl)
     .concat($$('.embed-content', storyEl).filter(el => $('.type-photo', el)))
     .forEach(MasterGallery.register);
 
@@ -71,7 +73,7 @@ function app() {
   });
 
   if (!hasHeader) {
-    prepend(storyEl, Header({ meta }));
+    prepend(storyEl, Header.Lite(meta));
   }
 
   // Enable drop-caps after headers
@@ -145,17 +147,6 @@ function app() {
   // Activate existing parallaxes
   $$('.u-parallax').forEach(UParallax.activate);
 
-  // Transform image embeds
-  const sidePulls = $$('.u-pull-left, .u-pull-right');
-
-  $$('.inline-content.photo, [class*="view-image-embed"]', storyEl)
-    .concat($$('.embed-content', storyEl).filter(el => $('.type-photo', el)))
-    .forEach(el => {
-      const isSidePulled = sidePulls.filter(pEl => pEl.contains(el)).length > 0;
-
-      ImageEmbed.transformEl(el, isSidePulled);
-    });
-
   // Transform video embeds
   $$('.inline-content.video, .view-inlineMediaPlayer.doctype-abcvideo', storyEl)
     .concat($$('.embed-content', storyEl).filter(el => $('.type-video', el)))
@@ -167,9 +158,27 @@ function app() {
     .concat($$('[class^="comp-embedded-"]', storyEl).filter(el => $('[data-gallery-id]', el)))
     .forEach(GalleryEmbed.transformEl);
 
+  // Transform image embeds
+  const sidePulls = $$('.u-pull-left, .u-pull-right');
+
+  $$('.inline-content.photo,[class*="view-image-embed"]', storyEl)
+    .concat($$('.embed-content', storyEl).filter(el => $('.type-photo', el)))
+    .forEach(el => {
+      const isSidePulled = sidePulls.filter(pEl => pEl.contains(el)).length > 0;
+
+      ImageEmbed.transformEl(el, isSidePulled);
+    });
+
   // Transform quotes (native and embedded)
   $$(
-    'blockquote:not([class]), .quote--pullquote, .inline-content.quote, .embed-quote, .comp-rich-text-blockquote, .view-inline-pullquote',
+    literalList(`
+      blockquote:not([class])
+      .quote--pullquote
+      .inline-content.quote
+      .embed-quote
+      .comp-rich-text-blockquote
+      .view-inline-pullquote
+    `),
     storyEl
   ).forEach(Quote.transformEl);
 
@@ -210,7 +219,7 @@ function app() {
   })();
 
   // Embed format credit for non-DSI stories
-  if (meta.productionUnit !== 'EDL team') {
+  if (meta.productionUnit !== 'EDL team' && (meta.infoSource || {}).name !== 'Digital Story Innovation Team') {
     append(storyEl, FormatCredit());
   }
 

@@ -6,7 +6,7 @@ const url2cmid = require('util-url2cmid');
 // Ours
 const { REM, SUPPORTS_PASSIVE, VIDEO_MARKER_PATTERN } = require('../../../constants');
 const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
-const { $, append, detach, isElement, setText } = require('../../utils/dom');
+const { $, append, detach, getChildImage, isElement, setText } = require('../../utils/dom');
 const { dePx, getRatios, returnFalse } = require('../../utils/misc');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
@@ -453,7 +453,7 @@ function transformSection(section) {
       }
 
       const classList = node.className.split(' ');
-      const imgEl = $('img', node);
+      const imgEl = getChildImage(node);
       const linkEl = $('a[href]', node);
       const videoId =
         node.name && !!node.name.match(VIDEO_MARKER_PATTERN)
