@@ -156,6 +156,16 @@ function reset(storyEl, meta) {
     }
   });
 
+  // Fix PL top-level links that aren't inside paragraphs.
+  Array.from(storyEl.children).forEach(el => {
+    if (el.tagName === 'A' && el.hasAttribute('href')) {
+      const pEl = document.createElement('p');
+
+      before(el.nextElementSibling, pEl);
+      append(pEl, el);
+    }
+  });
+
   $$(SELECTORS.WYSIWYG_EMBED, storyEl).forEach(el => {
     dewysiwyg.normalise(el);
     el.className = `${el.className} u-richtext${meta.isDarkMode ? '-invert' : ''}`;
