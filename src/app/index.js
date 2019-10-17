@@ -151,6 +151,7 @@ function app() {
   // Transform video embeds
   $$('.inline-content.video, .view-inlineMediaPlayer.doctype-abcvideo', storyEl)
     .concat($$('.embed-content', storyEl).filter(el => $('.type-video', el)))
+    .concat($$('[data-component="Figure"]', storyEl).filter(el => $('[data-component="Player"]', el)))
     .forEach(VideoEmbed.transformEl);
 
   // Transform gallery embeds
