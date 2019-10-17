@@ -96,21 +96,26 @@ function getShareLinks({ url, title }) {
   return $$('a', $(SELECTORS.SHARE_TOOLS))
     .reduce((links, linkEl) => {
       const url = linkEl.href;
+      let link;
 
       switch (url) {
         case (url.match(FACEBOOK) || {}).input:
-          links.push({ id: 'facebook', url });
+          link = { id: 'facebook', url };
           break;
         case (url.match(TWITTER) || {}).input:
-          links.push({ id: 'twitter', url });
+          link = { id: 'twitter', url };
           break;
         case (url.match(EMAIL) || {}).input:
           if (!navigator.share) {
-            links.push({ id: 'email', url });
+            link = { id: 'email', url };
           }
           break;
         default:
           break;
+      }
+
+      if (link && !links.find(({ id }) => id === link.id)) {
+        links.push(link);
       }
 
       return links;
