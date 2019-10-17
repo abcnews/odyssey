@@ -124,6 +124,18 @@ function toggleBooleanAttributes(node, map) {
   });
 }
 
+function setOrAddMetaTag(name, content) {
+  let el = $(`meta[name="${name}"]`);
+
+  if (!el) {
+    el = document.createElement('meta');
+    el.setAttribute('name', name);
+    document.head.appendChild(el);
+  }
+
+  el.setAttribute('content', content);
+}
+
 function getChildImage(el) {
   if (!isElement(el)) {
     return;
@@ -167,6 +179,7 @@ module.exports = {
   setText,
   toggleAttribute,
   toggleBooleanAttributes,
+  setOrAddMetaTag,
   getChildImage,
   // Deprecated API
   select: $,
