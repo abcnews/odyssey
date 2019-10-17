@@ -4,7 +4,7 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const { IS_PREVIEW, MOCK_ELEMENT, SELECTORS } = require('../../constants');
-const { $, $$, detach } = require('../utils/dom');
+const { $, $$, detach, setOrAddMetaTag } = require('../utils/dom');
 const { trim } = require('../utils/misc');
 
 const FACEBOOK = /facebook\.com/;
@@ -14,6 +14,25 @@ const EMAIL = /mailto:/;
 const SHARE_ORDERING = ['facebook', 'twitter', 'native', 'email'];
 
 let meta = null; // singleton
+
+function addPLMetaTags() {
+  if (!window.__API__) {
+    return;
+  }
+
+  const { document } = JSON.parse(unescape(window.__API__));
+  const { published, updated } = document.publishedDate;
+  const { contextSettings } = document.srcDoc;
+
+  setOrAddMetaTag('DCTERMS.issued', published.labelDate);
+  setOrAddMetaTag('DCTERMS.modified', updated.labelDate);
+
+  if (contextSettings) {
+    const mdn = contextSettings['meta.data.name'] || {};
+
+    Object.keys(mdn).forEach(name => setOrAddMetaTag(name, mdn[name]));
+  }
+}
 
 function getDataAttribute(name) {
   const el = $(`[data-${name}]`);
@@ -149,6 +168,9 @@ function getDataLayerStoryProp(name) {
 
 function getMeta() {
   if (!meta) {
+    // Add missing meta tags based on the `meta.data.name` context setting to Presentation Layer pages
+    addPLMetaTags();
+
     const url = getMetaContent('replacement-url') || getCanonicalURL();
     const title = getMetaContent('replacement-title') || $(SELECTORS.TITLE).textContent;
     const description = getMetaContent('replacement-description') || getMetaContent('description');
