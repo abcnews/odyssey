@@ -12,13 +12,14 @@ const SCROLLPLAY_PCT_PATTERN = /scrollplay(\d+)/;
 
 const SELECTORS = {
   GLOBAL_NAV: '#abcHeader.global',
-  MAIN: '.page_margins#main_content,body>.content,.main-content-container',
-  STORY: '.article.section,article>.story.richtext,.article-detail-page .article-text',
+  MAIN: '.page_margins#main_content,body>.content,.main-content-container,main#content',
+  STORY:
+    '.article.section,article>.story.richtext,.article-detail-page .article-text,[data-component="DetailLayout"] [data-component="GridRow"] div:not([class])',
   SHARE_TOOLS: '.share-tools-list,.share,.tools',
   TITLE: '.article h1,header>h1,h1[itemprop="name"]',
-  BYLINE: '.view-byline,header>.attribution,.byline',
-  INFO_SOURCE: '.bylinepromo,.program',
-  INFO_SOURCE_LINK: '.bylinepromo>a,.program>a',
+  BYLINE: '.view-byline,header>.attribution,.byline,[data-component="Byline"]',
+  INFO_SOURCE: '.bylinepromo,.program,[data-component="InfoSource"]',
+  INFO_SOURCE_LINK: '.bylinepromo>a,.program>a,[data-component="InfoSource"]>a',
   WYSIWYG_EMBED: '.inline-content.wysiwyg,.embed-wysiwyg.richtext,.view-wysiwyg'
 };
 
