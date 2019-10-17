@@ -88,7 +88,15 @@ function addIE11StyleHint() {
 
 function resetMetaViewport() {
   setOrAddMetaTag('viewport', 'width=device-width, initial-scale=1, minimum-scale=1');
+}
 
+function resetPLMarkers() {
+  $$('a[id]:not([href]').forEach(el => {
+    if (el.children.length === 0) {
+      el.setAttribute('name', el.id);
+      el.removeAttribute('id');
+}
+  });
 }
 
 function promoteToMain(storyEl, meta) {
@@ -114,6 +122,9 @@ function reset(storyEl, meta) {
 
   // Update (or add) the meta viewport tag so that touch devices don't introduce a click delay
   resetMetaViewport();
+
+  // Fix Presentation Layer marker attributes (id=>name)
+  resetPLMarkers();
 
   // Apply theme, if defined
   if (typeof meta.theme === 'string') {
