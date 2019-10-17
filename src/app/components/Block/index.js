@@ -1,12 +1,11 @@
 // External
 const cn = require('classnames');
 const html = require('bel');
-const url2cmid = require('util-url2cmid');
 
 // Ours
 const { ALIGNMENT_PATTERN, VIDEO_MARKER_PATTERN } = require('../../../constants');
 const { enqueue, subscribe } = require('../../scheduler');
-const { $, detach, getChildImage, isElement } = require('../../utils/dom');
+const { $, detach, detectVideoId, getChildImage, isElement } = require('../../utils/dom');
 const { getRatios, trim } = require('../../utils/misc');
 const Picture = require('../Picture');
 const VideoPlayer = require('../VideoPlayer');
@@ -482,19 +481,6 @@ function transformSection(section) {
   }
 
   section.substituteWith(Block(config), sourceMediaEl ? [sourceMediaEl] : []);
-}
-
-function detectVideoId(node) {
-  let classList = node.className.split(' ');
-  const linkEl = $('a[href]', node);
-
-  return (
-    linkEl &&
-    ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
-      (classList.indexOf('view-inlineMediaPlayer') > -1 && classList.indexOf('doctype-abcvideo') > -1) ||
-      (classList.indexOf('embed-content') > -1 && $('.type-video', node))) &&
-    url2cmid(linkEl.getAttribute('href'))
-  );
 }
 
 module.exports = Block;
