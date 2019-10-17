@@ -181,6 +181,8 @@ function app() {
       .embed-quote
       .comp-rich-text-blockquote
       .view-inline-pullquote
+      [data-component="Blockquote"]
+      [data-component="Pullquote"]
     `),
     storyEl
   ).forEach(Quote.transformEl);
