@@ -72,7 +72,16 @@ function getBylineNodes() {
 
   return Array.from((bylineSubEl || bylineEl).childNodes)
     .filter(node => node !== infoSourceEl && trim(node.textContent).length > -1)
-    .map(node => node.cloneNode(true));
+    .map(node => {
+      const clone = node.cloneNode(true);
+
+      if (clone.tagName === 'A') {
+        clone.removeAttribute('class');
+        clone.removeAttribute('data-component');
+      }
+
+      return clone;
+    });
 }
 
 function getInfoSource() {
@@ -137,7 +146,8 @@ function getShareLinks({ url, title }) {
 function getRelatedStoriesIds() {
   return $$(`
     .attached-content > .inline-content.story > a,
-    .related > article > a
+    .related > article > a,
+    [data-component="RelatedStories"] article > a
   `).map(el => url2cmid(el.href));
 }
 
@@ -148,7 +158,9 @@ function getRelatedMedia() {
     .published + .inline-content.full.photo,
     .published + .inline-content.full.video,
     .attached-content > .inline-content.photo,
-    .attached-content > .inline-content.video
+    .attached-content > .inline-content.video,
+    [data-component="DetailHeader"] [data-component="Figure"],
+    [data-component="DetailHeader"] [data-component="WebContentWarning"]
   `);
 
   if (!relatedMediaEl) {
@@ -176,7 +188,7 @@ function getMeta() {
     const description = getMetaContent('replacement-description') || getMetaContent('description');
 
     meta = {
-      id: getMetaContent('ContentId'),
+      id: getMetaContent('ContentId') || getMetaContent('ABC.ContentId'),
       url,
       title,
       description,
