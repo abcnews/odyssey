@@ -28,17 +28,9 @@ function getCanonicalURL() {
 }
 
 function getMetaContent(name) {
-  const el = $(`meta[name="${name}"]`);
+  const el = $(`meta[name="${name}"],meta[property="${name}"]`);
 
   return el ? el.getAttribute('content') : null;
-}
-
-function getDataLayerStoryProp(name) {
-  if (!Array.isArray(window.dataLayer)) {
-    return null;
-  }
-
-  return window.dataLayer[0].document[name];
 }
 
 function getDate(metaElName, timeElClassName) {
@@ -145,6 +137,14 @@ function getRelatedMedia() {
   }
 
   return detach(relatedMediaEl);
+}
+
+function getDataLayerStoryProp(name) {
+  if (!Array.isArray(window.dataLayer)) {
+    return null;
+  }
+
+  return window.dataLayer.find(x => x.document != null).document[name] || null;
 }
 
 function getMeta() {
