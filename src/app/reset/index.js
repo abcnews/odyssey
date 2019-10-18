@@ -174,6 +174,11 @@ function reset(storyEl, meta) {
 
   $$(SELECTORS.WYSIWYG_EMBED, storyEl).forEach(el => {
     dewysiwyg.normalise(el);
+
+    if (el.getAttribute('data-component')) {
+      el.className = '';
+    }
+
     el.className = `${el.className} u-richtext${meta.isDarkMode ? '-invert' : ''}`;
   });
 
@@ -207,7 +212,7 @@ function reset(storyEl, meta) {
 
   $$(PL_FLOAT.SELECTOR, storyEl).forEach(el => {
     if (el.parentElement === storyEl) {
-      el.className = 'u-pull-right';
+      el.className = `${el.className} u-pull-right`;
     }
   });
 

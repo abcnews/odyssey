@@ -23,18 +23,17 @@ function StoryTeaserEmbed({ title, description, url, imageURL }) {
 }
 
 function doesElMatchConvention(el) {
-  // We only accept teasers that have a title, a _self-targeting link and
-  // an image, but not bundle an interactive (such as the podcast player).
-  return !!(
-    $('h2', el) &&
-    $$('a[target="_self"]', el).length === 3 &&
-    getChildImage(el) &&
-    !$('.init-interactive', el)
+  // We only accept PL Related Cards or P1/2 WYSIWYG teasers that have
+  // a title, a _self-targeting link and an image, but don't bundle an
+  // interactive (such as the podcast player).
+  return (
+    el.getAttribute('data-component') === 'RelatedCard' ||
+    !!($('h2', el) && $$('a[target="_self"]', el).length === 3 && getChildImage(el) && !$('.init-interactive', el))
   );
 }
 
 function transformEl(el) {
-  const title = $('h2', el).textContent;
+  const title = $('h2,h3', el).textContent;
   const description = trim(String(el.textContent).replace(title, ''));
   const url = $('a', el).getAttribute('href');
   const imageURL = getChildImage(el).getAttribute('src');
