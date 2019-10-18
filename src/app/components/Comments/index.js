@@ -6,6 +6,12 @@ const { append } = require('../../utils/dom');
 require('./index.scss');
 
 function Comments() {
+  if (!window.ABC) {
+    return html`
+      <div></div>
+    `;
+  }
+
   const livefyreRootEl = html`
     <div class="Comments-livefyreRoot u-layout"></div>
   `;
