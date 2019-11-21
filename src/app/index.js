@@ -31,7 +31,7 @@ const { start } = require('./scheduler');
 const { getMeta } = require('./meta');
 const { reset } = require('./reset');
 const { getMarkers, getSections } = require('./utils/anchors');
-const { $, $$, after, append, detach, detachAll, prepend, substitute } = require('./utils/dom');
+const { $, $$, after, append, before, detach, detachAll, prepend, substitute } = require('./utils/dom');
 const { literalList } = require('./utils/misc');
 
 function app() {
@@ -250,7 +250,7 @@ function app() {
   // Add Presentation Layer global nav if it doesn't already exist
   setTimeout(() => {
     if (!$('[data-component="Masthead"]')) {
-      after($(SELECTORS.GLOBAL_NAV), PresentationLayerAsyncComponent('Nav'));
+      before(storyEl, PresentationLayerAsyncComponent('Nav'));
     }
   }, 0);
 

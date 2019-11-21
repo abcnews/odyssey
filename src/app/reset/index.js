@@ -5,11 +5,15 @@ const dewysiwyg = require('util-dewysiwyg');
 // Ours
 const { SELECTORS } = require('../../constants');
 const Main = require('../components/Main');
-const { $, $$, append, before, detach, detachAll, setOrAddMetaTag } = require('../utils/dom');
+const { $, $$, append, before, detach, detachAll, setOrAddMetaTag, substitute } = require('../utils/dom');
 const { literalList, trim } = require('../utils/misc');
 require('./index.scss');
 
 const TEMPLATE_REMOVABLES = {
+  // Common
+  html: literalList(`
+    #abcHeader.global
+  `),
   // P1S
   '.platform-standard:not(.platform-mobile)': literalList(`
     #container_header
@@ -48,6 +52,7 @@ const TEMPLATE_REMOVABLES = {
   `),
   // PL
   'meta[property="ABC.Generator"]': literalList(`
+    [data-component="Masthead"]
     [data-component="DetailLayout"]
     [data-component="WebContentWarning"]
     ul>li>span:first-child
@@ -96,8 +101,19 @@ function resetMetaViewport() {
   setOrAddMetaTag('viewport', 'width=device-width, initial-scale=1, minimum-scale=1');
 }
 
-function resetPLMarkers() {
-  $$('a[id]:not([href]').forEach(el => {
+function resetPL() {
+  let rootEl = $('[data-component="ThemeProvider]');
+  const parentEl = window.app;
+
+  if (!rootEl || rootEl.parentElement !== parentEl) {
+    return;
+  }
+
+  // Replace root with snapshot, preserving old root in memory, to keep the PL app happy
+  substitute(rootEl, (rootEl = rootEl.cloneNode(true)));
+
+  // Normalise marker attributes (id=>name)
+  $$('a[id]:not([href]', rootEl).forEach(el => {
     if (el.children.length === 0) {
       el.setAttribute('name', el.id);
       el.removeAttribute('id');
@@ -129,8 +145,8 @@ function reset(storyEl, meta) {
   // Update (or add) the meta viewport tag so that touch devices don't introduce a click delay
   resetMetaViewport();
 
-  // Fix Presentation Layer marker attributes (id=>name)
-  resetPLMarkers();
+  // Replace the Presentation Layer-rendered DOM with a semi-normalised snapshot
+  resetPL();
 
   // Apply theme, if defined
   if (typeof meta.theme === 'string') {

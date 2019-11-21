@@ -11,7 +11,6 @@ const VIDEO_MARKER_PATTERN = /(?:video|youtube)(\w+)/;
 const SCROLLPLAY_PCT_PATTERN = /scrollplay(\d+)/;
 
 const SELECTORS = {
-  GLOBAL_NAV: '#abcHeader.global',
   MAIN: '.page_margins#main_content,body>.content,.main-content-container,main#content',
   STORY:
     '.article.section,article>.story.richtext,.article-detail-page .article-text,[data-component="DetailLayout"] [data-component="GridRow"] div:not([class])',

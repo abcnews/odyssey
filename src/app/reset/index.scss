@@ -87,11 +87,8 @@ body {
   }
 }
 
-#abcHeader.global {
-  display: none !important;
-}
-
-#abcHeader.global + [data-presentation-layer-async-component] {
+/* Guess at placeholder styles */
+[data-presentation-layer-async-component='Nav'] {
   height: 4rem;
   background-color: #0f1010;
 
