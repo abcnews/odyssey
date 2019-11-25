@@ -1,0 +1,117 @@
+@import '../../../constants';
+
+.Sizer {
+  display: block;
+  overflow: hidden;
+  position: relative;
+  z-index: -1;
+  min-height: 100%;
+  background-image: var(--placeholder-image);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-size: cover;
+
+  .is-contained > & {
+    opacity: 0.5;
+  }
+
+  .Picture & {
+    background-color: $color-grey-500-transparent-65;
+
+    .Header.is-dark &,
+    .Header.is-layered &,
+    .Block &,
+    .MasterGallery & {
+      background-color: $color-black;
+    }
+  }
+
+  @media #{$mq-sm} {
+    &.sm-16x9 {
+      padding-top: 56.25%;
+    }
+
+    &.sm-3x2 {
+      padding-top: 66.6666667%;
+    }
+
+    &.sm-4x3 {
+      padding-top: 75%;
+    }
+
+    &.sm-1x1 {
+      padding-top: 100%;
+    }
+
+    &.sm-3x4 {
+      padding-top: 133.3333333%;
+    }
+  }
+
+  @media #{$mq-md} {
+    &.md-16x9 {
+      padding-top: 56.25%;
+    }
+
+    &.md-3x2 {
+      padding-top: 66.6666667%;
+    }
+
+    &.md-4x3 {
+      padding-top: 75%;
+    }
+
+    &.md-1x1 {
+      padding-top: 100%;
+    }
+
+    &.md-3x4 {
+      padding-top: 133.3333333%;
+    }
+  }
+
+  @media #{$mq-lg}, #{$mq-landscape} and #{$mq-lt-lg} {
+    &.lg-16x9 {
+      padding-top: 56.25%;
+    }
+
+    &.lg-3x2 {
+      padding-top: 66.6666667%;
+    }
+
+    &.lg-4x3 {
+      padding-top: 75%;
+    }
+
+    &.lg-1x1 {
+      padding-top: 100%;
+    }
+
+    &.lg-3x4 {
+      padding-top: 133.3333333%;
+    }
+  }
+
+  @media #{$mq-xl} {
+    &.xl-16x9 {
+      padding-top: 56.25%;
+    }
+
+    &.xl-3x2 {
+      padding-top: 66.6666667%;
+    }
+
+    &.xl-4x3 {
+      padding-top: 75%;
+    }
+
+    &.xl-1x1 {
+      padding-top: 100%;
+    }
+
+    &.xl-3x4 {
+      padding-top: 133.3333333%;
+    }
+  }
+}

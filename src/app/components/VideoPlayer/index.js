@@ -8,6 +8,7 @@ const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
 const { toggleAttribute, toggleBooleanAttributes } = require('../../utils/dom');
 const { PLACEHOLDER_PROPERTY, resize } = require('../Picture');
 const { blurImage } = require('../Picture/blur');
+const Sizer = require('../Sizer');
 const VideoControls = require('../VideoControls');
 const { trackProgress } = require('./stats');
 const { getMetadata, hasAudio } = require('./utils');
@@ -59,9 +60,8 @@ function VideoPlayer({
     title = String.fromCharCode(getNextUntitledMediaCharCode());
   }
 
-  const placeholderEl = html`
-    <div class="u-sizer-sm-${ratios.sm} u-sizer-md-${ratios.md} u-sizer-lg-${ratios.lg} u-sizer-xl-${ratios.xl}"></div>
-  `;
+  const placeholderEl = Sizer(ratios);
+
   const videoEl = html`
     <video preload="none" tabindex="-1" aria-label="${title}"></video>
   `;

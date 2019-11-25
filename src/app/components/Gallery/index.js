@@ -221,7 +221,7 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
       return;
     }
 
-    const nextItemSizerEl = $('[class^=u-sizer]', itemEls[currentIndex]);
+    const nextItemSizerEl = $('.Sizer', itemEls[currentIndex]);
 
     paneWidth = paneEl.getBoundingClientRect().width;
 
