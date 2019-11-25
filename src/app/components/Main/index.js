@@ -19,6 +19,10 @@ module.exports = function Main(childNodes, meta) {
   `;
 
   subscribe(client => (client.hasChanged ? updateOffsetTop(el) : null));
+  subscribe(client => (client.hasChanged ? updateHeightSnapping(el) : null));
+  new MutationObserver(() => setTimeout(() => updateHeightSnapping(el), 2000)).observe(el, {
+    childList: true
+  });
 
   return el;
 };
@@ -33,5 +37,29 @@ function updateOffsetTop(mainEl) {
 
   enqueue(() => {
     mainEl.style.setProperty('--Main-offsetTop', Math.round(mainEl.offsetTop - previewContainerHeight) + 'px');
+  });
+}
+
+function updateHeightSnapping(mainEl) {
+  const lastSnappedEls = mainEl.__lastSnappedEls__;
+
+  if (lastSnappedEls) {
+    enqueue(() => {
+      lastSnappedEls.forEach(el => el.style.removeProperty('max-height'));
+    });
+  }
+
+  const snappableEls = Array.from(mainEl.children);
+
+  enqueue(() => {
+    mainEl.__lastSnappedEls__ = snappableEls;
+    snappableEls.forEach(el => {
+      const { height } = el.getBoundingClientRect();
+      const snap = Math.floor(height);
+
+      if (height > snap) {
+        el.style.setProperty('max-height', `${snap}px`);
+      }
+    });
   });
 }

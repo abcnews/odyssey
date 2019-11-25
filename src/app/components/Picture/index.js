@@ -7,6 +7,7 @@ const { MQ, RATIO_PATTERN, SMALLEST_IMAGE, MS_VERSION } = require('../../../cons
 const { enqueue, subscribe } = require('../../scheduler');
 const { $, $$, append, detach } = require('../../utils/dom');
 const { proximityCheck } = require('../../utils/misc');
+const Sizer = require('../Sizer');
 const { blurImage } = require('./blur');
 require('./index.scss');
 
@@ -56,8 +57,6 @@ function Picture({
           xl: ratios.xl || DEFAULTS.XL_RATIO
         };
 
-  const sizerClassName = `u-sizer-sm-${ratios.sm} u-sizer-md-${ratios.md} u-sizer-lg-${ratios.lg} u-sizer-xl-${ratios.xl}`;
-
   const imageURL = ensurePhase1Asset(src);
   const smImageURL = imageURL
     .replace(RATIO_PATTERN, ratios.sm)
@@ -75,9 +74,7 @@ function Picture({
     .replace(RATIO_PATTERN, ratios.xl)
     .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratios.xl].xl}`);
 
-  const placeholderEl = html`
-    <div class="${sizerClassName}"></div>
-  `;
+  const placeholderEl = Sizer(ratios);
 
   const picturePictureEl = html`
     <picture>
