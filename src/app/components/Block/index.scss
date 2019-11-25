@@ -9,6 +9,7 @@
 
   @media #{$mq-gt-md}, #{$mq-landscape} and #{$mq-lt-lg} {
     min-height: 56.25vw;
+    min-height: var(--vw-ratio-16x9);
   }
 
   &.has-dark {
