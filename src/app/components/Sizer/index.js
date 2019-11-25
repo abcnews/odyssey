@@ -37,7 +37,6 @@ function Sizer(sizeRatios) {
 function updateHeightSnapping() {
   enqueue(() => {
     instances.forEach(el => {
-      el.style.removeProperty('height');
       el.style.removeProperty('padding-top');
     });
   });
@@ -45,11 +44,10 @@ function updateHeightSnapping() {
   enqueue(() => {
     instances.forEach(el => {
       const { width, height } = el.getBoundingClientRect();
-      const snap = Math.floor(height);
+      const snappedHeight = Math.round(height);
 
-      if (height > snap) {
-        el.style.setProperty('height', `${snap}px`);
-        el.style.setProperty('padding-top', 0);
+      if (height !== snappedHeight) {
+        el.style.setProperty('padding-top', `${snappedHeight}px`);
       }
     });
   });
