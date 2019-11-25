@@ -7,6 +7,7 @@ const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
 const { toggleAttribute } = require('../../utils/dom');
 const { PLACEHOLDER_PROPERTY } = require('../Picture');
 const { blurImage } = require('../Picture/blur');
+const Sizer = require('../Sizer');
 const VideoControls = require('../VideoControls');
 require('./index.scss');
 
@@ -66,9 +67,7 @@ function YouTubePlayer({
 
   const id = nextId++;
   const posterURL = `https://img.youtube.com/vi/${videoId}/0.jpg`;
-  const placeholderEl = html`
-    <div class="u-sizer-sm-${ratios.sm} u-sizer-md-${ratios.md} u-sizer-lg-${ratios.lg} u-sizer-xl-${ratios.xl}"></div>
-  `;
+  const placeholderEl = Sizer(ratios);
   const posterEl = html`
     <img src="${posterURL}" />
   `;
