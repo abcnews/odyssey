@@ -3,6 +3,7 @@
 .VideoEmbed {
   &.u-full {
     min-height: 56.25vw;
+    min-height: var(--vw-ratio-16x9);
 
     &.is-cover {
       height: 100vh;
