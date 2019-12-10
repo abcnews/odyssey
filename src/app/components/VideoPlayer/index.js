@@ -47,7 +47,7 @@ function VideoPlayer({
 
   if (isAmbient) {
     isLoop = typeof isLoop === 'boolean' ? isLoop : true;
-    scrollplayPct = 0;
+    scrollplayPct = scrollplayPct || 0;
   }
 
   const isScrollplay = typeof scrollplayPct === 'number';

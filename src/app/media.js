@@ -20,9 +20,10 @@ subscribe(function _checkIfPlayersNeedToBeToggled(client) {
     }
 
     const rect = player.getRect();
-    const isInPlayableRange = player.isAmbient
-      ? proximityCheck(rect, client, AMBIENT_PLAYABLE_RANGE)
-      : proximityCheck(rect, client, (player.scrollplayPct || 0) / -100);
+    const isInPlayableRange =
+      player.isAmbient && typeof player.scrollplayPct !== 'number'
+        ? proximityCheck(rect, client, AMBIENT_PLAYABLE_RANGE)
+        : proximityCheck(rect, client, (player.scrollplayPct || 0) / -100);
 
     if (
       (typeof player.isInPlayableRange === 'undefined' && isInPlayableRange) ||
