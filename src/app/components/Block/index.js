@@ -4,7 +4,8 @@ const html = require('bel');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const { ALIGNMENT_PATTERN, VIDEO_MARKER_PATTERN } = require('../../../constants');
+const { ALIGNMENT_PATTERN, SCROLLPLAY_PCT_PATTERN, VIDEO_MARKER_PATTERN } = require('../../../constants');
+
 const { enqueue, subscribe } = require('../../scheduler');
 const { $, detach, getChildImage, isElement } = require('../../utils/dom');
 const { getRatios, trim } = require('../../utils/misc');
@@ -39,6 +40,7 @@ function Block({
   isVideoYouTube,
   ratios = {},
   shouldVideoPlayOnce,
+  videoScrollplayPct,
   transition,
   videoId
 }) {
@@ -131,7 +133,8 @@ function Block({
       mediaEl = YouTubePlayer({
         videoId,
         ratios,
-        isLoop: shouldVideoPlayOnce ? false : undefined,
+        scrollplayPct: videoScrollplayPct,
+        isLoop: shouldVideoPlayOnce || typeof videoScrollplayPct === 'number' ? false : undefined,
         isAmbient: true,
         isContained
       });
@@ -139,8 +142,9 @@ function Block({
       mediaEl = VideoPlayer({
         videoId,
         ratios,
+        scrollplayPct: videoScrollplayPct,
         isContained: isContained,
-        isLoop: shouldVideoPlayOnce ? false : undefined,
+        isLoop: shouldVideoPlayOnce || typeof videoScrollplayPct === 'number' ? false : undefined,
         isInvariablyAmbient: true
       });
     }
@@ -288,6 +292,9 @@ function transformSection(section) {
   const isPiecemeal = section.configSC.indexOf('piecemeal') > -1;
   const shouldSupplant = section.configSC.indexOf('supplant') > -1;
   const shouldVideoPlayOnce = section.configSC.indexOf('once') > -1;
+  const [, videoScrollplayPctString] = section.configSC.match(SCROLLPLAY_PCT_PATTERN) || [, ''];
+  const videoScrollplayPct =
+    videoScrollplayPctString.length > 0 && Math.max(0, Math.min(100, +videoScrollplayPctString));
 
   let transition;
 
@@ -327,7 +334,8 @@ function transformSection(section) {
     isGrouped,
     isLight,
     isPiecemeal,
-    shouldVideoPlayOnce
+    shouldVideoPlayOnce,
+    videoScrollplayPct
   };
 
   // if the 'transition' flag is set then assume its a slide show
