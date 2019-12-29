@@ -12,7 +12,7 @@ function getSources(item) {
     .sort((a, b) => +b.bitRate - +a.bitRate)
     .map(rendition => ({
       src: rendition.src || rendition.url,
-      type: rendition.type || rendition.contentType,
+      size: +rendition.size,
       width: +rendition.width || 0,
       height: +rendition.height || 0
     }));
