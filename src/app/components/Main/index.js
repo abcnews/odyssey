@@ -45,7 +45,7 @@ function updateHeightSnapping(mainEl) {
 
   if (lastSnappedEls) {
     enqueue(() => {
-      lastSnappedEls.forEach(el => el.style.removeProperty('max-height'));
+      lastSnappedEls.forEach(el => el.style.removeProperty('min-height'));
     });
   }
 
@@ -55,10 +55,10 @@ function updateHeightSnapping(mainEl) {
     mainEl.__lastSnappedEls__ = snappableEls;
     snappableEls.forEach(el => {
       const { height } = el.getBoundingClientRect();
-      const snap = Math.floor(height);
+      const snap = Math.ceil(height);
 
-      if (height > snap) {
-        el.style.setProperty('max-height', `${snap}px`);
+      if (height < snap) {
+        el.style.setProperty('min-height', `${snap}px`);
       }
     });
   });
