@@ -151,7 +151,7 @@ function Block({
   }
 
   let mediaContainerEl;
-  if (backgrounds) {
+  if (backgrounds && backgrounds.length) {
     mediaContainerEl = html`
       <div class="${mediaClassName}">${backgrounds}</div>
     `;
@@ -226,7 +226,7 @@ function Block({
     });
   }
 
-  if (backgrounds) {
+  if (backgrounds && backgrounds.length) {
     // In theory, this could be any colour
     if (transition.length === 6 && transition.match(/^[0-9a-f]{6}$/)) {
       blockEl.style.setProperty('background-color', '#' + transition);
