@@ -57,7 +57,7 @@
   }
 
   // Until IE/Edge supports object-fit, un-constrained ambient
-  // (control-less) video elements need to be resized, transformed
+  // (native control-less) video elements need to be resized, transformed
   // and (effectively) clipped to cover their parents
   _:-ms-lang(x),
   &:not(.is-contained) video:not([controls]) {
@@ -65,11 +65,21 @@
     top: 50%;
     left: 50%;
     z-index: 0;
-    width: auto;
-    height: auto;
     min-width: 100%;
     min-height: 100%;
     max-width: none;
+  }
+  @media (orientation: portrait) {
+    _:-ms-lang(x),
+    &:not(.is-contained) video:not([controls]) {
+      width: auto;
+    }
+  }
+  @media (orientation: landscape) {
+    _:-ms-lang(x),
+    &:not(.is-contained) video:not([controls]) {
+      height: auto;
+    }
   }
 
   @media #{$mq-lt-lg} {
