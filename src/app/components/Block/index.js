@@ -212,7 +212,7 @@ function Block({
 
     subscribe(function _checkIfBlockPropertiesShouldBeUpdated(client) {
       const rect = blockEl.getBoundingClientRect();
-      const isBeyond = client.height >= rect.bottom;
+      const isBeyond = client.fixedHeight >= rect.bottom;
       const isFixed = !isBeyond && rect.top <= 0;
 
       if (isFixed !== state.isFixed || isBeyond !== state.isBeyond) {
@@ -241,7 +241,7 @@ function Block({
       // get the last marker that has a bottom above the fold
       const marker = markers.reduce((activeMarker, currentMarker) => {
         const { top } = currentMarker.getBoundingClientRect();
-        if (top > window.innerHeight * 0.8) return activeMarker;
+        if (top > client.fixedHeight * 0.8) return activeMarker;
 
         return currentMarker;
       }, markers[0]);

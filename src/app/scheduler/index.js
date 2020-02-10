@@ -7,7 +7,7 @@ const BUDGETED_MILLISECONDS_PER_FRAME = 12;
 
 const subscribers = [];
 const queue = [];
-let client = null;
+let icb = null; // initial containing block
 let hasStarted;
 let isFlushing;
 
@@ -40,9 +40,14 @@ function enqueue(task) {
 }
 
 function notifySubscribers(hasChanged) {
-  const state = Object.assign({ hasChanged }, client);
+  // `window.innerHeight` can change on mobile browser during scrolling because
+  // the UI can grow/shrink. This affects the height of fixed items, not those
+  // bound by the initial containing block (which `icb` measures). For this
+  // reason, we always take a `fixedHeight` measurement before notifying
+  // subscribers, rather than each of them having to read `window.innerHeight`.
+  const client = Object.assign({ hasChanged, fixedHeight: window.innerHeight }, icb);
 
-  subscribers.forEach(subscriber => enqueue(subscriber.bind(null, state)));
+  subscribers.forEach(subscriber => enqueue(subscriber.bind(null, client)));
 }
 
 function onScroll() {
@@ -52,29 +57,29 @@ function onScroll() {
 }
 
 function setCSSCustomProperties() {
-  document.documentElement.style.setProperty('--scrollbar-width', `${window.innerWidth - client.width}px`);
+  document.documentElement.style.setProperty('--scrollbar-width', `${window.innerWidth - icb.width}px`);
   document.documentElement.style.setProperty('--vw-ratio-16x9', `${Math.floor((client.width / 16) * 9)}px`);
 }
 
 function onResize(event) {
-  let nextClient;
+  let nextICB;
 
   if (event && queue.length !== 0) {
     return;
   }
 
-  if (client === null || event) {
-    nextClient = {
+  if (icb === null || event) {
+    nextICB = {
       width: document.documentElement.clientWidth,
       height: document.documentElement.clientHeight
     };
 
-    if (client === null || nextClient.width !== client.width || nextClient.height !== client.height) {
-      client = nextClient;
+    if (icb === null || nextICB.width !== icb.width || nextICB.height !== icb.height) {
+      icb = nextICB;
     }
   }
 
-  const hasChanged = nextClient && client === nextClient;
+  const hasChanged = nextICB && icb === nextICB;
 
   enqueue(notifySubscribers.bind(null, hasChanged));
 
