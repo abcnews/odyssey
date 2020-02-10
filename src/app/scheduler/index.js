@@ -58,7 +58,7 @@ function onScroll() {
 
 function setCSSCustomProperties() {
   document.documentElement.style.setProperty('--scrollbar-width', `${window.innerWidth - icb.width}px`);
-  document.documentElement.style.setProperty('--vw-ratio-16x9', `${Math.floor((client.width / 16) * 9)}px`);
+  document.documentElement.style.setProperty('--vw-ratio-16x9', `${Math.floor((icb.width / 16) * 9)}px`);
 }
 
 function onResize(event) {
