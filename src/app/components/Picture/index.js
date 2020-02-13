@@ -158,7 +158,7 @@ function Picture({
       }
 
       if (window.objectFitPolyfill) {
-        window.objectFitPolyfill(pictureEl);
+        window.objectFitPolyfill(imgEl);
       }
     },
     forget: () => {
