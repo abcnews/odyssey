@@ -158,7 +158,7 @@ function Picture({
       }
 
       if (window.objectFitPolyfill) {
-        window.objectFitPolyfill();
+        window.objectFitPolyfill(pictureEl);
       }
     },
     forget: () => {
@@ -188,6 +188,12 @@ subscribe(function _checkIfPicturesNeedToBeLoaded(client) {
       });
     }
   });
+});
+
+subscribe(function _checkIfObjectFitPolyfillNeedsToRun(client) {
+  if (window.objectFitPolyfill && client.hasChanged) {
+    window.objectFitPolyfill();
+  }
 });
 
 module.exports = Picture;
