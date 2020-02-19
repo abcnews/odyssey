@@ -6,29 +6,30 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
-  max-height: 100vh;
+  height: 100vh;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
 
-  &.is-fixed {
-    clip: rect(0, auto, auto, 0);
-    -webkit-clip-path: inset(0 0 0 0);
-    max-height: none;
+  // &.is-fixed {
+  //   clip: rect(0, auto, auto, 0);
+  //   -webkit-clip-path: inset(0 0 0 0);
+  //   max-height: none;
 
-    & > * {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100vh; // https://github.com/bokand/URLBarSizing
+  //   & > * {
+  //     position: fixed;
+  //     top: 0;
+  //     left: 0;
+  //     width: 100%;
+  //     height: 100vh; // https://github.com/bokand/URLBarSizing
 
-      // Safari (7.1+)
-      _::-webkit-full-page-media,
-      _:future,
-      :root & {
-        -webkit-transform: translateZ(0);
-      }
-    }
-  }
+  //     // Safari (7.1+)
+  //     _::-webkit-full-page-media,
+  //     _:future,
+  //     :root & {
+  //       -webkit-transform: translateZ(0);
+  //     }
+  //   }
+  // }
 
   .has-inset-media & > * {
     @media #{$mq-gt-md} {
@@ -93,22 +94,22 @@
     }
   }
 
-  &.is-beyond {
-    position: absolute;
-    top: auto;
-    bottom: 0;
+  // &.is-beyond {
+  //   position: absolute;
+  //   top: auto;
+  //   bottom: 0;
 
-    .transition-out {
-      display: none;
-    }
+  //   .transition-out {
+  //     display: none;
+  //   }
 
-    .transition-in {
-      transition-duration: 0s !important;
-      animation-duration: 0s !important;
-      transition-delay: 0s !important;
-      animation-delay: 0s !important;
-    }
-  }
+  //   .transition-in {
+  //     transition-duration: 0s !important;
+  //     animation-duration: 0s !important;
+  //     transition-delay: 0s !important;
+  //     animation-delay: 0s !important;
+  //   }
+  // }
 
   > * {
     height: 100%;

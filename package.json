@@ -29,6 +29,7 @@
 		"react": "^16.8.6",
 		"react-dom": "^16.8.6",
 		"ric": "^1.3.0",
+		"simple-linear-scale": "^1.0.1",
 		"util-dewysiwyg": "git+ssh://git@stash.abc-dev.net.au:7999/news/util-dewysiwyg.git#3.8.0",
 		"util-url2cmid": "git+ssh://git@stash.abc-dev.net.au:7999/news/util-url2cmid.git#1.0.1"
 	},

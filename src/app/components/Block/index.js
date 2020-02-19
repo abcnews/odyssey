@@ -1,6 +1,7 @@
 // External
 const cn = require('classnames');
 const html = require('bel');
+const linearScale = require('simple-linear-scale');
 const url2cmid = require('util-url2cmid');
 
 // Ours
@@ -65,9 +66,7 @@ function Block({
     },
     'u-full'
   );
-  const mediaClassName = cn('Block-media', {
-    'is-fixed': !isDocked
-  });
+  const mediaClassName = 'Block-media';
   const contentClassName = `Block-content${alignment ? ` is-${alignment}` : ''} u-richtext${isLight ? '' : '-invert'}`;
 
   ratios = {
@@ -207,24 +206,23 @@ function Block({
     </div>
   `;
 
-  if (mediaContainerEl && isDocked) {
-    let state = {};
+  subscribe(function _compositeMediaContainer(client) {
+    const { height, top, bottom } = blockEl.getBoundingClientRect();
 
-    subscribe(function _checkIfBlockPropertiesShouldBeUpdated(client) {
-      const rect = blockEl.getBoundingClientRect();
-      const isBeyond = client.fixedHeight >= rect.bottom;
-      const isFixed = !isBeyond && rect.top <= 0;
+    if (top > client.fixedHeight * 1.5 || bottom < client.fixedHeight * -0.5) {
+      mediaContainerEl.style.setProperty('visibility', 'hidden');
+      mediaContainerEl.style.removeProperty('transform');
 
-      if (isFixed !== state.isFixed || isBeyond !== state.isBeyond) {
-        enqueue(function _updateBlockProperties() {
-          mediaContainerEl.classList[isFixed ? 'add' : 'remove']('is-fixed');
-          mediaContainerEl.classList[isBeyond ? 'add' : 'remove']('is-beyond');
-        });
+      return;
+    }
 
-        state = { isFixed, isBeyond };
-      }
-    });
-  }
+    const mediaOffsetYScale = linearScale([-height + client.fixedHeight, 0], [height - client.fixedHeight, 0], false);
+    const offsetY = Math.round(mediaOffsetYScale(top));
+    const dockedOffsetY = Math.min(Math.max(0, offsetY), height - client.fixedHeight);
+
+    mediaContainerEl.style.setProperty('transform', `translate3d(0, ${isDocked ? dockedOffsetY : offsetY}px, 0)`);
+    mediaContainerEl.style.removeProperty('visibility');
+  });
 
   if (backgrounds && backgrounds.length) {
     // In theory, this could be any colour
