@@ -5,6 +5,7 @@ module.exports.components = {
   Picture: require('../components/Picture'),
   Quote: require('../components/Quote'),
   ShareLinks: require('../components/ShareLinks'),
+  Sizer: require('../components/Sizer'),
   VideoPlayer: require('../components/VideoPlayer'),
   YouTubePlayer: require('../components/YouTubePlayer')
 };

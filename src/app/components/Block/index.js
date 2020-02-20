@@ -3,7 +3,8 @@ const cn = require('classnames');
 const html = require('bel');
 
 // Ours
-const { ALIGNMENT_PATTERN, VIDEO_MARKER_PATTERN } = require('../../../constants');
+const { ALIGNMENT_PATTERN, SCROLLPLAY_PCT_PATTERN, VIDEO_MARKER_PATTERN } = require('../../../constants');
+
 const { enqueue, subscribe } = require('../../scheduler');
 const { $, detach, detectVideoId, getChildImage, isElement } = require('../../utils/dom');
 const { getRatios, trim } = require('../../utils/misc');
@@ -38,6 +39,7 @@ function Block({
   isVideoYouTube,
   ratios = {},
   shouldVideoPlayOnce,
+  videoScrollplayPct,
   transition,
   videoId
 }) {
@@ -130,7 +132,8 @@ function Block({
       mediaEl = YouTubePlayer({
         videoId,
         ratios,
-        isLoop: shouldVideoPlayOnce ? false : undefined,
+        scrollplayPct: videoScrollplayPct,
+        isLoop: shouldVideoPlayOnce || typeof videoScrollplayPct === 'number' ? false : undefined,
         isAmbient: true,
         isContained
       });
@@ -138,15 +141,16 @@ function Block({
       mediaEl = VideoPlayer({
         videoId,
         ratios,
+        scrollplayPct: videoScrollplayPct,
         isContained: isContained,
-        isLoop: shouldVideoPlayOnce ? false : undefined,
+        isLoop: shouldVideoPlayOnce || typeof videoScrollplayPct === 'number' ? false : undefined,
         isInvariablyAmbient: true
       });
     }
   }
 
   let mediaContainerEl;
-  if (backgrounds) {
+  if (backgrounds && backgrounds.length) {
     mediaContainerEl = html`
       <div class="${mediaClassName}">${backgrounds}</div>
     `;
@@ -207,7 +211,7 @@ function Block({
 
     subscribe(function _checkIfBlockPropertiesShouldBeUpdated(client) {
       const rect = blockEl.getBoundingClientRect();
-      const isBeyond = client.height >= rect.bottom;
+      const isBeyond = client.fixedHeight >= rect.bottom;
       const isFixed = !isBeyond && rect.top <= 0;
 
       if (isFixed !== state.isFixed || isBeyond !== state.isBeyond) {
@@ -221,7 +225,7 @@ function Block({
     });
   }
 
-  if (backgrounds) {
+  if (backgrounds && backgrounds.length) {
     // In theory, this could be any colour
     if (transition.length === 6 && transition.match(/^[0-9a-f]{6}$/)) {
       blockEl.style.setProperty('background-color', '#' + transition);
@@ -236,7 +240,7 @@ function Block({
       // get the last marker that has a bottom above the fold
       const marker = markers.reduce((activeMarker, currentMarker) => {
         const { top } = currentMarker.getBoundingClientRect();
-        if (top > window.innerHeight * 0.8) return activeMarker;
+        if (top > client.fixedHeight * 0.8) return activeMarker;
 
         return currentMarker;
       }, markers[0]);
@@ -270,6 +274,11 @@ function Block({
               background.classList.remove('transition-out');
             }
           });
+
+          // Ensure that newly visible images have their object-fit properties polyfilled in IE11
+          if (window.objectFitPolyfill) {
+            window.objectFitPolyfill();
+          }
         });
       }
     });
@@ -287,6 +296,9 @@ function transformSection(section) {
   const isPiecemeal = section.configSC.indexOf('piecemeal') > -1;
   const shouldSupplant = section.configSC.indexOf('supplant') > -1;
   const shouldVideoPlayOnce = section.configSC.indexOf('once') > -1;
+  const [, videoScrollplayPctString] = section.configSC.match(SCROLLPLAY_PCT_PATTERN) || [, ''];
+  const videoScrollplayPct =
+    videoScrollplayPctString.length > 0 && Math.max(0, Math.min(100, +videoScrollplayPctString));
 
   let transition;
 
@@ -326,7 +338,8 @@ function transformSection(section) {
     isGrouped,
     isLight,
     isPiecemeal,
-    shouldVideoPlayOnce
+    shouldVideoPlayOnce,
+    videoScrollplayPct
   };
 
   // if the 'transition' flag is set then assume its a slide show
