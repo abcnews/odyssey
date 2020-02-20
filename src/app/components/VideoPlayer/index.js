@@ -2,12 +2,13 @@
 const html = require('bel');
 
 // Ours
-const { MQ, MS_VERSION, SMALLEST_IMAGE } = require('../../../constants');
+const { MQ, MS_VERSION, ONLY_RATIO_PATTERN, SMALLEST_IMAGE } = require('../../../constants');
 const { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } = require('../../media');
 const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
 const { toggleAttribute, toggleBooleanAttributes } = require('../../utils/dom');
 const { PLACEHOLDER_PROPERTY, resize } = require('../Picture');
 const { blurImage } = require('../Picture/blur');
+const Sizer = require('../Sizer');
 const VideoControls = require('../VideoControls');
 const { trackProgress } = require('./stats');
 const { getMetadata, hasAudio } = require('./utils');
@@ -34,10 +35,10 @@ function VideoPlayer({
   let fuzzyTimeout;
 
   ratios = {
-    sm: ratios.sm || DEFAULT_RATIO,
-    md: ratios.md || DEFAULT_RATIO,
-    lg: ratios.lg || DEFAULT_RATIO,
-    xl: ratios.xl || DEFAULT_RATIO
+    sm: ONLY_RATIO_PATTERN.test(ratios.sm) ? ratios.sm : DEFAULT_RATIO,
+    md: ONLY_RATIO_PATTERN.test(ratios.md) ? ratios.md : DEFAULT_RATIO,
+    lg: ONLY_RATIO_PATTERN.test(ratios.lg) ? ratios.lg : DEFAULT_RATIO,
+    xl: ONLY_RATIO_PATTERN.test(ratios.xl) ? ratios.xl : DEFAULT_RATIO
   };
 
   if (isInvariablyAmbient) {
@@ -46,7 +47,7 @@ function VideoPlayer({
 
   if (isAmbient) {
     isLoop = typeof isLoop === 'boolean' ? isLoop : true;
-    scrollplayPct = 0;
+    scrollplayPct = scrollplayPct || 0;
   }
 
   const isScrollplay = typeof scrollplayPct === 'number';
@@ -59,14 +60,19 @@ function VideoPlayer({
     title = String.fromCharCode(getNextUntitledMediaCharCode());
   }
 
-  const placeholderEl = html`
-    <div class="u-sizer-sm-${ratios.sm} u-sizer-md-${ratios.md} u-sizer-lg-${ratios.lg} u-sizer-xl-${ratios.xl}"></div>
-  `;
+  const placeholderEl = Sizer(ratios);
+
   const videoEl = html`
     <video preload="none" tabindex="-1" aria-label="${title}"></video>
   `;
 
   const isInitiallySmallViewport = window.matchMedia(MQ.SM).matches;
+  const initiallyPreferredRatio = ratios[isInitiallySmallViewport ? 'sm' : 'lg'];
+  const [initiallyPreferredRatioNumerator, initiallyPreferredRatioDenominator] = initiallyPreferredRatio
+    .split('x')
+    .map(x => parseInt(x, 10));
+  const isInitiallyPreferredPortraitContainer =
+    initiallyPreferredRatioNumerator / initiallyPreferredRatioDenominator <= 1;
 
   toggleBooleanAttributes(videoEl, {
     loop: isLoop,
@@ -237,7 +243,8 @@ function VideoPlayer({
       return;
     }
 
-    const { alternativeText, posterURL, sources } = metadata;
+    const { alternativeText, posterURL } = metadata;
+    let { sources } = metadata;
 
     if (alternativeText) {
       player.alternativeText = alternativeText;
@@ -245,14 +252,10 @@ function VideoPlayer({
 
     if (posterURL) {
       videoEl.poster = SMALLEST_IMAGE;
-      // Pick the aspect ratio based on config and the current viewport
-      // size (similar to how the video source is chosen below).
-      // Eventually, we'd like to update both of these as the viewport
-      // changes, but it's not a priority right now.
       videoEl.style.backgroundImage = `url("${resize({
         url: posterURL,
         size: 'sm',
-        ratio: ratios[isInitiallySmallViewport ? 'sm' : 'lg']
+        ratio: initiallyPreferredRatio
       })}")`;
 
       if (isContained) {
@@ -268,21 +271,22 @@ function VideoPlayer({
       }
     }
 
-    // If we're on mobile, and have more than one high resolution source, use the second
-    // highest; otherwise, use the first source (of any resolution).
-    // Note: Only Phase 1 (Desktop) sources have width/height defined, making it the
-    // only template that can differentiate its high resolution sources.
-    const highResSources = sources
-      .filter(source => source.width >= 1080)
-      .sort((a, b) => {
-        // Wide videos should come before squares
-        if (a.width > b.width) return -1;
-        if (b.width > a.width) return 1;
-        return 0;
-      });
-    const source = (highResSources.length ? highResSources : sources)[
-      highResSources.length > 1 && isInitiallySmallViewport ? 1 : 0
-    ];
+    sources.sort((a, b) => a.size - b.size);
+
+    const [portraitSources, landscapeSources] = sources.reduce(
+      // 1x1 is considered portrait
+      (memo, source) => (memo[+(source.width > source.height)].push(source), memo),
+      [[], []]
+    );
+
+    sources =
+      isInitiallyPreferredPortraitContainer && portraitSources.length
+        ? portraitSources
+        : landscapeSources.length
+        ? landscapeSources
+        : sources;
+
+    const source = sources[isInitiallySmallViewport ? 0 : sources.length - 1];
 
     if (source) {
       videoEl.src = source.src;

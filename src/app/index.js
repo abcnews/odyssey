@@ -244,7 +244,7 @@ function app() {
   delete meta.bylineNodes;
 
   // Expose API, then notify interested parties
-  window.__ODYSSEY__ = api;
+  Object.defineProperty(window, '__ODYSSEY__', { value: api });
   window.dispatchEvent(new CustomEvent('odyssey:api', { detail: api }));
 
   // Add Presentation Layer global nav if it doesn't already exist
