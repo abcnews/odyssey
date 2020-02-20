@@ -3,7 +3,7 @@ const html = require('bel');
 const dewysiwyg = require('util-dewysiwyg');
 
 // Ours
-const { SELECTORS } = require('../../constants');
+const { IS_PL, SELECTORS } = require('../../constants');
 const Main = require('../components/Main');
 const { $, $$, append, before, detach, detachAll, setOrAddMetaTag, substitute } = require('../utils/dom');
 const { literalList, trim } = require('../utils/misc');
@@ -52,7 +52,6 @@ const TEMPLATE_REMOVABLES = {
   `),
   // PL
   'meta[property="ABC.Generator"]': literalList(`
-    [data-component="Masthead"]
     [data-component="DetailLayout"]
     [data-component="WebContentWarning"]
     ul>li>span:first-child
@@ -91,6 +90,8 @@ const PL_FLOAT = {
   `
 };
 
+const PL_DECOY_KEY = 'body';
+
 function addIE11StyleHint() {
   if ('-ms-scroll-limit' in document.documentElement.style && '-ms-ime-align' in document.documentElement.style) {
     document.documentElement.setAttribute('ie11', '');
@@ -102,15 +103,10 @@ function resetMetaViewport() {
 }
 
 function resetPL() {
-  let rootEl = $('[data-component="ThemeProvider]');
-  const parentEl = window.app;
+  const rootEl = $(`[data-component="Decoy"][data-key="${PL_DECOY_KEY}"]`);
 
-  if (!rootEl || rootEl.parentElement !== parentEl) {
-    return;
-  }
-
-  // Replace root with snapshot, preserving old root in memory, to keep the PL app happy
-  substitute(rootEl, (rootEl = rootEl.cloneNode(true)));
+  // Activate PL decoy
+  window.dispatchEvent(new CustomEvent('decoy', { detail: { key: PL_DECOY_KEY, active: true } }));
 
   // Normalise marker attributes (id=>name)
   $$('a[id]:not([href]', rootEl).forEach(el => {
@@ -145,8 +141,10 @@ function reset(storyEl, meta) {
   // Update (or add) the meta viewport tag so that touch devices don't introduce a click delay
   resetMetaViewport();
 
-  // Replace the Presentation Layer-rendered DOM with a semi-normalised snapshot
-  resetPL();
+  // Decoy and augment the Presentation Layer-rendered DOM
+  if (IS_PL) {
+    resetPL();
+  }
 
   // Apply theme, if defined
   if (typeof meta.theme === 'string') {

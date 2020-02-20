@@ -13,9 +13,9 @@ const SCROLLPLAY_PCT_PATTERN = /scrollplay(\d+)/;
 const SELECTORS = {
   MAIN: '.page_margins#main_content,body>.content,.main-content-container,main#content',
   STORY:
-    '.article.section,article>.story.richtext,.article-detail-page .article-text,[data-component="DetailLayout"] [data-component="GridRow"] div:not([class])',
+    '.article.section,article>.story.richtext,.article-detail-page .article-text,[data-component="Decoy"][data-key="article"]>:first-child',
   SHARE_TOOLS: '.share-tools-list,.share,.tools',
-  TITLE: '.article h1,header>h1,h1[itemprop="name"]',
+  TITLE: '.article h1,header>h1,[data-component="DetailHeader"] h1',
   BYLINE: '.view-byline,header>.attribution,.byline,[data-component="Byline"]',
   INFO_SOURCE: '.bylinepromo,.program,[data-component="InfoSource"]',
   INFO_SOURCE_LINK: '.bylinepromo>a,.program>a,[data-component="InfoSource"]>a',
@@ -81,7 +81,9 @@ MQ.PL_SM = '(max-width: 33.9375em)';
 
 const SMALLEST_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAAAADs=';
 
-const IS_PREVIEW = window.location.hostname.indexOf('nucwed') > -1;
+const IS_PREVIEW = window.location.hostname.indexOf('aus.aunty') > -1;
+
+const IS_PL = !!document.querySelector('[name="generator"][content="PL NEWS WEB"]');
 
 const MS_VERSION = (ua => {
   const msie = ua.indexOf('MSIE ');
@@ -143,6 +145,7 @@ module.exports = {
   MQ,
   SMALLEST_IMAGE,
   IS_PREVIEW,
+  IS_PL,
   MS_VERSION,
   SUPPORTS_PASSIVE
 };
