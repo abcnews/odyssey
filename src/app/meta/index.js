@@ -3,7 +3,7 @@ const parseDate = require('date-fns/parse');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const { IS_PREVIEW, MOCK_ELEMENT, SELECTORS } = require('../../constants');
+const { IS_PL, IS_PREVIEW, MOCK_ELEMENT, SELECTORS } = require('../../constants');
 const { $, $$, detach, setOrAddMetaTag } = require('../utils/dom');
 const { trim } = require('../utils/misc');
 
@@ -16,17 +16,20 @@ const SHARE_ORDERING = ['facebook', 'twitter', 'native', 'email'];
 let meta = null; // singleton
 
 function addPLMetaTags() {
-  if (!window.__API__) {
-    return;
-  }
+  // const { document } = JSON.parse(
+  //   JSON.stringify(window.__API__)
+  //     .replace(/__SCRIPT_TAG__/g, '<script')
+  //     .replace(/__SCRIPT_CLOSE_TAG__/g, '</script>')
+  // );
+  const { document } = window.__API__;
+  const { contextSettings } = document;
+  const { published, updated } = document.publishedDatePrepared;
 
-  const { document } = JSON.parse(unescape(window.__API__));
-  const { published, updated } = document.publishedDate;
-  const { contextSettings } = document.srcDoc;
-
+  // Add missing meta tags from publication/update dates
   setOrAddMetaTag('DCTERMS.issued', published.labelDate);
   setOrAddMetaTag('DCTERMS.modified', updated.labelDate);
 
+  // Add missing meta tags based on the `meta.data.name` context setting to Presentation Layer pages
   if (contextSettings) {
     const mdn = contextSettings['meta.data.name'] || {};
 
@@ -54,7 +57,7 @@ function getMetaContent(name) {
 
 function getDate(metaElName, timeElClassName) {
   const date = parseDate(
-    getMetaContent(metaElName) || (($(`time.${timeElClassName}`) || MOCK_ELEMENT).getAttribute('datetime') || '')
+    getMetaContent(metaElName) || ($(`time.${timeElClassName}`) || MOCK_ELEMENT).getAttribute('datetime') || ''
   );
 
   return isNaN(date) ? null : date;
@@ -180,8 +183,9 @@ function getDataLayerStoryProp(name) {
 
 function getMeta() {
   if (!meta) {
-    // Add missing meta tags based on the `meta.data.name` context setting to Presentation Layer pages
-    addPLMetaTags();
+    if (IS_PL) {
+      addPLMetaTags();
+    }
 
     const url = getMetaContent('replacement-url') || getCanonicalURL();
     const title = getMetaContent('replacement-title') || $(SELECTORS.TITLE).textContent;
@@ -205,6 +209,7 @@ function getMeta() {
       hasCaptionAttributions: getMetaContent('caption-attributions') !== 'false',
       hasCommentsEnabled: getMetaContent('showLivefyreComments') === 'true',
       isDarkMode: getMetaContent('dark-mode') === 'true',
+      isPL: IS_PL,
       isPreview: IS_PREVIEW
     };
   }
