@@ -159,7 +159,11 @@ function getChildImage(el) {
     const tempParentEl = document.createElement('div');
 
     tempParentEl.innerHTML = imgEl.nextSibling.innerHTML;
-    imgEl = $('img', tempParentEl);
+    imgEl = $('img', tempParentEl) || imgEl;
+
+    if (imgEl.hasAttribute('data-src')) {
+      imgEl.setAttribute('src', imgEl.getAttribute('data-src'));
+    }
   }
 
   return imgEl;
