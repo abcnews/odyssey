@@ -12,6 +12,8 @@ if (IS_PL) {
   } else {
     window.addEventListener('articleHydrated', app);
   }
+} else if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', app);
 } else {
   app();
 }
