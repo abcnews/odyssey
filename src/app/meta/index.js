@@ -173,7 +173,11 @@ function getRelatedMedia() {
   return detach(relatedMediaEl);
 }
 
-function getDataLayerStoryProp(name) {
+function getProductionUnit() {
+  if (window.__API__) {
+    return window.__API__.document.productionUnit;
+  }
+
   if (!Array.isArray(window.dataLayer)) {
     return null;
   }
@@ -199,7 +203,7 @@ function getMeta() {
       published: getDate('DCTERMS.issued', 'original'),
       updated: getDate('DCTERMS.modified', 'updated'),
       bylineNodes: getBylineNodes(),
-      productionUnit: getDataLayerStoryProp('productionUnit'),
+      productionUnit: getProductionUnit(),
       infoSource: getInfoSource(),
       infoSourceLogosDataId: getDataAttribute('info-source-logos') || '10766144',
       shareLinks: getShareLinks({ url, title, description }),

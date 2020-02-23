@@ -90,8 +90,6 @@ const PL_FLOAT = {
   `
 };
 
-const PL_DECOY_KEY = 'body';
-
 function addIE11StyleHint() {
   if ('-ms-scroll-limit' in document.documentElement.style && '-ms-ime-align' in document.documentElement.style) {
     document.documentElement.setAttribute('ie11', '');
@@ -103,10 +101,7 @@ function resetMetaViewport() {
 }
 
 function resetPL() {
-  const rootEl = $(`[data-component="Decoy"][data-key="${PL_DECOY_KEY}"]`);
-
-  // Activate PL decoy
-  window.dispatchEvent(new CustomEvent('decoy', { detail: { key: PL_DECOY_KEY, active: true } }));
+  const rootEl = $(`[data-component="Decoy"][data-key="body"]`);
 
   // Normalise marker attributes (id=>name)
   $$('a[id]:not([href]', rootEl).forEach(el => {
@@ -141,7 +136,7 @@ function reset(storyEl, meta) {
   // Update (or add) the meta viewport tag so that touch devices don't introduce a click delay
   resetMetaViewport();
 
-  // Decoy and augment the Presentation Layer-rendered DOM
+  // Augment the Presentation Layer-rendered DOM
   if (IS_PL) {
     resetPL();
   }

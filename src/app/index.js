@@ -298,4 +298,16 @@ function app() {
   }, 5000);
 }
 
+function decoyed() {
+  // Activate PL decoy then wait for confirmation to initialise the app
+  window.addEventListener('decoyActive', function _once(event) {
+    if (event.detail.key === 'body') {
+      window.removeEventListener('decoyActive', _once);
+      app();
+    }
+  });
+  window.dispatchEvent(new CustomEvent('decoy', { detail: { key: 'body', active: true } }));
+}
+
 module.exports = app;
+module.exports.decoyed = decoyed;

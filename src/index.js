@@ -7,13 +7,13 @@ const app = require('./app');
 const { IS_PL } = require('./constants');
 
 if (IS_PL) {
-  if (document.querySelector('[data-component="Decoy"]')) {
-    app();
+  if (window.articleHydrated) {
+    app.decoyed();
   } else {
-    window.addEventListener('articleHydrated', app);
+    window.addEventListener('articleHydrated', app.decoyed);
   }
-} else if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', app);
-} else {
+} else if (document.readyState !== 'loading') {
   app();
+} else {
+  document.addEventListener('DOMContentLoaded', app);
 }
