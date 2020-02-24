@@ -217,11 +217,11 @@ function updateContentPeek(headerEl) {
 }
 
 function fetchInfoSourceLogo(meta, el, variant) {
-  if (!meta.infoSourceLogosDataId || !el) {
+  if (!meta.infoSourceLogosHTMLFragmentId || !el) {
     return;
   }
 
-  terminusFetch({ id: meta.infoSourceLogosDataId, type: 'htmlfragment' }, (err, item) => {
+  terminusFetch({ id: meta.infoSourceLogosHTMLFragmentId, type: 'htmlfragment' }, (err, item) => {
     if (err) {
       return;
     }

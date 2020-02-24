@@ -124,6 +124,8 @@ const SUPPORTS_PASSIVE = (isSupported => {
   return isSupported;
 })(false);
 
+const INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID = '10766144'; // This document is managed in Core Media
+
 module.exports = {
   NEWLINE,
   HYPHEN,
@@ -149,5 +151,6 @@ module.exports = {
   IS_PREVIEW,
   IS_PL,
   MS_VERSION,
-  SUPPORTS_PASSIVE
+  SUPPORTS_PASSIVE,
+  INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID
 };
