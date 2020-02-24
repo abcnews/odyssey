@@ -3,7 +3,7 @@ const parseDate = require('date-fns/parse');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const { IS_PL, IS_PREVIEW, MOCK_ELEMENT, SELECTORS } = require('../../constants');
+const { INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID, IS_PL, IS_PREVIEW, MOCK_ELEMENT, SELECTORS } = require('../../constants');
 const { $, $$, detach, setOrAddMetaTag } = require('../utils/dom');
 const { trim } = require('../utils/misc');
 
@@ -205,7 +205,7 @@ function getMeta() {
       bylineNodes: getBylineNodes(),
       productionUnit: getProductionUnit(),
       infoSource: getInfoSource(),
-      infoSourceLogosDataId: getDataAttribute('info-source-logos') || '10766144',
+      infoSourceLogosHTMLFragmentId: getDataAttribute('info-source-logos') || INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID,
       shareLinks: getShareLinks({ url, title, description }),
       relatedMedia: getRelatedMedia(),
       relatedStoriesIds: getRelatedStoriesIds(),
