@@ -4,7 +4,7 @@
   .u-blend-luminosity {
     background-blend-mode: luminosity;
     background-color: $color-grey-50 !important;
-    background-color: var(--bg, #{$color-grey-50}) !important;
+    background-color: var(--bg, #{$color-lightBg}) !important;
     background-image: linear-gradient($color-grey-200-transparent-30, $color-grey-200-transparent-30);
 
     .u-richtext-invert & {
