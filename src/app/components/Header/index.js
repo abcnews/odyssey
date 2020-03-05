@@ -34,7 +34,7 @@ function Header({
 }) {
   isFloating = isFloating || (isLayered && !imgEl && !videoId && !interactiveEl);
   isLayered = isLayered || isFloating;
-  isDark = meta.isDarkMode || isLayered || isDark;
+  isDark = isLayered || typeof isDark === 'boolean' ? isDark : meta.isDarkMode;
   isAbreast = !isFloating && !isLayered && (imgEl || videoId || interactiveEl) && isAbreast;
 
   const className = cn(
