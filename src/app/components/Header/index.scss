@@ -15,11 +15,11 @@ $abreastChildSpacing: 2.5rem;
   }
 
   :root.is-dark-mode &:not(.is-dark) {
-    background-color: $color-grey-50;
+    background-color: $color-lightBg;
   }
 
   :root:not(.is-dark-mode) &.is-dark {
-    background-color: $color-black;
+    background-color: $color-darkBg;
   }
 
   &.is-layered {
@@ -58,10 +58,10 @@ $abreastChildSpacing: 2.5rem;
 .Header-media {
   overflow: hidden;
   position: relative;
-  background-color: $color-black;
+  background-color: $color-darkBg;
 
   .is-pale > & {
-    background-color: $color-white;
+    background-color: $color-lightBg;
   }
 
   .is-abreast > & {

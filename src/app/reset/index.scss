@@ -28,12 +28,12 @@ body {
   min-width: 0; /* Override Phase 1 (Standard)'s 1000px */
   min-height: 102vh;
   width: 100%;
-  background-color: $color-grey-50;
-  background-color: var(--bg, #{$color-grey-50});
+  background-color: $color-lightBg;
+  background-color: var(--bg, #{$color-lightBg});
 
-  .is-dark-mode > & {
-    background-color: $color-black;
-    background-color: var(--bg, #{$color-black});
+  :root.is-dark-mode > & {
+    background-color: $color-darkBg;
+    background-color: var(--bg, #{$color-darkBg});
   }
 
   /* Remove margin & padding applied by preview tools */
@@ -79,7 +79,7 @@ body {
   }
 
   main + .page_margins {
-    background-color: $color-grey-50;
+    background-color: $color-lightBg;
   }
 
   main + .content {

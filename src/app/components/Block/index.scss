@@ -13,11 +13,11 @@
   }
 
   :root:not(.is-dark-mode) &.has-dark {
-    background-color: $color-black;
+    background-color: $color-darkBg;
   }
 
   :root.is-dark-mode &.has-light {
-    background-color: $color-grey-50;
+    background-color: $color-lightBg;
   }
 }
 
