@@ -9,18 +9,17 @@ $abreastChildSpacing: 2.5rem;
   overflow: hidden;
   position: relative;
   line-height: 1.5;
-  background-color: $color-grey-50;
 
   @media #{$mq-gt-sm} {
     font-size: 1.25rem;
   }
 
-  &.is-dark {
-    background-color: $color-black;
+  :root.is-dark-mode &:not(.is-dark) {
+    background-color: $color-grey-50;
   }
 
-  .is-dark-mode &:not(.is-dark) {
-    background-color: $color-grey-50;
+  :root:not(.is-dark-mode) &.is-dark {
+    background-color: $color-black;
   }
 
   &.is-layered {
