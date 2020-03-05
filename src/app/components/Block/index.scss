@@ -12,12 +12,12 @@
     min-height: var(--vw-ratio-16x9);
   }
 
-  &.has-dark {
+  :root:not(.is-dark-mode) &.has-dark {
     background-color: $color-black;
   }
 
-  &.has-light {
-    background-color: $color-white;
+  :root.is-dark-mode &.has-light {
+    background-color: $color-grey-50;
   }
 }
 
