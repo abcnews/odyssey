@@ -250,6 +250,28 @@
   }
 }
 
+.Gallery-richtextTile {
+  position: relative;
+}
+
+.Gallery-richtextTileContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  & > * {
+    margin: 0.5rem 1rem !important;
+    padding: 0 !important;
+    max-width: 40rem !important;
+  }
+}
+
 .Gallery-controls {
   display: flex;
   justify-content: space-between;
