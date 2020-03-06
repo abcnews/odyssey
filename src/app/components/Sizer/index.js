@@ -45,6 +45,7 @@ function updateHeightSnapping() {
     instances.forEach(el => {
       const { width, height } = el.getBoundingClientRect();
       const snappedHeight = Math.round(height);
+      console.log(el, height, snappedHeight);
 
       if (height !== snappedHeight) {
         el.style.setProperty('padding-top', `${snappedHeight}px`);
