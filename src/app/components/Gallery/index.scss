@@ -124,6 +124,7 @@
 
   .Gallery:not(.is-mosaic) & {
     flex: 0 0 100% !important;
+    max-width: none !important;
 
     &:focus {
       outline: 0;
