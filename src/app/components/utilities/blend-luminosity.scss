@@ -3,13 +3,13 @@
 @supports (background-blend-mode: luminosity) {
   .u-blend-luminosity {
     background-blend-mode: luminosity;
-    background-color: $color-grey-50 !important;
-    background-color: var(--bg, #{$color-grey-50}) !important;
+    background-color: $color-lightBg !important;
+    background-color: var(--bg, #{$color-lightBg}) !important;
     background-image: linear-gradient($color-grey-200-transparent-30, $color-grey-200-transparent-30);
 
     .u-richtext-invert & {
-      background-color: $color-black !important;
-      background-color: var(--bg, #{$color-black}) !important;
+      background-color: $color-darkBg !important;
+      background-color: var(--bg, #{$color-darkBg}) !important;
       background-image: linear-gradient($color-grey-500-transparent-65, $color-grey-500-transparent-65);
     }
   }
