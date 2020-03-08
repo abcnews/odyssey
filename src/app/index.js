@@ -32,7 +32,6 @@ const { getMeta } = require('./meta');
 const { reset } = require('./reset');
 const { getMarkers, getSections } = require('./utils/anchors');
 const { $, $$, after, append, detach, detachAll, prepend, substitute } = require('./utils/dom');
-const { literalList } = require('./utils/misc');
 
 function app() {
   const meta = getMeta();
@@ -169,18 +168,10 @@ function app() {
       ImageEmbed.transformEl(el, isSidePulled);
     });
 
-  // Transform quotes (native and embedded)
-  $$(
-    literalList(`
-      blockquote:not([class])
-      .quote--pullquote
-      .inline-content.quote
-      .embed-quote
-      .comp-rich-text-blockquote
-      .view-inline-pullquote
-    `),
-    storyEl
-  ).forEach(Quote.transformEl);
+  // Transform quotes (native and embedded) that haven't already been transformed
+  $$(SELECTORS.QUOTE, storyEl)
+    .filter(el => el.closest('.Quote') === null)
+    .forEach(Quote.transformEl);
 
   // Nullify nested pulls (outer always wins)
   $$('[class*="u-pull"] [class*="u-pull"]').forEach(

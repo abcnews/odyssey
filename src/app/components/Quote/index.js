@@ -18,30 +18,30 @@ function Quote({ isPullquote = false, alignment, parEls = [], attributionNodes =
   const attributionEl = attributionNodes.length
     ? html`
         <footer>
-          ${
-            Array.from(attributionNodes).map(node => {
-              return node.tagName === 'A'
-                ? html`
-                    <cite>${node}</cite>
-                  `
-                : node;
-            })
-          }
+          ${Array.from(attributionNodes).map(node => {
+            return node.tagName === 'A'
+              ? html`
+                  <cite>${node}</cite>
+                `
+              : node;
+          })}
         </footer>
       `
     : null;
 
   // Smart double quotes & indentation
   if (parEls.length) {
-    parEls.forEach(UQuote.conditionallyApply);
+    parEls.forEach(parEl => UQuote.conditionallyApply(parEl, isPullquote));
   }
 
   return html`
-    <div class="${className}"><blockquote>${parEls.concat(attributionEl)}</blockquote></div>
+    <div class="${className}">
+      <blockquote>${parEls.concat(attributionEl)}</blockquote>
+    </div>
   `;
 }
 
-function createFromEl(el) {
+function createFromEl(el, options) {
   if (!isElement(el)) {
     return null;
   }
@@ -137,14 +137,14 @@ function createFromEl(el) {
   }, []);
 
   if (config) {
-    return Quote(config);
+    return Quote({ ...config, ...(typeof options === 'object' ? options : {}) });
   }
 
   return null;
 }
 
-function transformEl(el) {
-  substitute(el, createFromEl(el));
+function transformEl(el, options) {
+  substitute(el, createFromEl(el, options));
 }
 
 function isBr(node) {
