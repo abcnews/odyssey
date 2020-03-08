@@ -20,7 +20,9 @@ const SELECTORS = {
   BYLINE: '.view-byline,header>.attribution,.byline',
   INFO_SOURCE: '.bylinepromo,.program',
   INFO_SOURCE_LINK: '.bylinepromo>a,.program>a',
-  WYSIWYG_EMBED: '.inline-content.wysiwyg,.embed-wysiwyg.richtext,.view-wysiwyg'
+  WYSIWYG_EMBED: '.inline-content.wysiwyg,.embed-wysiwyg.richtext,.view-wysiwyg',
+  QUOTE:
+    'blockquote:not([class]),.quote--pullquote,.inline-content.quote,.embed-quote,.comp-rich-text-blockquote,.view-inline-pullquote'
 };
 
 const RICHTEXT_BLOCK_TAGNAMES = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'OL', 'UL'];

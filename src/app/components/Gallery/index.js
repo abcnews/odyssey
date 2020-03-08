@@ -4,16 +4,25 @@ const html = require('bel');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const { REM, SUPPORTS_PASSIVE, VIDEO_MARKER_PATTERN } = require('../../../constants');
+const { REM, SELECTORS, SUPPORTS_PASSIVE, VIDEO_MARKER_PATTERN } = require('../../../constants');
+const { getMeta } = require('../../meta');
 const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
 const { $, append, detach, getChildImage, isElement, setText } = require('../../utils/dom');
 const { dePx, getRatios, returnFalse } = require('../../utils/misc');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
+const Sizer = require('../Sizer');
+const Quote = require('../Quote');
 const VideoPlayer = require('../VideoPlayer');
 require('./index.scss');
 
 const MOSAIC_ROW_LENGTHS_PATTERN = /mosaic(\d+)/;
+const DEFAULT_MOSAIC_SIZE_RATIOS = {
+  sm: '1x1',
+  md: '3x2',
+  lg: '16x9',
+  xl: '16x9'
+};
 const PCT_PATTERN = /(-?[0-9\.]+)%/;
 const SWIPE_THRESHOLD = 25;
 const AXIS_THRESHOLD = 5;
@@ -320,7 +329,7 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
       <div
         class="Gallery-item"
         style="flex: 0 1 ${flexBasisPct}%; max-width: ${flexBasisPct}%"
-        data-id="${id}"
+        data-id="${id || 'n/a'}"
         data-index="${index}"
         tabindex="-1"
         ondragstart=${returnFalse}
@@ -343,26 +352,28 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
       );
     }
 
-    const captionLinkEl = $('a', captionEl);
+    if (captionEl) {
+      const captionLinkEl = $('a', captionEl);
 
-    if (captionLinkEl) {
-      if (isMosaic) {
-        captionLinkEl.setAttribute('tabindex', '-1');
-      } else {
-        captionLinkEl.addEventListener(
-          'focus',
-          () => {
-            goToItem(index);
-          },
-          false
-        );
+      if (captionLinkEl) {
+        if (isMosaic) {
+          captionLinkEl.setAttribute('tabindex', '-1');
+        } else {
+          captionLinkEl.addEventListener(
+            'focus',
+            () => {
+              goToItem(index);
+            },
+            false
+          );
+        }
       }
     }
 
     return itemEl;
   });
 
-  mediaEls = itemEls.map(itemEl => $('.Picture, .VideoPlayer', itemEl));
+  mediaEls = itemEls.map(itemEl => $('.Picture,.Quote,.VideoPlayer', itemEl));
 
   const itemsEl = html`
     <div
@@ -427,6 +438,17 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
   return galleryEl;
 }
 
+function RichtextTile(el, ratios) {
+  return html`
+    <div class="Gallery-richtextTile">
+      ${Sizer(ratios)}
+      <div class="Gallery-richtextTileContent u-richtext${getMeta().isDarkMode ? '-invert' : ''}">
+        ${el}
+      </div>
+    </div>
+  `;
+}
+
 function offsetBasedOpacity(itemIndex, itemsTransformXPct) {
   return (
     ((100 - Math.min(100, Math.abs(itemIndex * 100 + itemsTransformXPct))) / 100) * (1 - INACTIVE_OPACITY) +
@@ -453,6 +475,7 @@ function transformSection(section) {
       }
 
       const classList = node.className.split(' ');
+      const isQuote = node.matches(SELECTORS.QUOTE);
       const imgEl = getChildImage(node);
       const linkEl = $('a[href]', node);
       const videoId =
@@ -469,9 +492,9 @@ function transformSection(section) {
           videoId,
           ratios: {
             sm: ratios.sm || '3x4',
-            md: ratios.md,
-            lg: ratios.lg,
-            xl: ratios.xl
+            md: ratios.md || '16x9',
+            lg: ratios.lg || '16x9',
+            xl: ratios.xl || '16x9'
           },
           isInvariablyAmbient: true
         });
@@ -481,8 +504,8 @@ function transformSection(section) {
             ratios: {
               sm: ratios.sm || '3x2',
               md: ratios.md || '16x9',
-              lg: ratios.lg,
-              xl: ratios.xl
+              lg: ratios.lg || '16x9',
+              xl: ratios.xl || '16x9'
             },
             isInvariablyAmbient: true
           }),
@@ -490,7 +513,7 @@ function transformSection(section) {
             videoId,
             ratios: {
               sm: ratios.sm || '1x1',
-              md: ratios.md,
+              md: ratios.md || '3x2',
               lg: ratios.lg || '3x2',
               xl: ratios.xl || '3x2'
             },
@@ -537,9 +560,9 @@ function transformSection(section) {
             alt,
             ratios: {
               sm: ratios.sm || '3x4',
-              md: ratios.md,
-              lg: ratios.lg,
-              xl: ratios.xl
+              md: ratios.md || '16x9',
+              lg: ratios.lg || '16x9',
+              xl: ratios.xl || '16x9'
             },
             linkUrl
           }),
@@ -550,8 +573,8 @@ function transformSection(section) {
               ratios: {
                 sm: ratios.sm || '3x2',
                 md: ratios.md || '16x9',
-                lg: ratios.lg,
-                xl: ratios.xl
+                lg: ratios.lg || '16x9',
+                xl: ratios.xl || '16x9'
               },
               linkUrl
             }),
@@ -560,7 +583,7 @@ function transformSection(section) {
               alt,
               ratios: {
                 sm: ratios.sm || '1x1',
-                md: ratios.md,
+                md: ratios.md || '3x2',
                 lg: ratios.lg || '3x2',
                 xl: ratios.xl || '3x2'
               },
@@ -579,6 +602,55 @@ function transformSection(section) {
             })
           ],
           captionEl: Caption.createFromEl(node, unlink)
+        });
+      } else if (isQuote) {
+        config.items.push({
+          mediaEl: RichtextTile(
+            Quote.createFromEl(node, {
+              isPullquote: true
+            }),
+            {
+              sm: ratios.sm || '3x4',
+              md: ratios.md || '16x9',
+              lg: ratios.lg || '16x9',
+              xl: ratios.xl || '16x9'
+            }
+          ),
+          mosaicMediaEls: [
+            RichtextTile(
+              Quote.createFromEl(node, {
+                isPullquote: true
+              }),
+              {
+                sm: ratios.sm || '3x2',
+                md: ratios.md || '16x9',
+                lg: ratios.lg || '16x9',
+                xl: ratios.xl || '16x9'
+              }
+            ),
+            RichtextTile(
+              Quote.createFromEl(node, {
+                isPullquote: true
+              }),
+              {
+                sm: ratios.sm || '1x1',
+                md: ratios.md || '3x2',
+                lg: ratios.lg || '3x2',
+                xl: ratios.xl || '3x2'
+              }
+            ),
+            RichtextTile(
+              Quote.createFromEl(node, {
+                isPullquote: true
+              }),
+              {
+                sm: ratios.sm || '3x4',
+                md: ratios.md || '4x3',
+                lg: ratios.lg || '4x3',
+                xl: ratios.xl || '4x3'
+              }
+            )
+          ]
         });
       } else if (node.tagName === 'P') {
         if (!config.masterCaptionText) {
