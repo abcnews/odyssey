@@ -406,7 +406,11 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
       aria-label="View the previous item"
       onfocus=${() => goToItem(currentIndex)}
       onclick=${() => goToItem(currentIndex - 1)}
-    ></button>
+    >
+      <svg role="presentation" viewBox="0 0 40 40">
+        <polyline stroke="currentColor" stroke-width="2" fill="none" points="22.25 12.938 16 19.969 22.25 27" />
+      </svg>
+    </button>
   `;
 
   const nextEl = html`
@@ -415,7 +419,11 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
       aria-label="View the next item"
       onfocus=${() => goToItem(currentIndex)}
       onclick=${() => goToItem(currentIndex + 1)}
-    ></button>
+    >
+      <svg role="presentation" viewBox="0 0 40 40">
+        <polyline stroke="currentColor" stroke-width="2" fill="none" points="22.25 12.938 16 19.969 22.25 27" />
+      </svg>
+    </button>
   `;
 
   const controlsEl = html`

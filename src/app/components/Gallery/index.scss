@@ -319,19 +319,23 @@
   border: none;
   width: $size-control;
   height: $size-control;
-  background-color: $color-black-transparent-60;
-  background-image: url(./step.svg);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 100%;
+  color: $color-white;
   vertical-align: bottom;
   transition: opacity 0.25s;
   will-change: opacity;
 }
 
 .Gallery-step-next {
-  transform: scaleX(-1);
   margin-left: $size-control-margin;
+}
+
+[class*='Gallery-step-'] svg {
+  width: 100%;
+  height: 100%;
+}
+
+.Gallery-step-next svg {
+  transform: scaleX(-1);
 }
 
 .is-at-start .Gallery-step-prev,
