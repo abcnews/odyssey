@@ -1,6 +1,7 @@
 // External
 const cn = require('classnames');
 const html = require('bel');
+const rawHTML = require('bel/raw');
 const url2cmid = require('util-url2cmid');
 
 // Ours
@@ -28,6 +29,9 @@ const SWIPE_THRESHOLD = 25;
 const AXIS_THRESHOLD = 5;
 const INACTIVE_OPACITY = 0.2;
 const PASSIVE_OPTIONS = { passive: true };
+const CONTROL_ICON_MARKUP = `<svg role="presentation" viewBox="0 0 40 40">
+  <polyline stroke="currentColor" stroke-width="2" fill="none" points="22.25 12.938 16 19.969 22.25 27" />
+</svg>`;
 
 function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
   let startItemsTransformXPct;
@@ -407,9 +411,7 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
       onfocus=${() => goToItem(currentIndex)}
       onclick=${() => goToItem(currentIndex - 1)}
     >
-      <svg role="presentation" viewBox="0 0 40 40">
-        <polyline stroke="currentColor" stroke-width="2" fill="none" points="22.25 12.938 16 19.969 22.25 27" />
-      </svg>
+      ${rawHTML(CONTROL_ICON_MARKUP)}
     </button>
   `;
 
@@ -420,9 +422,7 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
       onfocus=${() => goToItem(currentIndex)}
       onclick=${() => goToItem(currentIndex + 1)}
     >
-      <svg role="presentation" viewBox="0 0 40 40">
-        <polyline stroke="currentColor" stroke-width="2" fill="none" points="22.25 12.938 16 19.969 22.25 27" />
-      </svg>
+      ${rawHTML(CONTROL_ICON_MARKUP)}
     </button>
   `;
 
