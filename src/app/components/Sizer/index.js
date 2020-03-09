@@ -2,7 +2,7 @@
 const { enqueue, subscribe } = require('../../scheduler');
 require('./index.scss');
 
-const ALLOWED_RATIOS = ['3x4', '1x1', '4x3', '3x2', '16x9'];
+const ALLOWED_RATIOS = ['1x2', '9x16', '2x3', '3x4', '1x1', '4x3', '3x2', '16x9', '2x1'];
 const DEFAULT_SIZE_RATIOS = {
   sm: '1x1',
   md: '3x2',
