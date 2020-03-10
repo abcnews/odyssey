@@ -268,8 +268,11 @@
 
   & > * {
     margin: 0.5rem 1rem !important;
-    padding: 0 !important;
-    max-width: 40rem !important;
+    max-width: 49rem !important; /* Roughly equivalent to body copy width, after padding is factored in */
+
+    .is-mosaic & {
+      padding: 0 !important;
+    }
   }
 }
 
