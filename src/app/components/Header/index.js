@@ -245,7 +245,8 @@ function transformSection(section, meta) {
   const ratios = getRatios(section.configSC);
   const isFloating = section.configSC.indexOf('floating') > -1;
   const isLayered = isFloating || section.configSC.indexOf('layered') > -1;
-  const isDark = isLayered || (section.configSC.indexOf('dark') > -1 && section.configSC.indexOf('light') === -1);
+  const isDark =
+    isLayered || section.configSC.indexOf('dark') > -1 ? true : section.configSC.indexOf('light') > -1 ? false : null;
   const isPale = section.configSC.indexOf('pale') > -1;
   const isAbreast = section.configSC.indexOf('abreast') > -1;
   const isNoMedia = isFloating || section.configSC.indexOf('nomedia') > -1;
