@@ -341,12 +341,14 @@ function VideoPlayer({
 function toggleMutePreference(event) {
   event.stopPropagation();
 
-  const shouldBeMuted = !this.parentElement.previousElementSibling.muted;
+  const controlsEl = this.parentElement;
+  const controlledPlayer = controlsEl.parentElement.api;
+  const shouldBeMuted = !controlsEl.previousElementSibling.muted;
 
   forEachPlayer(player => {
-    // We can't potentially unmute an ambient/scroll-based video as
+    // We can't potentially unmute an ambient or other scroll-based video as
     // browsers won't allow them to play without a user click event
-    if (player.isAmbient || player.isScrollplay) {
+    if (player.isAmbient || (player.isScrollplay && controlledPlayer !== player)) {
       return;
     }
 
