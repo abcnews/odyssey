@@ -232,9 +232,11 @@ function fetchInfoSourceLogo(meta, el, variant) {
     if (logoDoc) {
       terminusFetch({ id: logoDoc.id, type: logoDoc.docType.toLowerCase() }, (err, item) => {
         const image = item.media.image.primary.complete[0];
+        const imageRatio = image.height / image.width;
+
         el.className = `${el.className} has-logo`;
-        // Assume image@2x, with height clamped between 50px and 70px
-        el.style.height = `${clampNumber(Math.round(image.height / 2), 50, 70)}px`;
+        // Height based on the image ratio (wider is shorter), clamped between 48px and 64px
+        el.style.height = `${clampNumber(Math.round(64 * imageRatio), 48, 64)}px`;
         el.style.backgroundImage = `url(${image.url})`;
       });
     }
