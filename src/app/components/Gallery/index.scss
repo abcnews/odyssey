@@ -40,6 +40,12 @@
     width: $layout-fixed;
   }
 
+  .is-mosaic.is-unconstrained & {
+    padding-left: 0;
+    padding-right: 0;
+    width: 100%;
+  }
+
   .Gallery:not(.is-mosaic) & > .Caption {
     padding-left: 0;
     padding-right: 0;

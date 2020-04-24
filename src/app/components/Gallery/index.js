@@ -17,7 +17,7 @@ const Quote = require('../Quote');
 const VideoPlayer = require('../VideoPlayer');
 require('./index.scss');
 
-const MOSAIC_ROW_LENGTHS_PATTERN = /mosaic(\d+)/;
+const MOSAIC_ROW_LENGTHS_PATTERN = /mosaic[a-z]*(\d+)/;
 const DEFAULT_MOSAIC_SIZE_RATIOS = {
   sm: '1x1',
   md: '3x2',
@@ -33,7 +33,7 @@ const CONTROL_ICON_MARKUP = `<svg role="presentation" viewBox="0 0 40 40">
   <polyline stroke="currentColor" stroke-width="2" fill="none" points="22.25 12.938 16 19.969 22.25 27" />
 </svg>`;
 
-function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
+function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconstrained = false }) {
   let startItemsTransformXPct;
   let startX;
   let startY;
@@ -266,7 +266,8 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [] }) {
   const className = cn(
     'Gallery',
     {
-      'is-mosaic': isMosaic
+      'is-mosaic': isMosaic,
+      'is-unconstrained': isUnconstrained /* only mosaic should be full bleed */
     },
     'u-full'
   );
@@ -469,6 +470,7 @@ function transformSection(section) {
     null,
     ''
   ];
+  const isUnconstrained = mosaicRowLengthsString.length && section.configSC.includes('full');
   const ratios = getRatios(section.configSC);
   const unlink = section.configSC.includes('unlink');
 
@@ -682,7 +684,8 @@ function transformSection(section) {
       masterCaptionEl: null,
       masterCaptionText: null,
       masterCaptionAttribution: null,
-      mosaicRowLengths: mosaicRowLengthsString.split('')
+      mosaicRowLengths: mosaicRowLengthsString.split(''),
+      isUnconstrained
     }
   );
 
