@@ -308,7 +308,9 @@ function Block({
           blockEl.classList[activeLightDark === 'light' ? 'add' : 'remove']('has-light');
 
           // Update caption
-          mediaCaptionContainerEl.removeChild(mediaCaptionContainerEl.firstChild);
+          if (mediaCaptionContainerEl.firstChild) {
+            mediaCaptionContainerEl.removeChild(mediaCaptionContainerEl.firstChild);
+          }
           if (captionEls[activeIndex]) {
             mediaCaptionContainerEl.appendChild(captionEls[activeIndex]);
           }
