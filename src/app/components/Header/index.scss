@@ -35,7 +35,7 @@ $abreastChildSpacing: 2.5rem;
   &.is-floating {
     z-index: 2;
     margin-bottom: calc(-100vh + var(--Main-offsetTop)) !important;
-    background-color: transparent;
+    background-color: transparent !important;
 
     [ie11] & {
       margin-bottom: calc(-100vh + #{$var--Main-offsetTop}) !important;

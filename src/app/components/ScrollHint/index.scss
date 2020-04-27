@@ -1,16 +1,8 @@
 @import '../../../constants';
+@import '../../../keyframes';
 @import '../Main/variables.scss';
 
 $offsetBottom: 3rem;
-
-@keyframes ScrollHintBounce {
-  from {
-    transform: translate(-50%, -100%);
-  }
-  to {
-    transform: translate(-50%, 0);
-  }
-}
 
 .ScrollHint {
   position: fixed;
@@ -38,6 +30,6 @@ $offsetBottom: 3rem;
     height: 1.5rem;
     background-image: url(./arrow.svg);
     background-repeat: no-repeat;
-    animation: ScrollHintBounce 1s linear alternate infinite;
+    animation: bounce 1s linear alternate infinite;
   }
 }

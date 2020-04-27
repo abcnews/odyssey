@@ -1,4 +1,5 @@
 @import '../../../constants';
+@import '../../../keyframes';
 
 .Block-media {
   overflow: hidden;
@@ -30,7 +31,7 @@
     }
   }
 
-  .has-inset-media & > * {
+  .has-inset-media & > :not(.Block-mediaCaption) {
     @media #{$mq-gt-md} {
       position: fixed;
       transform: translate(0, -50%);
@@ -52,7 +53,7 @@
     }
   }
 
-  .has-inset-media.has-left & > * {
+  .has-inset-media.has-left & > :not(.Block-mediaCaption) {
     @media #{$mq-gt-md} {
       right: calc(30% - 16rem);
       left: auto;
@@ -63,7 +64,7 @@
     }
   }
 
-  .has-inset-media.has-right & > * {
+  .has-inset-media.has-right & > :not(.Block-mediaCaption) {
     @media #{$mq-gt-md} {
       right: auto;
       left: calc(30% - 16rem);
@@ -81,7 +82,7 @@
     }
   }
 
-  .has-inset-media &:not(.is-fixed) > * {
+  .has-inset-media &:not(.is-fixed) > :not(.Block-mediaCaption) {
     position: absolute;
 
     @media #{$mq-lt-lg} {
@@ -175,26 +176,6 @@
       &.transition-out {
         animation: blackOut 1s linear forwards 1;
       }
-
-      @keyframes blackIn {
-        0%,
-        50% {
-          opacity: 0;
-        }
-        100% {
-          opacity: 1;
-        }
-      }
-
-      @keyframes blackOut {
-        0% {
-          opacity: 1;
-        }
-        50%,
-        100% {
-          opacity: 0;
-        }
-      }
     }
 
     /* fading between the two cards  */
@@ -210,15 +191,6 @@
         opacity: 1;
         z-index: 0;
       }
-
-      @keyframes fadeIn {
-        0% {
-          opacity: 0;
-        }
-        100% {
-          opacity: 1;
-        }
-      }
     }
 
     &.bouncefade {
@@ -231,28 +203,6 @@
         z-index: 0;
         animation: bounceFadeOut 1s ease 0s 1 normal forwards;
       }
-
-      @keyframes bounceFadeIn {
-        0% {
-          opacity: 0;
-          transform: translate(0, 20px);
-        }
-        100% {
-          opacity: 1;
-          transform: translate(0, 0);
-        }
-      }
-
-      @keyframes bounceFadeOut {
-        0% {
-          opacity: 1;
-          transform: translate(0, 0);
-        }
-        100% {
-          opacity: 1;
-          transform: translate(0, 20px);
-        }
-      }
     }
 
     &.zoomfade {
@@ -264,17 +214,6 @@
       &.transition-out {
         z-index: 1;
         animation: zoomFadeOut 1s ease 0s 1 normal forwards;
-      }
-
-      @keyframes zoomFadeOut {
-        0% {
-          opacity: 1;
-          transform: scale(1);
-        }
-        100% {
-          opacity: 0;
-          transform: scale(1.15);
-        }
       }
     }
 
@@ -290,24 +229,6 @@
       &.transition-out {
         animation: slideupOut 0.5s linear 0s 1 forwards;
       }
-
-      @keyframes slideupIn {
-        0% {
-          transform: translate(0, 100%);
-        }
-        100% {
-          transform: translate(0, 0);
-        }
-      }
-
-      @keyframes slideupOut {
-        0% {
-          transform: translate(0, 0);
-        }
-        100% {
-          transform: translate(0, -100%);
-        }
-      }
     }
 
     &.slidedown {
@@ -319,24 +240,6 @@
 
       &.transition-out {
         animation: slidedownOut 0.5s linear 0s 1 forwards;
-      }
-
-      @keyframes slidedownIn {
-        0% {
-          transform: translate(0, -100%);
-        }
-        100% {
-          transform: translate(0, 0);
-        }
-      }
-
-      @keyframes slidedownOut {
-        0% {
-          transform: translate(0, 0);
-        }
-        100% {
-          transform: translate(0, 100%);
-        }
       }
     }
 
@@ -350,24 +253,6 @@
       &.transition-out {
         animation: sliderightOut 0.5s linear 0s 1 forwards;
       }
-
-      @keyframes sliderightIn {
-        0% {
-          transform: translate(100%, 0);
-        }
-        100% {
-          transform: translate(0, 0);
-        }
-      }
-
-      @keyframes sliderightOut {
-        0% {
-          transform: translate(0, 0);
-        }
-        100% {
-          transform: translate(-100%, 0);
-        }
-      }
     }
 
     &.slideleft {
@@ -379,24 +264,6 @@
 
       &.transition-out {
         animation: slidelefttOut 0.5s linear 0s 1 forwards;
-      }
-
-      @keyframes slidelefttIn {
-        0% {
-          transform: translate(-100%, 0);
-        }
-        100% {
-          transform: translate(0, 0);
-        }
-      }
-
-      @keyframes slidelefttOut {
-        0% {
-          transform: translate(0, 0);
-        }
-        100% {
-          transform: translate(100%, 0);
-        }
       }
     }
 
@@ -414,36 +281,41 @@
         z-index: 1;
         animation: shuffleOut 1s linear 0s 1 forwards;
       }
+    }
+  }
+}
 
-      @keyframes shuffleIn {
-        0% {
-          opacity: 0;
-          transform: scale(0.25) translate(0, 0);
-        }
-        50% {
-          opacity: 0.5;
-          transform: scale(0.5) translate(-100%, 0) rotate(-10deg);
-        }
-        100% {
-          opacity: 1;
-          transform: scale(1) translate(0, 0);
-        }
-      }
+.Block-mediaCaption {
+  transition: opacity 0.5s;
+  opacity: 0;
+  z-index: 1;
 
-      @keyframes shuffleOut {
-        0% {
-          opacity: 1;
-          transform: scale(1) translate(0, 0);
-        }
-        35% {
-          opacity: 0.5;
-          transform: scale(0.5) translate(100%, 0) rotate(10deg);
-        }
-        100% {
-          opacity: 0;
-          transform: scale(0.25) translate(0, 0);
-        }
-      }
+  .is-fixed > & {
+    opacity: 1;
+  }
+
+  .Caption {
+    position: absolute;
+    bottom: 0;
+    margin-left: 0;
+    max-width: 100%;
+    min-height: 0;
+    background-color: $color-black-transparent-60;
+    color: $color-lightBg;
+    pointer-events: none;
+    animation: fadeIn 1s;
+
+    .has-light & {
+      background-color: $color-white-transparent-75;
+      color: $color-black;
+    }
+  }
+
+  .Caption-attribution {
+    color: $color-grey-100;
+
+    .has-light & {
+      color: $color-grey-500;
     }
   }
 }
