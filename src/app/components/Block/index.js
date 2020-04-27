@@ -9,6 +9,7 @@ const { ALIGNMENT_PATTERN, SCROLLPLAY_PCT_PATTERN, VIDEO_MARKER_PATTERN } = requ
 const { enqueue, subscribe } = require('../../scheduler');
 const { $, detach, getChildImage, isElement } = require('../../utils/dom');
 const { getRatios, trim } = require('../../utils/misc');
+const Caption = require('../Caption');
 const Picture = require('../Picture');
 const VideoPlayer = require('../VideoPlayer');
 const YouTubePlayer = require('../YouTubePlayer');
@@ -26,9 +27,19 @@ const TRANSITIONS = [
   'shuffle'
 ];
 
+/*
+  Block media can be one of:
+
+  * imageEl - an image document
+  * videoId - a video document CMID or a Youtube video ID (when isVideoYouTube=true)
+  * backgrounds - an array of acceptable values for imageEl/videoId
+  
+  Media may be captioned/attributed, in which case a captions array (of Caption components) should be supplied
+*/
 function Block({
   alignment,
   backgrounds,
+  captionEls = [],
   contentEls = [],
   hasInsetMedia,
   imgEl,
@@ -68,6 +79,7 @@ function Block({
   const mediaClassName = cn('Block-media', {
     'is-fixed': !isDocked
   });
+  const mediaCaptionClassName = 'Block-mediaCaption';
   const contentClassName = `Block-content${alignment ? ` is-${alignment}` : ''} u-richtext${isLight ? '' : '-invert'}`;
 
   ratios = {
@@ -163,6 +175,14 @@ function Block({
       : null;
   }
 
+  const mediaCaptionContainerEl = html`
+    <div class="${mediaCaptionClassName}">${captionEls[0] || null}</div>
+  `;
+
+  if (captionEls.length) {
+    mediaContainerEl.appendChild(mediaCaptionContainerEl);
+  }
+
   const blockEl = html`
     <div class="${className}">
       ${mediaContainerEl}
@@ -237,6 +257,11 @@ function Block({
     let activeIndex = -1;
     let previousActiveIndex = -1;
 
+    // keep a list of light/dark for each marker, so captions have the correct theme
+    const lightDarkForMarkerIndex = markers.map(
+      (element, index) => element.getAttribute('data-lightdark') || (isLight ? 'light' : 'dark')
+    );
+
     subscribe(function _checkIfBackgroundShouldChange(client) {
       // get the last marker that has a bottom above the fold
       const marker = markers.reduce((activeMarker, currentMarker) => {
@@ -247,6 +272,7 @@ function Block({
       }, markers[0]);
 
       const newActiveIndex = parseInt(marker.getAttribute('data-background-index'), 10);
+
       if (activeIndex !== newActiveIndex) {
         previousActiveIndex = activeIndex;
         activeIndex = newActiveIndex;
@@ -276,6 +302,17 @@ function Block({
             }
           });
 
+          // Update container 'has-(dark|light)' className modfifiers
+          const activeLightDark = lightDarkForMarkerIndex[activeIndex];
+          blockEl.classList[activeLightDark === 'dark' ? 'add' : 'remove']('has-dark');
+          blockEl.classList[activeLightDark === 'light' ? 'add' : 'remove']('has-light');
+
+          // Update caption
+          mediaCaptionContainerEl.removeChild(mediaCaptionContainerEl.firstChild);
+          if (captionEls[activeIndex]) {
+            mediaCaptionContainerEl.appendChild(captionEls[activeIndex]);
+          }
+
           // Ensure that newly visible images have their object-fit properties polyfilled in IE11
           if (window.objectFitPolyfill) {
             window.objectFitPolyfill();
@@ -289,6 +326,7 @@ function Block({
 }
 
 function transformSection(section) {
+  const hasCaptionedMedia = section.configSC.indexOf('captioned') > -1;
   const hasInsetMedia = section.configSC.indexOf('inset') > -1;
   const isContained = section.configSC.indexOf('contain') > -1;
   const isDocked = section.configSC.indexOf('docked') > -1;
@@ -332,6 +370,7 @@ function transformSection(section) {
 
   let config = {
     alignment,
+    captionEls: [],
     contentEls: [],
     hasInsetMedia,
     isContained,
@@ -374,6 +413,12 @@ function transformSection(section) {
 
           // Remove this image from the flow
           node.parentElement.removeChild(node);
+
+          // Add the caption, if one exists
+          if (hasCaptionedMedia) {
+            config.captionEls.push(Caption.createFromEl(node, true));
+          }
+
           return null;
         }
 
@@ -404,6 +449,12 @@ function transformSection(section) {
 
           // Remove this image from the flow
           node.parentElement.removeChild(node);
+
+          // Add a non-caption, to keep the background:caption indices in sync
+          if (hasCaptionedMedia) {
+            config.captionEls.push(null);
+          }
+
           return null;
         }
 
@@ -483,6 +534,9 @@ function transformSection(section) {
 
         if (videoId || imgEl) {
           sourceMediaEl = node;
+          if (hasCaptionedMedia) {
+            _config.captionEls.push(Caption.createFromEl(node, true));
+          }
         }
       }
 
