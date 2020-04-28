@@ -42,6 +42,7 @@ function Block({
   captionEls = [],
   contentEls = [],
   hasInsetMedia,
+  hasHiddenCaptionTitles,
   imgEl,
   isContained,
   isDocked,
@@ -67,6 +68,7 @@ function Block({
   const className = cn(
     'Block',
     {
+      'has-hidden-caption-titles': hasHiddenCaptionTitles,
       'has-inset-media': hasInsetMedia,
       [`has-${alignment}`]: alignment,
       'has-dark': !isLight,
@@ -328,6 +330,7 @@ function Block({
 }
 
 function transformSection(section) {
+  const hasAttributedMedia = section.configSC.indexOf('attributed') > -1;
   const hasCaptionedMedia = section.configSC.indexOf('captioned') > -1;
   const hasInsetMedia = section.configSC.indexOf('inset') > -1;
   const isContained = section.configSC.indexOf('contain') > -1;
@@ -370,10 +373,14 @@ function transformSection(section) {
     detach(section.betweenNodes.shift());
   }
 
+  const hasHiddenCaptionTitles = hasAttributedMedia && !hasCaptionedMedia;
+
   let config = {
     alignment,
     captionEls: [],
     contentEls: [],
+    hasAttributedMedia,
+    hasHiddenCaptionTitles,
     hasInsetMedia,
     isContained,
     isDocked,
@@ -417,7 +424,7 @@ function transformSection(section) {
           node.parentElement.removeChild(node);
 
           // Add the caption, if one exists
-          if (hasCaptionedMedia) {
+          if (hasAttributedMedia || hasCaptionedMedia) {
             config.captionEls.push(Caption.createFromEl(node, true));
           }
 
@@ -453,7 +460,7 @@ function transformSection(section) {
           node.parentElement.removeChild(node);
 
           // Add a non-caption, to keep the background:caption indices in sync
-          if (hasCaptionedMedia) {
+          if (hasAttributedMedia || hasCaptionedMedia) {
             config.captionEls.push(null);
           }
 
@@ -536,7 +543,7 @@ function transformSection(section) {
 
         if (videoId || imgEl) {
           sourceMediaEl = node;
-          if (hasCaptionedMedia) {
+          if (hasAttributedMedia || hasCaptionedMedia) {
             _config.captionEls.push(Caption.createFromEl(node, true));
           }
         }
