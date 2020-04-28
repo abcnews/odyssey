@@ -311,11 +311,19 @@
     }
   }
 
+  .has-hidden-caption-titles & .Caption > :not(.Caption-attribution) {
+    display: none;
+  }
+
   .Caption-attribution {
     color: $color-grey-100;
 
     .has-light & {
       color: $color-grey-500;
     }
+
+    // .has-hidden-caption-titles & {
+    //   font-size: 100%;
+    // }
   }
 }
