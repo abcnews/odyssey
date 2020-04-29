@@ -309,6 +309,12 @@
       background-color: $color-white-transparent-75;
       color: $color-black;
     }
+
+    .has-hidden-caption-titles & {
+      @media #{$mq-sm} {
+        padding: 0.125rem 0.625rem;
+      }
+    }
   }
 
   .has-hidden-caption-titles & .Caption > :not(.Caption-attribution) {
@@ -322,8 +328,10 @@
       color: $color-grey-500;
     }
 
-    // .has-hidden-caption-titles & {
-    //   font-size: 100%;
-    // }
+    .has-hidden-caption-titles & {
+      @media #{$mq-sm} {
+        font-size: 0.625rem;
+      }
+    }
   }
 }
