@@ -311,8 +311,11 @@
     }
 
     .has-hidden-caption-titles & {
+      padding-top: 0.4rem;
+      padding-bottom: 0.45rem;
+
       @media #{$mq-sm} {
-        padding: 0.125rem 0.625rem;
+        padding: 0.0625rem 0.625rem 0.1875rem;
       }
     }
   }
