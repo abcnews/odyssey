@@ -34,7 +34,7 @@ function Header({
 }) {
   isFloating = isFloating || (isLayered && !imgEl && !videoId && !interactiveEl);
   isLayered = isLayered || isFloating;
-  isDark = meta.isDarkMode || isLayered || isDark;
+  isDark = isLayered || typeof isDark === 'boolean' ? isDark : meta.isDarkMode;
   isAbreast = !isFloating && !isLayered && (imgEl || videoId || interactiveEl) && isAbreast;
 
   const className = cn(
@@ -232,9 +232,11 @@ function fetchInfoSourceLogo(meta, el, variant) {
     if (logoDoc) {
       terminusFetch({ id: logoDoc.id, type: logoDoc.docType.toLowerCase() }, (err, item) => {
         const image = item.media.image.primary.complete[0];
+        const imageRatio = image.height / image.width;
+
         el.className = `${el.className} has-logo`;
-        // Assume image@2x, with height clamped between 50px and 70px
-        el.style.height = `${clampNumber(Math.round(image.height / 2), 50, 70)}px`;
+        // Height based on the image ratio (wider is shorter), clamped between 48px and 64px
+        el.style.height = `${clampNumber(Math.round(64 * imageRatio), 48, 64)}px`;
         el.style.backgroundImage = `url(${image.url})`;
       });
     }
@@ -245,7 +247,8 @@ function transformSection(section, meta) {
   const ratios = getRatios(section.configSC);
   const isFloating = section.configSC.indexOf('floating') > -1;
   const isLayered = isFloating || section.configSC.indexOf('layered') > -1;
-  const isDark = isLayered || section.configSC.indexOf('dark') > -1;
+  const isDark =
+    isLayered || section.configSC.indexOf('dark') > -1 ? true : section.configSC.indexOf('light') > -1 ? false : null;
   const isPale = section.configSC.indexOf('pale') > -1;
   const isAbreast = section.configSC.indexOf('abreast') > -1;
   const isNoMedia = isFloating || section.configSC.indexOf('nomedia') > -1;

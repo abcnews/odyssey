@@ -23,11 +23,15 @@
     .Header.is-layered &,
     .Block &,
     .MasterGallery & {
-      background-color: $color-black;
+      background-color: $color-darkBg;
     }
   }
 
   @media #{$mq-sm} {
+    &.sm-2x1 {
+      padding-top: 50%;
+    }
+
     &.sm-16x9 {
       padding-top: 56.25%;
     }
@@ -47,9 +51,25 @@
     &.sm-3x4 {
       padding-top: 133.3333333%;
     }
+
+    &.sm-2x3 {
+      padding-top: 150%;
+    }
+
+    &.sm-9x16 {
+      padding-top: 177.7777778%;
+    }
+
+    &.sm-1x2 {
+      padding-top: 200%;
+    }
   }
 
   @media #{$mq-md} {
+    &.md-2x1 {
+      padding-top: 50%;
+    }
+
     &.md-16x9 {
       padding-top: 56.25%;
     }
@@ -69,9 +89,25 @@
     &.md-3x4 {
       padding-top: 133.3333333%;
     }
+
+    &.md-2x3 {
+      padding-top: 150%;
+    }
+
+    &.md-9x16 {
+      padding-top: 177.7777778%;
+    }
+
+    &.md-1x2 {
+      padding-top: 200%;
+    }
   }
 
   @media #{$mq-lg}, #{$mq-landscape} and #{$mq-lt-lg} {
+    &.lg-2x1 {
+      padding-top: 50%;
+    }
+
     &.lg-16x9 {
       padding-top: 56.25%;
     }
@@ -91,9 +127,25 @@
     &.lg-3x4 {
       padding-top: 133.3333333%;
     }
+
+    &.lg-2x3 {
+      padding-top: 150%;
+    }
+
+    &.lg-9x16 {
+      padding-top: 177.7777778%;
+    }
+
+    &.lg-1x2 {
+      padding-top: 200%;
+    }
   }
 
   @media #{$mq-xl} {
+    &.xl-2x1 {
+      padding-top: 50%;
+    }
+
     &.xl-16x9 {
       padding-top: 56.25%;
     }
@@ -112,6 +164,18 @@
 
     &.xl-3x4 {
       padding-top: 133.3333333%;
+    }
+
+    &.xl-2x3 {
+      padding-top: 150%;
+    }
+
+    &.xl-9x16 {
+      padding-top: 177.7777778%;
+    }
+
+    &.xl-1x2 {
+      padding-top: 200%;
     }
   }
 }
