@@ -19,7 +19,6 @@ $color-black-transparent-60: rgba(0, 0, 0, 0.6);
 $color-black-transparent-75: rgba(0, 0, 0, 0.75);
 $color-black-transparent-93: rgba(0, 0, 0, 0.93);
 
-$color-grey-50: #f9f9f9;
 $color-grey-100: #d2d2d2;
 $color-grey-200-transparent-30: rgba(196, 196, 196, 0.3);
 $color-grey-300: #b3b3b3;
@@ -28,6 +27,9 @@ $color-grey-300-transparent-70: rgba(179, 179, 179, 0.7);
 $color-grey-500: #666;
 $color-grey-500-transparent-65: rgba(102, 102, 102, 0.65);
 $color-grey-900: #111;
+
+$color-lightBg: #f9f9f9;
+$color-darkBg: $color-black;
 
 $color-lighterPrimary: #a5daf3;
 $color-lightPrimary: #68e1ff;

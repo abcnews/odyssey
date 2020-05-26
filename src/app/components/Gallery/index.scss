@@ -40,6 +40,12 @@
     width: $layout-fixed;
   }
 
+  .is-mosaic.is-unconstrained & {
+    padding-left: 0;
+    padding-right: 0;
+    width: 100%;
+  }
+
   .Gallery:not(.is-mosaic) & > .Caption {
     padding-left: 0;
     padding-right: 0;
@@ -124,6 +130,7 @@
 
   .Gallery:not(.is-mosaic) & {
     flex: 0 0 100% !important;
+    max-width: none !important;
 
     &:focus {
       outline: 0;
@@ -222,7 +229,7 @@
     max-width: calc(100% - 0.25rem);
     min-height: 0;
     background-color: $color-black-transparent-60;
-    color: $color-grey-50;
+    color: $color-lightBg;
     pointer-events: none;
     transition-delay: 0s;
 
@@ -247,6 +254,31 @@
 
   .is-mosaic & .Caption-attribution {
     color: $color-grey-100;
+  }
+}
+
+.Gallery-richtextTile {
+  position: relative;
+}
+
+.Gallery-richtextTileContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  & > * {
+    margin: 0.5rem 1rem !important;
+    max-width: 49rem !important; /* Roughly equivalent to body copy width, after padding is factored in */
+
+    .is-mosaic & {
+      padding: 0 !important;
+    }
   }
 }
 
@@ -297,18 +329,23 @@
   width: $size-control;
   height: $size-control;
   background-color: $color-black-transparent-60;
-  background-image: url(./step.svg);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 100%;
+  color: $color-white;
   vertical-align: bottom;
   transition: opacity 0.25s;
   will-change: opacity;
 }
 
 .Gallery-step-next {
-  transform: scaleX(-1);
   margin-left: $size-control-margin;
+}
+
+[class*='Gallery-step-'] svg {
+  width: 100%;
+  height: 100%;
+}
+
+.Gallery-step-next svg {
+  transform: scaleX(-1);
 }
 
 .is-at-start .Gallery-step-prev,

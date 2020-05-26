@@ -8,6 +8,14 @@ html {
   -ms-text-size-adjust: none;
   text-size-adjust: none;
   scroll-behavior: auto;
+
+  background-color: $color-lightBg;
+  background-color: var(--bg, #{$color-lightBg});
+
+  &.is-dark-mode {
+    background-color: $color-darkBg;
+    background-color: var(--bg, #{$color-darkBg});
+  }
 }
 
 /*
@@ -28,13 +36,7 @@ body {
   min-width: 0; /* Override Phase 1 (Standard)'s 1000px */
   min-height: 102vh;
   width: 100%;
-  background-color: $color-grey-50;
-  background-color: var(--bg, #{$color-grey-50});
-
-  .is-dark-mode > & {
-    background-color: $color-black;
-    background-color: var(--bg, #{$color-black});
-  }
+  background-color: inherit !important;
 
   /* Remove margin & padding applied by preview tools */
   &.preview.no-uig {
@@ -79,7 +81,7 @@ body {
   }
 
   main + .page_margins {
-    background-color: $color-grey-50;
+    background-color: $color-lightBg;
   }
 
   main + .content {

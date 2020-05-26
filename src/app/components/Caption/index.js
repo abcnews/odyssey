@@ -102,10 +102,10 @@ function createFromEl(el, unlink) {
     config = JSON.parse(clone.getAttribute('data-caption-config'));
   }
 
-  // Option to remove caption link
-  if (unlink) Object.assign(config, { unlink: true });
-
   if (config) {
+    // Option to remove caption link
+    if (unlink) Object.assign(config, { unlink: true });
+
     return Caption(Object.assign(config));
   }
 

@@ -16,12 +16,14 @@ const SELECTORS = {
   STORY:
     '.article.section,article>.story.richtext,.article-detail-page .article-text,[data-component="Decoy"][data-key="article"]>:first-child',
   SHARE_TOOLS: '.share-tools-list,.share,.tools',
-  TITLE: '.article h1,header>h1,[data-component="DetailHeader"] h1',
+  TITLE: '.article h1,header>h1,h1[itemprop="name"],[data-component="DetailHeader"] h1',
   BYLINE: '.view-byline,header>.attribution,.byline,[data-component="Byline"]',
   INFO_SOURCE: '.bylinepromo,.program,[data-component="InfoSource"]',
   INFO_SOURCE_LINK: '.bylinepromo>a,.program>a,[data-component="InfoSource"]>a',
   WYSIWYG_EMBED:
-    '.inline-content.wysiwyg,.embed-wysiwyg.richtext,.view-wysiwyg,[data-component="LegacyWysiwyg"],[data-component="RelatedCard"]'
+    '.inline-content.wysiwyg,.embed-wysiwyg.richtext,.view-wysiwyg,[data-component="LegacyWysiwyg"],[data-component="RelatedCard"]',
+  QUOTE:
+    'blockquote:not([class]),.quote--pullquote,.inline-content.quote,.embed-quote,.comp-rich-text-blockquote,.view-inline-pullquote,[data-component="Blockquote"],[data-component="Pullquote"]'
 };
 
 const RICHTEXT_BLOCK_TAGNAMES = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'OL', 'UL'];

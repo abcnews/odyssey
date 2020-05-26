@@ -1,6 +1,6 @@
 {
 	"name": "odyssey",
-	"version": "4.20.7",
+	"version": "4.23.5",
 	"description": "Enhance feature-worthy stories",
 	"license": "MIT",
 	"private": true,
@@ -34,7 +34,7 @@
 	},
 	"devDependencies": {
 		"@abcaustralia/postcss-config": "^3.3.2",
-		"@abcnews/aunty": "^10.8.0",
+		"@abcnews/aunty": "^10.9.1",
 		"duplicate-package-checker-webpack-plugin": "^3.0.0",
 		"postcss-loader": "^3.0.0",
 		"webpack-bundle-analyzer": "^3.3.2"
