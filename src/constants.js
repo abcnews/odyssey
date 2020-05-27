@@ -86,7 +86,9 @@ const SMALLEST_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAAAADs=';
 
 const IS_PREVIEW = window.location.hostname.indexOf('aus.aunty') > -1;
 
-const IS_PL = !!document.querySelector('[name="generator"][content="PL NEWS WEB"]');
+const IS_PL = !!document.querySelector('link[data-chunk^="page."]');
+const IS_PL_APP = !!document.querySelector('link[data-chunk="page.AppArticleDetail"]');
+const IS_PL_WEB = !!document.querySelector('link[data-chunk="page.ArticleDetail"]');
 
 const MS_VERSION = (ua => {
   const msie = ua.indexOf('MSIE ');
@@ -152,6 +154,8 @@ module.exports = {
   SMALLEST_IMAGE,
   IS_PREVIEW,
   IS_PL,
+  IS_PL_APP,
+  IS_PL_WEB,
   MS_VERSION,
   SUPPORTS_PASSIVE,
   INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID
