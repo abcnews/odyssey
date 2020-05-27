@@ -13,8 +13,8 @@ if (IS_PL) {
   } else {
     window.addEventListener('articleHydrated', app.decoyed);
   }
-} else if (document.readyState !== 'loading') {
-  app();
 } else {
-  document.addEventListener('DOMContentLoaded', app);
+  (function appAfterDomReady() {
+    /in/.test(document.readyState) ? setTimeout(appAfterDomReady, 9) : app();
+  })();
 }

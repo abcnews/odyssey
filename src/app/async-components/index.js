@@ -14,6 +14,10 @@ const components = {
 let shouldIncludeIcons = true;
 
 module.exports.render = (componentName, props = {}, el) => {
+  if (!el.parentElement) {
+    return;
+  }
+
   ReactDOM.render(
     <App brand="news" externalIconFile={false} flexContainer={false}>
       {(shouldIncludeIcons = shouldIncludeIcons && <Icons />)}
