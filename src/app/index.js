@@ -309,22 +309,25 @@ function app() {
       }
     }
 
-    function fixDesktopPreviewArea() {
+    function fixIframes() {
       const styleEl = document.createElement('style');
 
-      styleEl.appendChild(document.createTextNode(`#iframe-pl,#iframe-pl-desktop{height:100% !important;}`));
+      styleEl.appendChild(
+        document.createTextNode(`#iframe-app,#iframe-pl,#iframe-pl-desktop{height:100% !important;}`)
+      );
       document.head.appendChild(styleEl);
       desktopPreviewIframeEl = desktopPreviewAreaEl.querySelector('iframe');
 
+      document.getElementById('iframe-app').setAttribute('scrolling', 'yes');
       document.getElementById('iframe-pl').setAttribute('scrolling', 'yes');
       updateScrollable();
       subscribe(updateScrollable);
       document.querySelector('button[data-preview-desktop]').addEventListener('click', updateScrollable);
     }
 
-    (function fixDesktopPreviewAreaAfterPreviewToolsLoaded() {
+    (function fixIframesAfterPreviewToolsLoaded() {
       desktopPreviewAreaEl = document.querySelector('.section-desktop-preview-area');
-      desktopPreviewAreaEl ? fixDesktopPreviewArea() : setTimeout(fixDesktopPreviewAreaAfterPreviewToolsLoaded, 9);
+      desktopPreviewAreaEl ? fixIframes() : setTimeout(fixIframesAfterPreviewToolsLoaded, 9);
     })();
   }
 }
