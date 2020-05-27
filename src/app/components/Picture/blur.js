@@ -4,8 +4,13 @@ const BLUR_RADIUS = 4;
 const cache = {};
 
 function blurImage(url, done) {
+  if (url.indexOf(window.location.protocol) === -1) {
+    // Don't try to load Mixed Content
+    return done(new Error('Not attempting to load Mixed Content'));
+  }
+
   if (cache[url]) {
-    done(null, cache[url]);
+    return done(null, cache[url]);
   }
 
   const canvasEl = document.createElement('canvas');
@@ -180,7 +185,7 @@ function stackBlurCanvasRGB(context, top_x, top_y, width, height, radius) {
   var widthMinus1 = width - 1;
   var heightMinus1 = height - 1;
   var radiusPlus1 = radius + 1;
-  var sumFactor = radiusPlus1 * (radiusPlus1 + 1) / 2;
+  var sumFactor = (radiusPlus1 * (radiusPlus1 + 1)) / 2;
 
   var stackStart = new BlurStack();
   var stack = stackStart;
