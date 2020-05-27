@@ -27,7 +27,7 @@ const UParallax = require('./components/UParallax');
 const UPull = require('./components/UPull');
 const VideoEmbed = require('./components/VideoEmbed');
 const WhatNext = require('./components/WhatNext');
-const { start } = require('./scheduler');
+const { start, subscribe } = require('./scheduler');
 const { getMeta } = require('./meta');
 const { reset } = require('./reset');
 const { getMarkers, getSections } = require('./utils/anchors');
@@ -285,6 +285,48 @@ function app() {
       console.debug(`[Odyssey] Deprecated anchors used: ${Object.keys(deprecated).join(', ')}`);
     }
   }, 5000);
+
+  // Fix preview tools's PL preview areas
+  // * Limit PL iframe heights to 100%
+  // * Enable/disable the desktop iframe scrolling when it is/isn't 100% in view
+  if (IS_PREVIEW) {
+    let desktopPreviewAreaEl;
+    let desktopPreviewIframeEl;
+    let isScrollable = false;
+
+    function updateScrollable() {
+      const { top } = desktopPreviewAreaEl.getBoundingClientRect();
+      const shouldBeScrollable = top <= 0;
+
+      if (isScrollable !== shouldBeScrollable) {
+        desktopPreviewIframeEl.setAttribute('scrolling', shouldBeScrollable ? 'yes' : 'no');
+
+        isScrollable = shouldBeScrollable;
+      }
+
+      if (shouldBeScrollable) {
+        window.scrollTo(window.scrollX, window.scrollY + top);
+      }
+    }
+
+    function fixDesktopPreviewArea() {
+      const styleEl = document.createElement('style');
+
+      styleEl.appendChild(document.createTextNode(`#iframe-pl,#iframe-pl-desktop{height:100% !important;}`));
+      document.head.appendChild(styleEl);
+      desktopPreviewIframeEl = desktopPreviewAreaEl.querySelector('iframe');
+
+      document.getElementById('iframe-pl').setAttribute('scrolling', 'yes');
+      updateScrollable();
+      subscribe(updateScrollable);
+      document.querySelector('button[data-preview-desktop]').addEventListener('click', updateScrollable);
+    }
+
+    (function fixDesktopPreviewAreaAfterPreviewToolsLoaded() {
+      desktopPreviewAreaEl = document.querySelector('.section-desktop-preview-area');
+      desktopPreviewAreaEl ? fixDesktopPreviewArea() : setTimeout(fixDesktopPreviewAreaAfterPreviewToolsLoaded, 9);
+    })();
+  }
 }
 
 function decoyed() {
