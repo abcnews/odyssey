@@ -1,9 +1,12 @@
 // External
+const { getGeneration, getTier, GENERATIONS, TIERS } = require('@abcnews/env-utils');
+
+console.log(require('@abcnews/env-utils'));
 const parseDate = require('date-fns/parse');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const { INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID, IS_PL, IS_PREVIEW, MOCK_ELEMENT, SELECTORS } = require('../../constants');
+const { INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID, MOCK_ELEMENT, SELECTORS } = require('../../constants');
 const { $, $$, detach, setOrAddMetaTag } = require('../utils/dom');
 const { trim } = require('../utils/misc');
 
@@ -16,11 +19,6 @@ const SHARE_ORDERING = ['facebook', 'twitter', 'native', 'email'];
 let meta = null; // singleton
 
 function addPLMetaTags() {
-  // const { document } = JSON.parse(
-  //   JSON.stringify(window.__API__)
-  //     .replace(/__SCRIPT_TAG__/g, '<script')
-  //     .replace(/__SCRIPT_CLOSE_TAG__/g, '</script>')
-  // );
   const { document } = window.__API__;
   const { contextSettings } = document;
   const { published, updated } = document.publishedDatePrepared;
@@ -187,7 +185,9 @@ function getProductionUnit() {
 
 function getMeta() {
   if (!meta) {
-    if (IS_PL) {
+    const isPl = getGeneration() === GENERATIONS.PL;
+
+    if (isPl) {
       addPLMetaTags();
     }
 
@@ -213,8 +213,8 @@ function getMeta() {
       hasCaptionAttributions: getMetaContent('caption-attributions') !== 'false',
       hasCommentsEnabled: getMetaContent('showLivefyreComments') === 'true',
       isDarkMode: getMetaContent('dark-mode') === 'true',
-      isPL: IS_PL,
-      isPreview: IS_PREVIEW
+      isPl,
+      isPreview: getTier() === TIERS.P
     };
   }
 

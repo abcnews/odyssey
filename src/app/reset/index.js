@@ -3,7 +3,7 @@ const html = require('bel');
 const dewysiwyg = require('util-dewysiwyg');
 
 // Ours
-const { IS_PL, SELECTORS } = require('../../constants');
+const { SELECTORS } = require('../../constants');
 const Main = require('../components/Main');
 const { $, $$, append, before, detach, detachAll, setOrAddMetaTag, substitute } = require('../utils/dom');
 const { literalList, trim } = require('../utils/misc');
@@ -132,7 +132,7 @@ function reset(storyEl, meta) {
   resetMetaViewport();
 
   // Augment the Presentation Layer-rendered DOM
-  if (IS_PL) {
+  if (meta.isPl) {
     resetPL();
   }
 

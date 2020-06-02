@@ -3,18 +3,6 @@ require('./fonts.scss');
 require('./keyframes.scss');
 require('./app/components/utilities/index.scss');
 require('./polyfills');
-
-const app = require('./app');
-const { IS_PL } = require('./constants');
-
-if (IS_PL) {
-  if (window.articleHydrated) {
-    app.decoyed();
-  } else {
-    window.addEventListener('articleHydrated', app.decoyed);
-  }
-} else {
-  (function appAfterDomReady() {
-    /in/.test(document.readyState) ? setTimeout(appAfterDomReady, 9) : app();
-  })();
-}
+require('@abcnews/env-utils')
+  .requestDOMPermit('body')
+  .then(require('./app'));
