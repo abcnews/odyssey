@@ -2,7 +2,7 @@ const ATTR = 'veiled';
 const CSS = `
 html[${ATTR}] {
   overflow: hidden;
-  mac-height: 100%;
+  max-height: 100%;
 }
 html:not([${ATTR}]) > body {
   will-change: opacity;
