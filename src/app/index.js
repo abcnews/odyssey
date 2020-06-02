@@ -3,7 +3,7 @@ const html = require('bel');
 
 // Ours
 
-const { IS_PL, IS_PREVIEW, RICHTEXT_BLOCK_TAGNAMES, SELECTORS } = require('../constants');
+const { RICHTEXT_BLOCK_TAGNAMES, SELECTORS } = require('../constants');
 const api = require('./api');
 const { PresentationLayerAsyncComponent } = require('./async-components/loader');
 const Block = require('./components/Block');
@@ -238,7 +238,7 @@ function app() {
 
   // Add Presentation Layer global nav if it doesn't already exist
   setTimeout(() => {
-    if (!IS_PL && !$('[data-component="Masthead"]')) {
+    if (!meta.isPl && !$('[data-component="Masthead"]')) {
       before(storyEl, PresentationLayerAsyncComponent('Nav'));
     }
   }, 0);
@@ -268,7 +268,7 @@ function app() {
       });
     });
 
-    if (IS_PREVIEW && blockEls.length) {
+    if (meta.isPreview && blockEls.length) {
       console.debug(`[Odyssey] Fixed classNames of deprecated scrollyteller Blocks`);
     }
   }, 2000);
@@ -281,7 +281,7 @@ function app() {
 
     const keys = Object.keys(deprecated);
 
-    if (IS_PREVIEW && keys.length) {
+    if (meta.isPreview && keys.length) {
       console.debug(`[Odyssey] Deprecated anchors used: ${Object.keys(deprecated).join(', ')}`);
     }
   }, 5000);
@@ -289,7 +289,7 @@ function app() {
   // Fix preview tools's PL preview areas
   // * Limit PL iframe heights to 100%
   // * Enable/disable the desktop iframe scrolling when it is/isn't 100% in view
-  if (IS_PREVIEW) {
+  if (meta.isPreview) {
     let desktopPreviewAreaEl;
     let desktopPreviewIframeEl;
     let isScrollable = false;
@@ -332,16 +332,4 @@ function app() {
   }
 }
 
-function decoyed() {
-  // Activate PL decoy then wait for confirmation to initialise the app
-  window.addEventListener('decoyActive', function _once(event) {
-    if (event.detail.key === 'body') {
-      window.removeEventListener('decoyActive', _once);
-      app();
-    }
-  });
-  window.dispatchEvent(new CustomEvent('decoy', { detail: { key: 'body', active: true } }));
-}
-
 module.exports = app;
-module.exports.decoyed = decoyed;
