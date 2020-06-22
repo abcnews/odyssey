@@ -79,8 +79,15 @@ MQ.LG = `${MQ.GT_MD} and ${MQ.LT_XL}`;
 MQ.XL = MQ.GT_LG;
 MQ.PORTRAIT = '(orientation: portrait)';
 MQ.LANDSCAPE = '(orientation: landscape)';
+MQ.LANDSCAPE_LT_LG = `${MQ.LANDSCAPE} and ${MQ.LT_LG}`;
 MQ.GT_4_3 = '(min-aspect-ratio: 4/3)';
 MQ.PL_SM = '(max-width: 33.9375em)';
+
+const MQL = Object.keys(MQ).reduce((memo, key) => {
+  memo[key] = window.matchMedia(MQ[key]);
+
+  return memo;
+}, {});
 
 const SMALLEST_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAAAADs=';
 
@@ -124,6 +131,8 @@ const SUPPORTS_PASSIVE = (isSupported => {
 
 const INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID = '10766144'; // This document is managed in Core Media
 
+window.ODYSSEY_MQL = MQL;
+
 module.exports = {
   NEWLINE,
   HYPHEN,
@@ -145,6 +154,7 @@ module.exports = {
   MOCK_TEXT,
   REM,
   MQ,
+  MQL,
   SMALLEST_IMAGE,
   MS_VERSION,
   SUPPORTS_PASSIVE,

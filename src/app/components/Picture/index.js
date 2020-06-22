@@ -3,8 +3,9 @@ const html = require('bel');
 const picturefill = require('picturefill/dist/picturefill.min');
 
 // Ours
-const { MQ, RATIO_PATTERN, SMALLEST_IMAGE, MS_VERSION } = require('../../../constants');
-const { enqueue, subscribe } = require('../../scheduler');
+const { MQ, MQL, RATIO_PATTERN, SMALLEST_IMAGE, MS_VERSION } = require('../../../constants');
+const { getMeta } = require('../../meta');
+const { enqueue, subscribe, unsubscribe } = require('../../scheduler');
 const { $, $$, append, detach } = require('../../utils/dom');
 const { proximityCheck } = require('../../utils/misc');
 const Sizer = require('../Sizer');
@@ -76,15 +77,26 @@ function Picture({
 
   const placeholderEl = Sizer(ratios);
 
-  const picturePictureEl = html`
-    <picture>
-      <source srcset="${xlImageURL}" media="${MQ.XL}" />
-      <source srcset="${lgImageURL}" media="${MQ.LG}" />
-      <source srcset="${lansdcapeLtLgImageURL}" media="${MQ.LANDSCAPE} and ${MQ.LT_LG}" />
-      <source srcset="${mdImageURL}" media="${MQ.MD}" />
-      <source srcset="${smImageURL}" media="${MQ.SM}" />
-    </picture>
-  `;
+  // We cannot use <picture> <source>s on PL preview sites, because 'imageset's
+  // aren't allowed Mixed Content (http asset loaded on https page). We have to
+  // manually manage the <img> src attribute sources.
+  // https://snook.ca/archives/html_and_css/mixed-content-responsive-images
+  const { isPL, isPreview } = getMeta();
+  const isManagingSources = isPL && isPreview;
+
+  const picturePictureEl = isManagingSources
+    ? html`
+        <div></div>
+      `
+    : html`
+        <picture>
+          <source srcset="${xlImageURL}" media="${MQ.XL}" />
+          <source srcset="${lgImageURL}" media="${MQ.LG}" />
+          <source srcset="${lansdcapeLtLgImageURL}" media="${MQ.LANDSCAPE_LT_LG}" />
+          <source srcset="${mdImageURL}" media="${MQ.MD}" />
+          <source srcset="${smImageURL}" media="${MQ.SM}" />
+        </picture>
+      `;
 
   const pictureEl = html`
     <a class="Picture${isContained ? ' is-contained' : ''}"> ${placeholderEl} ${picturePictureEl} </a>
@@ -111,6 +123,10 @@ function Picture({
       pictureEl.removeAttribute('loaded');
       detach(imgEl);
       imgEl = null;
+
+      if (isManagingSources) {
+        unsubscribe(picture.setSrc);
+      }
     },
     load: () => {
       if (imgEl) {
@@ -125,7 +141,10 @@ function Picture({
       imgEl.addEventListener('load', picture.loaded, false);
       append(picturePictureEl, imgEl);
 
-      if (MS_VERSION && MS_VERSION < 13) {
+      if (isManagingSources) {
+        picture.setSrc({ hasChanged: true });
+        subscribe(picture.setSrc);
+      } else if (MS_VERSION && MS_VERSION < 13) {
         picturefill({ elements: [imgEl] });
       }
 
@@ -159,6 +178,23 @@ function Picture({
 
       if (window.objectFitPolyfill) {
         window.objectFitPolyfill(imgEl);
+      }
+    },
+    setSrc: ({ hasChanged }) => {
+      if (!imgEl || !hasChanged) {
+        return;
+      }
+
+      if (MQL.XL.matches) {
+        imgEl.src = xlImageURL;
+      } else if (MQL.LG.matches) {
+        imgEl.src = lgImageURL;
+      } else if (MQL.LANDSCAPE_LT_LG.matches) {
+        imgEl.src = lansdcapeLtLgImageURL;
+      } else if (MQL.MD.matches) {
+        imgEl.src = mdImageURL;
+      } else if (MQL.SM.matches) {
+        imgEl.src = smImageURL;
       }
     },
     forget: () => {
