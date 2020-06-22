@@ -1,7 +1,5 @@
 // External
 const { getGeneration, getTier, GENERATIONS, TIERS } = require('@abcnews/env-utils');
-
-console.log(require('@abcnews/env-utils'));
 const parseDate = require('date-fns/parse');
 const url2cmid = require('util-url2cmid');
 
