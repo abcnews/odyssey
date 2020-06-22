@@ -11,12 +11,12 @@
     height: 100%;
   }
 
-  picture.object-fit-polyfill {
-    position: static !important;
-  }
-
   &:not([loading]):not([loaded]) {
     visibility: hidden;
+  }
+
+  & > .object-fit-polyfill {
+    position: static !important;
   }
 
   img {

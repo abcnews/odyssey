@@ -1,6 +1,5 @@
 // External
 const html = require('bel');
-const picturefill = require('picturefill/dist/picturefill.min');
 
 // Ours
 const { MQ, MQL, RATIO_PATTERN, SMALLEST_IMAGE, MS_VERSION } = require('../../../constants');
@@ -77,14 +76,21 @@ function Picture({
 
   const placeholderEl = Sizer(ratios);
 
-  // We cannot use <picture> <source>s on PL preview sites, because 'imageset's
-  // aren't allowed Mixed Content (http asset loaded on https page). We have to
-  // manually manage the <img> src attribute sources.
+  // The <img> element will be rendered inside a container element because:
+  // * We want to use <picture> where possible to automatically manage sources
+  //   (based on the viewport size)
+  // * The object-fit polyfill needs a container so that it can manipulate the
+  //   style attributes of both it and the image.
+  // Note: We cannot use <picture> & <source>s on PL preview sites, because
+  // `imageset`s aren't allowed Mixed Content (http asset loaded on https page).
+  // We have to manually manage the <img> src attribute sources to work around
+  // this. Seeing as this does a similar job to the <picture> element, we also
+  // use this technique for IE, rather than add the picturefill library.
   // https://snook.ca/archives/html_and_css/mixed-content-responsive-images
   const { isPL, isPreview } = getMeta();
-  const isManagingSources = isPL && isPreview;
+  const isManagingSources = (isPL && isPreview) || (MS_VERSION && MS_VERSION < 13);
 
-  const picturePictureEl = isManagingSources
+  const imgContainerEl = isManagingSources
     ? html`
         <div></div>
       `
@@ -99,7 +105,7 @@ function Picture({
       `;
 
   const pictureEl = html`
-    <a class="Picture${isContained ? ' is-contained' : ''}"> ${placeholderEl} ${picturePictureEl} </a>
+    <a class="Picture${isContained ? ' is-contained' : ''}"> ${placeholderEl} ${imgContainerEl} </a>
   `;
 
   if (linkUrl) {
@@ -139,13 +145,11 @@ function Picture({
         <img alt="${alt}" data-object-fit="" />
       `;
       imgEl.addEventListener('load', picture.loaded, false);
-      append(picturePictureEl, imgEl);
+      append(imgContainerEl, imgEl);
 
       if (isManagingSources) {
         picture.setSrc({ hasChanged: true });
         subscribe(picture.setSrc);
-      } else if (MS_VERSION && MS_VERSION < 13) {
-        picturefill({ elements: [imgEl] });
       }
 
       if (!picture.hasPlaceholder) {
