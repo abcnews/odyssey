@@ -4,8 +4,10 @@ const BLUR_RADIUS = 4;
 const cache = {};
 
 function blurImage(url, done) {
-  if (url.indexOf(window.location.protocol) === -1) {
-    // Don't try to load Mixed Content
+  // Don't try to load Mixed Content
+  const protocol = String(window.location.protocol);
+
+  if (protocol === 'https:' && url.indexOf(window.location.protocol) === -1) {
     return done(new Error('Not attempting to load Mixed Content'));
   }
 
