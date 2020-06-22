@@ -238,7 +238,7 @@ function app() {
 
   // Add Presentation Layer global nav if it doesn't already exist
   setTimeout(() => {
-    if (!meta.isPl && !$('[data-component="Masthead"]')) {
+    if (!meta.isPL && !$('[data-component="Masthead"]')) {
       before(storyEl, PresentationLayerAsyncComponent('Nav'));
     }
   }, 0);

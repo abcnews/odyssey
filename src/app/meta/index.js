@@ -183,9 +183,9 @@ function getProductionUnit() {
 
 function getMeta() {
   if (!meta) {
-    const isPl = getGeneration() === GENERATIONS.PL;
+    const isPL = getGeneration() === GENERATIONS.PL;
 
-    if (isPl) {
+    if (isPL) {
       addPLMetaTags();
     }
 
@@ -211,8 +211,8 @@ function getMeta() {
       hasCaptionAttributions: getMetaContent('caption-attributions') !== 'false',
       hasCommentsEnabled: getMetaContent('showLivefyreComments') === 'true',
       isDarkMode: getMetaContent('dark-mode') === 'true',
-      isPl,
-      isPreview: getTier() === TIERS.P
+      isPL,
+      isPreview: getTier() === TIERS.PREVIEW
     };
   }
 

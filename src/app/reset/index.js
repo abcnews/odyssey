@@ -132,7 +132,7 @@ function reset(storyEl, meta) {
   resetMetaViewport();
 
   // Augment the Presentation Layer-rendered DOM
-  if (meta.isPl) {
+  if (meta.isPL) {
     resetPL();
   }
 
