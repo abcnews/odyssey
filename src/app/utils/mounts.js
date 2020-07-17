@@ -2,19 +2,47 @@
 const { MOCK_ELEMENT } = require('../../constants');
 const { $$, detach, detachAll, isElement, substitute } = require('./dom');
 
-const CONFIG_ANCHOR_NAME = 'config';
+const MOUNT_JOINABLE_SELECTOR = ['[data-mount][id', '],a[id', ']:not([href]),a[name', ']:not([href])'];
+const MOUNT_SELECTOR = MOUNT_JOINABLE_SELECTOR.join('');
+const CONFIG_MOUNT_NAME = 'config';
+
+const prefixedMountSelectorCache = {};
+
+function prefixedMountSelector(prefix) {
+  if (!prefixedMountSelectorCache[prefix]) {
+    prefixedMountSelectorCache[prefix] = MOUNT_JOINABLE_SELECTOR.join(`^="${prefix}"`);
+  }
+
+  return prefixedMountSelectorCache[prefix];
+}
+
+function isMount(el) {
+  return isElement(el) && el.matches(MOUNT_SELECTOR);
+}
+
+function isPrefixedMount(el, prefix) {
+  return isElement(el) && el.matches(prefixedMountSelector(prefix));
+}
+
+// SC -> "Scriptio continua" https://en.wikipedia.org/wiki/Scriptio_continua
+function getMountSC(el) {
+  return el.getAttribute('id') || el.getAttribute('name') || '';
+}
+
+function getTrailingMountSC(el, prefix) {
+  return getMountSC(el).slice(prefix.length);
+}
 
 function grabConfigSC(el) {
   const prevEl = el.previousElementSibling || MOCK_ELEMENT;
-  const prevElName = prevEl.getAttribute('name') || '';
 
-  if (prevElName.indexOf(CONFIG_ANCHOR_NAME) !== 0) {
+  if (!isPrefixedMount(prevEl, CONFIG_MOUNT_NAME)) {
     return '';
   }
 
   detach(prevEl);
 
-  return prevElName.slice(CONFIG_ANCHOR_NAME.length);
+  return getTrailingMountSC(prevEl, CONFIG_MOUNT_NAME);
 }
 
 function _substituteSectionWith(el, remainingBetweenNodes) {
@@ -35,14 +63,14 @@ function getSections(names) {
   names.forEach(name => {
     const endName = `end${name}`;
 
-    $$(`a[name^="${name}"]`).forEach(startNode => {
+    $$(prefixedMountSelector(name)).forEach(startNode => {
       let nextNode = startNode;
       let isMoreContent = true;
       const betweenNodes = [];
-      const configSC = startNode.getAttribute('name').slice(name.length);
+      const configSC = getTrailingMountSC(startNode, name);
 
       while (isMoreContent && (nextNode = nextNode.nextSibling) !== null) {
-        if (isElement(nextNode) && (nextNode.getAttribute('name') || '').indexOf(endName) === 0) {
+        if (isPrefixedMount(nextNode, endName)) {
           isMoreContent = false;
         } else {
           betweenNodes.push(nextNode);
@@ -72,8 +100,8 @@ function getMarkers(names) {
 
   return names.reduce((memo, name) => {
     return memo.concat(
-      $$(`a[name^="${name}"]`).map(node => {
-        const configSC = node.getAttribute('name').slice(name.length);
+      $$(prefixedMountSelector(name)).map(node => {
+        const configSC = getTrailingMountSC(node, name);
 
         const marker = {
           name,
@@ -90,6 +118,11 @@ function getMarkers(names) {
 }
 
 module.exports = {
+  prefixedMountSelector,
+  isMount,
+  isPrefixedMount,
+  getMountSC,
+  getTrailingMountSC,
   grabConfigSC,
   getSections,
   getMarkers

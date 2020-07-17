@@ -8,6 +8,7 @@ const { ALIGNMENT_PATTERN, SCROLLPLAY_PCT_PATTERN, VIDEO_MARKER_PATTERN } = requ
 const { enqueue, subscribe } = require('../../scheduler');
 const { $, detach, detectVideoId, getChildImage, isElement } = require('../../utils/dom');
 const { getRatios, trim } = require('../../utils/misc');
+const { getMountSC, getTrailingMountSC, isMount, isPrefixedMount } = require('../../utils/mounts');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
 const VideoPlayer = require('../VideoPlayer');
@@ -404,6 +405,8 @@ function transformSection(section) {
     config.backgrounds = [];
     config.contentEls = section.betweenNodes
       .map(node => {
+        const mountSC = isMount(node) ? getMountSC(node) : '';
+
         let img = getChildImage(node);
         if (img) {
           // We found an image to use as one of the backgrounds
@@ -432,10 +435,10 @@ function transformSection(section) {
 
         // See if we have a video we can use for a background
         let videoMarker = {};
-        if (node.name && !!node.name.match(VIDEO_MARKER_PATTERN)) {
+        if (!!mountSC.match(VIDEO_MARKER_PATTERN)) {
           videoMarker = {
-            isVideoYouTube: node.name.split('youtube')[1],
-            videoId: node.name.match(VIDEO_MARKER_PATTERN)[1]
+            isVideoYouTube: !!mountSC.split('youtube')[1],
+            videoId: mountSC.match(VIDEO_MARKER_PATTERN)[1]
           };
         } else {
           videoMarker.videoId = detectVideoId(node);
@@ -466,8 +469,9 @@ function transformSection(section) {
           return null;
         }
 
-        if (node.tagName && node.tagName === 'A' && (node.getAttribute('name') || '').indexOf('mark') === 0) {
-          const config = node.getAttribute('name').replace('mark', '');
+        if (isPrefixedMount(node, 'mark')) {
+          const config = getTrailingMountSC(node, 'mark');
+
           if (config.indexOf('light') > -1) {
             lightDarkConfig = 'light';
           }
@@ -493,15 +497,15 @@ function transformSection(section) {
             node.nextElementSibling.setAttribute('data-background-index', node.getAttribute('data-background-index'));
           }
 
-          // Remove this anchor from the flow
+          // Remove this mount from the flow
           node.parentElement.removeChild(node);
           return null;
-        } else if (node.tagName && node.tagName === 'A') {
-          // Remove any extra orphan anchor tags
+        } else if (isMount(node)) {
+          // Remove any extra orphan mount tags
           return null;
         }
 
-        if (node.tagName) {
+        if (isElement(node)) {
           if (lightDarkConfig) {
             node.setAttribute('data-lightdark', lightDarkConfig);
           }
@@ -520,11 +524,11 @@ function transformSection(section) {
       let imgEl;
 
       if (!_config.videoId && !_config.imgEl && isElement(node)) {
-        classList = node.className.split(' ');
+        const mountSC = isMount(node) ? getMountSC(node) : '';
 
-        if (node.name && !!node.name.match(VIDEO_MARKER_PATTERN)) {
-          _config.isVideoYouTube = node.name.split('youtube')[1];
-          _config.videoId = videoId = node.name.match(VIDEO_MARKER_PATTERN)[1];
+        if (!!mountSC.match(VIDEO_MARKER_PATTERN)) {
+          _config.isVideoYouTube = !!mountSC.split('youtube')[1];
+          _config.videoId = videoId = mountSC.match(VIDEO_MARKER_PATTERN)[1];
         } else {
           videoId = detectVideoId(node);
         }
@@ -548,7 +552,7 @@ function transformSection(section) {
         }
       }
 
-      if (!videoId && !imgEl && isElement(node) && (node.hasAttribute('name') || trim(node.textContent).length > 0)) {
+      if (!videoId && !imgEl && isElement(node)) {
         _config.contentEls.push(node);
       }
 

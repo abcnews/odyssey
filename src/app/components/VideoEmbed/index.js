@@ -6,9 +6,9 @@ const url2cmid = require('util-url2cmid');
 // Ours
 const { ALIGNMENT_PATTERN, VIDEO_MARKER_PATTERN, SCROLLPLAY_PCT_PATTERN } = require('../../../constants');
 const { invalidateClient } = require('../../scheduler');
-const { grabConfigSC } = require('../../utils/anchors');
 const { $, $$, substitute } = require('../../utils/dom');
 const { getRatios } = require('../../utils/misc');
+const { getMountSC, grabConfigSC } = require('../../utils/mounts');
 const Caption = require('../Caption');
 const VideoPlayer = require('../VideoPlayer');
 const YouTubePlayer = require('../YouTubePlayer');
@@ -33,11 +33,12 @@ function VideoEmbed({ playerEl, captionEl, alignment, isFull, isCover, isAnon })
 }
 
 function transformEl(el) {
-  const isMarker = el.name && !!el.name.match(VIDEO_MARKER_PATTERN);
+  const mountSC = isMount(node) ? getMountSC(node) : '';
+  const isMarker = !!mountSC.match(VIDEO_MARKER_PATTERN);
   const linkEl = $('a[href]', el);
   const plPlayerIdEl = $('[data-component="Player"] div[id]', el);
   const videoId = isMarker
-    ? el.name.match(VIDEO_MARKER_PATTERN)[1]
+    ? mountSC.match(VIDEO_MARKER_PATTERN)[1]
     : linkEl
     ? url2cmid(linkEl.getAttribute('href'))
     : plPlayerIdEl && plPlayerIdEl.id;
@@ -50,7 +51,7 @@ function transformEl(el) {
   const [, alignment] = configSC.match(ALIGNMENT_PATTERN) || [];
   const unlink = configSC.includes('unlink');
 
-  const isYouTube = isMarker && el.name.indexOf('youtube') === 0;
+  const isYouTube = isMarker && mountSC.indexOf('youtube') === 0;
   const captionEl = !isMarker ? Caption.createFromEl(el, unlink) : null;
   const title = captionEl ? captionEl.children[0].textContent : null;
 

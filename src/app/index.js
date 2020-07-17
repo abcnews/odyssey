@@ -30,8 +30,8 @@ const WhatNext = require('./components/WhatNext');
 const { start, subscribe } = require('./scheduler');
 const { getMeta } = require('./meta');
 const { reset } = require('./reset');
-const { getMarkers, getSections } = require('./utils/anchors');
 const { $, $$, after, append, before, detach, detachAll, prepend, substitute } = require('./utils/dom');
+const { getMarkers, getSections } = require('./utils/mounts');
 
 function app() {
   const meta = getMeta();
@@ -273,7 +273,7 @@ function app() {
     }
   }, 2000);
 
-  // Notify console of deprecated anchors
+  // Notify console of deprecated mounts
   setTimeout(() => {
     const deprecated = {};
 
@@ -282,7 +282,7 @@ function app() {
     const keys = Object.keys(deprecated);
 
     if (meta.isPreview && keys.length) {
-      console.debug(`[Odyssey] Deprecated anchors used: ${Object.keys(deprecated).join(', ')}`);
+      console.debug(`[Odyssey] Deprecated mounts used: ${Object.keys(deprecated).join(', ')}`);
     }
   }, 5000);
 
@@ -312,9 +312,7 @@ function app() {
     function fixIframes() {
       const styleEl = document.createElement('style');
 
-      styleEl.appendChild(
-        document.createTextNode(`#iframe-app,#iframe-pl,#iframe-pl-desktop{height:100% !important;}`)
-      );
+      styleEl.appendChild(document.createTextNode(`#iframe-pl,#iframe-pl-desktop{height:100% !important;}`));
       document.head.appendChild(styleEl);
       desktopPreviewIframeEl = desktopPreviewAreaEl.querySelector('iframe');
 

@@ -17,15 +17,21 @@
   }
 
   &:first-child,
-  a[name]:first-child + & {
+  a[id]:first-child + &,
+  a[name]:first-child + &,
+  [data-mount]:first-child + & {
     margin-top: 0;
   }
 }
 
 .u-layout > .u-full:not(.Gallery) + .u-full:not(.Gallery),
+.u-layout > .u-full:not(.Gallery) + a[id] + .u-full:not(.Gallery),
 .u-layout > .u-full:not(.Gallery) + a[name] + .u-full:not(.Gallery),
+.u-layout > .u-full:not(.Gallery) + [data-mount] + .u-full:not(.Gallery),
 [class*='u-richtext'] > .u-full:not(.Gallery) + .u-full:not(.Gallery),
-[class*='u-richtext'] > .u-full:not(.Gallery) + a[name] + .u-full:not(.Gallery) {
+[class*='u-richtext'] > .u-full:not(.Gallery) + a[id] + .u-full:not(.Gallery),
+[class*='u-richtext'] > .u-full:not(.Gallery) + a[name] + .u-full:not(.Gallery),
+[class*='u-richtext'] > .u-full:not(.Gallery) + [data-mount] + .u-full:not(.Gallery) {
   margin-top: -2rem;
 
   @media #{$mq-gt-md} {

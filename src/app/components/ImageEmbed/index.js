@@ -5,9 +5,9 @@ const url2cmid = require('util-url2cmid');
 
 // Ours
 const { ALIGNMENT_PATTERN } = require('../../../constants');
-const { grabConfigSC } = require('../../utils/anchors');
 const { getChildImage, substitute } = require('../../utils/dom');
 const { getRatios } = require('../../utils/misc');
+const { grabConfigSC } = require('../../utils/mounts');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
 require('./index.scss');

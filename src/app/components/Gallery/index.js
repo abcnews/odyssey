@@ -10,6 +10,7 @@ const { getMeta } = require('../../meta');
 const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
 const { $, append, detach, detectVideoId, getChildImage, isElement, setText } = require('../../utils/dom');
 const { dePx, getRatios, returnFalse } = require('../../utils/misc');
+const { isPrefixedMount, getMountSC } = require('../../utils/mounts');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
 const Sizer = require('../Sizer');
@@ -487,10 +488,9 @@ function transformSection(section) {
       const classList = node.className.split(' ');
       const isQuote = node.matches(SELECTORS.QUOTE);
       const imgEl = getChildImage(node);
-      const videoId =
-        node.name && !!node.name.match(VIDEO_MARKER_PATTERN)
-          ? node.name.match(VIDEO_MARKER_PATTERN)[1]
-          : detectVideoId(node);
+      const videoId = isPrefixedMount(node, 'video')
+        ? getMountSC(node).match(VIDEO_MARKER_PATTERN)[1]
+        : detectVideoId(node);
 
       if (videoId) {
         const videoPlayerEl = VideoPlayer({
