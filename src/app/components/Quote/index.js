@@ -4,9 +4,9 @@ const html = require('bel');
 
 // Ours
 const { ALIGNMENT_PATTERN, MOCK_NODE } = require('../../../constants');
-const { grabConfigSC } = require('../../utils/anchors');
 const { $, $$, append, detach, isElement, isInlineElement, isText, prepend, substitute } = require('../../utils/dom');
 const { trim } = require('../../utils/misc');
+const { grabConfigSC } = require('../../utils/mounts');
 const UQuote = require('../UQuote');
 require('./index.scss');
 

@@ -14,6 +14,7 @@ const Picture = require('../Picture');
 const UParallax = require('../UParallax');
 const VideoPlayer = require('../VideoPlayer');
 const YouTubePlayer = require('../YouTubePlayer');
+const { getMountSC, isMount } = require('../../utils/mounts');
 require('./index.scss');
 
 function Header({
@@ -268,21 +269,22 @@ function transformSection(section, meta) {
 
   const config = candidateNodes.reduce(
     (config, node) => {
-      let classList = node.className ? node.className.split(' ') : [];
+      const classList = node.className ? node.className.split(' ') : [];
+      const mountSC = isMount(node) ? getMountSC(node) : '';
       let videoId;
       let imgEl;
       let interactiveEl;
 
       // If we found an init-interactive then it takes over being the header media
       if (!isNoMedia && !config.interactiveEl && isElement(node)) {
-        // special case for parallax hash markers
-        const isParallax = node.tagName === 'A' && (node.getAttribute('name') || '').indexOf('parallax') === 0;
+        // special case for parallax mounts
+        const isParallax = mountSC.indexOf('parallax') === 0;
 
         // normal init-interactives
         const isInteractive =
           classList.indexOf('init-interactive') > -1 ||
           node.querySelector('[class^="init-interactive"]') ||
-          (node.tagName === 'A' && (node.getAttribute('name') || '').indexOf('interactive') === 0);
+          mountSC.indexOf('interactive') === 0;
 
         if (isParallax || isInteractive) {
           config.interactiveEl = interactiveEl = node;
@@ -300,9 +302,9 @@ function transformSection(section, meta) {
           }
 
           config.videoId = ((parentEl.getAttribute('data-uri') || '').match(/\d+/) || [null])[0];
-        } else if (node.name && !!node.name.match(VIDEO_MARKER_PATTERN)) {
-          config.isVideoYouTube = node.name.split('youtube')[1];
-          config.videoId = videoId = node.name.match(VIDEO_MARKER_PATTERN)[1];
+        } else if (!!mountSC.match(VIDEO_MARKER_PATTERN)) {
+          config.isVideoYouTube = !!mountSC.split('youtube')[1];
+          config.videoId = videoId = mountSC.match(VIDEO_MARKER_PATTERN)[1];
         } else {
           videoId = detectVideoId(node);
 
@@ -318,13 +320,7 @@ function transformSection(section, meta) {
         }
       }
 
-      if (
-        !videoId &&
-        !imgEl &&
-        !interactiveEl &&
-        isElement(node) &&
-        (trim(node.textContent).length > 0 || node.tagName === 'A')
-      ) {
+      if (!videoId && !imgEl && !interactiveEl && isElement(node) && (trim(node.textContent).length > 0 || !!mountSC)) {
         config.miscContentEls.push(node);
       }
 

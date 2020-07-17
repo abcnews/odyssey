@@ -95,18 +95,6 @@ function resetMetaViewport() {
   setOrAddMetaTag('viewport', 'width=device-width, initial-scale=1, minimum-scale=1');
 }
 
-function resetPL() {
-  const rootEl = $(`[data-component="Decoy"][data-key="body"]`);
-
-  // Normalise marker attributes (id=>name)
-  $$('a[id]:not([href]', rootEl).forEach(el => {
-    if (el.children.length === 0) {
-      el.setAttribute('name', el.id);
-      el.removeAttribute('id');
-    }
-  });
-}
-
 function promoteToMain(storyEl, meta) {
   const existingMainEl = $(SELECTORS.MAIN);
   const id = existingMainEl.getAttribute('id');
@@ -130,11 +118,6 @@ function reset(storyEl, meta) {
 
   // Update (or add) the meta viewport tag so that touch devices don't introduce a click delay
   resetMetaViewport();
-
-  // Augment the Presentation Layer-rendered DOM
-  if (meta.isPL) {
-    resetPL();
-  }
 
   // Apply theme, if defined
   if (typeof meta.theme === 'string') {
