@@ -33,7 +33,7 @@ function VideoEmbed({ playerEl, captionEl, alignment, isFull, isCover, isAnon })
 }
 
 function transformEl(el) {
-  const mountSC = isMount(node) ? getMountSC(node) : '';
+  const mountSC = isMount(el) ? getMountSC(el) : '';
   const isMarker = !!mountSC.match(VIDEO_MARKER_PATTERN);
   const linkEl = $('a[href]', el);
   const plPlayerIdEl = $('[data-component="Player"] div[id]', el);
