@@ -57,7 +57,8 @@ const MOCK_ELEMENT = {
   lastElementChild: null,
   innerHTML: '',
   getAttribute: _ => '',
-  hasAttribute: _ => false
+  hasAttribute: _ => false,
+  matches: _ => false
 };
 
 const MOCK_TEXT = {
