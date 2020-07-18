@@ -1,3 +1,6 @@
+$dls-white-10-opacity: hsla(0, 0%, 100%, 0.1);
+$dls-white-20-opacity: hsla(0, 0%, 100%, 0.2);
+
 [data-component='ScreenReaderOnly'][href='#content'] {
   display: none;
 }
@@ -20,6 +23,8 @@
 }
 
 [data-component='GlobalNavigation'] {
+  --colour-global-nav-border: var(--colour-link-nav);
+
   a:link,
   a:active,
   a:visited {
@@ -51,10 +56,87 @@
   padding: 0;
   background: none;
   line-height: 1.5em;
+}
 
-  a:hover,
-  a:active,
-  a:visited {
-    color: inherit;
+[data-component='FooterList'] {
+  border-bottom: 0;
+}
+
+[data-component='FooterList'] li {
+  background: none;
+  color: white;
+
+  &:last-child {
+    color: #b3b3b3;
+  }
+}
+
+[data-component='FooterList'] ~ * {
+  display: none;
+}
+
+.Nav {
+  background-color: #0f1010;
+}
+
+.Nav-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.Nav-actions {
+  display: flex;
+}
+
+.Nav-navRow,
+.Nav-toggleButton {
+  background-color: $dls-white-10-opacity;
+}
+
+.Nav-logoLink,
+.Nav-searchLink {
+  &,
+  &:link,
+  &:visited {
+    color: white;
+  }
+
+  &:focus,
+  &:visited:focus,
+  &:hover:focus {
+    :global(.tab-key-pressed) & {
+      background-color: var(--link-text, var(--colour-assistant));
+      color: white;
+    }
+  }
+}
+
+.Nav-searchLink {
+  border-left: 1px solid $dls-white-20-opacity;
+}
+
+.Nav-globalNavButton {
+  &,
+  &:hover {
+    background-color: $dls-white-10-opacity;
+  }
+
+  &:focus {
+    color: white;
+
+    :global(.tab-key-pressed) & {
+      background-color: var(--link-text, var(--colour-assistant));
+      color: white;
+    }
+  }
+}
+
+@media print {
+  .Nav {
+    background: none;
+  }
+
+  .Nav-actions {
+    display: none;
   }
 }

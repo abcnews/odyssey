@@ -1,5 +1,5 @@
 // External
-const App = require('@abcaustralia/dls-components/es6/App/App').default;
+const App = require('@abcaustralia/nucleus/es6/App/App').default;
 const React = require('react');
 const ReactDOM = require('react-dom');
 
