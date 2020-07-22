@@ -1,4 +1,5 @@
 // External
+const { getMountValue, isPrefixedMount } = require('@abcnews/mount-utils');
 const cn = require('classnames');
 const html = require('bel');
 const rawHTML = require('bel/raw');
@@ -10,7 +11,6 @@ const { getMeta } = require('../../meta');
 const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
 const { $, append, detach, detectVideoId, getChildImage, isElement, setText } = require('../../utils/dom');
 const { dePx, getRatios, returnFalse } = require('../../utils/misc');
-const { isPrefixedMount, getMountSC } = require('../../utils/mounts');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
 const Sizer = require('../Sizer');
@@ -467,13 +467,13 @@ function offsetBasedOpacity(itemIndex, itemsTransformXPct) {
 }
 
 function transformSection(section) {
-  const [, mosaicRowLengthsString] = `${section.name}${section.configSC}`.match(MOSAIC_ROW_LENGTHS_PATTERN) || [
+  const [, mosaicRowLengthsString] = `${section.name}${section.configString}`.match(MOSAIC_ROW_LENGTHS_PATTERN) || [
     null,
     ''
   ];
-  const isUnconstrained = mosaicRowLengthsString.length && section.configSC.includes('full');
-  const ratios = getRatios(section.configSC);
-  const unlink = section.configSC.includes('unlink');
+  const isUnconstrained = mosaicRowLengthsString.length && section.configString.includes('full');
+  const ratios = getRatios(section.configString);
+  const unlink = section.configString.includes('unlink');
 
   const nodes = [].concat(section.betweenNodes);
 
@@ -489,7 +489,7 @@ function transformSection(section) {
       const isQuote = node.matches(SELECTORS.QUOTE);
       const imgEl = getChildImage(node);
       const videoId = isPrefixedMount(node, 'video')
-        ? getMountSC(node).match(VIDEO_MARKER_PATTERN)[1]
+        ? getMountValue(node).match(VIDEO_MARKER_PATTERN)[1]
         : detectVideoId(node);
 
       if (videoId) {

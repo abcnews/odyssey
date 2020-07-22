@@ -6,7 +6,7 @@ const html = require('bel');
 const { ALIGNMENT_PATTERN, MOCK_NODE } = require('../../../constants');
 const { $, $$, append, detach, isElement, isInlineElement, isText, prepend, substitute } = require('../../utils/dom');
 const { trim } = require('../../utils/misc');
-const { grabConfigSC } = require('../../utils/mounts');
+const { grabPrecedingConfigString } = require('../../utils/mounts');
 const UQuote = require('../UQuote');
 require('./index.scss');
 
@@ -91,8 +91,8 @@ function createFromEl(el, options) {
     };
   }
 
-  const configSC = grabConfigSC(el);
-  const [, alignment] = configSC.match(ALIGNMENT_PATTERN) || [];
+  const configString = grabPrecedingConfigString(el);
+  const [, alignment] = configString.match(ALIGNMENT_PATTERN) || [];
 
   config.alignment = alignment;
 

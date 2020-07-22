@@ -10,13 +10,11 @@ function UPull({ meta = {}, type, nodes = [] }) {
 
   return html`
     <div class="u-pull${type ? `-${type}` : ''}">
-      ${
-        isRichtext
-          ? html`
-              <div class="u-richtext${meta.isDarkMode ? '-invert' : ''}">${nodes}</div>
-            `
-          : nodes
-      }
+      ${isRichtext
+        ? html`
+            <div class="u-richtext${meta.isDarkMode ? '-invert' : ''}">${nodes}</div>
+          `
+        : nodes}
     </div>
   `;
 }
@@ -25,7 +23,7 @@ function transformSection(section, meta) {
   section.substituteWith(
     UPull({
       meta,
-      type: section.configSC,
+      type: section.configString,
       nodes: section.betweenNodes
     }),
     []

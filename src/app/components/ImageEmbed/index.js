@@ -7,7 +7,7 @@ const url2cmid = require('util-url2cmid');
 const { ALIGNMENT_PATTERN } = require('../../../constants');
 const { getChildImage, substitute } = require('../../utils/dom');
 const { getRatios } = require('../../utils/misc');
-const { grabConfigSC } = require('../../utils/mounts');
+const { grabPrecedingConfigString } = require('../../utils/mounts');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
 require('./index.scss');
@@ -37,10 +37,10 @@ function transformEl(el, preserveOriginalRatio) {
     return;
   }
 
-  const configSC = grabConfigSC(el);
-  const [, alignment] = configSC.match(ALIGNMENT_PATTERN) || [];
-  const ratios = getRatios(configSC);
-  const unlink = configSC.includes('unlink');
+  const configString = grabPrecedingConfigString(el);
+  const [, alignment] = configString.match(ALIGNMENT_PATTERN) || [];
+  const ratios = getRatios(configString);
+  const unlink = configString.includes('unlink');
 
   const src = imgEl.src;
   const alt = imgEl.getAttribute('alt');
@@ -62,9 +62,9 @@ function transformEl(el, preserveOriginalRatio) {
     }),
     captionEl: Caption.createFromEl(el, unlink),
     alignment,
-    isFull: configSC.indexOf('full') > -1,
-    isCover: configSC.indexOf('cover') > -1,
-    isAnon: configSC.indexOf('anon') > -1
+    isFull: configString.indexOf('full') > -1,
+    isCover: configString.indexOf('cover') > -1,
+    isAnon: configString.indexOf('anon') > -1
   });
 
   substitute(el, imageEmbedEl);

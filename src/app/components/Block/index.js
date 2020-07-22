@@ -1,4 +1,5 @@
 // External
+const { getMountValue, getTrailingMountValue, isMount, isPrefixedMount } = require('@abcnews/mount-utils');
 const cn = require('classnames');
 const html = require('bel');
 
@@ -8,7 +9,6 @@ const { ALIGNMENT_PATTERN, SCROLLPLAY_PCT_PATTERN, VIDEO_MARKER_PATTERN } = requ
 const { enqueue, subscribe } = require('../../scheduler');
 const { $, detach, detectVideoId, getChildImage, isElement } = require('../../utils/dom');
 const { getRatios, trim } = require('../../utils/misc');
-const { getMountSC, getTrailingMountSC, isMount, isPrefixedMount } = require('../../utils/mounts');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
 const VideoPlayer = require('../VideoPlayer');
@@ -330,17 +330,17 @@ function Block({
 }
 
 function transformSection(section) {
-  const hasAttributedMedia = section.configSC.indexOf('attributed') > -1;
-  const hasCaptionedMedia = section.configSC.indexOf('captioned') > -1;
-  const hasInsetMedia = section.configSC.indexOf('inset') > -1;
-  const isContained = section.configSC.indexOf('contain') > -1;
-  const isDocked = section.configSC.indexOf('docked') > -1;
-  const isGrouped = section.configSC.indexOf('grouped') > -1;
-  const isLight = section.configSC.indexOf('light') > -1;
-  const isPiecemeal = section.configSC.indexOf('piecemeal') > -1;
-  const shouldSupplant = section.configSC.indexOf('supplant') > -1;
-  const shouldVideoPlayOnce = section.configSC.indexOf('once') > -1;
-  const [, videoScrollplayPctString] = section.configSC.match(SCROLLPLAY_PCT_PATTERN) || [, ''];
+  const hasAttributedMedia = section.configString.indexOf('attributed') > -1;
+  const hasCaptionedMedia = section.configString.indexOf('captioned') > -1;
+  const hasInsetMedia = section.configString.indexOf('inset') > -1;
+  const isContained = section.configString.indexOf('contain') > -1;
+  const isDocked = section.configString.indexOf('docked') > -1;
+  const isGrouped = section.configString.indexOf('grouped') > -1;
+  const isLight = section.configString.indexOf('light') > -1;
+  const isPiecemeal = section.configString.indexOf('piecemeal') > -1;
+  const shouldSupplant = section.configString.indexOf('supplant') > -1;
+  const shouldVideoPlayOnce = section.configString.indexOf('once') > -1;
+  const [, videoScrollplayPctString] = section.configString.match(SCROLLPLAY_PCT_PATTERN) || [, ''];
   const videoScrollplayPct =
     videoScrollplayPctString.length > 0 && Math.max(0, Math.min(100, +videoScrollplayPctString));
 
@@ -348,9 +348,9 @@ function transformSection(section) {
 
   if (!hasInsetMedia) {
     TRANSITIONS.forEach(t => {
-      if (section.configSC.indexOf('transition' + t) > -1) {
+      if (section.configString.indexOf('transition' + t) > -1) {
         if (t === 'colour') {
-          transition = section.configSC.match(/colour([a-f0-9]+)/)[1];
+          transition = section.configString.match(/colour([a-f0-9]+)/)[1];
         } else {
           transition = t;
         }
@@ -358,12 +358,12 @@ function transformSection(section) {
     });
   }
   // fallback for just basic default transition or if we have inset transitioning media
-  if (!transition && section.configSC.indexOf('transition') > -1) {
+  if (!transition && section.configString.indexOf('transition') > -1) {
     transition = 'black';
   }
 
   const [, alignment] =
-    section.configSC
+    section.configString
       .replace('slideright', '')
       .replace('slideleft', '')
       .match(ALIGNMENT_PATTERN) || [];
@@ -405,13 +405,13 @@ function transformSection(section) {
     config.backgrounds = [];
     config.contentEls = section.betweenNodes
       .map(node => {
-        const mountSC = isMount(node) ? getMountSC(node) : '';
+        const mountSC = isMount(node) ? getMountValue(node) : '';
 
         let img = getChildImage(node);
         if (img) {
           // We found an image to use as one of the backgrounds
           config.backgrounds.push(img);
-          config.ratios = getRatios(section.configSC);
+          config.ratios = getRatios(section.configString);
 
           // Graft a 'marker' onto the next paragraph
           if (node.nextElementSibling) {
@@ -447,7 +447,7 @@ function transformSection(section) {
         if (videoMarker.videoId) {
           // We found a video to use as one of the backgrounds
           config.backgrounds.push(videoMarker);
-          config.ratios = getRatios(section.configSC);
+          config.ratios = getRatios(section.configString);
 
           // Graft a 'marker' onto the next paragraph
           if (node.nextElementSibling) {
@@ -470,7 +470,7 @@ function transformSection(section) {
         }
 
         if (isPrefixedMount(node, 'mark')) {
-          const config = getTrailingMountSC(node, 'mark');
+          const config = getTrailingMountValue(node, 'mark');
 
           if (config.indexOf('light') > -1) {
             lightDarkConfig = 'light';
@@ -524,7 +524,7 @@ function transformSection(section) {
       let imgEl;
 
       if (!_config.videoId && !_config.imgEl && isElement(node)) {
-        const mountSC = isMount(node) ? getMountSC(node) : '';
+        const mountSC = isMount(node) ? getMountValue(node) : '';
 
         if (!!mountSC.match(VIDEO_MARKER_PATTERN)) {
           _config.isVideoYouTube = !!mountSC.split('youtube')[1];
@@ -540,7 +540,7 @@ function transformSection(section) {
 
           if (imgEl) {
             _config.imgEl = imgEl;
-            _config.ratios = getRatios(section.configSC);
+            _config.ratios = getRatios(section.configString);
           }
         }
 

@@ -1,4 +1,5 @@
 // External
+const { getMountValue, isMount } = require('@abcnews/mount-utils');
 const cn = require('classnames');
 const html = require('bel');
 const url2cmid = require('util-url2cmid');
@@ -8,7 +9,7 @@ const { ALIGNMENT_PATTERN, VIDEO_MARKER_PATTERN, SCROLLPLAY_PCT_PATTERN } = requ
 const { invalidateClient } = require('../../scheduler');
 const { $, $$, substitute } = require('../../utils/dom');
 const { getRatios } = require('../../utils/misc');
-const { getMountSC, grabConfigSC, isMount } = require('../../utils/mounts');
+const { grabPrecedingConfigString } = require('../../utils/mounts');
 const Caption = require('../Caption');
 const VideoPlayer = require('../VideoPlayer');
 const YouTubePlayer = require('../YouTubePlayer');
@@ -33,7 +34,7 @@ function VideoEmbed({ playerEl, captionEl, alignment, isFull, isCover, isAnon })
 }
 
 function transformEl(el) {
-  const mountSC = isMount(el) ? getMountSC(el) : '';
+  const mountSC = isMount(el) ? getMountValue(el) : '';
   const isMarker = !!mountSC.match(VIDEO_MARKER_PATTERN);
   const linkEl = $('a[href]', el);
   const plPlayerIdEl = $('[data-component="Player"] div[id]', el);
@@ -47,9 +48,9 @@ function transformEl(el) {
     return;
   }
 
-  const configSC = grabConfigSC(el);
-  const [, alignment] = configSC.match(ALIGNMENT_PATTERN) || [];
-  const unlink = configSC.includes('unlink');
+  const configString = grabPrecedingConfigString(el);
+  const [, alignment] = configString.match(ALIGNMENT_PATTERN) || [];
+  const unlink = configString.includes('unlink');
 
   const isYouTube = isMarker && mountSC.indexOf('youtube') === 0;
   const captionEl = !isMarker ? Caption.createFromEl(el, unlink) : null;
@@ -57,24 +58,24 @@ function transformEl(el) {
 
   const options = {
     alignment,
-    isFull: configSC.indexOf('full') > -1,
-    isCover: configSC.indexOf('cover') > -1,
-    isAnon: configSC.indexOf('anon') > -1
+    isFull: configString.indexOf('full') > -1,
+    isCover: configString.indexOf('cover') > -1,
+    isAnon: configString.indexOf('anon') > -1
   };
 
-  const [, scrollplayPctString] = configSC.match(SCROLLPLAY_PCT_PATTERN) || [
+  const [, scrollplayPctString] = configString.match(SCROLLPLAY_PCT_PATTERN) || [
     ,
-    configSC.indexOf('autoplay') > -1 ? '0' : ''
+    configString.indexOf('autoplay') > -1 ? '0' : ''
   ];
   const scrollplayPct = scrollplayPctString.length > 0 && Math.max(0, Math.min(100, +scrollplayPctString));
 
   const playerOptions = {
     videoId,
-    ratios: getRatios(configSC),
+    ratios: getRatios(configString),
     title,
-    isAmbient: configSC.indexOf('ambient') > -1 ? true : undefined,
-    isLoop: configSC.indexOf('loop') > -1 ? true : configSC.indexOf('once') > -1 ? false : undefined,
-    isMuted: configSC.indexOf('muted') > -1 ? true : undefined,
+    isAmbient: configString.indexOf('ambient') > -1 ? true : undefined,
+    isLoop: configString.indexOf('loop') > -1 ? true : configString.indexOf('once') > -1 ? false : undefined,
+    isMuted: configString.indexOf('muted') > -1 ? true : undefined,
     scrollplayPct
   };
 
