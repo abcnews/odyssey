@@ -1,4 +1,5 @@
 // External
+const { getMountValue, isMount } = require('@abcnews/mount-utils');
 const cn = require('classnames');
 const html = require('bel');
 const url2cmid = require('util-url2cmid');
@@ -14,7 +15,6 @@ const Picture = require('../Picture');
 const UParallax = require('../UParallax');
 const VideoPlayer = require('../VideoPlayer');
 const YouTubePlayer = require('../YouTubePlayer');
-const { getMountSC, isMount } = require('../../utils/mounts');
 require('./index.scss');
 
 function Header({
@@ -245,17 +245,21 @@ function fetchInfoSourceLogo(meta, el, variant) {
 }
 
 function transformSection(section, meta) {
-  const ratios = getRatios(section.configSC);
-  const isFloating = section.configSC.indexOf('floating') > -1;
-  const isLayered = isFloating || section.configSC.indexOf('layered') > -1;
+  const ratios = getRatios(section.configString);
+  const isFloating = section.configString.indexOf('floating') > -1;
+  const isLayered = isFloating || section.configString.indexOf('layered') > -1;
   const isDark =
-    isLayered || section.configSC.indexOf('dark') > -1 ? true : section.configSC.indexOf('light') > -1 ? false : null;
-  const isPale = section.configSC.indexOf('pale') > -1;
-  const isAbreast = section.configSC.indexOf('abreast') > -1;
-  const isNoMedia = isFloating || section.configSC.indexOf('nomedia') > -1;
-  const isKicker = section.configSC.indexOf('kicker') > -1;
-  const shouldSupplant = section.configSC.indexOf('supplant') > -1;
-  const shouldVideoPlayOnce = section.configSC.indexOf('once') > -1;
+    isLayered || section.configString.indexOf('dark') > -1
+      ? true
+      : section.configString.indexOf('light') > -1
+      ? false
+      : null;
+  const isPale = section.configString.indexOf('pale') > -1;
+  const isAbreast = section.configString.indexOf('abreast') > -1;
+  const isNoMedia = isFloating || section.configString.indexOf('nomedia') > -1;
+  const isKicker = section.configString.indexOf('kicker') > -1;
+  const shouldSupplant = section.configString.indexOf('supplant') > -1;
+  const shouldVideoPlayOnce = section.configString.indexOf('once') > -1;
 
   let candidateNodes = section.betweenNodes;
 
@@ -270,7 +274,7 @@ function transformSection(section, meta) {
   const config = candidateNodes.reduce(
     (config, node) => {
       const classList = node.className ? node.className.split(' ') : [];
-      const mountSC = isMount(node) ? getMountSC(node) : '';
+      const mountSC = isMount(node) ? getMountValue(node) : '';
       let videoId;
       let imgEl;
       let interactiveEl;

@@ -30,7 +30,7 @@ function Share({ type, links }) {
 }
 
 function transformMarker(marker, links) {
-  marker.substituteWith(Share({ type: marker.configSC, links }));
+  marker.substituteWith(Share({ type: marker.configString, links }));
 }
 
 subscribe(function __reportFirstInvitation(client) {

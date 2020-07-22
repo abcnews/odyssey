@@ -1,48 +1,21 @@
+// External
+const { getTrailingMountValue, isExactMount, isPrefixedMount, prefixedMountSelector } = require('@abcnews/mount-utils');
+
 // Ours
 const { MOCK_ELEMENT } = require('../../constants');
-const { $$, detach, detachAll, isElement, substitute } = require('./dom');
+const { $$, detach, detachAll, substitute } = require('./dom');
 
-const MOUNT_JOINABLE_SELECTOR = ['[data-mount][id', '],a[id', ']:not([href]),a[name', ']:not([href])'];
-const MOUNT_SELECTOR = MOUNT_JOINABLE_SELECTOR.join('');
-const CONFIG_MOUNT_NAME = 'config';
-
-const prefixedMountSelectorCache = {};
-
-function prefixedMountSelector(prefix) {
-  if (!prefixedMountSelectorCache[prefix]) {
-    prefixedMountSelectorCache[prefix] = MOUNT_JOINABLE_SELECTOR.join(`^="${prefix}"`);
-  }
-
-  return prefixedMountSelectorCache[prefix];
-}
-
-function isMount(el) {
-  return isElement(el) && el.matches(MOUNT_SELECTOR);
-}
-
-function isPrefixedMount(el, prefix) {
-  return isElement(el) && el.matches(prefixedMountSelector(prefix));
-}
-
-// SC -> "Scriptio continua" https://en.wikipedia.org/wiki/Scriptio_continua
-function getMountSC(el) {
-  return el.getAttribute('id') || el.getAttribute('name') || '';
-}
-
-function getTrailingMountSC(el, prefix) {
-  return getMountSC(el).slice(prefix.length);
-}
-
-function grabConfigSC(el) {
+// Grabs a #config mount point preceding `el` (if it exists) and returns its trailing value.
+function grabPrecedingConfigString(el) {
   const prevEl = el.previousElementSibling || MOCK_ELEMENT;
 
-  if (!isPrefixedMount(prevEl, CONFIG_MOUNT_NAME)) {
+  if (!isPrefixedMount(prevEl, 'config')) {
     return '';
   }
 
   detach(prevEl);
 
-  return getTrailingMountSC(prevEl, CONFIG_MOUNT_NAME);
+  return getTrailingMountValue(prevEl, 'config');
 }
 
 function _substituteSectionWith(el, remainingBetweenNodes) {
@@ -67,10 +40,10 @@ function getSections(names) {
       let nextNode = startNode;
       let isMoreContent = true;
       const betweenNodes = [];
-      const configSC = getTrailingMountSC(startNode, name);
+      const configString = getTrailingMountValue(startNode, name);
 
       while (isMoreContent && (nextNode = nextNode.nextSibling) !== null) {
-        if (isPrefixedMount(nextNode, endName)) {
+        if (isExactMount(nextNode, endName)) {
           isMoreContent = false;
         } else {
           betweenNodes.push(nextNode);
@@ -79,7 +52,7 @@ function getSections(names) {
 
       const section = {
         name,
-        configSC,
+        configString,
         startNode,
         betweenNodes,
         endNode: nextNode
@@ -101,11 +74,11 @@ function getMarkers(names) {
   return names.reduce((memo, name) => {
     return memo.concat(
       $$(prefixedMountSelector(name)).map(node => {
-        const configSC = getTrailingMountSC(node, name);
+        const configString = getTrailingMountValue(node, name);
 
         const marker = {
           name,
-          configSC,
+          configString,
           node
         };
 
@@ -118,12 +91,7 @@ function getMarkers(names) {
 }
 
 module.exports = {
-  prefixedMountSelector,
-  isMount,
-  isPrefixedMount,
-  getMountSC,
-  getTrailingMountSC,
-  grabConfigSC,
+  grabPrecedingConfigString,
   getSections,
   getMarkers
 };

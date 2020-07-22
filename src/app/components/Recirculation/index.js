@@ -77,8 +77,8 @@ const PULL_PATTERN = /[a-z]+/;
 let nextRelatedStoriesIdsIndex = 0;
 
 function transformMarker(marker, meta) {
-  const [digits] = marker.configSC.match(DIGITS_PATTERN) || [1];
-  const [pull] = marker.configSC.match(PULL_PATTERN) || ['right'];
+  const [digits] = marker.configString.match(DIGITS_PATTERN) || [1];
+  const [pull] = marker.configString.match(PULL_PATTERN) || ['right'];
   let ids;
 
   switch (marker.name) {

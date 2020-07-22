@@ -7,7 +7,7 @@ const url2cmid = require('util-url2cmid');
 const { terminusFetch } = require('../../utils/content');
 const { $, $$, substitute } = require('../../utils/dom');
 const { getRatios } = require('../../utils/misc');
-const { grabConfigSC } = require('../../utils/mounts');
+const { grabPrecedingConfigString } = require('../../utils/mounts');
 const Caption = require('../Caption');
 const Gallery = require('../Gallery');
 const MasterGallery = require('../MasterGallery');
@@ -27,10 +27,10 @@ function transformEl(el) {
     return;
   }
 
-  const configSC = grabConfigSC(el);
-  const [, mosaicRowLengthsString] = `${configSC}`.match(Gallery.MOSAIC_ROW_LENGTHS_PATTERN) || [null, ''];
-  const ratios = getRatios(configSC);
-  const unlink = configSC.includes('unlink');
+  const configString = grabPrecedingConfigString(el);
+  const [, mosaicRowLengthsString] = `${configString}`.match(Gallery.MOSAIC_ROW_LENGTHS_PATTERN) || [null, ''];
+  const ratios = getRatios(configString);
+  const unlink = configString.includes('unlink');
 
   const placeholderEl = document.createElement('div');
 
