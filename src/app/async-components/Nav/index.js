@@ -9,7 +9,7 @@ const React = require('react');
 // Ours
 require('./index.scss');
 
-const DOMAIN = window.location.origin;
+const HOME_URL = `${window.location.origin}/news/`;
 
 const GLOBAL_NAV = [
   {
@@ -39,7 +39,7 @@ const GLOBAL_NAV = [
 module.exports = () => (
   <MastheadBox contentAnchor="#content" className="Nav" data-component="Masthead">
     <div className="Nav-row">
-      <MastheadLogoLink className="Nav-logoLink" linkHref={DOMAIN}>
+      <MastheadLogoLink className="Nav-logoLink" linkHref={HOME_URL}>
         <BrandLogo logoType="news" screenReaderText="ABC News Homepage" />
       </MastheadLogoLink>
       <div className="Nav-actions">
