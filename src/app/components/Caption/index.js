@@ -35,6 +35,12 @@ function createFromEl(el, unlink) {
     return null;
   }
 
+  // Sometimes the element is left/right aligned and wrapped in a pull.
+  // We need to go one level deeper before cloning/matching.
+  if (el.className.indexOf('u-pull-') > -1) {
+    el = el.firstElementChild;
+  }
+
   const clone = el.cloneNode(true);
   let config;
 
