@@ -22,8 +22,12 @@ function addPLMetaTags() {
   const { published, updated } = document.publishedDatePrepared;
 
   // Add missing meta tags from publication/update dates
-  setOrAddMetaTag('DCTERMS.issued', published.labelDate);
-  setOrAddMetaTag('DCTERMS.modified', updated.labelDate);
+  if (published) {
+    setOrAddMetaTag('DCTERMS.issued', published.labelDate);
+  }
+  if (updated) {
+    setOrAddMetaTag('DCTERMS.modified', updated.labelDate);
+  }
 
   // Add missing meta tags based on the `meta.data.name` context setting to Presentation Layer pages
   if (contextSettings) {
