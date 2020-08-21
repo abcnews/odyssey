@@ -13,8 +13,8 @@
     "start": "aunty serve"
   },
   "dependencies": {
-    "@abcaustralia/abc-components": "^4.11.0",
-    "@abcaustralia/nucleus": "^0.13.1",
+    "@abcaustralia/abc-components": "^4.12.0",
+    "@abcaustralia/nucleus": "^1.1.0",
     "@abcaustralia/profiles": "^8.0.0",
     "@abcnews/env-utils": "^2.0.0",
     "@abcnews/mount-utils": "^1.0.0",
@@ -34,16 +34,12 @@
     "util-url2cmid": "git+ssh://git@stash.abc-dev.net.au:7999/news/util-url2cmid.git#1.0.1"
   },
   "devDependencies": {
-    "@abcaustralia/postcss-config": "^3.4.2",
-    "@abcnews/aunty": "^10.9.5",
-    "duplicate-package-checker-webpack-plugin": "^3.0.0",
-    "postcss-loader": "^3.0.0",
-    "webpack-bundle-analyzer": "^3.3.2"
+    "@abcnews/aunty": "^11.0.0-5",
+    "duplicate-package-checker-webpack-plugin": "^3.0.0"
   },
   "abc": {
     "css": {
       "libraryDir": "./node_modules/@abcaustralia/nucleus/css",
-      "brand": "news",
       "logVariables": "false"
     }
   }
