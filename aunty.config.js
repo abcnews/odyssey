@@ -48,24 +48,30 @@ module.exports = {
 
     // Use resolve.alias to dedupe
     config.resolve = config.resolve || {};
-    config.resolve.alias = Object.assign(config.resolve.alias || {}, {
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
       'date-fns': path.resolve(__dirname, 'node_modules/date-fns'),
       'performance-now': path.resolve(__dirname, 'node_modules/performance-now'),
       react: path.resolve(__dirname, 'node_modules/react'),
       'react-dom': path.resolve(__dirname, 'node_modules/react-dom')
-    });
+    };
 
     // Stop `import()`-ed chunks from being split into `[name].js` and `vendors~[name].js`
-    config.optimization = config.optimization || {};
-    config.optimization.splitChunks = {
-      cacheGroups: {
-        vendors: false
+    config.optimization = {
+      ...(config.optimization || {}),
+      splitChunks: {
+        cacheGroups: {
+          vendors: false
+        }
       }
     };
 
-    // Allow larger assets sizes than the default (250000)
-    config.performance = config.performance || {};
-    config.performance.maxAssetSize = 500000;
+    // Allow larger entrypoint & assets sizes than the default (250000)
+    config.performance = {
+      ...(config.performance || {}),
+      maxAssetSize: 500000,
+      maxEntrypointSize: 500000
+    };
 
     return config;
   }
