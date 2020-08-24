@@ -1,6 +1,6 @@
 // External
-const GlobalNavigation = require('@abcaustralia/abc-components/es6/Globals/GlobalNavigation/GlobalNavigation').default;
-const GlobalSearchLink = require('@abcaustralia/abc-components/es6/Globals/GlobalSearchLink/GlobalSearchLink').default;
+const GlobalNavigation = require('@abcaustralia/global-components/es6/GlobalNavigation/GlobalNavigation').default;
+const GlobalSearchLink = require('@abcaustralia/global-components/es6/GlobalSearchLink/GlobalSearchLink').default;
 const BrandLogo = require('@abcaustralia/nucleus/es6/BrandLogo/BrandLogo').default;
 const MastheadBox = require('@abcaustralia/nucleus/es6/MastheadBox/MastheadBox').default;
 const MastheadLogoLink = require('@abcaustralia/nucleus/es6/MastheadLogoLink/MastheadLogoLink').default;

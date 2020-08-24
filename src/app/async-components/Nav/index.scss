@@ -42,6 +42,10 @@ $dls-white-20-opacity: hsla(0, 0%, 100%, 0.2);
     text-decoration: none;
   }
 
+  a[data-component='SocialLink']:focus {
+    color: #000;
+  }
+
   [aria-controls='globalnav'] {
     font-size: 1.75rem;
 
@@ -77,6 +81,10 @@ $dls-white-20-opacity: hsla(0, 0%, 100%, 0.2);
   a:hover {
     color: #000;
   }
+}
+
+[data-component='MastheadSkipLink'] {
+  display: none;
 }
 
 .Nav {
@@ -127,15 +135,6 @@ $dls-white-20-opacity: hsla(0, 0%, 100%, 0.2);
   &,
   &:hover {
     background-color: $dls-white-10-opacity;
-  }
-
-  &:focus {
-    color: white;
-
-    :global(.tab-key-pressed) & {
-      background-color: var(--link-text, var(--colour-assistant));
-      color: white;
-    }
   }
 }
 
