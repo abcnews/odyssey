@@ -1,0 +1,11 @@
+:root {
+  --colour-primary: hsl(191.3, 100%, 50.2%);
+  --colour-accent: hsl(191.3, 100%, 50.2%);
+  --colour-accent-active: hsla(191, 100%, 50%, 0.7);
+  --colour-accent-faded: hsla(191, 100%, 50%, 0.25);
+  --colour-assistant: hsl(214.1, 100%, 40%);
+  --blockquote-left-border: var(--colour-assistant);
+  --masthead-fill: #0f1010;
+  --content-label-fill: black;
+  --content-label-text: white;
+}
