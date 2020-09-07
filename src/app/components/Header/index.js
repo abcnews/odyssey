@@ -293,13 +293,14 @@ function transformSection(section, meta) {
         const leadVideoEl = $('video', node); // Phase 1 (Mobile) renders lead videos (Media field) as <video> elements
 
         if (leadVideoEl) {
+          console.log('leadVideoEl');
           let parentEl = leadVideoEl.parentElement;
 
           while (parentEl.className.indexOf('media-wrapper-dl') === -1 && parentEl !== document.documentElement) {
             parentEl = parentEl.parentElement;
           }
 
-          config.videoId = ((parentEl.getAttribute('data-uri') || '').match(/\d+/) || [null])[0];
+          config.videoId = videoId = ((parentEl.getAttribute('data-uri') || '').match(/\d+/) || [null])[0];
         } else if (node.name && !!node.name.match(VIDEO_MARKER_PATTERN)) {
           config.isVideoYouTube = node.name.split('youtube')[1];
           config.videoId = videoId = node.name.match(VIDEO_MARKER_PATTERN)[1];
