@@ -1,11 +1,34 @@
 // External
 const debounce = require('debounce');
 
-const now = window.performance ? performance.now.bind(performance) : Date.now;
+// Ours
+const { IS_PROBABLY_RESISTING_FINGERPRINTING } = require('../../constants');
 
-const BUDGETED_MILLISECONDS_PER_FRAME = 12;
+// Preferably use a "millisecond budget", falling back
+// to a "ticks budget" if we can reasonably assume that
+// the current browser is restricting time measurement
+// accuracy to 100ms (to combat user fingerprinting)
+const BUDGETED_MILLISECONDS_PER_PERIOD = 12;
+const BUDGETED_TICKS_PER_PERIOD = 24;
+const budget = IS_PROBABLY_RESISTING_FINGERPRINTING
+  ? {
+      reset() {
+        this.ticks = 0;
+      },
+      measure() {
+        return this.ticks++ <= BUDGETED_TICKS_PER_PERIOD;
+      }
+    }
+  : {
+      reset() {
+        this.ms = performance.now();
+      },
+      measure() {
+        return performance.now() - this.ms <= BUDGETED_MILLISECONDS_PER_PERIOD;
+      }
+    };
 
-const subscribers = [];
+const subscribers = new Map();
 const queue = [];
 let icb = null; // initial containing block
 let hasStarted;
@@ -17,11 +40,12 @@ function flush() {
   }
 
   isFlushing = true;
+  budget.reset();
 
-  const beginning = now();
+  while (queue.length > 0 && budget.measure()) {
+    const next = queue.shift();
 
-  while (queue.length > 0 && now() - beginning < BUDGETED_MILLISECONDS_PER_FRAME) {
-    queue.shift()();
+    next[0].apply(null, next[1]);
   }
 
   if (queue.length > 0) {
@@ -31,12 +55,12 @@ function flush() {
   isFlushing = false;
 }
 
-function enqueue(task) {
+function enqueue(task, ...params) {
   if (hasStarted && !isFlushing) {
     requestAnimationFrame(flush);
   }
 
-  queue.push(task);
+  queue.push([task, params]);
 }
 
 function notifySubscribers(hasChanged) {
@@ -47,7 +71,11 @@ function notifySubscribers(hasChanged) {
   // subscribers, rather than each of them having to read `window.innerHeight`.
   const client = Object.assign({ hasChanged, fixedHeight: window.innerHeight }, icb);
 
-  subscribers.forEach(subscriber => enqueue(subscriber.bind(null, client)));
+  subscribers.forEach((shouldIgnoreUnchangedClients, subscriber) => {
+    if (hasChanged || !shouldIgnoreUnchangedClients) {
+      enqueue(subscriber, client);
+    }
+  });
 }
 
 function onScroll() {
@@ -61,7 +89,7 @@ function setCSSCustomProperties() {
   document.documentElement.style.setProperty('--vw-ratio-16x9', `${Math.floor((icb.width / 16) * 9)}px`);
 }
 
-function onResize(event) {
+function onClientInvalidated(event) {
   let nextICB;
 
   if (event && queue.length !== 0) {
@@ -81,17 +109,21 @@ function onResize(event) {
 
   const hasChanged = nextICB && icb === nextICB;
 
-  enqueue(notifySubscribers.bind(null, hasChanged));
+  enqueue(notifySubscribers, hasChanged);
 
   if (hasChanged) {
     window.requestIdleCallback(setCSSCustomProperties);
   }
 }
 
-const onDebouncedResize = debounce(onResize, 50);
+const onClientInvalidated_debounced = debounce(onClientInvalidated, 50);
 
 function invalidateClient() {
-  enqueue(onResize.bind(null, true));
+  const [firstQueuedTask] = queue[0] || [];
+
+  if (!firstQueuedTask || firstQueuedTask.name.indexOf('onClientInvalidated') === -1) {
+    enqueue(onClientInvalidated, true);
+  }
 }
 
 function start() {
@@ -101,17 +133,17 @@ function start() {
 
   hasStarted = true;
   window.addEventListener('scroll', onScroll, false);
-  window.addEventListener('resize', onDebouncedResize, false);
-  window.addEventListener('orientationchange', onDebouncedResize, false);
+  window.addEventListener('resize', onClientInvalidated_debounced, false);
+  window.addEventListener('orientationchange', onClientInvalidated_debounced, false);
   invalidateClient();
 }
 
-function subscribe(subscriber) {
+function subscribe(subscriber, shouldIgnoreUnchangedClients) {
   if (typeof subscriber !== 'function') {
     return;
   }
 
-  subscribers.push(subscriber);
+  subscribers.set(subscriber, !!shouldIgnoreUnchangedClients);
 
   if (hasStarted) {
     invalidateClient();
@@ -119,7 +151,7 @@ function subscribe(subscriber) {
 }
 
 function unsubscribe(subscriber) {
-  return subscribers.splice(subscribers.indexOf(subscriber), 1);
+  return subscribers.delete(subscriber);
 }
 
 module.exports.enqueue = enqueue;
