@@ -132,6 +132,11 @@ const SUPPORTS_PASSIVE = (isSupported => {
 
 const INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID = '10766144'; // This document is managed in Core Media
 
+const IS_PROBABLY_RESISTING_FINGERPRINTING =
+  performance.mark &&
+  performance.getEntries &&
+  (performance.mark('odyssey') || (performance.getEntries() || []).length === 0);
+
 window.ODYSSEY_MQL = MQL;
 
 module.exports = {
@@ -159,5 +164,6 @@ module.exports = {
   SMALLEST_IMAGE,
   MS_VERSION,
   SUPPORTS_PASSIVE,
-  INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID
+  INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID,
+  IS_PROBABLY_RESISTING_FINGERPRINTING
 };

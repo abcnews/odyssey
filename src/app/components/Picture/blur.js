@@ -1,14 +1,20 @@
+// Ours
+const { IS_PROBABLY_RESISTING_FINGERPRINTING } = require('../../../constants');
+
 const CANVAS_MAX = 48;
 const BLUR_RADIUS = 4;
-
+const NO_READ_ASSUMPTION_ERROR = "Assuming we won't be able to read image data from <canvas>";
+const MIXED_CONTENT_ERROR = "Not attempting to load Mixed Content";
 const cache = {};
+const protocol = String(window.location.protocol);
 
 function blurImage(url, done) {
-  // Don't try to load Mixed Content
-  const protocol = String(window.location.protocol);
+  if (protocol === 'https:' && url.indexOf(protocol) === -1) {
+    return done(new Error(MIXED_CONTENT_ERROR));
+  }
 
-  if (protocol === 'https:' && url.indexOf(window.location.protocol) === -1) {
-    return done(new Error('Not attempting to load Mixed Content'));
+  if (IS_PROBABLY_RESISTING_FINGERPRINTING) {
+    return done(new Error(NO_READ_ASSUMPTION_ERROR));
   }
 
   if (cache[url]) {

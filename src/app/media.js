@@ -11,9 +11,15 @@ module.exports.getNextUntitledMediaCharCode = () => nextUntitledMediaCharCode++;
 
 const forEachPlayer = (module.exports.forEachPlayer = fn => players.forEach(fn));
 
-module.exports.registerPlayer = player => players.push(player);
+module.exports.registerPlayer = player => {
+  players.push(player);
 
-subscribe(function _checkIfPlayersNeedToBeToggled(client) {
+  if (players.length === 1) {
+    subscribe(_checkIfPlayersNeedToBeToggled);
+  }
+};
+
+function _checkIfPlayersNeedToBeToggled(client) {
   forEachPlayer(player => {
     if (player.isUserInControl || (!player.isAmbient && !player.isScrollplay)) {
       return;
@@ -36,4 +42,4 @@ subscribe(function _checkIfPlayersNeedToBeToggled(client) {
 
     player.isInPlayableRange = isInPlayableRange;
   });
-});
+}

@@ -18,8 +18,12 @@ module.exports = function Main(childNodes, meta) {
     <main class="${className}">${childNodes}</main>
   `;
 
-  subscribe(client => (client.hasChanged ? updateOffsetTop(el) : null));
-  subscribe(client => (client.hasChanged ? updateHeightSnapping(el) : null));
+  subscribe(function _updateMainOffsetTop() {
+    updateOffsetTop(el);
+  }, true);
+  subscribe(function _updateHeightSnapping() {
+    updateHeightSnapping(el);
+  }, true);
   new MutationObserver(() => setTimeout(() => updateHeightSnapping(el), 2000)).observe(el, {
     childList: true
   });
@@ -35,23 +39,22 @@ function updateOffsetTop(mainEl) {
     previewContainerHeight = previewContainerEl.getBoundingClientRect().height;
   }
 
-  enqueue(() => {
+  enqueue(function _updateMainOffsetTopCustomProp() {
     mainEl.style.setProperty('--Main-offsetTop', Math.round(mainEl.offsetTop - previewContainerHeight) + 'px');
   });
 }
 
 function updateHeightSnapping(mainEl) {
+  const snappableEls = Array.from(mainEl.children);
   const lastSnappedEls = mainEl.__lastSnappedEls__;
 
   if (lastSnappedEls) {
-    enqueue(() => {
+    enqueue(function _unsnapLastSnappedMainChildrenHeights() {
       lastSnappedEls.forEach(el => el.style.removeProperty('min-height'));
     });
   }
 
-  const snappableEls = Array.from(mainEl.children);
-
-  enqueue(() => {
+  enqueue(function _snapMainChildrenHeights() {
     mainEl.__lastSnappedEls__ = snappableEls;
     snappableEls.forEach(el => {
       const { height } = el.getBoundingClientRect();
