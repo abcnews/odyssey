@@ -123,6 +123,11 @@ const SUPPORTS_PASSIVE = (isSupported => {
   return isSupported;
 })(false);
 
+const IS_PROBABLY_RESISTING_FINGERPRINTING =
+  performance.mark &&
+  performance.getEntries &&
+  (performance.mark('odyssey') || (performance.getEntries() || []).length === 0);
+
 module.exports = {
   NEWLINE,
   HYPHEN,
@@ -147,5 +152,6 @@ module.exports = {
   SMALLEST_IMAGE,
   IS_PREVIEW,
   MS_VERSION,
-  SUPPORTS_PASSIVE
+  SUPPORTS_PASSIVE,
+  IS_PROBABLY_RESISTING_FINGERPRINTING
 };
