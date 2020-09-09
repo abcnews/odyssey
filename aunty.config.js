@@ -18,7 +18,6 @@ module.exports = {
     config.resolve.alias = {
       ...(config.resolve.alias || {}),
       'date-fns': path.resolve(__dirname, 'node_modules/date-fns'),
-      'performance-now': path.resolve(__dirname, 'node_modules/performance-now'),
       react: path.resolve(__dirname, 'node_modules/react'),
       'react-dom': path.resolve(__dirname, 'node_modules/react-dom')
     };
