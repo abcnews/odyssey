@@ -1,11 +1,18 @@
+// Ours
+const { IS_PROBABLY_RESISTING_FINGERPRINTING } = require('../../../constants');
+
 const CANVAS_MAX = 48;
 const BLUR_RADIUS = 4;
-
+const NO_READ_ASSUMPTION_ERROR = "Assuming we won't be able to read image data from <canvas>";
 const cache = {};
 
 function blurImage(url, done) {
+  if (IS_PROBABLY_RESISTING_FINGERPRINTING) {
+    return done(new Error(NO_READ_ASSUMPTION_ERROR));
+  }
+
   if (cache[url]) {
-    done(null, cache[url]);
+    return done(null, cache[url]);
   }
 
   const canvasEl = document.createElement('canvas');
@@ -180,7 +187,7 @@ function stackBlurCanvasRGB(context, top_x, top_y, width, height, radius) {
   var widthMinus1 = width - 1;
   var heightMinus1 = height - 1;
   var radiusPlus1 = radius + 1;
-  var sumFactor = radiusPlus1 * (radiusPlus1 + 1) / 2;
+  var sumFactor = (radiusPlus1 * (radiusPlus1 + 1)) / 2;
 
   var stackStart = new BlurStack();
   var stack = stackStart;
