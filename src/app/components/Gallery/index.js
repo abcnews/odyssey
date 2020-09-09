@@ -229,8 +229,8 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconst
     goToItem(nextIndex);
   }
 
-  function measureDimensions(client) {
-    if (!paneEl || (client && client.hasChanged === false)) {
+  function measureDimensions() {
+    if (!paneEl) {
       return;
     }
 
@@ -259,7 +259,7 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconst
     `;
   }
 
-  subscribe(measureDimensions);
+  subscribe(measureDimensions, true);
 
   const isMosaic = mosaicRowLengths.length > 0;
 

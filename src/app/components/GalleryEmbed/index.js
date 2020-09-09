@@ -143,7 +143,7 @@ function transformEl(el) {
       const galleryEl = Gallery(config);
 
       substitute(placeholderEl, galleryEl);
-      setTimeout(galleryEl.api.measureDimensions, 0, { hasChanged: true });
+      setTimeout(galleryEl.api.measureDimensions, 0);
       MasterGallery.refresh();
     });
   });

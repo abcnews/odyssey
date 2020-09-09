@@ -170,10 +170,15 @@ function Picture({
 
   pictureEl.api = picture;
 
+  if (pictures.length === 1) {
+    subscribe(_checkIfPicturesNeedToBeLoaded);
+    subscribe(_checkIfObjectFitPolyfillNeedsToRun, true);
+  }
+
   return pictureEl;
 }
 
-subscribe(function _checkIfPicturesNeedToBeLoaded(client) {
+function _checkIfPicturesNeedToBeLoaded(client) {
   pictures.forEach(picture => {
     const rect = picture.getRect();
     const isInLoadRange = proximityCheck(rect, client, IMAGE_LOAD_RANGE);
@@ -183,18 +188,18 @@ subscribe(function _checkIfPicturesNeedToBeLoaded(client) {
         picture.load();
       });
     } else if (!isInLoadRange && (picture.isLoading || picture.isLoaded)) {
-      enqueue(function _loadPicture() {
+      enqueue(function _unloadPicture() {
         picture.unload();
       });
     }
   });
-});
+}
 
-subscribe(function _checkIfObjectFitPolyfillNeedsToRun(client) {
-  if (window.objectFitPolyfill && client.hasChanged) {
+function _checkIfObjectFitPolyfillNeedsToRun() {
+  if (window.objectFitPolyfill) {
     window.objectFitPolyfill();
   }
-});
+}
 
 module.exports = Picture;
 
