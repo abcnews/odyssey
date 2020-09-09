@@ -293,7 +293,6 @@ function transformSection(section, meta) {
         const leadVideoEl = $('video', node); // Phase 1 (Mobile) renders lead videos (Media field) as <video> elements
 
         if (leadVideoEl) {
-          console.log('leadVideoEl');
           let parentEl = leadVideoEl.parentElement;
 
           while (parentEl.className.indexOf('media-wrapper-dl') === -1 && parentEl !== document.documentElement) {
