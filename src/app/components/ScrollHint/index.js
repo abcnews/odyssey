@@ -2,7 +2,7 @@
 const html = require('bel');
 
 // Ours
-const { enqueue, subscribe } = require('../../scheduler');
+const { enqueue, subscribe, unsubscribe } = require('../../scheduler');
 const { detach } = require('../../utils/dom');
 require('./index.scss');
 
@@ -21,12 +21,14 @@ function ScrollHint() {
         top: (window.innerHeight / 4) * 3
       });
     });
+
+    subscribe(_checkIfScrollHintNeedsToBeRemoved);
   }
 
   return scrollHintEl;
 }
 
-subscribe(function _checkIfScrollHintNeedsToBeRemoved() {
+function _checkIfScrollHintNeedsToBeRemoved() {
   if (scrollHintEl == null || window.scrollY < 200) {
     return;
   }
@@ -34,11 +36,12 @@ subscribe(function _checkIfScrollHintNeedsToBeRemoved() {
   enqueue(function _removeScrollHintEl() {
     scrollHintEl.classList.add('leaving');
     setTimeout(() => {
+      unsubscribe(_checkIfScrollHintNeedsToBeRemoved);
       detach(scrollHintEl);
       scrollHintEl = null;
     }, 500);
   });
-});
+}
 
 function transformMarker(marker) {
   marker.substituteWith(ScrollHint());

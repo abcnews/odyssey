@@ -26,21 +26,25 @@ function Share({ type, links }) {
 
   instances.push(el);
 
+  if (instances.length === 1) {
+    subscribe(_checkIfFirstShareInvitationShouldBeReported);
+  }
+
   return el;
+}
+
+function _checkIfFirstShareInvitationShouldBeReported(client) {
+  instances.forEach((el, index) => {
+    if (proximityCheck(el.getBoundingClientRect(), client, INVITATION_RANGE)) {
+      unsubscribe(_checkIfFirstShareInvitationShouldBeReported);
+      track('share-invitation', '*');
+    }
+  });
 }
 
 function transformMarker(marker, links) {
   marker.substituteWith(Share({ type: marker.configSC, links }));
 }
-
-subscribe(function __reportFirstInvitation(client) {
-  instances.forEach((el, index) => {
-    if (proximityCheck(el.getBoundingClientRect(), client, INVITATION_RANGE)) {
-      unsubscribe(__reportFirstInvitation);
-      track('share-invitation', '*');
-    }
-  });
-});
 
 module.exports = Share;
 module.exports.transformMarker = transformMarker;

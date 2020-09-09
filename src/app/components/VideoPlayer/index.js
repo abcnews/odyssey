@@ -18,6 +18,8 @@ const FUZZY_INCREMENT_FPS = 30;
 const FUZZY_INCREMENT_INTERVAL = 1000 / FUZZY_INCREMENT_FPS;
 const DEFAULT_RATIO = '16x9';
 
+let hasSubscribed = false;
+
 function VideoPlayer({
   videoId,
   ratios = {},
@@ -293,6 +295,12 @@ function VideoPlayer({
     }
 
     registerPlayer(player);
+
+    if (!hasSubscribed) {
+      subscribe(_checkIfVideoPlayersNeedToUpdateUIBasedOnMedia);
+      hasSubscribed = true;
+    }
+
     invalidateClient();
 
     if (player.metadataHook) {
@@ -371,7 +379,7 @@ function updateUI(player) {
   });
 }
 
-subscribe(function _checkIfVideoPlayersNeedToUpdateUIBasedOnMedia() {
+function _checkIfVideoPlayersNeedToUpdateUIBasedOnMedia() {
   if (mqlDidMatch === mql.matches) {
     return;
   }
@@ -379,22 +387,22 @@ subscribe(function _checkIfVideoPlayersNeedToUpdateUIBasedOnMedia() {
   mqlDidMatch = mql.matches;
 
   forEachPlayer(player => {
-    if (player.isAmbient) {
+    if (!player.getVideoEl || player.isAmbient) {
       return;
     }
 
     const wasPlaying = Boolean(player.paused);
 
-    enqueue(() => {
+    enqueue(function _updateVideoPlayerUI() {
       updateUI(player, mql.matches);
 
-      enqueue(() => {
-        if (wasPlaying && player.getVideoEl().scrollIntoView) {
+      if (wasPlaying && player.getVideoEl().scrollIntoView) {
+        enqueue(function _scrollVideoPlayerIntoView() {
           player.getVideoEl().scrollIntoView(true);
-        }
-      });
+        });
+      }
     });
   });
-});
+}
 
 module.exports = VideoPlayer;

@@ -148,6 +148,11 @@ function YouTubePlayer({
           registerPlayer(player);
           players.push(player);
           player.resize();
+
+          if (players.length === 1) {
+            subscribe(_resizePlayers, true);
+          }
+
           invalidateClient();
         },
         onStateChange: event => {
@@ -315,11 +320,9 @@ function YouTubePlayer({
   return youTubePlayerEl;
 }
 
-subscribe(function _checkIfPlayersNeedToBeResized(client) {
-  if (client.hasChanged) {
-    players.forEach(player => player.resize());
-  }
-});
+function _resizePlayers() {
+  players.forEach(player => player.resize());
+}
 
 function loadYouTubeAPI(cb) {
   if (window.YT && window.YT.Player && window.YT.Player instanceof Function) {
