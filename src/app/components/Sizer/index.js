@@ -35,13 +35,13 @@ function Sizer(sizeRatios) {
 }
 
 function updateHeightSnapping() {
-  enqueue(() => {
+  enqueue(function _unsnapSizerHeights() {
     instances.forEach(el => {
       el.style.removeProperty('padding-top');
     });
   });
 
-  enqueue(() => {
+  enqueue(function _snapSizerHeights() {
     instances.forEach(el => {
       const { width, height } = el.getBoundingClientRect();
       const snappedHeight = Math.round(height);
@@ -53,10 +53,6 @@ function updateHeightSnapping() {
   });
 }
 
-subscribe(function __updateHeightSnappingIfClientHasChanged(client) {
-  if (client.hasChanged) {
-    updateHeightSnapping();
-  }
-});
+subscribe(updateHeightSnapping, true);
 
 module.exports = Sizer;

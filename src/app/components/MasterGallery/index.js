@@ -139,11 +139,11 @@ function open(galleryEl, index = 0) {
   galleryEl.api.goToItem(index, true);
   document.documentElement.classList.add('is-master-gallery-open');
   externalActiveElement = document.activeElement;
-  enqueue(() => {
+  enqueue(function _focusActiveMasterGalleryItem() {
     $('.is-active', masterGalleryEl).focus();
   });
   invalidateClient();
-  setTimeout(galleryEl.api.measureDimensions, 0, { hasChanged: true });
+  setTimeout(galleryEl.api.measureDimensions, 0);
 }
 
 function close() {

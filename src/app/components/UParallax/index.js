@@ -3,7 +3,23 @@ const { enqueue, subscribe } = require('../../scheduler');
 
 const parallaxes = [];
 
-subscribe(function _checkIfParallaxesPropertiesNeedToBeUpdated() {
+function activate(el) {
+  if (parallaxes.find(parallax => parallax.el === el)) {
+    return;
+  }
+
+  parallaxes.push({
+    el,
+    nextEl: el.nextElementSibling,
+    state: {}
+  });
+
+  if (parallaxes.length === 1) {
+    subscribe(_checkIfParallaxesPropertiesNeedToBeUpdated);
+  }
+}
+
+function _checkIfParallaxesPropertiesNeedToBeUpdated() {
   parallaxes.forEach(parallax => {
     const rect = parallax.el.getBoundingClientRect();
 
@@ -23,18 +39,6 @@ subscribe(function _checkIfParallaxesPropertiesNeedToBeUpdated() {
       });
       parallax.state = { opacity, yOffset };
     }
-  });
-});
-
-function activate(el) {
-  if (parallaxes.filter(parallax => parallax.el === el).length > 0) {
-    return;
-  }
-
-  parallaxes.push({
-    el,
-    nextEl: el.nextElementSibling,
-    state: {}
   });
 }
 

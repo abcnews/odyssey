@@ -173,26 +173,25 @@ function Header({
     // https://github.com/philipwalton/flexbugs#3-min-height-on-a-flex-container-wont-apply-to-its-flex-items
     let heightOverride;
 
-    subscribe(function _checkHeaderHeight(client) {
-      if (client.hasChanged) {
-        const headerElMinHeight = dePx(window.getComputedStyle(headerEl).minHeight);
-        const headerContentElHeight = headerContentEl.getBoundingClientRect().height;
-        const headerContentElMarginTop = dePx(window.getComputedStyle(headerContentEl).marginTop);
+    subscribe(function _checkIfHeaderHeightNeedsToBeUpdated() {
+      const headerElMinHeight = dePx(window.getComputedStyle(headerEl).minHeight);
+      const headerContentElHeight = headerContentEl.getBoundingClientRect().height;
+      const headerContentElMarginTop = dePx(window.getComputedStyle(headerContentEl).marginTop);
+      const nextHeightOverride = Math.max(headerElMinHeight, headerContentElHeight + headerContentElMarginTop);
 
-        const nextHeightOverride = Math.max(headerElMinHeight, headerContentElHeight + headerContentElMarginTop);
-
-        if (nextHeightOverride !== heightOverride) {
-          heightOverride = nextHeightOverride;
-          enqueue(function _updateHeaderHeight() {
-            headerEl.style.height = heightOverride + 'px';
-          });
-        }
+      if (nextHeightOverride !== heightOverride) {
+        heightOverride = nextHeightOverride;
+        enqueue(function _updateHeaderHeight() {
+          headerEl.style.height = heightOverride + 'px';
+        });
       }
-    });
+    }, true);
   }
 
   if (!isLayered && !isAbreast) {
-    subscribe(client => (client.hasChanged ? updateContentPeek(headerEl) : null));
+    subscribe(function _updateContentPeek() {
+      updateContentPeek(headerEl);
+    });
   }
 
   return headerEl;
@@ -212,7 +211,7 @@ function updateContentPeek(headerEl) {
     titleBottomMargin = +window.getComputedStyle(titleEl).marginBottom.replace('px', '');
   }
 
-  enqueue(() => {
+  enqueue(function _updateContentPeekCustomProp() {
     headerEl.style.setProperty('--Header-contentPeek', Math.round(titleHeight + titleBottomMargin) + 'px');
   });
 }
@@ -299,7 +298,6 @@ function transformSection(section, meta) {
         const leadVideoEl = $('video', node); // Phase 1 (Mobile) renders lead videos (Media field) as <video> elements
 
         if (leadVideoEl) {
-          console.log('leadVideoEl');
           let parentEl = leadVideoEl.parentElement;
 
           while (parentEl.className.indexOf('media-wrapper-dl') === -1 && parentEl !== document.documentElement) {
