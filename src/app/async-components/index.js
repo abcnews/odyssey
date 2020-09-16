@@ -1,6 +1,3 @@
-// First
-require('./polyfills');
-
 // External
 const { AppContext } = require('@abcaustralia/nucleus/es6/AppContext/AppContext');
 const GlobalStyles = require('@abcaustralia/nucleus/es6/GlobalStyles/GlobalStyles').default;
