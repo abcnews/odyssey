@@ -1,3 +1,6 @@
+// First
+require('./polyfills');
+
 // External
 const { AppContext } = require('@abcaustralia/nucleus/es6/AppContext/AppContext');
 const GlobalStyles = require('@abcaustralia/nucleus/es6/GlobalStyles/GlobalStyles').default;
@@ -25,14 +28,6 @@ module.exports.render = (componentName, props = {}, el) => {
     </AppContext.Provider>,
     el
   );
-
-  // ReactDOM.render(
-  //   <div>
-  //     {(shouldIncludeIcons = shouldIncludeIcons && <Icons />)}
-  //     {React.createElement(components[componentName], props)}
-  //   </div>,
-  //   el
-  // );
 
   el.parentElement.insertBefore(el.firstChild, el);
   el.parentElement.removeChild(el);

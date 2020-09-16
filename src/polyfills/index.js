@@ -1,7 +1,5 @@
 // ECMAScript
 require('core-js/stable/dom-collections/iterator');
-require('core-js/stable/object/entries');
-require('core-js/stable/string/starts-with');
 require('core-js/stable/symbol');
 // Browser APIs
 require('custom-event-polyfill');
