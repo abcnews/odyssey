@@ -30,14 +30,6 @@ module.exports.render = (componentName, props = {}, el) => {
     el
   );
 
-  // ReactDOM.render(
-  //   <div>
-  //     {(shouldIncludeIcons = shouldIncludeIcons && <Icons />)}
-  //     {React.createElement(components[componentName], props)}
-  //   </div>,
-  //   el
-  // );
-
   el.parentElement.insertBefore(el.firstChild, el);
   el.parentElement.removeChild(el);
 };
