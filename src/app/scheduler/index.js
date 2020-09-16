@@ -118,10 +118,13 @@ function onClientInvalidated(event) {
 
 const onClientInvalidated_debounced = debounce(onClientInvalidated, 50);
 
+const onClientInvalidatedTasks = [onClientInvalidated, onClientInvalidated_debounced];
+
 function invalidateClient() {
   const [firstQueuedTask] = queue[0] || [];
 
-  if (!firstQueuedTask || firstQueuedTask.name.indexOf('onClientInvalidated') === -1) {
+  // Try to avoid queueing more than one onClientInvalidated task
+  if (!firstQueuedTask || onClientInvalidatedTasks.indexOf(firstQueuedTask) === -1) {
     enqueue(onClientInvalidated, true);
   }
 }
