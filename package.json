@@ -1,46 +1,46 @@
 {
-	"name": "odyssey",
-	"version": "4.24.6",
-	"description": "Enhance feature-worthy stories",
-	"license": "MIT",
-	"private": true,
-	"contributors": [
-		"Simon Elvery <Elvery.Simon@abc.net.au>",
-		"Colin Gourlay <Gourlay.Colin@abc.net.au>",
-		"Nathan Hoad <Hoad.Nathan@abc.net.au>"
-	],
-	"scripts": {
-		"start": "aunty serve"
-	},
-	"dependencies": {
-		"@abcaustralia/abc-components": "^4.12.0",
-		"@abcaustralia/global-components": "^1.0.0",
-		"@abcaustralia/nucleus": "^1.1.0",
-		"@abcnews/poll-counters-client": "^1.3.1",
-		"@abcnews/terminus-fetch": "^1.2.1",
-		"bel": "^6.0.0",
-		"classnames": "^2.2.6",
-		"core-js": "^3.1.2",
-		"custom-event-polyfill": "^1.0.7",
-		"date-fns": "^1.30.1",
-		"debounce": "^1.2.0",
-		"objectFitPolyfill": "^2.2.0",
-		"picturefill": "^3.0.3",
-		"react": "^16.8.6",
-		"react-dom": "^16.8.6",
-		"ric": "^1.3.0",
-		"util-dewysiwyg": "git+ssh://git@stash.abc-dev.net.au:7999/news/util-dewysiwyg.git#3.8.0",
-		"util-url2cmid": "git+ssh://git@stash.abc-dev.net.au:7999/news/util-url2cmid.git#1.0.1"
-	},
-	"devDependencies": {
-		"@abcnews/aunty": "^11.1.1",
-		"duplicate-package-checker-webpack-plugin": "^3.0.0",
-		"webpack-bundle-analyzer": "^3.3.2"
-	},
-	"abc": {
-		"css": {
-			"libraryDir": "./node_modules/@abcaustralia/nucleus/css",
-			"logVariables": "false"
-		}
-	}
+  "name": "odyssey",
+  "version": "4.24.6",
+  "description": "Enhance feature-worthy stories",
+  "license": "MIT",
+  "private": true,
+  "contributors": [
+    "Simon Elvery <Elvery.Simon@abc.net.au>",
+    "Colin Gourlay <Gourlay.Colin@abc.net.au>",
+    "Nathan Hoad <Hoad.Nathan@abc.net.au>"
+  ],
+  "scripts": {
+    "start": "aunty serve"
+  },
+  "dependencies": {
+    "@abcaustralia/abc-components": "^4.12.0",
+    "@abcaustralia/global-components": "^1.0.0",
+    "@abcaustralia/nucleus": "^1.1.0",
+    "@abcnews/poll-counters-client": "^1.3.1",
+    "@abcnews/terminus-fetch": "^1.2.1",
+    "bel": "^6.0.0",
+    "classnames": "^2.2.6",
+    "core-js": "^3.1.2",
+    "custom-event-polyfill": "^1.0.7",
+    "date-fns": "^1.30.1",
+    "debounce": "^1.2.0",
+    "objectFitPolyfill": "^2.2.0",
+    "picturefill": "^3.0.3",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "ric": "^1.3.0",
+    "util-dewysiwyg": "git+ssh://git@stash.abc-dev.net.au:7999/news/util-dewysiwyg.git#3.8.0",
+    "util-url2cmid": "git+ssh://git@stash.abc-dev.net.au:7999/news/util-url2cmid.git#1.0.1"
+  },
+  "devDependencies": {
+    "@abcnews/aunty": "^11.1.1",
+    "duplicate-package-checker-webpack-plugin": "^3.0.0",
+    "webpack-bundle-analyzer": "^3.3.2"
+  },
+  "abc": {
+    "css": {
+      "libraryDir": "./node_modules/@abcaustralia/nucleus/css",
+      "logVariables": "false"
+    }
+  }
 }
