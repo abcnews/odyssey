@@ -1,6 +1,7 @@
 // ECMAScript
 require('core-js/stable/dom-collections/iterator');
 require('core-js/stable/symbol');
+require('core-js/stable/object/entries');
 // Browser APIs
 require('custom-event-polyfill');
 require('ric');
@@ -12,7 +13,7 @@ if (!Element.prototype.matches) {
 }
 
 if (!Element.prototype.closest) {
-  Element.prototype.closest = function(s) {
+  Element.prototype.closest = function (s) {
     var el = this;
 
     do {
