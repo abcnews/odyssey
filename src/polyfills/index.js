@@ -2,6 +2,7 @@
 require('core-js/stable/array/fill');
 require('core-js/stable/dom-collections/iterator');
 require('core-js/stable/object/entries');
+require('core-js/stable/set/index');
 require('core-js/stable/string/starts-with');
 require('core-js/stable/symbol');
 require('core-js/stable/symbol/iterator');
