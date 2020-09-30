@@ -113,9 +113,7 @@ function app() {
         detach(marker.node);
         break;
       case 'hr':
-        el = html`
-          <hr />
-        `;
+        el = html`<hr />`;
         marker.substituteWith(el);
         UDropcap.conditionallyApply(el.nextElementSibling);
         break;

@@ -19,11 +19,7 @@ function Quote({ isPullquote = false, alignment, parEls = [], attributionNodes =
     ? html`
         <footer>
           ${Array.from(attributionNodes).map(node => {
-            return node.tagName === 'A'
-              ? html`
-                  <cite>${node}</cite>
-                `
-              : node;
+            return node.tagName === 'A' ? html`<cite>${node}</cite>` : node;
           })}
         </footer>
       `
@@ -106,9 +102,7 @@ function createFromEl(el, options) {
         return;
       }
 
-      const parEl = html`
-        <p></p>
-      `;
+      const parEl = document.createElement('p');
 
       while (stack.length > 0) {
         prepend(parEl, stack.pop());
