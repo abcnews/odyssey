@@ -206,7 +206,7 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconst
       // a link or something else with an event handler
       if (galleryEl.className.indexOf('is-mosaic') === -1) {
         shouldIgnoreClicks = true;
-        setTimeout(function() {
+        setTimeout(function () {
           shouldIgnoreClicks = false;
         }, 50);
       }
@@ -255,9 +255,7 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconst
   }
 
   if (items.length === 0) {
-    return html`
-      <div class="Gallery is-empty"></div>
-    `;
+    return html`<div class="Gallery is-empty"></div>`;
   }
 
   subscribe(measureDimensions, true);
@@ -398,13 +396,9 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconst
   itemsEl.addEventListener('touchend', swipeComplete, false);
   itemsEl.addEventListener('touchcancel', swipeComplete, false);
 
-  const paneEl = html`
-    <div class="Gallery-pane">${itemsEl}</div>
-  `;
+  const paneEl = html`<div class="Gallery-pane">${itemsEl}</div>`;
 
-  const indexEl = html`
-    <div class="Gallery-index"></div>
-  `;
+  const indexEl = html`<div class="Gallery-index"></div>`;
 
   const prevEl = html`
     <button
@@ -452,9 +446,7 @@ function RichtextTile(el, ratios) {
   return html`
     <div class="Gallery-richtextTile">
       ${Sizer(ratios)}
-      <div class="Gallery-richtextTileContent u-richtext${getMeta().isDarkMode ? '-invert' : ''}">
-        ${el}
-      </div>
+      <div class="Gallery-richtextTileContent u-richtext${getMeta().isDarkMode ? '-invert' : ''}">${el}</div>
     </div>
   `;
 }
