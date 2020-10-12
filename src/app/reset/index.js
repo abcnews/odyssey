@@ -55,6 +55,7 @@ const TEMPLATE_REMOVABLES = {
     [data-component="AppDetailLayout"]
     [data-component="DetailLayout"]
     [data-component="WebContentWarning"]
+    ol>li>span:first-child
     ul>li>span:first-child
   `)
 };
