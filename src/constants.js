@@ -16,7 +16,7 @@ const SELECTORS = {
   STORY:
     '.article.section,article>.story.richtext,.article-detail-page .article-text,[data-component="Decoy"][data-key="article"]>:first-child',
   SHARE_TOOLS: '.share-tools-list,.share,.tools',
-  TITLE: '.article h1,header>h1,h1[itemprop="name"],[data-component="DetailHeader"] h1',
+  TITLE: '.article h1,header h1,h1[itemprop="name"]',
   BYLINE: '.view-byline,header>.attribution,.byline,[data-component="Byline"]',
   INFO_SOURCE: '.bylinepromo,.program,[data-component="InfoSource"]',
   INFO_SOURCE_LINK: '.bylinepromo>a,.program>a,[data-component="InfoSource"]>a',
@@ -119,7 +119,7 @@ const MS_VERSION = (ua => {
 const SUPPORTS_PASSIVE = (isSupported => {
   try {
     const options = Object.defineProperty({}, 'passive', {
-      get: function() {
+      get: function () {
         isSupported = true;
       }
     });
