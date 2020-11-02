@@ -57,6 +57,8 @@ const TEMPLATE_REMOVABLES = {
     [data-component="WebContentWarning"]
     ol>li>span:first-child
     ul>li>span:first-child
+    [data-component="NewsTicker"]
+    [data-component="Sidebar"]:first-child
   `)
 };
 
