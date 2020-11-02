@@ -87,6 +87,12 @@ body {
   main + .content {
     background-color: #f1f1f1;
   }
+
+  main + main:not([class]) {
+    margin-top: 1rem;
+    border-top: 1px solid #e6e6e6;
+    padding-top: 2rem;
+  }
 }
 
 /* Guess at placeholder styles */
