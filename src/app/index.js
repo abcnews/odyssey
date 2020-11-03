@@ -15,6 +15,7 @@ const GalleryEmbed = require('./components/GalleryEmbed');
 const Header = require('./components/Header');
 const ImageEmbed = require('./components/ImageEmbed');
 const MasterGallery = require('./components/MasterGallery');
+const Picture = require('./components/Picture');
 const Quote = require('./components/Quote');
 const Recirculation = require('./components/Recirculation');
 const ScrollHint = require('./components/ScrollHint');
@@ -213,6 +214,22 @@ function app() {
       setTimeout(transformRemainingEELs, 500);
     }
   })();
+
+  // Restore thumbnail images in PL recirculation
+  $$('[data-component="Decoy"][data-key="body"] [data-component="IntersectionObserver"]').forEach(el => {
+    const imgEl = $('img', el);
+    const src = imgEl && imgEl.getAttribute('data-src');
+
+    if (src) {
+      substitute(
+        el,
+        Picture({
+          src,
+          preserveOriginalRatio: true
+        })
+      );
+    }
+  });
 
   // Embed format credit for non-DSI stories
   if (meta.productionUnit !== 'EDL team' && (meta.infoSource || {}).name !== 'Digital Story Innovation Team') {
