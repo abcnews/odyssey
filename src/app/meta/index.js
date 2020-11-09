@@ -162,8 +162,8 @@ function getRelatedMedia() {
     .published + .inline-content.full.video,
     .attached-content > .inline-content.photo,
     .attached-content > .inline-content.video,
-    [data-component="DetailHeader"] [data-component="Figure"],
-    [data-component="DetailHeader"] [data-component="WebContentWarning"]
+    [data-component="FeatureMedia"] [data-component="Figure"],
+    [data-component="FeatureMedia"] [data-component="WebContentWarning"]
   `);
 
   if (!relatedMediaEl) {
