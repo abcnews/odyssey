@@ -26,8 +26,10 @@ html {
   font-family and rem-based font-sizes
 */
 @supports (font: -apple-system-body) {
-  html {
-    font: -apple-system-body !important;
+  @media #{$mq-lt-md} {
+    html {
+      font: -apple-system-body !important;
+    }
   }
 }
 
