@@ -14,12 +14,14 @@ $abreastChildSpacing: 2.5rem;
     font-size: 1.25rem;
   }
 
-  :root.is-dark-mode &:not(.is-dark) {
-    background-color: $color-lightBg;
+  .Main.u-richtext &.is-dark {
+    background-color: $color-darkBg;
+    background-color: var(--bg-inverted, var(--bg, #{$color-darkBg}));
   }
 
-  :root:not(.is-dark-mode) &.is-dark {
-    background-color: $color-darkBg;
+  .Main.u-richtext-invert &:not(.is-dark) {
+    background-color: $color-lightBg;
+    background-color: var(--bg, #{$color-lightBg});
   }
 
   &.is-layered {

@@ -9,7 +9,7 @@
 
     .u-richtext-invert & {
       background-color: $color-darkBg !important;
-      background-color: var(--bg, #{$color-darkBg}) !important;
+      background-color: var(--bg-inverted, var(--bg, #{$color-darkBg})) !important;
       background-image: linear-gradient($color-grey-500-transparent-65, $color-grey-500-transparent-65);
     }
   }

@@ -8,14 +8,6 @@ html {
   -ms-text-size-adjust: none;
   text-size-adjust: none;
   scroll-behavior: auto;
-
-  background-color: $color-lightBg;
-  background-color: var(--bg, #{$color-lightBg});
-
-  &.is-dark-mode {
-    background-color: $color-darkBg;
-    background-color: var(--bg, #{$color-darkBg});
-  }
 }
 
 /*
@@ -38,7 +30,6 @@ body {
   min-width: 0; /* Override Phase 1 (Standard)'s 1000px */
   min-height: 102vh;
   width: 100%;
-  background-color: inherit !important;
 
   /* Remove margin & padding applied by preview tools */
   &.preview.no-uig {
@@ -50,44 +41,12 @@ body {
     content: none;
   }
 
-  & > .wcms-wrapper {
-    /* Stop Phase 2 from setting a black background */
-    background-color: transparent;
-  }
-
   main + .page_margins,
   main + .content {
-    position: relative;
-
-    &::before,
-    &::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      width: 50vw;
-      height: 100%;
-      background-color: inherit;
-    }
-
-    &::before {
-      left: -50vw;
-    }
-
-    &::after {
-      right: -50vw;
-    }
-
-    & > * {
+    & > *,
+    & > span[id] > * {
       border-top: 0;
     }
-  }
-
-  main + .page_margins {
-    background-color: $color-lightBg;
-  }
-
-  main + .content {
-    background-color: #f1f1f1;
   }
 }
 

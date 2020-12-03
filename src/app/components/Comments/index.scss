@@ -3,13 +3,13 @@
 .Comments {
   margin-bottom: 0 !important;
 
-  .is-dark-mode & {
+  .Main.u-richtext-invert & {
     background-color: $color-lightBg;
   }
 }
 
 .Comments-livefyreRoot {
-  .is-dark-mode & {
+  .Main.u-richtext-invert & {
     padding-top: 2rem;
     padding-bottom: 2rem;
   }

@@ -12,12 +12,14 @@
     min-height: var(--vw-ratio-16x9);
   }
 
-  :root:not(.is-dark-mode) &.has-dark {
+  .Main.u-richtext &.has-dark {
     background-color: $color-darkBg;
+    background-color: var(--bg-inverted, var(--bg, #{$color-darkBg}));
   }
 
-  :root.is-dark-mode &.has-light {
+  .Main.u-richtext-invert &.has-light {
     background-color: $color-lightBg;
+    background-color: var(--bg, #{$color-lightBg});
   }
 }
 

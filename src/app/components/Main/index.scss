@@ -4,12 +4,39 @@
 .Main {
   --Main-offsetTop: #{$var--Main-offsetTop};
   display: block;
+  position: relative;
+  box-sizing: border-box;
+  padding: 0 0 1.25rem;
   line-height: normal;
+
+  &.u-richtext {
+    background-color: $color-lightBg;
+    background-color: var(--bg, #{$color-lightBg});
+  }
+
+  &.u-richtext-invert {
+    background-color: $color-darkBg;
+    background-color: var(--bg-inverted, var(--bg, #{$color-darkBg}));
+  }
+
+  @media #{$mq-gt-md} {
+    /* Fixed layout requires artificial background colour extension */
+    &::before {
+      content: '';
+      z-index: -1;
+      position: absolute;
+      top: 0;
+      left: calc(#{$layout-fixed / 2} - 50vw);
+      width: 100vw;
+      height: 100%;
+      background-color: inherit;
+    }
+  }
 
   *,
   *::before,
   *::after {
-    box-sizing: border-box;
+    box-sizing: inherit;
   }
 
   img,
