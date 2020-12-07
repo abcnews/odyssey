@@ -132,10 +132,13 @@ const SUPPORTS_PASSIVE = (isSupported => {
 
 const INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID = '10766144'; // This document is managed in Core Media
 
-const IS_PROBABLY_RESISTING_FINGERPRINTING =
-  performance.mark &&
-  performance.getEntries &&
-  (performance.mark('odyssey') || (performance.getEntries() || []).length === 0);
+const IS_PROBABLY_RESISTING_FINGERPRINTING = (() => {
+  // performance.mark will return undefined or a PerformanceMark object, depending on spec
+  performance.mark && performance.mark('odyssey');
+
+  // performance.getEntries will return an array of PerformanceEntry objects
+  return ((performance.getEntries && performance.getEntries()) || []).length === 0;
+})();
 
 window.ODYSSEY_MQL = MQL;
 
