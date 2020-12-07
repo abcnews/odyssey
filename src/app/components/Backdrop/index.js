@@ -37,7 +37,6 @@ function transformSection(section) {
     g: parseInt(hg, 16),
     b: parseInt(hb, 16)
   };
-  console.log(`#${hr}${hg}${hb}`, rgb);
 
   // Formula: tinycolor.js' getBrightness https://bgrins.github.io/TinyColor/docs/tinycolor.html
   const brightness = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
