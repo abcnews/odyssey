@@ -4,7 +4,8 @@ const { IS_PROBABLY_RESISTING_FINGERPRINTING } = require('../../../constants');
 const CANVAS_MAX = 48;
 const BLUR_RADIUS = 4;
 const NO_READ_ASSUMPTION_ERROR = "Assuming we won't be able to read image data from <canvas>";
-const MIXED_CONTENT_ERROR = "Not attempting to load Mixed Content";
+const MIXED_CONTENT_ERROR = 'Not attempting to load Mixed Content';
+const TRANSPARENT_IMAGE_ERROR = "Images with transparency shouldn't have placeholders";
 const cache = {};
 const protocol = String(window.location.protocol);
 
@@ -40,6 +41,14 @@ function blurImage(url, done) {
 
     context.clearRect(0, 0, canvasWidth, canvasHeight);
     context.drawImage(imgEl, 0, 0, imgWidth, imgHeight, 0, 0, canvasWidth, canvasHeight);
+
+    const { data } = context.getImageData(0, 0, canvasWidth, canvasHeight);
+
+    for (let i = 0, len = data.length; i < len; i += 4) {
+      if (data[i + 3] < 255) {
+        return done(new Error(TRANSPARENT_IMAGE_ERROR));
+      }
+    }
 
     try {
       stackBlurCanvasRGB(context, 0, 0, canvasWidth, canvasHeight, BLUR_RADIUS);
