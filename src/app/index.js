@@ -6,6 +6,7 @@ const html = require('bel');
 const { IS_PREVIEW, RICHTEXT_BLOCK_TAGNAMES, SELECTORS } = require('../constants');
 const api = require('./api');
 const { PresentationLayerAsyncComponent } = require('./async-components/loader');
+const Backdrop = require('./components/Backdrop');
 const Block = require('./components/Block');
 const Caption = require('./components/Caption');
 const Comments = require('./components/Comments');
@@ -47,7 +48,7 @@ function app() {
   let hasHeader = false;
 
   // Transform sections
-  getSections(['header', 'remove', 'block', 'gallery', 'mosaic', 'pull']).forEach(section => {
+  getSections(['header', 'remove', 'backdrop', 'block', 'gallery', 'mosaic', 'pull']).forEach(section => {
     switch (section.name) {
       case 'header':
         hasHeader = true;
@@ -55,6 +56,9 @@ function app() {
         break;
       case 'remove':
         detachAll([section.startNode, section.endNode].concat(section.betweenNodes));
+        break;
+      case 'backdrop':
+        Backdrop.transformSection(section);
         break;
       case 'block':
         Block.transformSection(section);
@@ -112,9 +116,7 @@ function app() {
         detach(marker.node);
         break;
       case 'hr':
-        el = html`
-          <hr />
-        `;
+        el = html` <hr /> `;
         marker.substituteWith(el);
         UDropcap.conditionallyApply(el.nextElementSibling);
         break;
