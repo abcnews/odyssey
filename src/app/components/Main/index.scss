@@ -32,41 +32,4 @@
     text-decoration: underline;
     text-decoration-skip: ink;
   }
-
-  > a[name] {
-    padding: 0;
-  }
-
-  > h2,
-  > hr {
-    &::before {
-      content: '';
-      display: block;
-      margin: 3rem auto 1rem;
-      width: 7.5rem;
-      height: 0.125rem;
-      background-color: $color-grey-300-transparent-70;
-
-      @media #{$mq-md} {
-        margin: 4rem auto 1.5rem;
-      }
-
-      @media #{$mq-gt-md} {
-        margin: 5rem auto 1.5rem;
-      }
-    }
-
-    @media #{$mq-md} {
-      padding-bottom: 0.5rem;
-    }
-
-    @media #{$mq-gt-md} {
-      padding-bottom: 1rem;
-    }
-  }
-
-  > hr {
-    border: none;
-    padding-bottom: 0.5rem;
-  }
 }
