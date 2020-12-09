@@ -45,13 +45,34 @@ function createFromEl(el, options) {
   const clone = el.cloneNode(true);
   let config;
 
+  /*
+  {application}-{content} terminology used below
+
+  Applications:
+    PL-*  => Presentation Layer
+    P1S-* => Phase 1 (Standard)
+    P1M-* => Phase 1 (Mobile)
+    P2-*  => Phase 2
+  
+  Content:
+    *-B   => Native Blockquote
+    *-P   => Native Pullquote
+    *-E   => Embedded WYSIWYG Teaser (viewtype=quote)
+
+  e.g. P1S-P denotes a Phase 1 (Standard) Native Pullquote
+
+  * Lists denote a segment that fits multiple cases (which will be further filtered by if/else statements)
+  * Sometimes one config can defined be applied to multiple cases, such as PL-B & P2-B which only differ
+    in the element used to contain attribution (<cite> & <footer>, respectively)
+  */
+
   if (clone.tagName === 'BLOCKQUOTE') {
-    // P1S-B, P1M-B, P2-B, P1S-P, P1M-P
-    if (clone.className.indexOf('source-blockquote') > -1) {
-      // P2-B
+    // PL-B, P1S-B, P1M-B, P2-B, P1S-P, P1M-P
+    if (clone.getAttribute('data-component') === 'Blockquote' || clone.className.indexOf('source-blockquote') > -1) {
+      // PL-B, P2-B
       config = {
         parEls: $$('p', clone),
-        attributionNodes: ($('footer', clone) || MOCK_NODE).childNodes
+        attributionNodes: ($('cite, footer', clone) || MOCK_NODE).childNodes
       };
     } else {
       // P1S-B, P1M-B, P1S-P, P1M-P
@@ -62,11 +83,11 @@ function createFromEl(el, options) {
       };
     }
   } else if (clone.tagName === 'ASIDE') {
-    // P2-P
+    // PL-P, P2-P
     config = {
       isPullquote: true,
       parEls: $$('p', clone),
-      attributionNodes: ($('footer', clone) || MOCK_NODE).childNodes
+      attributionNodes: ($('cite, footer', clone) || MOCK_NODE).childNodes
     };
   } else if (clone.tagName === 'FIGURE') {
     // P1M-E
