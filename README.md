@@ -2,6 +2,8 @@
 
 Enhance feature-worthy stories.
 
+Odyssey is quite tightly coupled to ABC News environments and as such is generally unsuitable for use as a framework or library in other projects. However it's published here in the hope others might be able to learn from the techniques used or pull out small parts for use in their own projects.
+
 ## API
 
 You can make use of the API in your stories to initialise custom sections/markers, use internal utlities and create your own components.
