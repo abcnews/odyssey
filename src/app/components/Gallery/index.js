@@ -1,4 +1,5 @@
 // External
+const { getMountValue, isPrefixedMount } = require('@abcnews/mount-utils');
 const cn = require('classnames');
 const html = require('bel');
 const rawHTML = require('bel/raw');
@@ -8,7 +9,7 @@ const url2cmid = require('util-url2cmid');
 const { REM, SELECTORS, SUPPORTS_PASSIVE, VIDEO_MARKER_PATTERN } = require('../../../constants');
 const { getMeta } = require('../../meta');
 const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
-const { $, append, detach, getChildImage, isElement, setText } = require('../../utils/dom');
+const { $, append, detach, detectVideoId, getChildImage, isElement, setText } = require('../../utils/dom');
 const { dePx, getRatios, returnFalse } = require('../../utils/misc');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
@@ -205,7 +206,7 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconst
       // a link or something else with an event handler
       if (galleryEl.className.indexOf('is-mosaic') === -1) {
         shouldIgnoreClicks = true;
-        setTimeout(function() {
+        setTimeout(function () {
           shouldIgnoreClicks = false;
         }, 50);
       }
@@ -254,9 +255,7 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconst
   }
 
   if (items.length === 0) {
-    return html`
-      <div class="Gallery is-empty"></div>
-    `;
+    return html`<div class="Gallery is-empty"></div>`;
   }
 
   subscribe(measureDimensions, true);
@@ -397,13 +396,9 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconst
   itemsEl.addEventListener('touchend', swipeComplete, false);
   itemsEl.addEventListener('touchcancel', swipeComplete, false);
 
-  const paneEl = html`
-    <div class="Gallery-pane">${itemsEl}</div>
-  `;
+  const paneEl = html`<div class="Gallery-pane">${itemsEl}</div>`;
 
-  const indexEl = html`
-    <div class="Gallery-index"></div>
-  `;
+  const indexEl = html`<div class="Gallery-index"></div>`;
 
   const prevEl = html`
     <button
@@ -451,9 +446,7 @@ function RichtextTile(el, ratios) {
   return html`
     <div class="Gallery-richtextTile">
       ${Sizer(ratios)}
-      <div class="Gallery-richtextTileContent u-richtext${getMeta().isDarkMode ? '-invert' : ''}">
-        ${el}
-      </div>
+      <div class="Gallery-richtextTileContent u-richtext${getMeta().isDarkMode ? '-invert' : ''}">${el}</div>
     </div>
   `;
 }
@@ -466,13 +459,13 @@ function offsetBasedOpacity(itemIndex, itemsTransformXPct) {
 }
 
 function transformSection(section) {
-  const [, mosaicRowLengthsString] = `${section.name}${section.configSC}`.match(MOSAIC_ROW_LENGTHS_PATTERN) || [
+  const [, mosaicRowLengthsString] = `${section.name}${section.configString}`.match(MOSAIC_ROW_LENGTHS_PATTERN) || [
     null,
     ''
   ];
-  const isUnconstrained = mosaicRowLengthsString.length && section.configSC.includes('full');
-  const ratios = getRatios(section.configSC);
-  const unlink = section.configSC.includes('unlink');
+  const isUnconstrained = mosaicRowLengthsString.length && section.configString.includes('full');
+  const ratios = getRatios(section.configString);
+  const unlink = section.configString.includes('unlink');
 
   const nodes = [].concat(section.betweenNodes);
 
@@ -487,15 +480,9 @@ function transformSection(section) {
       const classList = node.className.split(' ');
       const isQuote = node.matches(SELECTORS.QUOTE);
       const imgEl = getChildImage(node);
-      const linkEl = $('a[href]', node);
-      const videoId =
-        node.name && !!node.name.match(VIDEO_MARKER_PATTERN)
-          ? node.name.match(VIDEO_MARKER_PATTERN)[1]
-          : linkEl &&
-            ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
-              (classList.indexOf('view-inlineMediaPlayer') > -1 && classList.indexOf('doctype-abcvideo') > -1) ||
-              (classList.indexOf('embed-content') > -1 && $('.type-video', node))) &&
-            url2cmid(linkEl.getAttribute('href'));
+      const videoId = isPrefixedMount(node, 'video')
+        ? getMountValue(node).match(VIDEO_MARKER_PATTERN)[1]
+        : detectVideoId(node);
 
       if (videoId) {
         const videoPlayerEl = VideoPlayer({

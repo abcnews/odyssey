@@ -22,10 +22,10 @@ const HEX3_PATTERN = /^([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])$/;
 const HEX6_PATTERN = /^([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/;
 
 function transformSection(section) {
-  let [, hr, hg, hb] = section.configSC.match(HEX6_PATTERN) || [];
+  let [, hr, hg, hb] = section.configString.match(HEX6_PATTERN) || [];
 
   if (!hr) {
-    [, hr, hg, hb] = section.configSC.match(HEX3_PATTERN) || [, 'f', 'f', 'f'];
+    [, hr, hg, hb] = section.configString.match(HEX3_PATTERN) || [, 'f', 'f', 'f'];
   }
 
   if (hr.length === 1) {

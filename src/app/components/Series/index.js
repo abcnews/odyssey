@@ -89,7 +89,7 @@ function transformMarker(marker) {
   });
 
   const options = {
-    isRest: marker.configSC.indexOf('rest') > -1
+    isRest: marker.configString.indexOf('rest') > -1
   };
 
   substitute(listEl, Series({ stories, options }));

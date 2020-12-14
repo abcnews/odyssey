@@ -1,13 +1,13 @@
 // External
+const { getMountValue, getTrailingMountValue, isMount, isPrefixedMount } = require('@abcnews/mount-utils');
 const cn = require('classnames');
 const html = require('bel');
-const url2cmid = require('util-url2cmid');
 
 // Ours
 const { ALIGNMENT_PATTERN, SCROLLPLAY_PCT_PATTERN, VIDEO_MARKER_PATTERN } = require('../../../constants');
 
 const { enqueue, subscribe } = require('../../scheduler');
-const { $, detach, getChildImage, isElement } = require('../../utils/dom');
+const { $, detach, detectVideoId, getChildImage, isElement } = require('../../utils/dom');
 const { getRatios, trim } = require('../../utils/misc');
 const Caption = require('../Caption');
 const Picture = require('../Picture');
@@ -330,17 +330,17 @@ function Block({
 }
 
 function transformSection(section) {
-  const hasAttributedMedia = section.configSC.indexOf('attributed') > -1;
-  const hasCaptionedMedia = section.configSC.indexOf('captioned') > -1;
-  const hasInsetMedia = section.configSC.indexOf('inset') > -1;
-  const isContained = section.configSC.indexOf('contain') > -1;
-  const isDocked = section.configSC.indexOf('docked') > -1;
-  const isGrouped = section.configSC.indexOf('grouped') > -1;
-  const isLight = section.configSC.indexOf('light') > -1;
-  const isPiecemeal = section.configSC.indexOf('piecemeal') > -1;
-  const shouldSupplant = section.configSC.indexOf('supplant') > -1;
-  const shouldVideoPlayOnce = section.configSC.indexOf('once') > -1;
-  const [, videoScrollplayPctString] = section.configSC.match(SCROLLPLAY_PCT_PATTERN) || [, ''];
+  const hasAttributedMedia = section.configString.indexOf('attributed') > -1;
+  const hasCaptionedMedia = section.configString.indexOf('captioned') > -1;
+  const hasInsetMedia = section.configString.indexOf('inset') > -1;
+  const isContained = section.configString.indexOf('contain') > -1;
+  const isDocked = section.configString.indexOf('docked') > -1;
+  const isGrouped = section.configString.indexOf('grouped') > -1;
+  const isLight = section.configString.indexOf('light') > -1;
+  const isPiecemeal = section.configString.indexOf('piecemeal') > -1;
+  const shouldSupplant = section.configString.indexOf('supplant') > -1;
+  const shouldVideoPlayOnce = section.configString.indexOf('once') > -1;
+  const [, videoScrollplayPctString] = section.configString.match(SCROLLPLAY_PCT_PATTERN) || [, ''];
   const videoScrollplayPct =
     videoScrollplayPctString.length > 0 && Math.max(0, Math.min(100, +videoScrollplayPctString));
 
@@ -348,9 +348,9 @@ function transformSection(section) {
 
   if (!hasInsetMedia) {
     TRANSITIONS.forEach(t => {
-      if (section.configSC.indexOf('transition' + t) > -1) {
+      if (section.configString.indexOf('transition' + t) > -1) {
         if (t === 'colour') {
-          transition = section.configSC.match(/colour([a-f0-9]+)/)[1];
+          transition = section.configString.match(/colour([a-f0-9]+)/)[1];
         } else {
           transition = t;
         }
@@ -358,12 +358,12 @@ function transformSection(section) {
     });
   }
   // fallback for just basic default transition or if we have inset transitioning media
-  if (!transition && section.configSC.indexOf('transition') > -1) {
+  if (!transition && section.configString.indexOf('transition') > -1) {
     transition = 'black';
   }
 
   const [, alignment] =
-    section.configSC
+    section.configString
       .replace('slideright', '')
       .replace('slideleft', '')
       .match(ALIGNMENT_PATTERN) || [];
@@ -405,11 +405,13 @@ function transformSection(section) {
     config.backgrounds = [];
     config.contentEls = section.betweenNodes
       .map(node => {
+        const mountSC = isMount(node) ? getMountValue(node) : '';
+
         let img = getChildImage(node);
         if (img) {
           // We found an image to use as one of the backgrounds
           config.backgrounds.push(img);
-          config.ratios = getRatios(section.configSC);
+          config.ratios = getRatios(section.configString);
 
           // Graft a 'marker' onto the next paragraph
           if (node.nextElementSibling) {
@@ -433,10 +435,10 @@ function transformSection(section) {
 
         // See if we have a video we can use for a background
         let videoMarker = {};
-        if (node.name && !!node.name.match(VIDEO_MARKER_PATTERN)) {
+        if (!!mountSC.match(VIDEO_MARKER_PATTERN)) {
           videoMarker = {
-            isVideoYouTube: node.name.split('youtube')[1],
-            videoId: node.name.match(VIDEO_MARKER_PATTERN)[1]
+            isVideoYouTube: !!mountSC.split('youtube')[1],
+            videoId: mountSC.match(VIDEO_MARKER_PATTERN)[1]
           };
         } else {
           videoMarker.videoId = detectVideoId(node);
@@ -445,7 +447,7 @@ function transformSection(section) {
         if (videoMarker.videoId) {
           // We found a video to use as one of the backgrounds
           config.backgrounds.push(videoMarker);
-          config.ratios = getRatios(section.configSC);
+          config.ratios = getRatios(section.configString);
 
           // Graft a 'marker' onto the next paragraph
           if (node.nextElementSibling) {
@@ -467,8 +469,9 @@ function transformSection(section) {
           return null;
         }
 
-        if (node.tagName && node.tagName === 'A' && (node.getAttribute('name') || '').indexOf('mark') === 0) {
-          const config = node.getAttribute('name').replace('mark', '');
+        if (isPrefixedMount(node, 'mark')) {
+          const config = getTrailingMountValue(node, 'mark');
+
           if (config.indexOf('light') > -1) {
             lightDarkConfig = 'light';
           }
@@ -494,15 +497,15 @@ function transformSection(section) {
             node.nextElementSibling.setAttribute('data-background-index', node.getAttribute('data-background-index'));
           }
 
-          // Remove this anchor from the flow
+          // Remove this mount from the flow
           node.parentElement.removeChild(node);
           return null;
-        } else if (node.tagName && node.tagName === 'A') {
-          // Remove any extra orphan anchor tags
+        } else if (isMount(node)) {
+          // Remove any extra orphan mount tags
           return null;
         }
 
-        if (node.tagName) {
+        if (isElement(node)) {
           if (lightDarkConfig) {
             node.setAttribute('data-lightdark', lightDarkConfig);
           }
@@ -521,11 +524,11 @@ function transformSection(section) {
       let imgEl;
 
       if (!_config.videoId && !_config.imgEl && isElement(node)) {
-        classList = node.className.split(' ');
+        const mountSC = isMount(node) ? getMountValue(node) : '';
 
-        if (node.name && !!node.name.match(VIDEO_MARKER_PATTERN)) {
-          _config.isVideoYouTube = node.name.split('youtube')[1];
-          _config.videoId = videoId = node.name.match(VIDEO_MARKER_PATTERN)[1];
+        if (!!mountSC.match(VIDEO_MARKER_PATTERN)) {
+          _config.isVideoYouTube = !!mountSC.split('youtube')[1];
+          _config.videoId = videoId = mountSC.match(VIDEO_MARKER_PATTERN)[1];
         } else {
           videoId = detectVideoId(node);
         }
@@ -537,7 +540,7 @@ function transformSection(section) {
 
           if (imgEl) {
             _config.imgEl = imgEl;
-            _config.ratios = getRatios(section.configSC);
+            _config.ratios = getRatios(section.configString);
           }
         }
 
@@ -549,7 +552,7 @@ function transformSection(section) {
         }
       }
 
-      if (!videoId && !imgEl && isElement(node) && (node.hasAttribute('name') || trim(node.textContent).length > 0)) {
+      if (!videoId && !imgEl && isElement(node)) {
         _config.contentEls.push(node);
       }
 
@@ -558,19 +561,6 @@ function transformSection(section) {
   }
 
   section.substituteWith(Block(config), sourceMediaEl ? [sourceMediaEl] : []);
-}
-
-function detectVideoId(node) {
-  let classList = node.className.split(' ');
-  const linkEl = $('a[href]', node);
-
-  return (
-    linkEl &&
-    ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
-      (classList.indexOf('view-inlineMediaPlayer') > -1 && classList.indexOf('doctype-abcvideo') > -1) ||
-      (classList.indexOf('embed-content') > -1 && $('.type-video', node))) &&
-    url2cmid(linkEl.getAttribute('href'))
-  );
 }
 
 module.exports = Block;

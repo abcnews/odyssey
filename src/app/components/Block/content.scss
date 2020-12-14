@@ -135,7 +135,9 @@
     }
   }
 
-  & > a[name] {
+  & > a[id],
+  & > a[name],
+  & > [data-mount] {
     padding: 0;
   }
 

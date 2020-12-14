@@ -62,10 +62,6 @@ $dls-white-20-opacity: hsla(0, 0%, 100%, 0.2);
   line-height: 1.5em;
 }
 
-[data-component='FooterList'] {
-  border-bottom: 0;
-}
-
 [data-component='FooterList'] li {
   background: none;
   color: white;
@@ -75,8 +71,16 @@ $dls-white-20-opacity: hsla(0, 0%, 100%, 0.2);
   }
 }
 
-[data-component='FooterList'] ~ * {
-  display: none;
+[data-component='FooterList'] ~ * li {
+  margin: 0;
+  padding: 0;
+  background: none;
+  color: white;
+
+  a:active,
+  a:hover {
+    color: #000;
+  }
 }
 
 [data-component='MastheadSkipLink'] {
@@ -121,6 +125,10 @@ $dls-white-20-opacity: hsla(0, 0%, 100%, 0.2);
 
 .Nav-searchLink {
   border-left: 1px solid $dls-white-20-opacity;
+
+  &:hover {
+    color: var(--colour-masthead-link);
+  }
 }
 
 .Nav-globalNavButton {
