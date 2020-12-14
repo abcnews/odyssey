@@ -89,13 +89,16 @@ body {
   main + .content {
     background-color: #f1f1f1;
   }
+
+  main + main:not([class]) {
+    margin-top: 1rem;
+    border-top: 1px solid #e6e6e6;
+    padding-top: 2rem;
+  }
 }
 
-#abcHeader.global {
-  display: none !important;
-}
-
-#abcHeader.global + [data-presentation-layer-async-component] {
+/* Guess at placeholder styles */
+[data-presentation-layer-async-component='Nav'] {
   height: 4rem;
   background-color: #0f1010;
 
@@ -110,4 +113,16 @@ body {
 
 [data-component='SiteNavigation'] {
   display: none;
+}
+
+/* Preview tools fixes */
+
+body.preview-desktop-presentation-layer > [data-component='ThemeProvider'],
+body.preview-desktop-presentation-layer > main + .page_margins {
+  display: none;
+}
+
+body.pl-enabled > [data-component='ThemeProvider'],
+body.pl-enabled > main + .page_margins {
+  opacity: 0.5;
 }

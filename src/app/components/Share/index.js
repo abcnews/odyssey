@@ -43,7 +43,7 @@ function _checkIfFirstShareInvitationShouldBeReported(client) {
 }
 
 function transformMarker(marker, links) {
-  marker.substituteWith(Share({ type: marker.configSC, links }));
+  marker.substituteWith(Share({ type: marker.configString, links }));
 }
 
 module.exports = Share;

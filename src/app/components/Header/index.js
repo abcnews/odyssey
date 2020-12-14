@@ -1,4 +1,5 @@
 // External
+const { getMountValue, isMount } = require('@abcnews/mount-utils');
 const cn = require('classnames');
 const html = require('bel');
 const url2cmid = require('util-url2cmid');
@@ -7,7 +8,7 @@ const url2cmid = require('util-url2cmid');
 const { MS_VERSION, VIDEO_MARKER_PATTERN } = require('../../../constants');
 const { enqueue, subscribe } = require('../../scheduler');
 const { terminusFetch } = require('../../utils/content');
-const { $, detach, getChildImage, isElement } = require('../../utils/dom');
+const { $, detach, detectVideoId, getChildImage, isElement } = require('../../utils/dom');
 const { clampNumber, dePx, formattedDate, getRatios, trim } = require('../../utils/misc');
 const ScrollHint = require('../ScrollHint');
 const Picture = require('../Picture');
@@ -216,11 +217,11 @@ function updateContentPeek(headerEl) {
 }
 
 function fetchInfoSourceLogo(meta, el, variant) {
-  if (!meta.infoSourceLogosDataId || !el) {
+  if (!meta.infoSourceLogosHTMLFragmentId || !el) {
     return;
   }
 
-  terminusFetch({ id: meta.infoSourceLogosDataId, type: 'htmlfragment' }, (err, item) => {
+  terminusFetch({ id: meta.infoSourceLogosHTMLFragmentId, type: 'htmlfragment' }, (err, item) => {
     if (err) {
       return;
     }
@@ -243,17 +244,21 @@ function fetchInfoSourceLogo(meta, el, variant) {
 }
 
 function transformSection(section, meta) {
-  const ratios = getRatios(section.configSC);
-  const isFloating = section.configSC.indexOf('floating') > -1;
-  const isLayered = isFloating || section.configSC.indexOf('layered') > -1;
+  const ratios = getRatios(section.configString);
+  const isFloating = section.configString.indexOf('floating') > -1;
+  const isLayered = isFloating || section.configString.indexOf('layered') > -1;
   const isDark =
-    isLayered || section.configSC.indexOf('dark') > -1 ? true : section.configSC.indexOf('light') > -1 ? false : null;
-  const isPale = section.configSC.indexOf('pale') > -1;
-  const isAbreast = section.configSC.indexOf('abreast') > -1;
-  const isNoMedia = isFloating || section.configSC.indexOf('nomedia') > -1;
-  const isKicker = section.configSC.indexOf('kicker') > -1;
-  const shouldSupplant = section.configSC.indexOf('supplant') > -1;
-  const shouldVideoPlayOnce = section.configSC.indexOf('once') > -1;
+    isLayered || section.configString.indexOf('dark') > -1
+      ? true
+      : section.configString.indexOf('light') > -1
+      ? false
+      : null;
+  const isPale = section.configString.indexOf('pale') > -1;
+  const isAbreast = section.configString.indexOf('abreast') > -1;
+  const isNoMedia = isFloating || section.configString.indexOf('nomedia') > -1;
+  const isKicker = section.configString.indexOf('kicker') > -1;
+  const shouldSupplant = section.configString.indexOf('supplant') > -1;
+  const shouldVideoPlayOnce = section.configString.indexOf('once') > -1;
 
   let candidateNodes = section.betweenNodes;
 
@@ -267,21 +272,22 @@ function transformSection(section, meta) {
 
   const config = candidateNodes.reduce(
     (config, node) => {
-      let classList = node.className ? node.className.split(' ') : [];
+      const classList = node.className ? node.className.split(' ') : [];
+      const mountSC = isMount(node) ? getMountValue(node) : '';
       let videoId;
       let imgEl;
       let interactiveEl;
 
       // If we found an init-interactive then it takes over being the header media
       if (!isNoMedia && !config.interactiveEl && isElement(node)) {
-        // special case for parallax hash markers
-        const isParallax = node.tagName === 'A' && (node.getAttribute('name') || '').indexOf('parallax') === 0;
+        // special case for parallax mounts
+        const isParallax = mountSC.indexOf('parallax') === 0;
 
         // normal init-interactives
         const isInteractive =
           classList.indexOf('init-interactive') > -1 ||
           node.querySelector('[class^="init-interactive"]') ||
-          (node.tagName === 'A' && (node.getAttribute('name') || '').indexOf('interactive') === 0);
+          mountSC.indexOf('interactive') === 0;
 
         if (isParallax || isInteractive) {
           config.interactiveEl = interactiveEl = node;
@@ -299,19 +305,11 @@ function transformSection(section, meta) {
           }
 
           config.videoId = videoId = ((parentEl.getAttribute('data-uri') || '').match(/\d+/) || [null])[0];
-        } else if (node.name && !!node.name.match(VIDEO_MARKER_PATTERN)) {
-          config.isVideoYouTube = node.name.split('youtube')[1];
-          config.videoId = videoId = node.name.match(VIDEO_MARKER_PATTERN)[1];
+        } else if (!!mountSC.match(VIDEO_MARKER_PATTERN)) {
+          config.isVideoYouTube = !!mountSC.split('youtube')[1];
+          config.videoId = videoId = mountSC.match(VIDEO_MARKER_PATTERN)[1];
         } else {
-          const linkEl = $('a[href]', node);
-
-          videoId =
-            linkEl &&
-            ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
-              (classList.indexOf('view-inlineMediaPlayer') > -1 && classList.indexOf('doctype-abcvideo') > -1) ||
-              (classList.indexOf('view-hero-media') > -1 && $('.view-inlineMediaPlayer.doctype-abcvideo', node)) ||
-              (classList.indexOf('embed-content') > -1 && $('.type-video', node))) &&
-            url2cmid(linkEl.getAttribute('href'));
+          videoId = detectVideoId(node);
 
           if (videoId) {
             config.videoId = videoId;
@@ -325,13 +323,7 @@ function transformSection(section, meta) {
         }
       }
 
-      if (
-        !videoId &&
-        !imgEl &&
-        !interactiveEl &&
-        isElement(node) &&
-        (trim(node.textContent).length > 0 || node.tagName === 'A')
-      ) {
+      if (!videoId && !imgEl && !interactiveEl && isElement(node) && (trim(node.textContent).length > 0 || !!mountSC)) {
         config.miscContentEls.push(node);
       }
 

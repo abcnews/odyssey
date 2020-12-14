@@ -5,11 +5,15 @@ const dewysiwyg = require('util-dewysiwyg');
 // Ours
 const { SELECTORS } = require('../../constants');
 const Main = require('../components/Main');
-const { $, $$, append, before, detach, detachAll, setOrAddMetaTag } = require('../utils/dom');
+const { $, $$, append, before, detach, detachAll, setOrAddMetaTag, substitute } = require('../utils/dom');
 const { literalList, trim } = require('../utils/misc');
 require('./index.scss');
 
 const TEMPLATE_REMOVABLES = {
+  // Common
+  html: literalList(`
+    #abcHeader.global
+  `),
   // P1S
   '.platform-standard:not(.platform-mobile)': literalList(`
     #container_header
@@ -45,6 +49,16 @@ const TEMPLATE_REMOVABLES = {
     .view-ticker
     .article-detail-page > .container-fluid > div.row
     .view-hero-media
+  `),
+  // PL
+  'link[data-chunk^="page."]': literalList(`
+    [data-component="AppDetailLayout"]
+    [data-component="DetailLayout"]
+    [data-component="WebContentWarning"]
+    ol>li>span:first-child
+    ul>li>span:first-child
+    [data-component="NewsTicker"]
+    [data-component="Sidebar"]:first-child
   `)
 };
 
@@ -82,7 +96,6 @@ function addIE11StyleHint() {
 
 function resetMetaViewport() {
   setOrAddMetaTag('viewport', 'width=device-width, initial-scale=1, minimum-scale=1');
-
 }
 
 function promoteToMain(storyEl, meta) {
@@ -103,6 +116,8 @@ function promoteToMain(storyEl, meta) {
 }
 
 function reset(storyEl, meta) {
+  const { isDarkMode, isPL, isPreview, theme } = meta;
+
   // Try to feature-detect IE11, and apply an attribute to the root element for fallback styles to target
   addIE11StyleHint();
 
@@ -110,8 +125,8 @@ function reset(storyEl, meta) {
   resetMetaViewport();
 
   // Apply theme, if defined
-  if (typeof meta.theme === 'string') {
-    meta.theme.split(';').forEach(definition => {
+  if (typeof theme === 'string') {
+    theme.split(';').forEach(definition => {
       const [prop, value] = definition.split(':');
 
       if (prop && value) {
@@ -121,7 +136,7 @@ function reset(storyEl, meta) {
   }
 
   // Enable dark mode, if required
-  if (meta.isDarkMode) {
+  if (isDarkMode) {
     document.documentElement.classList.add('is-dark-mode');
   }
 
@@ -139,16 +154,31 @@ function reset(storyEl, meta) {
     }
   });
 
+  // Fix PL top-level links that aren't inside paragraphs.
+  if (isPL) {
+    Array.from(storyEl.children).forEach(el => {
+      if (el.tagName === 'A' && el.hasAttribute('href')) {
+        const pEl = document.createElement('p');
+
+        before(el.nextElementSibling, pEl);
+        append(pEl, el);
+      }
+    });
+  }
+
   $$(SELECTORS.WYSIWYG_EMBED, storyEl).forEach(el => {
     dewysiwyg.normalise(el);
-    el.className = `${el.className} u-richtext${meta.isDarkMode ? '-invert' : ''}`;
+
+    if (el.getAttribute('data-component')) {
+      el.className = '';
+    }
+
+    el.className = `${el.className} u-richtext${isDarkMode ? '-invert' : ''}`;
   });
 
   $$(P1S_FLOAT.SELECTOR, storyEl).forEach(el => {
     const [, side] = el.className.match(P1S_FLOAT.PATTERN);
-    const pullEl = html`
-      <div class="u-pull-${side}"></div>
-    `;
+    const pullEl = html` <div class="u-pull-${side}"></div> `;
 
     el.classList.remove(side);
     el.classList.add('full');
@@ -159,9 +189,7 @@ function reset(storyEl, meta) {
   $$(P2_FLOAT.SELECTOR, storyEl).forEach(el => {
     if (el.className.indexOf('view-') > -1) {
       const [, , side] = el.className.match(P2_FLOAT.PATTERN);
-      const pullEl = html`
-        <div class="u-pull-${side}"></div>
-      `;
+      const pullEl = html` <div class="u-pull-${side}"></div> `;
 
       el.classList.remove(side);
       el.classList.add('full');
@@ -172,16 +200,35 @@ function reset(storyEl, meta) {
     }
   });
 
-  $$(PREVIEW_CTX_SELECTOR, storyEl).forEach(el => {
-    Array.from(el.children).forEach(childEl => {
-      if (childEl.tagName === 'SCRIPT' && childEl.textContent.match(PREVIEW_SCRIPT_PATTERN)) {
-        detach(childEl);
-      } else {
-        before(el, childEl);
-      }
+  // Clean up Presentation Layer components
+  if (isPL) {
+    $$(
+      literalList(`
+      [data-component="ContentLink"]
+      [data-component="Heading"]
+      [data-component="List"]
+      [data-component="ListItem"]
+      p
+    `),
+      storyEl
+    ).forEach(el => {
+      el.removeAttribute('class');
+      el.removeAttribute('data-component');
     });
-    detach(el);
-  });
+  }
+
+  if (isPreview) {
+    $$(PREVIEW_CTX_SELECTOR, storyEl).forEach(el => {
+      Array.from(el.children).forEach(childEl => {
+        if (childEl.tagName === 'SCRIPT' && childEl.textContent.match(PREVIEW_SCRIPT_PATTERN)) {
+          detach(childEl);
+        } else {
+          before(el, childEl);
+        }
+      });
+      detach(el);
+    });
+  }
 
   return storyEl;
 }

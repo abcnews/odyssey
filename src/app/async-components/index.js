@@ -16,6 +16,10 @@ const components = {
 let shouldIncludeIcons = true;
 
 module.exports.render = (componentName, props = {}, el) => {
+  if (!el.parentElement) {
+    return;
+  }
+
   ReactDOM.render(
     <AppContext.Provider value={{ inlineIconSprite: true, staticPath: '/news-web/', typographyScale: 'compact' }}>
       <GlobalStyles>

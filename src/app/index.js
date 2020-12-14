@@ -3,7 +3,7 @@ const html = require('bel');
 
 // Ours
 
-const { IS_PREVIEW, RICHTEXT_BLOCK_TAGNAMES, SELECTORS } = require('../constants');
+const { RICHTEXT_BLOCK_TAGNAMES, SELECTORS } = require('../constants');
 const api = require('./api');
 const { PresentationLayerAsyncComponent } = require('./async-components/loader');
 const Backdrop = require('./components/Backdrop');
@@ -16,6 +16,7 @@ const GalleryEmbed = require('./components/GalleryEmbed');
 const Header = require('./components/Header');
 const ImageEmbed = require('./components/ImageEmbed');
 const MasterGallery = require('./components/MasterGallery');
+const Picture = require('./components/Picture');
 const Quote = require('./components/Quote');
 const Recirculation = require('./components/Recirculation');
 const ScrollHint = require('./components/ScrollHint');
@@ -28,11 +29,11 @@ const UParallax = require('./components/UParallax');
 const UPull = require('./components/UPull');
 const VideoEmbed = require('./components/VideoEmbed');
 const WhatNext = require('./components/WhatNext');
-const { start } = require('./scheduler');
+const { start, subscribe } = require('./scheduler');
 const { getMeta } = require('./meta');
 const { reset } = require('./reset');
-const { getMarkers, getSections } = require('./utils/anchors');
-const { $, $$, after, append, detach, detachAll, prepend, substitute } = require('./utils/dom');
+const { $, $$, after, append, before, detach, detachAll, prepend, substitute } = require('./utils/dom');
+const { getMarkers, getSections } = require('./utils/mounts');
 
 function app() {
   const meta = getMeta();
@@ -43,6 +44,7 @@ function app() {
   // Register all embedded images with MasterGallery
   $$('.inline-content.photo,[class*="view-image-embed"]', storyEl)
     .concat($$('.embed-content', storyEl).filter(el => $('.type-photo', el)))
+    .concat($$('[data-component="Figure"]', storyEl).filter(el => $('img', el)))
     .forEach(MasterGallery.register);
 
   let hasHeader = false;
@@ -116,7 +118,7 @@ function app() {
         detach(marker.node);
         break;
       case 'hr':
-        el = html` <hr /> `;
+        el = html`<hr />`;
         marker.substituteWith(el);
         UDropcap.conditionallyApply(el.nextElementSibling);
         break;
@@ -151,6 +153,11 @@ function app() {
   // Transform video embeds
   $$('.inline-content.video, .view-inlineMediaPlayer.doctype-abcvideo', storyEl)
     .concat($$('.embed-content', storyEl).filter(el => $('.type-video', el)))
+    .concat(
+      $$('[data-component="Figure"]', storyEl).filter(el =>
+        $('[data-component="PlayerButton"][aria-label*="Video"]', el)
+      )
+    )
     .forEach(VideoEmbed.transformEl);
 
   // Transform gallery embeds
@@ -164,6 +171,7 @@ function app() {
 
   $$('.inline-content.photo,[class*="view-image-embed"]', storyEl)
     .concat($$('.embed-content', storyEl).filter(el => $('.type-photo', el)))
+    .concat($$('[data-component="Figure"]', storyEl).filter(el => $('img', el)))
     .forEach(el => {
       const isSidePulled = sidePulls.filter(pEl => pEl.contains(el)).length > 0;
 
@@ -211,6 +219,22 @@ function app() {
     }
   })();
 
+  // Restore thumbnail images in PL recirculation
+  $$('[data-component="Decoy"][data-key="body"] [data-component="IntersectionObserver"]').forEach(el => {
+    const imgEl = $('img', el);
+    const src = imgEl && imgEl.getAttribute('data-src');
+
+    if (src) {
+      substitute(
+        el,
+        Picture({
+          src,
+          preserveOriginalRatio: true
+        })
+      );
+    }
+  });
+
   // Embed format credit for non-DSI stories
   if (meta.productionUnit !== 'EDL team' && (meta.infoSource || {}).name !== 'Digital Story Innovation Team') {
     append(storyEl, FormatCredit());
@@ -233,8 +257,8 @@ function app() {
 
   // Add Presentation Layer global nav if it doesn't already exist
   setTimeout(() => {
-    if (!$('[data-component="Masthead"]')) {
-      after($(SELECTORS.GLOBAL_NAV), PresentationLayerAsyncComponent('Nav'));
+    if (!meta.isPL && !$('[data-component="Masthead"]')) {
+      before(storyEl, PresentationLayerAsyncComponent('Nav'));
     }
   }, 0);
 
@@ -263,12 +287,12 @@ function app() {
       });
     });
 
-    if (IS_PREVIEW && blockEls.length) {
+    if (meta.isPreview && blockEls.length) {
       console.debug(`[Odyssey] Fixed classNames of deprecated scrollyteller Blocks`);
     }
   }, 2000);
 
-  // Notify console of deprecated anchors
+  // Notify console of deprecated mounts
   setTimeout(() => {
     const deprecated = {};
 
@@ -276,10 +300,53 @@ function app() {
 
     const keys = Object.keys(deprecated);
 
-    if (IS_PREVIEW && keys.length) {
-      console.debug(`[Odyssey] Deprecated anchors used: ${Object.keys(deprecated).join(', ')}`);
+    if (meta.isPreview && keys.length) {
+      console.debug(`[Odyssey] Deprecated mounts used: ${Object.keys(deprecated).join(', ')}`);
     }
   }, 5000);
+
+  // Fix preview tools's PL preview areas
+  // * Limit PL iframe heights to 100%
+  // * Enable/disable the desktop iframe scrolling when it is/isn't 100% in view
+  if (meta.isPreview) {
+    let desktopPreviewAreaEl;
+    let desktopPreviewIframeEl;
+    let isScrollable = false;
+
+    function updateScrollable() {
+      const { top } = desktopPreviewAreaEl.getBoundingClientRect();
+      const shouldBeScrollable = top <= 0;
+
+      if (isScrollable !== shouldBeScrollable) {
+        desktopPreviewIframeEl.setAttribute('scrolling', shouldBeScrollable ? 'yes' : 'no');
+
+        isScrollable = shouldBeScrollable;
+      }
+
+      if (shouldBeScrollable) {
+        window.scrollTo(window.scrollX, window.scrollY + top);
+      }
+    }
+
+    function fixIframes() {
+      const styleEl = document.createElement('style');
+
+      styleEl.appendChild(document.createTextNode(`#iframe-pl,#iframe-pl-desktop{height:100% !important;}`));
+      document.head.appendChild(styleEl);
+      desktopPreviewIframeEl = desktopPreviewAreaEl.querySelector('iframe');
+
+      document.getElementById('iframe-app').setAttribute('scrolling', 'yes');
+      document.getElementById('iframe-pl').setAttribute('scrolling', 'yes');
+      updateScrollable();
+      subscribe(updateScrollable);
+      document.querySelector('button[data-preview-desktop]').addEventListener('click', updateScrollable);
+    }
+
+    (function fixIframesAfterPreviewToolsLoaded() {
+      desktopPreviewAreaEl = document.querySelector('.section-desktop-preview-area');
+      desktopPreviewAreaEl ? fixIframes() : setTimeout(fixIframesAfterPreviewToolsLoaded, 9);
+    })();
+  }
 }
 
 module.exports = app;

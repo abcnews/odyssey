@@ -12,17 +12,18 @@ const VIDEO_MARKER_PATTERN = /(?:video|youtube)(\w+)/;
 const SCROLLPLAY_PCT_PATTERN = /scrollplay(\d+)/;
 
 const SELECTORS = {
-  GLOBAL_NAV: '#abcHeader.global',
-  MAIN: '.page_margins#main_content,body>.content,.main-content-container',
-  STORY: '.article.section,article>.story.richtext,.article-detail-page .article-text',
+  MAIN: '.page_margins#main_content,body>.content,.main-content-container,main#content',
+  STORY:
+    '.article.section,article>.story.richtext,.article-detail-page .article-text,[data-component="Decoy"][data-key="article"]>:first-child',
   SHARE_TOOLS: '.share-tools-list,.share,.tools',
-  TITLE: '.article h1,header>h1,h1[itemprop="name"]',
-  BYLINE: '.view-byline,header>.attribution,.byline',
-  INFO_SOURCE: '.bylinepromo,.program',
-  INFO_SOURCE_LINK: '.bylinepromo>a,.program>a',
-  WYSIWYG_EMBED: '.inline-content.wysiwyg,.embed-wysiwyg.richtext,.view-wysiwyg',
+  TITLE: '.article h1,header h1,h1[itemprop="name"]',
+  BYLINE: '.view-byline,header>.attribution,.byline,[data-component="Byline"]',
+  INFO_SOURCE: '.bylinepromo,.program,[data-component="InfoSource"]',
+  INFO_SOURCE_LINK: '.bylinepromo>a,.program>a,[data-component="InfoSource"]>a',
+  WYSIWYG_EMBED:
+    '.inline-content.wysiwyg,.embed-wysiwyg.richtext,.view-wysiwyg,[data-component="LegacyWysiwyg"],[data-component="RelatedCard"]',
   QUOTE:
-    'blockquote:not([class]),.quote--pullquote,.inline-content.quote,.embed-quote,.comp-rich-text-blockquote,.view-inline-pullquote'
+    'blockquote:not([class]),.quote--pullquote,.inline-content.quote,.embed-quote,.comp-rich-text-blockquote,.view-inline-pullquote,[data-component="Blockquote"],[data-component="Pullquote"]'
 };
 
 const RICHTEXT_BLOCK_TAGNAMES = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'OL', 'UL'];
@@ -56,7 +57,8 @@ const MOCK_ELEMENT = {
   lastElementChild: null,
   innerHTML: '',
   getAttribute: _ => '',
-  hasAttribute: _ => false
+  hasAttribute: _ => false,
+  matches: _ => false
 };
 
 const MOCK_TEXT = {
@@ -78,12 +80,17 @@ MQ.LG = `${MQ.GT_MD} and ${MQ.LT_XL}`;
 MQ.XL = MQ.GT_LG;
 MQ.PORTRAIT = '(orientation: portrait)';
 MQ.LANDSCAPE = '(orientation: landscape)';
+MQ.LANDSCAPE_LT_LG = `${MQ.LANDSCAPE} and ${MQ.LT_LG}`;
 MQ.GT_4_3 = '(min-aspect-ratio: 4/3)';
 MQ.PL_SM = '(max-width: 33.9375em)';
 
-const SMALLEST_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAAAADs=';
+const MQL = Object.keys(MQ).reduce((memo, key) => {
+  memo[key] = window.matchMedia(MQ[key]);
 
-const IS_PREVIEW = window.location.hostname.indexOf('nucwed') > -1;
+  return memo;
+}, {});
+
+const SMALLEST_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAAAADs=';
 
 const MS_VERSION = (ua => {
   const msie = ua.indexOf('MSIE ');
@@ -112,7 +119,7 @@ const MS_VERSION = (ua => {
 const SUPPORTS_PASSIVE = (isSupported => {
   try {
     const options = Object.defineProperty({}, 'passive', {
-      get: function() {
+      get: function () {
         isSupported = true;
       }
     });
@@ -123,10 +130,17 @@ const SUPPORTS_PASSIVE = (isSupported => {
   return isSupported;
 })(false);
 
-const IS_PROBABLY_RESISTING_FINGERPRINTING =
-  performance.mark &&
-  performance.getEntries &&
-  (performance.mark('odyssey') || (performance.getEntries() || []).length === 0);
+const INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID = '10766144'; // This document is managed in Core Media
+
+const IS_PROBABLY_RESISTING_FINGERPRINTING = (() => {
+  // performance.mark will return undefined or a PerformanceMark object, depending on spec
+  performance.mark && performance.mark('odyssey');
+
+  // performance.getEntries will return an array of PerformanceEntry objects
+  return ((performance.getEntries && performance.getEntries()) || []).length === 0;
+})();
+
+window.ODYSSEY_MQL = MQL;
 
 module.exports = {
   NEWLINE,
@@ -149,9 +163,10 @@ module.exports = {
   MOCK_TEXT,
   REM,
   MQ,
+  MQL,
   SMALLEST_IMAGE,
-  IS_PREVIEW,
   MS_VERSION,
   SUPPORTS_PASSIVE,
+  INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID,
   IS_PROBABLY_RESISTING_FINGERPRINTING
 };

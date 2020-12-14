@@ -38,9 +38,11 @@ Access the article's metadata (used internally to create Header components inclu
 
 Subscribed functions (`.subscribe()`) will be called with the viewport's dimensions every time the visitor scrolls or resizes the browser window. Enqueued functions (`.enqueue()`)will be called either in the current animation frame or a subsequent one, optimising for shorter frames.
 
-### `api.utils.anchors.*`
+### `api.utils.mounts.*`
 
-Place `#anchor` tags in Core Media articles to define your own sections/markers, then correctly parse them (.`getSections()`|`getMarkers()`) for use with your own components/transforms.
+Place `#mount` tags in Core Media articles to define your own sections/markers, then correctly parse them (.`getSections()`|`getMarkers()`) for use with your own components/transforms.
+
+*Note: This is aliased to `api.utils.anchors.*` for backwards compatibility.*
 
 ### `api.utils.dom.*`
 

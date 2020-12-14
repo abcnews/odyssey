@@ -1,20 +1,21 @@
+// External
+const { getTrailingMountValue, isExactMount, isPrefixedMount, prefixedMountSelector } = require('@abcnews/mount-utils');
+
 // Ours
 const { MOCK_ELEMENT } = require('../../constants');
-const { $$, detach, detachAll, isElement, substitute } = require('./dom');
+const { $$, detach, detachAll, substitute } = require('./dom');
 
-const CONFIG_ANCHOR_NAME = 'config';
-
-function grabConfigSC(el) {
+// Grabs a #config mount point preceding `el` (if it exists) and returns its trailing value.
+function grabPrecedingConfigString(el) {
   const prevEl = el.previousElementSibling || MOCK_ELEMENT;
-  const prevElName = prevEl.getAttribute('name') || '';
 
-  if (prevElName.indexOf(CONFIG_ANCHOR_NAME) !== 0) {
+  if (!isPrefixedMount(prevEl, 'config')) {
     return '';
   }
 
   detach(prevEl);
 
-  return prevElName.slice(CONFIG_ANCHOR_NAME.length);
+  return getTrailingMountValue(prevEl, 'config');
 }
 
 function _substituteSectionWith(el, remainingBetweenNodes) {
@@ -35,14 +36,14 @@ function getSections(names) {
   names.forEach(name => {
     const endName = `end${name}`;
 
-    $$(`a[name^="${name}"]`).forEach(startNode => {
+    $$(prefixedMountSelector(name)).forEach(startNode => {
       let nextNode = startNode;
       let isMoreContent = true;
       const betweenNodes = [];
-      const configSC = startNode.getAttribute('name').slice(name.length);
+      const configString = getTrailingMountValue(startNode, name);
 
       while (isMoreContent && (nextNode = nextNode.nextSibling) !== null) {
-        if (isElement(nextNode) && (nextNode.getAttribute('name') || '').indexOf(endName) === 0) {
+        if (isExactMount(nextNode, endName)) {
           isMoreContent = false;
         } else {
           betweenNodes.push(nextNode);
@@ -51,7 +52,7 @@ function getSections(names) {
 
       const section = {
         name,
-        configSC,
+        configString,
         startNode,
         betweenNodes,
         endNode: nextNode
@@ -72,12 +73,12 @@ function getMarkers(names) {
 
   return names.reduce((memo, name) => {
     return memo.concat(
-      $$(`a[name^="${name}"]`).map(node => {
-        const configSC = node.getAttribute('name').slice(name.length);
+      $$(prefixedMountSelector(name)).map(node => {
+        const configString = getTrailingMountValue(node, name);
 
         const marker = {
           name,
-          configSC,
+          configString,
           node
         };
 
@@ -90,7 +91,7 @@ function getMarkers(names) {
 }
 
 module.exports = {
-  grabConfigSC,
+  grabPrecedingConfigString,
   getSections,
   getMarkers
 };

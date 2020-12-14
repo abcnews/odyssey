@@ -1,10 +1,11 @@
 // External
+const { getGeneration, getTier, GENERATIONS, TIERS } = require('@abcnews/env-utils');
 const parseDate = require('date-fns/parse');
 const url2cmid = require('util-url2cmid');
 
 // Ours
-const { IS_PREVIEW, MOCK_ELEMENT, SELECTORS } = require('../../constants');
-const { $, $$, detach } = require('../utils/dom');
+const { INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID, MOCK_ELEMENT, SELECTORS } = require('../../constants');
+const { $, $$, detach, setOrAddMetaTag } = require('../utils/dom');
 const { trim } = require('../utils/misc');
 
 const FACEBOOK = /facebook\.com/;
@@ -14,6 +15,27 @@ const EMAIL = /mailto:/;
 const SHARE_ORDERING = ['facebook', 'twitter', 'native', 'email'];
 
 let meta = null; // singleton
+
+function addPLMetaTags() {
+  const { document } = window.__API__;
+  const { contextSettings } = document;
+  const { published, updated } = document.publishedDatePrepared;
+
+  // Add missing meta tags from publication/update dates
+  if (published) {
+    setOrAddMetaTag('DCTERMS.issued', published.labelDate);
+  }
+  if (updated) {
+    setOrAddMetaTag('DCTERMS.modified', updated.labelDate);
+  }
+
+  // Add missing meta tags based on the `meta.data.name` context setting to Presentation Layer pages
+  if (contextSettings) {
+    const mdn = contextSettings['meta.data.name'] || {};
+
+    Object.keys(mdn).forEach(name => setOrAddMetaTag(name, mdn[name]));
+  }
+}
 
 function getDataAttribute(name) {
   const el = $(`[data-${name}]`);
@@ -35,7 +57,7 @@ function getMetaContent(name) {
 
 function getDate(metaElName, timeElClassName) {
   const date = parseDate(
-    getMetaContent(metaElName) || (($(`time.${timeElClassName}`) || MOCK_ELEMENT).getAttribute('datetime') || '')
+    getMetaContent(metaElName) || ($(`time.${timeElClassName}`) || MOCK_ELEMENT).getAttribute('datetime') || ''
   );
 
   return isNaN(date) ? null : date;
@@ -53,7 +75,16 @@ function getBylineNodes() {
 
   return Array.from((bylineSubEl || bylineEl).childNodes)
     .filter(node => node !== infoSourceEl && trim(node.textContent).length > -1)
-    .map(node => node.cloneNode(true));
+    .map(node => {
+      const clone = node.cloneNode(true);
+
+      if (clone.tagName === 'A') {
+        clone.removeAttribute('class');
+        clone.removeAttribute('data-component');
+      }
+
+      return clone;
+    });
 }
 
 function getInfoSource() {
@@ -118,7 +149,8 @@ function getShareLinks({ url, title }) {
 function getRelatedStoriesIds() {
   return $$(`
     .attached-content > .inline-content.story > a,
-    .related > article > a
+    .related > article > a,
+    [data-component="RelatedStories"] article > a
   `).map(el => url2cmid(el.href));
 }
 
@@ -129,7 +161,9 @@ function getRelatedMedia() {
     .published + .inline-content.full.photo,
     .published + .inline-content.full.video,
     .attached-content > .inline-content.photo,
-    .attached-content > .inline-content.video
+    .attached-content > .inline-content.video,
+    [data-component="FeatureMedia"] [data-component="Figure"],
+    [data-component="FeatureMedia"] [data-component="WebContentWarning"]
   `);
 
   if (!relatedMediaEl) {
@@ -139,7 +173,11 @@ function getRelatedMedia() {
   return detach(relatedMediaEl);
 }
 
-function getDataLayerStoryProp(name) {
+function getProductionUnit() {
+  if (window.__API__) {
+    return window.__API__.document.productionUnit;
+  }
+
   if (!Array.isArray(window.dataLayer)) {
     return null;
   }
@@ -149,21 +187,27 @@ function getDataLayerStoryProp(name) {
 
 function getMeta() {
   if (!meta) {
+    const isPL = getGeneration() === GENERATIONS.PL;
+
+    if (isPL) {
+      addPLMetaTags();
+    }
+
     const url = getMetaContent('replacement-url') || getCanonicalURL();
     const title = getMetaContent('replacement-title') || $(SELECTORS.TITLE).textContent;
     const description = getMetaContent('replacement-description') || getMetaContent('description');
 
     meta = {
-      id: getMetaContent('ContentId'),
+      id: getMetaContent('ContentId') || getMetaContent('ABC.ContentId'),
       url,
       title,
       description,
       published: getDate('DCTERMS.issued', 'original'),
       updated: getDate('DCTERMS.modified', 'updated'),
       bylineNodes: getBylineNodes(),
-      productionUnit: getDataLayerStoryProp('productionUnit'),
+      productionUnit: getProductionUnit(),
       infoSource: getInfoSource(),
-      infoSourceLogosDataId: getDataAttribute('info-source-logos'),
+      infoSourceLogosHTMLFragmentId: getDataAttribute('info-source-logos') || INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID,
       shareLinks: getShareLinks({ url, title, description }),
       relatedMedia: getRelatedMedia(),
       relatedStoriesIds: getRelatedStoriesIds(),
@@ -171,7 +215,8 @@ function getMeta() {
       hasCaptionAttributions: getMetaContent('caption-attributions') !== 'false',
       hasCommentsEnabled: getMetaContent('showLivefyreComments') === 'true',
       isDarkMode: getMetaContent('dark-mode') === 'true',
-      isPreview: IS_PREVIEW
+      isPL,
+      isPreview: getTier() === TIERS.PREVIEW
     };
   }
 
