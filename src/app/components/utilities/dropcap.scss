@@ -1,6 +1,6 @@
 @import '../../../constants';
 
-.Main > .u-dropcap::first-letter {
+[class*='u-richtext'] > .u-dropcap::first-letter {
   float: left;
   padding-top: 0.4rem;
   padding-right: 0.25rem;
@@ -15,7 +15,7 @@
   }
 }
 
-.Main > .u-dropcap.u-quote {
+[class*='u-richtext'] > .u-dropcap.u-quote {
   text-indent: 0;
 
   &::first-letter {
