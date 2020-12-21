@@ -50,17 +50,19 @@ function app() {
   let hasHeader = false;
 
   // Transform sections
-  getSections(['header', 'remove', 'backdrop', 'block', 'gallery', 'mosaic', 'pull']).forEach(section => {
+  // - First, #remove/#endremove should be processed, so that other sections
+  //   don't have the opportunity to make references to their nodes
+  // - Next, #backdrop/#endbackdrop should be processed, as other sections may
+  //   nested inside them
+  // - Finally, all other sections (which shouldn't nest each other) can safely
+  //   be transformed
+  getSections(['remove']).forEach(section => detachAll([section.startNode, ...section.betweenNodes, section.endNode]));
+  getSections(['backdrop']).forEach(section => Backdrop.transformSection(section));
+  getSections(['header', 'block', 'gallery', 'mosaic', 'pull']).forEach(section => {
     switch (section.name) {
       case 'header':
         hasHeader = true;
         Header.transformSection(section, meta);
-        break;
-      case 'remove':
-        detachAll([section.startNode, section.endNode].concat(section.betweenNodes));
-        break;
-      case 'backdrop':
-        Backdrop.transformSection(section);
         break;
       case 'block':
         Block.transformSection(section);
