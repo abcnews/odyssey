@@ -111,7 +111,9 @@ body {
   -webkit-font-smoothing: initial !important;
 }
 
-[data-component='SiteNavigation'] {
+[data-component='SiteNav'],
+[data-component='SiteNavigation'],
+[data-component='SiteNavWithMore'] {
   display: none;
 }
 
