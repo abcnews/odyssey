@@ -12,7 +12,7 @@ if (getGeneration() === GENERATIONS.P1) {
   const implementsEl = document.createElement('meta');
 
   implementsEl.className = 'init-interactive';
-  implementsEl.setAttribute('data-implements', 'article,audio,video');
+  implementsEl.setAttribute('data-implements', 'article,audio,image,video');
   document.head.appendChild(implementsEl);
 }
 
