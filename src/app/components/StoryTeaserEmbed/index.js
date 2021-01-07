@@ -22,27 +22,46 @@ function StoryTeaserEmbed({ title, description, url, imageURL }) {
   `;
 }
 
+function isPLRelatedCard(el) {
+  return el.getAttribute('data-component') === 'RelatedCard';
+}
+
 function doesElMatchConvention(el) {
   // We only accept PL Related Cards or P1/2 WYSIWYG teasers that have
   // a title, a _self-targeting link and an image, but don't bundle an
   // interactive (such as the podcast player).
   return (
-    el.getAttribute('data-component') === 'RelatedCard' ||
+    isPLRelatedCard(el) ||
     !!($('h2', el) && $$('a[target="_self"]', el).length === 3 && getChildImage(el) && !$('.init-interactive', el))
   );
 }
 
 function transformEl(el) {
   const title = $('h2,h3', el).textContent;
-  const description = trim(String(el.textContent).replace(title, ''));
   const url = $('a', el).getAttribute('href');
   const imageURL = getChildImage(el).getAttribute('src');
 
-  if (!title || !description || !url || !imageURL) {
+  if (!title || !url || !imageURL) {
     return;
   }
 
-  substitute(el, StoryTeaserEmbed({ title, description, url, imageURL }));
+  if (isPLRelatedCard(el)) {
+    const pullRightWrapperEl = html`<div class="u-pull-right"></div>`;
+
+    substitute(el, pullRightWrapperEl);
+    pullRightWrapperEl.appendChild(el);
+
+    $$('noscript', el).forEach(noscriptEl => noscriptEl.parentElement.removeChild(noscriptEl));
+  }
+
+  const description = trim(
+    String(el.textContent)
+      .replace(title, '')
+      .replace('Read more', '')
+      .replace(/\.{1}(\S)/g, '. $1')
+  );
+
+  substitute(el, StoryTeaserEmbed({ title, url, imageURL, description }));
 }
 
 module.exports = StoryTeaserEmbed;
