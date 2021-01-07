@@ -39,7 +39,7 @@ function doesElMatchConvention(el) {
 function transformEl(el) {
   const title = $('h2,h3', el).textContent;
   const url = $('a', el).getAttribute('href');
-  const imageURL = getChildImage(el).getAttribute('src');
+  let imageURL = getChildImage(el).getAttribute('src');
 
   if (!title || !url || !imageURL) {
     return;
@@ -50,7 +50,7 @@ function transformEl(el) {
 
     substitute(el, pullRightWrapperEl);
     pullRightWrapperEl.appendChild(el);
-
+    imageURL = imageURL.replace(/[“”]/g, '');
     $$('noscript', el).forEach(noscriptEl => noscriptEl.parentElement.removeChild(noscriptEl));
   }
 
