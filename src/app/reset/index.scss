@@ -90,10 +90,12 @@ body {
     background-color: #f1f1f1;
   }
 
-  main + main:not([class]) {
+  /* PL articles (excluding ABC app, which respect device light/dark mode) need white background applied to recirculation */
+  main ~ main:last-of-type:not([class]) {
     margin-top: 1rem;
     border-top: 1px solid #e6e6e6;
     padding-top: 2rem;
+    background-color: #fff;
   }
 }
 
