@@ -17,7 +17,12 @@ const SHARE_ORDERING = ['facebook', 'twitter', 'native', 'email'];
 let meta = null; // singleton
 
 function addPLMetaTags() {
-  const { document } = window.__API__;
+  let { document } = window.__API__;
+
+  if (document.loaders) {
+    document = document.loaders.articledetail;
+  }
+
   const { contextSettings } = document;
   const { published, updated } = document.publishedDatePrepared;
 
