@@ -27,7 +27,7 @@ function twoDigits(number) {
 
 function formattedDate(date) {
   const hours = date.getHours();
-  const minutes = date.getHours();
+  const minutes = date.getMinutes();
 
   return `${date.getDate()} ${MONTHS[date.getMonth()]} ${date.getFullYear()}, ${hours}:${
     minutes < 10 ? '0' : ''
@@ -86,7 +86,7 @@ function proximityCheck(rect, client, range = 0) {
 }
 
 function whenKeyIn(keys, fn) {
-  return function(event) {
+  return function (event) {
     if (event.target === this && keys.indexOf(event.keyCode) > -1) {
       fn(event);
     }
