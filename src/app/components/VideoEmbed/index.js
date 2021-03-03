@@ -2,7 +2,7 @@
 const { getMountValue, isMount } = require('@abcnews/mount-utils');
 const cn = require('classnames');
 const html = require('bel');
-const url2cmid = require('util-url2cmid');
+const { url2cmid } = require('@abcnews/url2cmid');
 
 // Ours
 const { ALIGNMENT_PATTERN, VIDEO_MARKER_PATTERN, SCROLLPLAY_PCT_PATTERN } = require('../../../constants');
@@ -28,9 +28,7 @@ function VideoEmbed({ playerEl, captionEl, alignment, isFull, isCover, isAnon })
     'is-cover': isCover
   });
 
-  return html`
-    <div class="${className}">${playerEl} ${isAnon ? null : captionEl}</div>
-  `;
+  return html` <div class="${className}">${playerEl} ${isAnon ? null : captionEl}</div> `;
 }
 
 function transformEl(el) {

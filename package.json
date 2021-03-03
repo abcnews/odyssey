@@ -20,6 +20,7 @@
 		"@abcnews/mount-utils": "^1.0.0",
 		"@abcnews/poll-counters-client": "^1.3.1",
 		"@abcnews/terminus-fetch": "^2.1.3",
+		"@abcnews/url2cmid": "^1.1.0",
 		"bel": "^6.0.0",
 		"classnames": "^2.2.6",
 		"core-js": "^3.1.2",
@@ -30,8 +31,7 @@
 		"react": "^16.8.6",
 		"react-dom": "^16.8.6",
 		"ric": "^1.3.0",
-		"util-dewysiwyg": "git+ssh://git@stash.abc-dev.net.au:7999/news/util-dewysiwyg.git#3.8.0",
-		"util-url2cmid": "git+ssh://git@stash.abc-dev.net.au:7999/news/util-url2cmid.git#1.0.1"
+		"util-dewysiwyg": "git+ssh://git@stash.abc-dev.net.au:7999/news/util-dewysiwyg.git#3.8.0"
 	},
 	"devDependencies": {
 		"@abcnews/aunty": "^11.3.0",

@@ -1,7 +1,7 @@
 // External
 const cn = require('classnames');
 const html = require('bel');
-const url2cmid = require('util-url2cmid');
+const { url2cmid } = require('@abcnews/url2cmid');
 
 // Ours
 const { ALIGNMENT_PATTERN } = require('../../../constants');
@@ -25,9 +25,7 @@ function ImageEmbed({ pictureEl, captionEl, alignment, isFull, isCover, isAnon }
     'is-cover': isCover
   });
 
-  return html`
-    <div class="${className}">${pictureEl} ${isAnon ? null : captionEl}</div>
-  `;
+  return html` <div class="${className}">${pictureEl} ${isAnon ? null : captionEl}</div> `;
 }
 
 function transformEl(el, preserveOriginalRatio) {

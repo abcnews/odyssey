@@ -1,7 +1,7 @@
 // External
 const cn = require('classnames');
 const html = require('bel');
-const url2cmid = require('util-url2cmid');
+const { url2cmid } = require('@abcnews/url2cmid');
 
 // Ours
 const { invalidateClient } = require('../../scheduler');
