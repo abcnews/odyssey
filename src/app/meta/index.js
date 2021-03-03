@@ -164,7 +164,25 @@ function initMeta(terminusDocument) {
       infoSourceLogosHTMLFragmentId: getDataAttribute('info-source-logos') || INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID,
       relatedMedia: getRelatedMedia(),
       relatedStoriesIds: getRelatedStoriesIds()
-    })
+    }),
+    // Create media lookups
+    () =>
+      terminusDocument._embedded.mediaEmbedded.reduce(
+        (memo, item) => {
+          const { docType, id, media } = item;
+
+          if (docType === 'Image' || docType === 'ImageProxy') {
+            memo.imagesByBinaryKey[item.media.image.primary.binaryKey] = item;
+            memo.imagesById[id] = item;
+          }
+
+          return memo;
+        },
+        {
+          imagesByBinaryKey: {},
+          imagesById: {}
+        }
+      )
   ];
 
   // Feed terminus document-based props through the above mixins
