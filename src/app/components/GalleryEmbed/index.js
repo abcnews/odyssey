@@ -1,7 +1,7 @@
 // External
 const cn = require('classnames');
 const html = require('bel');
-const url2cmid = require('util-url2cmid');
+const { url2cmid } = require('@abcnews/url2cmid');
 
 // Ours
 const { terminusFetch } = require('../../utils/content');
@@ -14,9 +14,7 @@ const MasterGallery = require('../MasterGallery');
 const Picture = require('../Picture');
 
 function GalleryEmbed({ galleryEl, captionEl, isAnon }) {
-  return html`
-    <div class="GalleryEmbed">${galleryEl} ${isAnon ? null : captionEl}</div>
-  `;
+  return html` <div class="GalleryEmbed">${galleryEl} ${isAnon ? null : captionEl}</div> `;
 }
 
 function transformEl(el) {

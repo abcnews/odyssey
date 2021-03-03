@@ -1,7 +1,7 @@
 // External
 const { getGeneration, getTier, GENERATIONS, TIERS } = require('@abcnews/env-utils');
 const parseDate = require('date-fns/parse');
-const url2cmid = require('util-url2cmid');
+const { url2cmid } = require('@abcnews/url2cmid');
 
 // Ours
 const { INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID, MOCK_ELEMENT, SELECTORS } = require('../../constants');

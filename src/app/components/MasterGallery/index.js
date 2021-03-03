@@ -1,6 +1,6 @@
 // External
 const html = require('bel');
-const url2cmid = require('util-url2cmid');
+const { url2cmid } = require('@abcnews/url2cmid');
 
 // Ours
 const { enqueue, invalidateClient } = require('../../scheduler');
@@ -24,9 +24,7 @@ function MasterGallery({ isRefresh = false } = {}) {
   }
 
   if (items.length === 0) {
-    masterGalleryEl = html`
-      <div class="MasterGallery is-empty"></div>
-    `;
+    masterGalleryEl = html` <div class="MasterGallery is-empty"></div> `;
 
     return masterGalleryEl;
   }
@@ -120,7 +118,7 @@ function MasterGallery({ isRefresh = false } = {}) {
       role="dialog"
       aria-label="Gallery of all photos in this story"
       tabindex="-1"
-      onclick="${function(event) {
+      onclick="${function (event) {
         if (this === event.target) {
           close();
         }

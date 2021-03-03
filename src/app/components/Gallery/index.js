@@ -3,7 +3,7 @@ const { getMountValue, isPrefixedMount } = require('@abcnews/mount-utils');
 const cn = require('classnames');
 const html = require('bel');
 const rawHTML = require('bel/raw');
-const url2cmid = require('util-url2cmid');
+const { url2cmid } = require('@abcnews/url2cmid');
 
 // Ours
 const { REM, SELECTORS, SUPPORTS_PASSIVE, VIDEO_MARKER_PATTERN } = require('../../../constants');

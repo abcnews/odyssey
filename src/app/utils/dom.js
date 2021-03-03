@@ -1,4 +1,4 @@
-const url2cmid = require('util-url2cmid');
+const { url2cmid } = require('@abcnews/url2cmid');
 
 const INLINE_TAG_NAMES = [
   'b',
