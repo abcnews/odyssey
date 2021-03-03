@@ -30,13 +30,13 @@ const UPull = require('./components/UPull');
 const VideoEmbed = require('./components/VideoEmbed');
 const WhatNext = require('./components/WhatNext');
 const { start, subscribe } = require('./scheduler');
-const { getMeta } = require('./meta');
+const { initMeta } = require('./meta');
 const { reset } = require('./reset');
 const { $, $$, after, append, before, detach, detachAll, prepend, substitute } = require('./utils/dom');
 const { getMarkers, getSections } = require('./utils/mounts');
 
-function app() {
-  const meta = getMeta();
+function app(terminusDocument) {
+  const meta = initMeta(terminusDocument);
   const storyEl = reset($(SELECTORS.STORY), meta);
 
   start(); // loop

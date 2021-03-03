@@ -3,8 +3,8 @@ const { terminusFetch } = require('../../utils/content');
 
 const NO_CMID_ERROR = 'No CMID available for video';
 
-function pickImageURL(images) {
-  return (images.filter(image => image.ratio === '16x9').sort((a, b) => b.size - a.size)[0] || {}).url;
+function getPosterURL(item) {
+  return item.media.image.poster.images['16x9'];
 }
 
 function getSources(item) {
@@ -28,11 +28,27 @@ function getMetadata(videoId, done) {
       return done(err);
     }
 
-    done(null, {
-      alternativeText: item.title,
-      posterURL:
-        item._embedded && item._embedded.mediaThumbnail ? pickImageURL(item._embedded.mediaThumbnail.complete) : null,
-      sources: getSources(item)
+    // Even if the first document proxies another, keep this alternativeText
+    const alternativeText = item.title;
+
+    function parseMetadata(item) {
+      return done(null, {
+        alternativeText,
+        posterURL: getPosterURL(item),
+        sources: getSources(item)
+      });
+    }
+
+    if (!item.target) {
+      return parseMetadata(item);
+    }
+
+    terminusFetch({ id: item.target.id, type: 'video' }, (err, targetItem) => {
+      if (err) {
+        return done(err);
+      }
+
+      return parseMetadata(targetItem);
     });
   });
 }
