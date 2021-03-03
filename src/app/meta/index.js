@@ -172,6 +172,7 @@ function initMeta(terminusDocument) {
           const { docType, id, media } = item;
 
           if (docType === 'Image' || docType === 'ImageProxy') {
+            memo.images.push(item);
             memo.imagesByBinaryKey[item.media.image.primary.binaryKey] = item;
             memo.imagesById[id] = item;
           }
@@ -179,6 +180,7 @@ function initMeta(terminusDocument) {
           return memo;
         },
         {
+          images: [],
           imagesByBinaryKey: {},
           imagesById: {}
         }
