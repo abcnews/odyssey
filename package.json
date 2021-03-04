@@ -19,7 +19,7 @@
 		"@abcnews/env-utils": "^2.1.2",
 		"@abcnews/mount-utils": "^1.0.0",
 		"@abcnews/poll-counters-client": "^1.3.1",
-		"@abcnews/terminus-fetch": "^3.0.0",
+		"@abcnews/terminus-fetch": "^3.1.0",
 		"@abcnews/url2cmid": "^1.1.0",
 		"bel": "^6.0.0",
 		"classnames": "^2.2.6",
