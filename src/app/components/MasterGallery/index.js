@@ -3,6 +3,7 @@ const html = require('bel');
 const { url2cmid } = require('@abcnews/url2cmid');
 
 // Ours
+const { getMeta } = require('../../meta');
 const { enqueue, invalidateClient } = require('../../scheduler');
 const { track } = require('../../utils/behaviour');
 const { $, $$, getChildImage, prepend, substitute } = require('../../utils/dom');
@@ -13,7 +14,6 @@ require('./index.scss');
 
 const TAB_KEY = 9;
 
-const registeredCMIDs = {};
 const items = [];
 let masterGalleryEl = null; // singleton
 let clickHandler = null;
@@ -167,33 +167,20 @@ function refresh() {
   substitute(prevMasterGalleryEl, masterGalleryEl);
 }
 
-function register(el) {
-  const imgEl = getChildImage(el);
-
-  if (!imgEl) {
-    return;
-  }
-
-  const src = imgEl.src;
-  const id = url2cmid(src);
-
-  if (!id || registeredCMIDs[id]) {
-    return;
-  }
-
-  registeredCMIDs[id] = true;
+function register(image) {
+  const { id, media } = image;
 
   items.push({
     id,
     mediaEl: Picture({
-      src: src,
-      alt: imgEl.getAttribute('alt'),
+      src: media.image.primary.images['16x9'],
+      alt: image.alt,
       ratios: {
         sm: '1x1',
         md: '4x3'
       }
     }),
-    captionEl: Caption.createFromEl(el)
+    captionEl: Caption.createFromTerminusDoc(image)
   });
 }
 
