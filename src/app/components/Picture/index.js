@@ -1,9 +1,10 @@
 // External
+const { getImageRendition } = require('@abcnews/terminus-fetch');
 const html = require('bel');
 
 // Ours
 const { MQ, MQL, RATIO_PATTERN, SMALLEST_IMAGE, MS_VERSION } = require('../../../constants');
-const { getMeta } = require('../../meta');
+const { getMeta, lookupImageByAssetURL } = require('../../meta');
 const { enqueue, subscribe, unsubscribe } = require('../../scheduler');
 const { $, $$, append, detach } = require('../../utils/dom');
 const { proximityCheck } = require('../../utils/misc');
@@ -40,6 +41,7 @@ function Picture({
   preserveOriginalRatio = false,
   linkUrl = ''
 }) {
+  const imageDoc = lookupImageByAssetURL(src); // Will only work if image's document was catalogued during initMeta
   const [, originalRatio] = src.match(RATIO_PATTERN) || [, null];
 
   ratios =
@@ -57,22 +59,46 @@ function Picture({
           xl: ratios.xl || DEFAULTS.XL_RATIO
         };
 
-  const imageURL = ensurePhase1Asset(src);
-  const smImageURL = imageURL
-    .replace(RATIO_PATTERN, ratios.sm)
-    .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratios.sm].sm}`);
-  const mdImageURL = imageURL
-    .replace(RATIO_PATTERN, ratios.md)
-    .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratios.md].md}`);
-  const lansdcapeLtLgImageURL = imageURL
-    .replace(RATIO_PATTERN, ratios.lg)
-    .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratios.lg].md}`);
-  const lgImageURL = imageURL
-    .replace(RATIO_PATTERN, ratios.lg)
-    .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratios.lg].lg}`);
-  const xlImageURL = imageURL
-    .replace(RATIO_PATTERN, ratios.xl)
-    .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratios.xl].xl}`);
+  // Defaults for image of unknown origin
+  let smImageURL = src;
+  let mdImageURL = src;
+  let lansdcapeLtLgImageURL = src;
+  let lgImageURL = src;
+  let xlImageURL = src;
+
+  if (imageDoc) {
+    alt = imageDoc.alt;
+
+    const { binaryKey, ratios: crops } = imageDoc.media.image.primary;
+
+    if (binaryKey) {
+      // CM10 Image document
+      smImageURL = getImageRendition(binaryKey, crops[ratios.sm], SIZES[ratios.sm].sm.split('x')[0]);
+      mdImageURL = getImageRendition(binaryKey, crops[ratios.md], SIZES[ratios.md].md.split('x')[0]);
+      lansdcapeLtLgImageURL = getImageRendition(binaryKey, crops[ratios.lg], SIZES[ratios.lg].md.split('x')[0]);
+      lgImageURL = getImageRendition(binaryKey, crops[ratios.lg], SIZES[ratios.lg].lg.split('x')[0]);
+      xlImageURL = getImageRendition(binaryKey, crops[ratios.xl], SIZES[ratios.xl].xl.split('x')[0]);
+    } else {
+      // CM5 Image document
+      const imageURL = ensurePhase1Asset(src);
+
+      smImageURL = imageURL
+        .replace(RATIO_PATTERN, ratios.sm)
+        .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratios.sm].sm}`);
+      mdImageURL = imageURL
+        .replace(RATIO_PATTERN, ratios.md)
+        .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratios.md].md}`);
+      lansdcapeLtLgImageURL = imageURL
+        .replace(RATIO_PATTERN, ratios.lg)
+        .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratios.lg].md}`);
+      lgImageURL = imageURL
+        .replace(RATIO_PATTERN, ratios.lg)
+        .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratios.lg].lg}`);
+      xlImageURL = imageURL
+        .replace(RATIO_PATTERN, ratios.xl)
+        .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratios.xl].xl}`);
+    }
+  }
 
   const placeholderEl = Sizer(ratios);
 
@@ -91,9 +117,7 @@ function Picture({
   const isManagingSources = (isPL && isPreview) || (MS_VERSION && MS_VERSION < 13);
 
   const imgContainerEl = isManagingSources
-    ? html`
-        <div></div>
-      `
+    ? html` <div></div> `
     : html`
         <picture>
           <source srcset="${xlImageURL}" media="${MQ.XL}" />
@@ -141,9 +165,7 @@ function Picture({
 
       picture.isLoading = true;
       pictureEl.setAttribute('loading', '');
-      imgEl = html`
-        <img alt="${alt}" data-object-fit="" />
-      `;
+      imgEl = html` <img alt="${alt}" data-object-fit="" /> `;
       imgEl.addEventListener('load', picture.loaded, false);
       append(imgContainerEl, imgEl);
 
@@ -246,9 +268,7 @@ module.exports = Picture;
 module.exports.PLACEHOLDER_PROPERTY = PLACEHOLDER_PROPERTY;
 
 module.exports.resize = ({ url = '', ratio = '16x9', size = 'md' }) =>
-  ensurePhase1Asset(url)
-    .replace(RATIO_PATTERN, ratio)
-    .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratio][size]}`);
+  ensurePhase1Asset(url).replace(RATIO_PATTERN, ratio).replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratio][size]}`);
 
 function ensurePhase1Asset(url) {
   const match = url.match(P2_RATIO_SIZE_PATTERN);
@@ -257,9 +277,5 @@ function ensurePhase1Asset(url) {
     return url;
   }
 
-  return url
-    .split('?')[0]
-    .replace('cm/r', 'news/')
-    .replace(match[1], '16x9')
-    .replace(match[2], SIZES['16x9'].md);
+  return url.split('?')[0].replace('cm/r', 'news/').replace(match[1], '16x9').replace(match[2], SIZES['16x9'].md);
 }
