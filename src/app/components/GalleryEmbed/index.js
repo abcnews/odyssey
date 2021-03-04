@@ -66,20 +66,7 @@ function transformEl(el) {
         const id = url2cmid(src); // imageDoc.id will be wrong for ImageProxy documents
         const linkUrl = `/news/${id}`;
 
-        MasterGallery.register(
-          html`
-            <div
-              data-caption-config="${JSON.stringify({
-                url: linkUrl,
-                text: imageDoc.caption,
-                attribution: imageDoc.attribution,
-                unlink
-              })}"
-            >
-              <img src="${src}" alt="${alt}" />
-            </div>
-          `
-        );
+        MasterGallery.register(imageDoc);
 
         return {
           id,
@@ -129,12 +116,7 @@ function transformEl(el) {
               linkUrl
             })
           ],
-          captionEl: Caption({
-            url: linkUrl,
-            text: imageDoc.caption,
-            attribution: imageDoc.attribution,
-            unlink
-          })
+          captionEl: Caption.createFromTerminusDoc(imageDoc, unlink)
         };
       });
 

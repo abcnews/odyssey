@@ -42,10 +42,7 @@ function app(terminusDocument) {
   start(); // loop
 
   // Register all embedded images with MasterGallery
-  $$('.inline-content.photo,[class*="view-image-embed"]', storyEl)
-    .concat($$('.embed-content', storyEl).filter(el => $('.type-photo', el)))
-    .concat($$('[data-component="Figure"]', storyEl).filter(el => $('img', el)))
-    .forEach(MasterGallery.register);
+  meta.images.forEach(image => MasterGallery.register(image));
 
   let hasHeader = false;
 
