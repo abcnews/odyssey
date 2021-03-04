@@ -173,8 +173,19 @@ function initMeta(terminusDocument) {
 
           if (docType === 'Image' || docType === 'ImageProxy') {
             memo.images.push(item);
-            memo.imagesByBinaryKey[item.media.image.primary.binaryKey] = item;
             memo.imagesById[id] = item;
+
+            const { binaryKey, complete } = media.image.primary;
+
+            if (binaryKey) {
+              memo.imagesByBinaryKey[binaryKey] = item;
+            } else if (docType === 'ImageProxy') {
+              const proxiedId = url2cmid(complete[0].url);
+
+              if (proxiedId) {
+                memo.imagesById[proxiedId] = item;
+              }
+            }
           }
 
           return memo;
@@ -218,7 +229,19 @@ function getMeta() {
   return meta;
 }
 
+function lookupImageByAssetURL(url) {
+  const { imagesByBinaryKey, imagesById } = getMeta();
+  const [, binaryKey] = url.match(/\/([0-9a-f]{32})\b/) || [];
+
+  if (binaryKey) {
+    return meta.imagesByBinaryKey[binaryKey];
+  }
+
+  return meta.imagesById[url2cmid(url)] || null;
+}
+
 module.exports = {
   initMeta,
-  getMeta
+  getMeta,
+  lookupImageByAssetURL
 };
