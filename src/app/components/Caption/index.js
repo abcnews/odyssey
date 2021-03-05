@@ -14,20 +14,19 @@ function Caption({ url, text, attribution, unlink }) {
 
   return html`
     <p class="Caption" title="${text}${attribution ? ` (${attribution})` : ''}">
-      ${url && !unlink
-        ? html`
-            <a href="${url}">${text}</a>
-          `
-        : html`
-            <span>${text}</span>
-          `}
-      ${attribution
-        ? html`
-            <em class="Caption-attribution">${attribution}</em>
-          `
-        : null}
+      ${url && !unlink ? html` <a href="${url}">${text}</a> ` : html` <span>${text}</span> `}
+      ${attribution ? html` <em class="Caption-attribution">${attribution}</em> ` : null}
     </p>
   `;
+}
+
+function createFromTerminusDoc(doc, unlink) {
+  return Caption({
+    url: `/news/${doc.id}`,
+    text: doc.caption || doc.title,
+    attribution: doc.byLine.plain,
+    unlink
+  });
 }
 
 function createFromEl(el, unlink) {
@@ -119,4 +118,5 @@ function createFromEl(el, unlink) {
 }
 
 module.exports = Caption;
+module.exports.createFromTerminusDoc = createFromTerminusDoc;
 module.exports.createFromEl = createFromEl;

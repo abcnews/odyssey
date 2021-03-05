@@ -1,7 +1,6 @@
 // External
 const { getGeneration, getTier, GENERATIONS, TIERS } = require('@abcnews/env-utils');
-const parseDate = require('date-fns/parse');
-const url2cmid = require('util-url2cmid');
+const { url2cmid } = require('@abcnews/url2cmid');
 
 // Ours
 const { INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID, MOCK_ELEMENT, SELECTORS } = require('../../constants');
@@ -48,26 +47,6 @@ function getDataAttribute(name) {
   return el ? el.getAttribute(`data-${name}`) : null;
 }
 
-function getCanonicalURL() {
-  const el = $(`link[rel="canonical"]`);
-
-  return el ? el.getAttribute('href') : document.location.href;
-}
-
-function getMetaContent(name) {
-  const el = $(`meta[name="${name}"],meta[property="${name}"]`);
-
-  return el ? el.getAttribute('content') : null;
-}
-
-function getDate(metaElName, timeElClassName) {
-  const date = parseDate(
-    getMetaContent(metaElName) || ($(`time.${timeElClassName}`) || MOCK_ELEMENT).getAttribute('datetime') || ''
-  );
-
-  return isNaN(date) ? null : date;
-}
-
 function getBylineNodes() {
   const infoSourceEl = $(SELECTORS.INFO_SOURCE);
   const bylineEl = $(SELECTORS.BYLINE);
@@ -90,32 +69,6 @@ function getBylineNodes() {
 
       return clone;
     });
-}
-
-function getInfoSource() {
-  let infoSourceLinkEl = $(SELECTORS.INFO_SOURCE_LINK);
-
-  if (!infoSourceLinkEl) {
-    const infoSourceMetaContent = getMetaContent('ABC.infoSource');
-
-    if (infoSourceMetaContent) {
-      infoSourceLinkEl = $(`a[title="${infoSourceMetaContent}"]`);
-    } else {
-      const infoSourceEl = $(SELECTORS.INFO_SOURCE);
-
-      if (infoSourceEl) {
-        infoSourceLinkEl = document.createElement('a');
-        infoSourceLinkEl.textContent = infoSourceEl.textContent;
-      }
-    }
-  }
-
-  return infoSourceLinkEl
-    ? {
-        name: trim(infoSourceLinkEl.textContent),
-        url: infoSourceLinkEl.getAttribute('href')
-      }
-    : null;
 }
 
 function getShareLinks({ url, title }) {
@@ -178,56 +131,117 @@ function getRelatedMedia() {
   return detach(relatedMediaEl);
 }
 
-function getProductionUnit() {
-  if (window.__API__) {
-    return window.__API__.document.productionUnit;
+function initMeta(terminusDocument) {
+  if (meta) {
+    throw new Error('Cannot create meta more than once.');
   }
 
-  if (!Array.isArray(window.dataLayer)) {
-    return null;
-  }
+  const mixins = [
+    // Add or update props defined by the 'meta.data.name' context setting
+    ({ url, title, description }) => {
+      const metaDataName = terminusDocument.contextSettings['meta.data.name'];
 
-  return window.dataLayer.find(x => x.document != null).document[name] || null;
+      return metaDataName
+        ? {
+            _metaDataName: metaDataName,
+            url: metaDataName['replacement-url'] || url,
+            title: metaDataName['replacement-title'] || title,
+            description: metaDataName['replacement-description'] || description,
+            theme: metaDataName.theme || null,
+            hasCaptionAttributions: metaDataName['caption-attributions'] !== false,
+            hasCommentsEnabled: metaDataName['showLivefyreComments'] === true,
+            isDarkMode: metaDataName['dark-mode'] === true
+          }
+        : null;
+    },
+    // Parse share links from the DOM, using url & title props
+    ({ url, title }) => ({
+      shareLinks: getShareLinks({ url, title })
+    }),
+    // Parse remaining props from the DOM, sometimes using defaults
+    () => ({
+      bylineNodes: getBylineNodes(),
+      infoSourceLogosHTMLFragmentId: getDataAttribute('info-source-logos') || INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID,
+      relatedMedia: getRelatedMedia(),
+      relatedStoriesIds: getRelatedStoriesIds()
+    }),
+    // Create media lookups
+    () =>
+      terminusDocument._embedded.mediaEmbedded.reduce(
+        (memo, item) => {
+          const { docType, id, media } = item;
+
+          if (docType === 'Image' || docType === 'ImageProxy') {
+            memo.images.push(item);
+            memo.imagesById[id] = item;
+
+            const { binaryKey, complete } = media.image.primary;
+
+            if (binaryKey) {
+              memo.imagesByBinaryKey[binaryKey] = item;
+            } else if (docType === 'ImageProxy') {
+              const proxiedId = url2cmid(complete[0].url);
+
+              if (proxiedId) {
+                memo.imagesById[proxiedId] = item;
+              }
+            }
+          }
+
+          return memo;
+        },
+        {
+          images: [],
+          imagesByBinaryKey: {},
+          imagesById: {}
+        }
+      )
+  ];
+
+  // Feed terminus document-based props through the above mixins
+  meta = mixins.reduce((meta, step) => ({ ...meta, ...(step(meta) || {}) }), {
+    _terminusDocument: terminusDocument,
+    id: terminusDocument.id,
+    url: terminusDocument.canonicalURL,
+    title: terminusDocument.title,
+    description: terminusDocument.synopsis,
+    published: new Date(terminusDocument.dates.displayPublished),
+    updated: terminusDocument.dates.displayUpdated ? new Date(terminusDocument.dates.displayUpdated) : null,
+    productionUnit: terminusDocument.productionUnit,
+    infoSource: terminusDocument.source
+      ? {
+          name: terminusDocument.source,
+          url: terminusDocument.sourceURL
+        }
+      : null,
+    isPL: getGeneration() === GENERATIONS.PL,
+    isPreview: getTier() === TIERS.PREVIEW
+  });
+
+  return meta;
 }
 
 function getMeta() {
   if (!meta) {
-    const isPL = getGeneration() === GENERATIONS.PL;
-
-    if (isPL) {
-      addPLMetaTags();
-    }
-
-    const url = getMetaContent('replacement-url') || getCanonicalURL();
-    const title = getMetaContent('replacement-title') || $(SELECTORS.TITLE).textContent;
-    const description = getMetaContent('replacement-description') || getMetaContent('description');
-
-    meta = {
-      id: getMetaContent('ContentId') || getMetaContent('ABC.ContentId'),
-      url,
-      title,
-      description,
-      published: getDate('DCTERMS.issued', 'original'),
-      updated: getDate('DCTERMS.modified', 'updated'),
-      bylineNodes: getBylineNodes(),
-      productionUnit: getProductionUnit(),
-      infoSource: getInfoSource(),
-      infoSourceLogosHTMLFragmentId: getDataAttribute('info-source-logos') || INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID,
-      shareLinks: getShareLinks({ url, title, description }),
-      relatedMedia: getRelatedMedia(),
-      relatedStoriesIds: getRelatedStoriesIds(),
-      theme: getMetaContent('theme'),
-      hasCaptionAttributions: getMetaContent('caption-attributions') !== 'false',
-      hasCommentsEnabled: getMetaContent('showLivefyreComments') === 'true',
-      isDarkMode: getMetaContent('dark-mode') === 'true',
-      isPL,
-      isPreview: getTier() === TIERS.PREVIEW
-    };
+    throw new Error('Cannot read meta before it is created.');
   }
 
   return meta;
 }
 
+function lookupImageByAssetURL(url) {
+  const { imagesByBinaryKey, imagesById } = getMeta();
+  const [, binaryKey] = url.match(/\/([0-9a-f]{32})\b/) || [];
+
+  if (binaryKey) {
+    return meta.imagesByBinaryKey[binaryKey];
+  }
+
+  return meta.imagesById[url2cmid(url)] || null;
+}
+
 module.exports = {
-  getMeta
+  initMeta,
+  getMeta,
+  lookupImageByAssetURL
 };
