@@ -1,7 +1,7 @@
 // External
 const cn = require('classnames');
 const html = require('bel');
-const url2cmid = require('util-url2cmid');
+const { url2cmid } = require('@abcnews/url2cmid');
 
 // Ours
 const { terminusFetch } = require('../../utils/content');
@@ -14,9 +14,7 @@ const MasterGallery = require('../MasterGallery');
 const Picture = require('../Picture');
 
 function GalleryEmbed({ galleryEl, captionEl, isAnon }) {
-  return html`
-    <div class="GalleryEmbed">${galleryEl} ${isAnon ? null : captionEl}</div>
-  `;
+  return html` <div class="GalleryEmbed">${galleryEl} ${isAnon ? null : captionEl}</div> `;
 }
 
 function transformEl(el) {
@@ -68,20 +66,7 @@ function transformEl(el) {
         const id = url2cmid(src); // imageDoc.id will be wrong for ImageProxy documents
         const linkUrl = `/news/${id}`;
 
-        MasterGallery.register(
-          html`
-            <div
-              data-caption-config="${JSON.stringify({
-                url: linkUrl,
-                text: imageDoc.caption,
-                attribution: imageDoc.attribution,
-                unlink
-              })}"
-            >
-              <img src="${src}" alt="${alt}" />
-            </div>
-          `
-        );
+        MasterGallery.register(imageDoc);
 
         return {
           id,
@@ -131,12 +116,7 @@ function transformEl(el) {
               linkUrl
             })
           ],
-          captionEl: Caption({
-            url: linkUrl,
-            text: imageDoc.caption,
-            attribution: imageDoc.attribution,
-            unlink
-          })
+          captionEl: Caption.createFromTerminusDoc(imageDoc, unlink)
         };
       });
 

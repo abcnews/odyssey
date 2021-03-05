@@ -4,6 +4,8 @@ require('./keyframes.scss');
 require('./app/components/utilities/index.scss');
 require('./polyfills');
 const { GENERATIONS, getGeneration, requestDOMPermit } = require('@abcnews/env-utils');
+const { url2cmid } = require('@abcnews/url2cmid');
+const { terminusFetch } = require('./app/utils/content');
 
 // When this runs as Associated JS, rather than init-interactive,
 // we still need to let Phase 1 know (somehow) that we intend to
@@ -16,5 +18,10 @@ if (getGeneration() === GENERATIONS.P1) {
   document.head.appendChild(implementsEl);
 }
 
-// Once we know we're allowed to modify the DOM, run the app
-requestDOMPermit('body').then(require('./app'));
+// Once we've got:
+// 1. the article's terminus document, and
+// 2. permission to modify the DOM
+// ...we can run the run the app, using the terminus document to initialise the metadata that's used everywhere
+Promise.all([terminusFetch(url2cmid(window.location.href)), requestDOMPermit('body')]).then(([terminusDocument]) =>
+  require('./app')(terminusDocument)
+);

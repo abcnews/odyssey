@@ -1,10 +1,11 @@
 // External
 const cn = require('classnames');
 const html = require('bel');
-const url2cmid = require('util-url2cmid');
+const { url2cmid } = require('@abcnews/url2cmid');
 
 // Ours
 const { ALIGNMENT_PATTERN } = require('../../../constants');
+const { lookupImageByAssetURL } = require('../../meta');
 const { getChildImage, substitute } = require('../../utils/dom');
 const { getRatios } = require('../../utils/misc');
 const { grabPrecedingConfigString } = require('../../utils/mounts');
@@ -25,9 +26,7 @@ function ImageEmbed({ pictureEl, captionEl, alignment, isFull, isCover, isAnon }
     'is-cover': isCover
   });
 
-  return html`
-    <div class="${className}">${pictureEl} ${isAnon ? null : captionEl}</div>
-  `;
+  return html` <div class="${className}">${pictureEl} ${isAnon ? null : captionEl}</div> `;
 }
 
 function transformEl(el, preserveOriginalRatio) {
@@ -41,12 +40,9 @@ function transformEl(el, preserveOriginalRatio) {
   const [, alignment] = configString.match(ALIGNMENT_PATTERN) || [];
   const ratios = getRatios(configString);
   const unlink = configString.includes('unlink');
-
   const src = imgEl.src;
   const alt = imgEl.getAttribute('alt');
-  const id = url2cmid(src);
-  const linkUrl = `/news/${id}`;
-
+  const imageDoc = lookupImageByAssetURL(src);
   const imageEmbedEl = ImageEmbed({
     pictureEl: Picture({
       src,
@@ -58,9 +54,9 @@ function transformEl(el, preserveOriginalRatio) {
         xl: ratios.xl
       },
       preserveOriginalRatio,
-      linkUrl
+      linkUrl: `/news/${imageDoc.id}`
     }),
-    captionEl: Caption.createFromEl(el, unlink),
+    captionEl: Caption.createFromTerminusDoc(imageDoc, unlink),
     alignment,
     isFull: configString.indexOf('full') > -1,
     isCover: configString.indexOf('cover') > -1,
