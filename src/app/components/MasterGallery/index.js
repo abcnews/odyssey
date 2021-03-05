@@ -173,7 +173,7 @@ function register(image) {
   items.push({
     id,
     mediaEl: Picture({
-      src: media.image.primary.images['16x9'],
+      src: media.image.primary.complete[0].url,
       alt: image.alt,
       ratios: {
         sm: '1x1',
