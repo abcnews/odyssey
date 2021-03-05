@@ -230,8 +230,21 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconst
     goToItem(nextIndex);
   }
 
-  function measureDimensions() {
+  let lastOffsetParent;
+
+  function measureDimensions(client) {
     if (!paneEl) {
+      return;
+    }
+
+    // `offsetParent === null` when `paneEl` or a parent has `display: none` CSS
+    // We can use this to track whether or not the gallery was hidden/revealed on each scroll event
+    const offsetParent = paneEl.offsetParent;
+    const hasOffsetParentChanged = offsetParent === lastOffsetParent;
+
+    lastOffsetParent = offsetParent;
+
+    if (client && !client.hasChanged && !hasOffsetParentChanged) {
       return;
     }
 
@@ -258,7 +271,7 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconst
     return html`<div class="Gallery is-empty"></div>`;
   }
 
-  subscribe(measureDimensions, true);
+  subscribe(measureDimensions);
 
   const isMosaic = mosaicRowLengths.length > 0;
 
