@@ -73,11 +73,11 @@ function Picture({
 
     if (binaryKey) {
       // CM10 Image document
-      smImageURL = getImageRendition(binaryKey, crops[ratios.sm], SIZES[ratios.sm].sm.split('x')[0]);
-      mdImageURL = getImageRendition(binaryKey, crops[ratios.md], SIZES[ratios.md].md.split('x')[0]);
-      lansdcapeLtLgImageURL = getImageRendition(binaryKey, crops[ratios.lg], SIZES[ratios.lg].md.split('x')[0]);
-      lgImageURL = getImageRendition(binaryKey, crops[ratios.lg], SIZES[ratios.lg].lg.split('x')[0]);
-      xlImageURL = getImageRendition(binaryKey, crops[ratios.xl], SIZES[ratios.xl].xl.split('x')[0]);
+      smImageURL = getImageRendition(binaryKey, crops[ratios.sm], +SIZES[ratios.sm].sm.split('x')[0]);
+      mdImageURL = getImageRendition(binaryKey, crops[ratios.md], +SIZES[ratios.md].md.split('x')[0]);
+      lansdcapeLtLgImageURL = getImageRendition(binaryKey, crops[ratios.lg], +SIZES[ratios.lg].md.split('x')[0]);
+      lgImageURL = getImageRendition(binaryKey, crops[ratios.lg], +SIZES[ratios.lg].lg.split('x')[0]);
+      xlImageURL = getImageRendition(binaryKey, crops[ratios.xl], +SIZES[ratios.xl].xl.split('x')[0]);
     } else {
       // CM5 Image document
       const imageURL = ensurePhase1Asset(src);
