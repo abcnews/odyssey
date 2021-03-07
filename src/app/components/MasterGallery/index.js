@@ -169,11 +169,17 @@ function refresh() {
 
 function register(image) {
   const { id, media } = image;
+  const { complete, images } = media.image.primary;
+
+  if (Object.keys(images).length < 2) {
+    // Custom images only have one (non-standard crop)
+    return;
+  }
 
   items.push({
     id,
     mediaEl: Picture({
-      src: media.image.primary.complete[0].url,
+      src: complete[0].url,
       alt: image.alt,
       ratios: {
         sm: '1x1',
