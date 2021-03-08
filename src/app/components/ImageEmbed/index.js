@@ -36,13 +36,20 @@ function transformEl(el, preserveOriginalRatio) {
     return;
   }
 
+  const src = imgEl.src;
+  const imageDoc = lookupImageByAssetURL(src);
+
+  if (imageDoc.media.image.primary.complete.length < 2) {
+    // Custom Images appear to be Images in Terminus V2. We should ignore them.
+    return;
+  }
+
   const configString = grabPrecedingConfigString(el);
   const [, alignment] = configString.match(ALIGNMENT_PATTERN) || [];
   const ratios = getRatios(configString);
   const unlink = configString.includes('unlink');
-  const src = imgEl.src;
   const alt = imgEl.getAttribute('alt');
-  const imageDoc = lookupImageByAssetURL(src);
+
   const imageEmbedEl = ImageEmbed({
     pictureEl: Picture({
       src,
