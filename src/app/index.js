@@ -170,7 +170,11 @@ function app(terminusDocument) {
 
   $$('.inline-content.photo,[class*="view-image-embed"]', storyEl)
     .concat($$('.embed-content', storyEl).filter(el => $('.type-photo', el)))
-    .concat($$('[data-component="Figure"]', storyEl).filter(el => $('img', el)))
+    .concat(
+      $$('[data-component="Figure"]', storyEl).filter(
+        el => (el.getAttribute('data-uri') || '').indexOf('customimage') === -1 && $('img', el)
+      )
+    )
     .forEach(el => {
       const isSidePulled = sidePulls.filter(pEl => pEl.contains(el)).length > 0;
 
