@@ -39,7 +39,7 @@ function transformEl(el, preserveOriginalRatio) {
   const src = imgEl.src;
   const imageDoc = lookupImageByAssetURL(src);
 
-  if (imageDoc.media.image.primary.complete.length < 2) {
+  if (!imageDoc || imageDoc.media.image.primary.complete.length < 2) {
     // Custom Images appear to be Images in Terminus V2. We should ignore them.
     return;
   }
