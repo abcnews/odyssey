@@ -167,7 +167,7 @@ function initMeta(terminusDocument) {
     }),
     // Create media lookups
     () =>
-      terminusDocument._embedded.mediaEmbedded.reduce(
+      (terminusDocument._embedded.mediaEmbedded || []).reduce(
         (memo, item) => {
           const { docType, id, media } = item;
 
