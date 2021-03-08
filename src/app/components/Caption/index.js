@@ -24,7 +24,7 @@ function createFromTerminusDoc(doc, unlink) {
   return Caption({
     url: `/news/${doc.id}`,
     text: doc.caption || doc.title,
-    attribution: doc.byLine.plain,
+    attribution: doc.byLine ? doc.byLine.plain : null,
     unlink
   });
 }
