@@ -167,35 +167,38 @@ function initMeta(terminusDocument) {
     }),
     // Create media lookups
     () =>
-      (terminusDocument._embedded.mediaFeatured || []).concat(terminusDocument._embedded.mediaEmbedded || []).reduce(
-        (memo, item) => {
-          const { docType, id, media } = item;
+      (terminusDocument._embedded.mediaEmbedded || [])
+        .concat(terminusDocument._embedded.mediaFeatured || [])
+        .concat(terminusDocument._embedded.mediaRelated || [])
+        .reduce(
+          (memo, item) => {
+            const { docType, id, media } = item;
 
-          if (docType === 'Image' || docType === 'ImageProxy') {
-            memo.images.push(item);
-            memo.imagesById[id] = item;
+            if (docType === 'Image' || docType === 'ImageProxy') {
+              memo.images.push(item);
+              memo.imagesById[id] = item;
 
-            const { binaryKey, complete } = media.image.primary;
+              const { binaryKey, complete } = media.image.primary;
 
-            if (binaryKey) {
-              memo.imagesByBinaryKey[binaryKey] = item;
-            } else if (docType === 'ImageProxy') {
-              const proxiedId = url2cmid(complete[0].url);
+              if (binaryKey) {
+                memo.imagesByBinaryKey[binaryKey] = item;
+              } else if (docType === 'ImageProxy') {
+                const proxiedId = url2cmid(complete[0].url);
 
-              if (proxiedId) {
-                memo.imagesById[proxiedId] = item;
+                if (proxiedId) {
+                  memo.imagesById[proxiedId] = item;
+                }
               }
             }
-          }
 
-          return memo;
-        },
-        {
-          images: [],
-          imagesByBinaryKey: {},
-          imagesById: {}
-        }
-      )
+            return memo;
+          },
+          {
+            images: [],
+            imagesByBinaryKey: {},
+            imagesById: {}
+          }
+        )
   ];
 
   // Feed terminus document-based props through the above mixins
