@@ -7,7 +7,7 @@ const { url2cmid } = require('@abcnews/url2cmid');
 
 // Ours
 const { REM, SELECTORS, SUPPORTS_PASSIVE, VIDEO_MARKER_PATTERN } = require('../../../constants');
-const { getMeta } = require('../../meta');
+const { getMeta, lookupImageByAssetURL } = require('../../meta');
 const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
 const { $, append, detach, detectVideoId, getChildImage, isElement, setText } = require('../../utils/dom');
 const { dePx, getRatios, returnFalse } = require('../../utils/misc');
@@ -559,12 +559,12 @@ function transformSection(section) {
         });
       } else if (imgEl) {
         const src = imgEl.src;
+        const imageDoc = lookupImageByAssetURL(src);
         const alt = imgEl.getAttribute('alt');
-        const id = url2cmid(src);
-        const linkUrl = `/news/${id}`;
+        const linkUrl = `/news/${imageDoc.id}`;
 
         config.items.push({
-          id,
+          id: imageDoc.id,
           mediaEl: Picture({
             src,
             alt,
@@ -611,7 +611,7 @@ function transformSection(section) {
               linkUrl
             })
           ],
-          captionEl: Caption.createFromEl(node, unlink)
+          captionEl: Caption.createFromTerminusDoc(imageDoc, unlink)
         });
       } else if (isQuote) {
         config.items.push({
