@@ -4,7 +4,7 @@ const { terminusFetch } = require('../../utils/content');
 const NO_CMID_ERROR = 'No CMID available for video';
 
 function getPosterURL(item) {
-  return item.media.image.poster.images['16x9'];
+  return item.media.image ? item.media.image.poster.images['16x9'] : null;
 }
 
 function getSources(item) {
