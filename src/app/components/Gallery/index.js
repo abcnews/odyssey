@@ -561,10 +561,10 @@ function transformSection(section) {
         const src = imgEl.src;
         const imageDoc = lookupImageByAssetURL(src);
         const alt = imgEl.getAttribute('alt');
-        const linkUrl = `/news/${imageDoc.id}`;
+        const linkUrl = imageDoc ? `/news/${imageDoc.id}` : null;
 
         config.items.push({
-          id: imageDoc.id,
+          id: imageDoc ? imageDoc.id : src,
           mediaEl: Picture({
             src,
             alt,
@@ -611,7 +611,7 @@ function transformSection(section) {
               linkUrl
             })
           ],
-          captionEl: Caption.createFromTerminusDoc(imageDoc, unlink)
+          captionEl: imageDoc ? Caption.createFromTerminusDoc(imageDoc, unlink) : Caption.createFromEl(node, unlink)
         });
       } else if (isQuote) {
         config.items.push({
