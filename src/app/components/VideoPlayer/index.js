@@ -6,7 +6,7 @@ const { MQ, MS_VERSION, ONLY_RATIO_PATTERN, SMALLEST_IMAGE } = require('../../..
 const { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } = require('../../media');
 const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
 const { toggleAttribute, toggleBooleanAttributes } = require('../../utils/dom');
-const { PLACEHOLDER_PROPERTY, resize } = require('../Picture');
+const { PLACEHOLDER_PROPERTY } = require('../Picture');
 const { blurImage } = require('../Picture/blur');
 const Sizer = require('../Sizer');
 const VideoControls = require('../VideoControls');
@@ -64,9 +64,7 @@ function VideoPlayer({
 
   const placeholderEl = Sizer(ratios);
 
-  const videoEl = html`
-    <video preload="none" tabindex="-1" aria-label="${title}"></video>
-  `;
+  const videoEl = html` <video preload="none" tabindex="-1" aria-label="${title}"></video> `;
 
   const isInitiallySmallViewport = window.matchMedia(MQ.SM).matches;
   const initiallyPreferredRatio = ratios[isInitiallySmallViewport ? 'sm' : 'lg'];
@@ -254,11 +252,7 @@ function VideoPlayer({
 
     if (posterURL) {
       videoEl.poster = SMALLEST_IMAGE;
-      videoEl.style.backgroundImage = `url("${resize({
-        url: posterURL,
-        size: 'sm',
-        ratio: initiallyPreferredRatio
-      })}")`;
+      videoEl.style.backgroundImage = `url("${posterURL}")`;
 
       if (isContained) {
         enqueue(function _createAndAddPlaceholderImage() {
