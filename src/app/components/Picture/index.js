@@ -57,11 +57,11 @@ function Picture({ src = SMALLEST_IMAGE, alt = '', isContained = false, ratios =
       // CM10 Image document
       const { renditions } = getImages(imageDoc, WIDTHS);
 
-      smImageURL = getMostSuitableRendition(renditions, ratios.sm, 'sm');
-      mdImageURL = getMostSuitableRendition(renditions, ratios.md, 'md');
-      lansdcapeLtLgImageURL = getMostSuitableRendition(renditions, ratios.lg, 'md');
-      lgImageURL = getMostSuitableRendition(renditions, ratios.lg, 'lg');
-      xlImageURL = getMostSuitableRendition(renditions, ratios.xl, 'xl');
+      smImageURL = getMostSuitableRenditionURL(renditions, ratios.sm, 'sm') || smImageURL;
+      mdImageURL = getMostSuitableRenditionURL(renditions, ratios.md, 'md') || mdImageURL;
+      lansdcapeLtLgImageURL = getMostSuitableRenditionURL(renditions, ratios.lg, 'md') || lansdcapeLtLgImageURL;
+      lgImageURL = getMostSuitableRenditionURL(renditions, ratios.lg, 'lg') || lgImageURL;
+      xlImageURL = getMostSuitableRenditionURL(renditions, ratios.xl, 'xl') || xlImageURL;
     } else {
       // CM5 Image document
       smImageURL = resizeCM5ImageURL(src, ratios.sm, 'sm');
@@ -255,7 +255,11 @@ function ensurePhase1Asset(url) {
   return url.split('?')[0].replace('cm/r', 'news/').replace(match[1], '16x9').replace(match[2], SIZES['16x9'].md);
 }
 
-function getMostSuitableRendition(renditions, preferredRatio, preferredSize) {
+function getMostSuitableRenditionURL(renditions, preferredRatio, preferredSize) {
+  if (!renditions || !renditions.length) {
+    return null;
+  }
+
   const renditionsSortedByWidth = [...renditions].sort((a, b) => b.width - a.width);
   const preferredWidth = +SIZES[preferredRatio][preferredSize].split('x')[0];
 
@@ -263,5 +267,5 @@ function getMostSuitableRendition(renditions, preferredRatio, preferredSize) {
     renditionsSortedByWidth.find(({ ratio, width }) => ratio === preferredRatio && width === preferredWidth) ||
     renditionsSortedByWidth.find(({ ratio }) => ratio === preferredRatio) ||
     renditionsSortedByWidth[0]
-  );
+  ).url;
 }
