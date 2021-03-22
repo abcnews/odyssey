@@ -37,8 +37,10 @@ function Picture({ src = SMALLEST_IMAGE, alt = '', isContained = false, ratios =
   const imageDoc = lookupImageByAssetURL(src); // Will only work if image's document was catalogued during initMeta
 
   ratios = {
-    ...DEFAULT_RATIOS,
-    ...ratios
+    sm: ratios.sm || DEFAULT_RATIOS.sm,
+    md: ratios.md || DEFAULT_RATIOS.md,
+    lg: ratios.lg || DEFAULT_RATIOS.lg,
+    xl: ratios.xl || DEFAULT_RATIOS.xl
   };
 
   // Defaults for image of unknown origin
