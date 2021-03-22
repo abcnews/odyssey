@@ -232,7 +232,12 @@ function app(terminusDocument) {
         el,
         Picture({
           src,
-          preserveOriginalRatio: true
+          ratios: {
+            sm: '3x2',
+            md: '3x2',
+            lg: '3x2',
+            xl: '3x2'
+          }
         })
       );
     }
