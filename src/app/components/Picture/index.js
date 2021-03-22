@@ -1,5 +1,5 @@
 // External
-const { getImageRendition } = require('@abcnews/terminus-fetch');
+const { getImages } = require('@abcnews/terminus-fetch');
 const html = require('bel');
 
 // Ours
@@ -12,6 +12,7 @@ const Sizer = require('../Sizer');
 const { blurImage } = require('./blur');
 require('./index.scss');
 
+const WIDTHS = [700, 940, 1400, 2150];
 const SIZES = {
   '16x9': { sm: '700x394', md: '940x529', lg: '2150x1210', xl: '2150x1210' },
   '3x2': { sm: '700x467', md: '940x627', lg: '940x627', xl: '940x627' },
@@ -19,7 +20,6 @@ const SIZES = {
   '1x1': { sm: '700x700', md: '940x940', lg: '1400x1400', xl: '1400x1400' },
   '3x4': { sm: '700x933', md: '940x1253', lg: '940x1253', xl: '940x1253' }
 };
-
 const P1_RATIO_SIZE_PATTERN = /(\d+x\d+)-(\d+x\d+)/;
 const P2_RATIO_SIZE_PATTERN = /(\d+x\d+)-([a-z]+)/;
 const DEFAULT_RATIOS = {
@@ -53,34 +53,22 @@ function Picture({ src = SMALLEST_IMAGE, alt = '', isContained = false, ratios =
   if (imageDoc) {
     alt = imageDoc.alt;
 
-    const { binaryKey, ratios: crops } = imageDoc.media.image.primary;
-
-    if (binaryKey) {
+    if (imageDoc.media.image.primary.binaryKey) {
       // CM10 Image document
-      smImageURL = getImageRendition(binaryKey, crops[ratios.sm], +SIZES[ratios.sm].sm.split('x')[0]);
-      mdImageURL = getImageRendition(binaryKey, crops[ratios.md], +SIZES[ratios.md].md.split('x')[0]);
-      lansdcapeLtLgImageURL = getImageRendition(binaryKey, crops[ratios.lg], +SIZES[ratios.lg].md.split('x')[0]);
-      lgImageURL = getImageRendition(binaryKey, crops[ratios.lg], +SIZES[ratios.lg].lg.split('x')[0]);
-      xlImageURL = getImageRendition(binaryKey, crops[ratios.xl], +SIZES[ratios.xl].xl.split('x')[0]);
+      const { renditions } = getImages(imageDoc, WIDTHS);
+
+      smImageURL = getMostSuitableRendition(renditions, ratios.sm, 'sm');
+      mdImageURL = getMostSuitableRendition(renditions, ratios.md, 'md');
+      lansdcapeLtLgImageURL = getMostSuitableRendition(renditions, ratios.lg, 'md');
+      lgImageURL = getMostSuitableRendition(renditions, ratios.lg, 'lg');
+      xlImageURL = getMostSuitableRendition(renditions, ratios.xl, 'xl');
     } else {
       // CM5 Image document
-      const imageURL = ensurePhase1Asset(src);
-
-      smImageURL = imageURL
-        .replace(RATIO_PATTERN, ratios.sm)
-        .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratios.sm].sm}`);
-      mdImageURL = imageURL
-        .replace(RATIO_PATTERN, ratios.md)
-        .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratios.md].md}`);
-      lansdcapeLtLgImageURL = imageURL
-        .replace(RATIO_PATTERN, ratios.lg)
-        .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratios.lg].md}`);
-      lgImageURL = imageURL
-        .replace(RATIO_PATTERN, ratios.lg)
-        .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratios.lg].lg}`);
-      xlImageURL = imageURL
-        .replace(RATIO_PATTERN, ratios.xl)
-        .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratios.xl].xl}`);
+      smImageURL = resizeCM5ImageURL(src, ratios.sm, 'sm');
+      mdImageURL = resizeCM5ImageURL(src, ratios.md, 'md');
+      lansdcapeLtLgImageURL = resizeCM5ImageURL(src, ratios.lg, 'md');
+      lgImageURL = resizeCM5ImageURL(src, ratios.lg, 'lg');
+      xlImageURL = resizeCM5ImageURL(src, ratios.xl, 'xl');
     }
   }
 
@@ -251,8 +239,11 @@ module.exports = Picture;
 
 module.exports.PLACEHOLDER_PROPERTY = PLACEHOLDER_PROPERTY;
 
-module.exports.resize = ({ url = '', ratio = '16x9', size = 'md' }) =>
-  ensurePhase1Asset(url).replace(RATIO_PATTERN, ratio).replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratio][size]}`);
+function resizeCM5ImageURL(url, ratio = '16x9', size = 'md') {
+  return ensurePhase1Asset(url)
+    .replace(RATIO_PATTERN, ratio)
+    .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratio][size]}`);
+}
 
 function ensurePhase1Asset(url) {
   const match = url.match(P2_RATIO_SIZE_PATTERN);
@@ -262,4 +253,15 @@ function ensurePhase1Asset(url) {
   }
 
   return url.split('?')[0].replace('cm/r', 'news/').replace(match[1], '16x9').replace(match[2], SIZES['16x9'].md);
+}
+
+function getMostSuitableRendition(renditions, preferredRatio, preferredSize) {
+  const renditionsSortedByWidth = [...renditions].sort((a, b) => b.width - a.width);
+  const preferredWidth = +SIZES[preferredRatio][preferredSize].split('x')[0];
+
+  return (
+    renditionsSortedByWidth.find(({ ratio, width }) => ratio === preferredRatio && width === preferredWidth) ||
+    renditionsSortedByWidth.find(({ ratio }) => ratio === preferredRatio) ||
+    renditionsSortedByWidth[0]
+  );
 }
