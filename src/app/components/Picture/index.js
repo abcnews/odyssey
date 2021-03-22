@@ -22,11 +22,11 @@ const SIZES = {
 
 const P1_RATIO_SIZE_PATTERN = /(\d+x\d+)-(\d+x\d+)/;
 const P2_RATIO_SIZE_PATTERN = /(\d+x\d+)-([a-z]+)/;
-const DEFAULTS = {
-  SM_RATIO: '1x1',
-  MD_RATIO: '3x2',
-  LG_RATIO: '16x9',
-  XL_RATIO: '16x9'
+const DEFAULT_RATIOS = {
+  sm: '1x1',
+  md: '3x2',
+  lg: '16x9',
+  xl: '16x9'
 };
 const PLACEHOLDER_PROPERTY = '--placeholder-image';
 const IMAGE_LOAD_RANGE = 1;
@@ -37,10 +37,8 @@ function Picture({ src = SMALLEST_IMAGE, alt = '', isContained = false, ratios =
   const imageDoc = lookupImageByAssetURL(src); // Will only work if image's document was catalogued during initMeta
 
   ratios = {
-    sm: ratios.sm || DEFAULTS.SM_RATIO,
-    md: ratios.md || DEFAULTS.MD_RATIO,
-    lg: ratios.lg || DEFAULTS.LG_RATIO,
-    xl: ratios.xl || DEFAULTS.XL_RATIO
+    ...DEFAULT_RATIOS,
+    ...ratios
   };
 
   // Defaults for image of unknown origin
