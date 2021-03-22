@@ -33,31 +33,15 @@ const IMAGE_LOAD_RANGE = 1;
 
 const pictures = [];
 
-function Picture({
-  src = SMALLEST_IMAGE,
-  alt = '',
-  isContained = false,
-  ratios = {},
-  preserveOriginalRatio = false,
-  linkUrl = ''
-}) {
+function Picture({ src = SMALLEST_IMAGE, alt = '', isContained = false, ratios = {}, linkUrl = '' }) {
   const imageDoc = lookupImageByAssetURL(src); // Will only work if image's document was catalogued during initMeta
-  const [, originalRatio] = src.match(RATIO_PATTERN) || [, null];
 
-  ratios =
-    preserveOriginalRatio && originalRatio
-      ? {
-          sm: originalRatio,
-          md: originalRatio,
-          lg: originalRatio,
-          xl: originalRatio
-        }
-      : {
-          sm: ratios.sm || DEFAULTS.SM_RATIO,
-          md: ratios.md || DEFAULTS.MD_RATIO,
-          lg: ratios.lg || DEFAULTS.LG_RATIO,
-          xl: ratios.xl || DEFAULTS.XL_RATIO
-        };
+  ratios = {
+    sm: ratios.sm || DEFAULTS.SM_RATIO,
+    md: ratios.md || DEFAULTS.MD_RATIO,
+    lg: ratios.lg || DEFAULTS.LG_RATIO,
+    xl: ratios.xl || DEFAULTS.XL_RATIO
+  };
 
   // Defaults for image of unknown origin
   let smImageURL = src;

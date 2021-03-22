@@ -60,7 +60,6 @@ function transformEl(el, preserveOriginalRatio) {
         lg: ratios.lg,
         xl: ratios.xl
       },
-      preserveOriginalRatio,
       linkUrl: `/news/${imageDoc.id}`
     }),
     captionEl: Caption.createFromTerminusDoc(imageDoc, unlink),
