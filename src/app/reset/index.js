@@ -10,7 +10,7 @@ const { literalList, trim } = require('../utils/misc');
 require('./index.scss');
 
 const TEMPLATE_REMOVABLES = {
-  // Common
+  // Common (non-PL)
   html: literalList(`
     #abcHeader.global
   `),
@@ -60,6 +60,10 @@ const TEMPLATE_REMOVABLES = {
     [data-component="NewsTicker"]
     [data-component="StickyHeader"]
     [data-component="Sidebar"]:first-child
+  `),
+  // PL (App)
+  'link[data-chunk="page.App"]': literalList(`
+    main:not([class*="u-"])
   `)
 };
 
