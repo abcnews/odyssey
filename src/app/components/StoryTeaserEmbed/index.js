@@ -4,6 +4,7 @@ const { url2cmid } = require('@abcnews/url2cmid');
 
 // Ours
 const { track } = require('../../utils/behaviour');
+const { MOCK_ELEMENT } = require('../../../constants');
 const { $, $$, getChildImage, substitute } = require('../../utils/dom');
 const { trim } = require('../../utils/misc');
 require('./index.scss');
@@ -39,7 +40,7 @@ function doesElMatchConvention(el) {
 function transformEl(el) {
   const title = $('h2,h3', el).textContent;
   const url = $('a', el).getAttribute('href');
-  let imageURL = getChildImage(el).getAttribute('src');
+  let imageURL = (getChildImage(el) || MOCK_ELEMENT).getAttribute('src');
 
   if (!title || !url || !imageURL) {
     return;
