@@ -8,6 +8,7 @@ const SM_RATIO_PATTERN = /sm(\d+x\d+)/;
 const MD_RATIO_PATTERN = /md(\d+x\d+)/;
 const LG_RATIO_PATTERN = /lg(\d+x\d+)/;
 const XL_RATIO_PATTERN = /xl(\d+x\d+)/;
+const IMAGE_MARKER_PATTERN = /image(\d+)/;
 const VIDEO_MARKER_PATTERN = /(?:video|youtube)(\w+)/;
 const SCROLLPLAY_PCT_PATTERN = /scrollplay(\d+)/;
 
@@ -153,6 +154,7 @@ module.exports = {
   MD_RATIO_PATTERN,
   LG_RATIO_PATTERN,
   XL_RATIO_PATTERN,
+  IMAGE_MARKER_PATTERN,
   VIDEO_MARKER_PATTERN,
   SCROLLPLAY_PCT_PATTERN,
   SELECTORS,

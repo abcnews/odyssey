@@ -103,6 +103,7 @@ function app(terminusDocument) {
     'scrollhint',
     'series',
     'share',
+    'image',
     'video',
     'youtube',
     'related',
@@ -129,6 +130,9 @@ function app(terminusDocument) {
         break;
       case 'share':
         Share.transformMarker(marker, meta.shareLinks);
+        break;
+      case 'image':
+        ImageEmbed.transformMarker(marker);
         break;
       case 'video':
       case 'youtube':
@@ -304,7 +308,7 @@ function app(terminusDocument) {
   setTimeout(() => {
     const deprecated = {};
 
-    getMarkers(['image', 'video', 'cover', 'gallerytiled']).forEach(marker => (deprecated[`#${marker.name}`] = true));
+    getMarkers(['cover', 'gallerytiled']).forEach(marker => (deprecated[`#${marker.name}`] = true));
 
     const keys = Object.keys(deprecated);
 

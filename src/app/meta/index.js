@@ -172,24 +172,9 @@ function initMeta(terminusDocument) {
         .concat(terminusDocument._embedded.mediaRelated || [])
         .reduce(
           (memo, item) => {
-            const { docType, id, media } = item;
+            const { images, imagesByBinaryKey, imagesById } = memo;
 
-            if (docType === 'Image' || docType === 'ImageProxy') {
-              memo.images.push(item);
-              memo.imagesById[id] = item;
-
-              const { binaryKey, complete } = media.image.primary;
-
-              if (binaryKey) {
-                memo.imagesByBinaryKey[binaryKey] = item;
-              } else if (docType === 'ImageProxy') {
-                const proxiedId = url2cmid(complete[0].url);
-
-                if (proxiedId) {
-                  memo.imagesById[proxiedId] = item;
-                }
-              }
-            }
+            _registerImage(item, images, imagesById, imagesByBinaryKey);
 
             return memo;
           },
@@ -224,12 +209,39 @@ function initMeta(terminusDocument) {
   return meta;
 }
 
+function _registerImage(item, images, imagesById, imagesByBinaryKey) {
+  const { docType, id, media } = item;
+
+  if (docType === 'Image' || docType === 'ImageProxy') {
+    images.push(item);
+    imagesById[id] = item;
+
+    const { binaryKey, complete } = media.image.primary;
+
+    if (binaryKey) {
+      imagesByBinaryKey[binaryKey] = item;
+    } else if (docType === 'ImageProxy') {
+      const proxiedId = url2cmid(complete[0].url);
+
+      if (proxiedId) {
+        imagesById[proxiedId] = item;
+      }
+    }
+  }
+}
+
 function getMeta() {
   if (!meta) {
     throw new Error('Cannot read meta before it is created.');
   }
 
   return meta;
+}
+
+function registerExternalImage(item) {
+  const { images, imagesByBinaryKey, imagesById } = getMeta();
+
+  _registerImage(item, images, imagesByBinaryKey, imagesById);
 }
 
 function lookupImageByAssetURL(url) {
@@ -246,5 +258,6 @@ function lookupImageByAssetURL(url) {
 module.exports = {
   initMeta,
   getMeta,
+  registerExternalImage,
   lookupImageByAssetURL
 };
