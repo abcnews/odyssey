@@ -104,6 +104,11 @@ body {
   display: none;
 }
 
+/* The functionality of PL podcast teaser/listen widgets is degraded, so hide the listen button so that it looks just like a picture teaser */
+[data-component='PodcastPlayer'] [data-component='Player'] {
+  display: none;
+}
+
 /* Preview tools fixes */
 
 body.preview-desktop-presentation-layer > [data-component='ThemeProvider'],
