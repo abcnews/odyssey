@@ -182,7 +182,7 @@ function initMeta(terminusDocument) {
 
               if (binaryKey) {
                 memo.imagesByBinaryKey[binaryKey] = item;
-              } else if (docType === 'ImageProxy') {
+              } else if (docType === 'ImageProxy' && complete) {
                 const proxiedId = url2cmid(complete[0].url);
 
                 if (proxiedId) {
