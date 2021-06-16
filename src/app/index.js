@@ -32,6 +32,7 @@ const WhatNext = require('./components/WhatNext');
 const { start, subscribe } = require('./scheduler');
 const { initMeta } = require('./meta');
 const { reset } = require('./reset');
+const { mockDecoyActivationsUnderEl } = require('./utils/decoys');
 const { $, $$, after, append, before, detach, detachAll, prepend, substitute } = require('./utils/dom');
 const { getMarkers, getSections } = require('./utils/mounts');
 
@@ -39,7 +40,8 @@ function app(terminusDocument) {
   const meta = initMeta(terminusDocument);
   const storyEl = reset($(SELECTORS.STORY), meta);
 
-  start(); // loop
+  mockDecoyActivationsUnderEl(storyEl); // Mock PL's decoy activation events
+  start(); // scheduler loop
 
   // Register all embedded images with MasterGallery
   meta.images.forEach(image => MasterGallery.register(image));
