@@ -8,6 +8,11 @@ const { GENERATIONS, getGeneration, requestDOMPermit } = require('@abcnews/env-u
 const { url2cmid } = require('@abcnews/url2cmid');
 const { terminusFetch } = require('./app/utils/content');
 
+// Provide a hint as early as possible that the Odyssey format will be driving
+// this story, so that other interactives can opt to wait for Odyssey to load
+// before trying to touch the DOM (mounts, decoys, etc.)
+window.__IS_ODYSSEY_FORMAT__ = true;
+
 proxy('odyssey').then(() => {
   // When this runs as Associated JS, rather than init-interactive,
   // we still need to let Phase 1 know (somehow) that we intend to
