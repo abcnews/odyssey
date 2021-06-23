@@ -27,7 +27,7 @@ module.exports = {
       ...(config.optimization || {}),
       splitChunks: {
         cacheGroups: {
-          vendors: false
+          defaultVendors: false
         }
       }
     };
