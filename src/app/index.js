@@ -38,7 +38,7 @@ const { getMarkers, getSections } = require('./utils/mounts');
 
 function app(terminusDocument) {
   const meta = initMeta(terminusDocument);
-  const storyEl = reset($(SELECTORS.STORY), meta);
+  const storyEl = reset($(meta.isPL ? SELECTORS.PL_STORY : SELECTORS.STORY), meta);
 
   mockDecoyActivationsUnderEl(storyEl); // Mock PL's decoy activation events
   start(); // scheduler loop
