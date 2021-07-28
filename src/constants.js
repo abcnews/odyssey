@@ -15,7 +15,7 @@ const SELECTORS = {
   MAIN: '.page_margins#main_content,body>.content,.main-content-container,main#content',
   STORY: '.article.section,article>.story.richtext,.article-detail-page .article-text',
   PL_STORY:
-    '[data-component="Decoy"][data-key="article"]>div:not([class]),[data-component="Decoy"][data-key="article"] [data-component="GridRow"] div:not([class])',
+    '[data-component="Decoy"][data-key="article"]>div>div:not([class]),[data-component="Decoy"][data-key="article"] [data-component="GridRow"] div:not([class])',
   SHARE_TOOLS: '.share-tools-list,.share,.tools',
   TITLE: '.article h1,header h1,h1[itemprop="name"]',
   BYLINE: '.view-byline,header>.attribution,.byline,[data-component="Byline"]',
