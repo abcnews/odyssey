@@ -138,7 +138,7 @@
   margin-left: $unit * 1.25;
   margin-bottom: $unit * 0.625;
   padding: $unit * 0.625 0;
-  line-height: 0.5rem;
+  font-size: 0;
   cursor: pointer;
   -webkit-tap-highlight-color: $color-black-transparent;
 }
@@ -181,7 +181,7 @@
   color: $color-white;
   font-family: $font-sans;
   font-size: 0.875rem;
-  line-height: 1.75em;
+  line-height: 1.75;
   text-align: center;
   letter-spacing: 0.05em;
 }
