@@ -2,7 +2,7 @@
 const html = require('bel');
 
 // Ours
-const { MQ, MS_VERSION, ONLY_RATIO_PATTERN, SMALLEST_IMAGE } = require('../../../constants');
+const { MQ, MS_VERSION, ONLY_RATIO_PATTERN, SMALLEST_IMAGE, UNIT } = require('../../../constants');
 const { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } = require('../../media');
 const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
 const { toggleAttribute, toggleBooleanAttributes } = require('../../utils/dom');
@@ -358,7 +358,7 @@ function toggleMutePreference(event) {
   });
 }
 
-const mql = window.matchMedia('(max-height: 30rem)');
+const mql = window.matchMedia(`(max-height: ${UNIT * 30}px)`);
 let mqlDidMatch = mql.matches;
 
 function updateUI(player) {
