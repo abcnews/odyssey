@@ -6,7 +6,7 @@ const rawHTML = require('bel/raw');
 const { url2cmid } = require('@abcnews/url2cmid');
 
 // Ours
-const { REM, SELECTORS, SUPPORTS_PASSIVE, VIDEO_MARKER_PATTERN } = require('../../../constants');
+const { SELECTORS, SUPPORTS_PASSIVE, VIDEO_MARKER_PATTERN } = require('../../../constants');
 const { getMeta, lookupImageByAssetURL } = require('../../meta');
 const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
 const { $, append, detach, detectVideoId, getChildImage, isElement, setText } = require('../../utils/dom');
@@ -262,7 +262,7 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconst
       itemHeight = nextItemHeight;
 
       enqueue(function _updateControlsPosition() {
-        controlsEl.style.transform = `translateY(${itemHeight / REM}rem) translateY(-100%)`;
+        controlsEl.style.transform = `translateY(${itemHeight}px) translateY(-100%)`;
       });
     }
   }
