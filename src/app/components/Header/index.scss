@@ -2,7 +2,7 @@
 @import '../Main/variables.scss';
 @import './variables.scss';
 
-$abreastChildSpacing: 2.5rem;
+$abreastChildSpacing: $unit * 2.5;
 
 .Header {
   --Header-contentPeek: #{$var--Header-contentPeek};

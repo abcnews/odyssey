@@ -41,7 +41,7 @@
 
   & > label,
   & > span {
-    transform: translate(0, -0.0625rem);
+    transform: translate(0, -1px);
   }
 
   label {
@@ -121,7 +121,7 @@
   content: '';
 }
 
-@media (min-width: 56.375rem) {
+@media (min-width: 902px) {
   .u-pull {
     .Series.has-m2r1::after {
       content: none;

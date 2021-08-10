@@ -2,7 +2,7 @@
 @import '../../../keyframes';
 @import '../Main/variables.scss';
 
-$offsetBottom: 3rem;
+$offsetBottom: $unit * 3;
 
 .ScrollHint {
   position: fixed;
