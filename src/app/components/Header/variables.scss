@@ -1,1 +1,3 @@
-$var--Header-contentPeek: 9rem;
+@import '../../../constants';
+
+$var--Header-contentPeek: $unit * 9;

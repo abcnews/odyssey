@@ -2,7 +2,7 @@
 
 html {
   overflow-x: hidden;
-  font-size: $rem !important;
+  font-size: 16px;
   -webkit-text-size-adjust: none;
   -moz-text-size-adjust: none;
   -ms-text-size-adjust: none;
@@ -89,7 +89,7 @@ body {
   height: 4rem;
   background-color: #0f1010;
 
-  @media #{$mq-pl-sm} {
+  @media #{$mq-pl-lt-md} {
     height: 3rem;
   }
 }
