@@ -6,8 +6,8 @@
 
 .Recirculation-item {
   display: block;
-  border: 0.0625rem solid $color-grey-300-transparent-70;
-  padding: 1rem 1.1875rem;
+  border: $unit * 0.0625 solid $color-grey-300-transparent-70;
+  padding: $unit $unit * 1.1875;
   font-size: 0.875rem;
   transition: opacity 0.5s;
 
@@ -33,7 +33,7 @@
 
     &::after {
       content: '▇▇▇▇▇ ▇▇▇▇▇▇▇ ▇▇▇▇ ▇▇▇ ▇▇▇▇▇▇▇ ▇▇▇▇ ▇▇▇ ▇▇▇▇▇▇ ▇▇▇▇▇ ▇▇▇ ▇▇▇▇▇';
-      padding-bottom: 2rem;
+      padding-bottom: $unit * 2;
       font-size: 0.8125rem;
     }
   }
@@ -49,7 +49,7 @@
   }
 
   & > :not(:first-child) {
-    margin-top: 0.75rem;
+    margin-top: $unit * 0.75;
   }
 
   & > h2 {
@@ -75,9 +75,9 @@
 }
 
 .Recirculation-item:not(.is-missing) ~ .Recirculation-item:not(.is-missing) {
-  margin-top: 1.5rem;
+  margin-top: $unit * 1.5;
 
   @media #{$mq-gt-md} {
-    margin-top: 2.25rem;
+    margin-top: $unit * 2.25;
   }
 }

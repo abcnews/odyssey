@@ -2,7 +2,7 @@
 
 .WhatNext {
   display: grid;
-  grid-gap: 1rem;
+  grid-gap: $unit;
   grid-template-columns: repeat(1, 1fr);
   color: $color-black;
 
@@ -29,8 +29,8 @@
 
 .WhatNext > * {
   display: block;
-  border: 0.0625rem solid $color-grey-300-transparent-70;
-  padding: 1rem 1.1875rem 0.75rem;
+  border: $unit * 0.0625 solid $color-grey-300-transparent-70;
+  padding: $unit $unit * 1.1875 $unit * 0.75;
 
   &:not(:hover) {
     color: inherit !important;
@@ -42,7 +42,7 @@
   }
 
   & > h2 {
-    margin: 0.625rem 0 0;
+    margin: $unit * 0.625 0 0;
     color: inherit !important;
     font-family: $font-sans;
     font-size: 0.875rem;
@@ -52,7 +52,7 @@
     transition: color 0.25s;
 
     &:first-child {
-      margin: -0.25rem 0 0;
+      margin: $unit * -0.25 0 0;
     }
 
     & > span {

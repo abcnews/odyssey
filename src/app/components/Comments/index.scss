@@ -10,8 +10,8 @@
 
 .Comments-livefyreRoot {
   .is-dark-mode & {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
+    padding-top: $unit * 2;
+    padding-bottom: $unit * 2;
   }
 
   .Comments & .interactive-livefyre-comments {

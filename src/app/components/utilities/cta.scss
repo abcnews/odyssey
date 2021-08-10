@@ -8,8 +8,8 @@
 
   a {
     flex: 0 1 auto;
-    margin: 0.5rem;
-    padding: 0.5rem 2rem;
+    margin: $unit * 0.5;
+    padding: $unit * 0.5 $unit * 2;
     max-width: calc(100% - #{$unit});
     background-color: $color-black-transparent-30;
     color: $color-white !important;

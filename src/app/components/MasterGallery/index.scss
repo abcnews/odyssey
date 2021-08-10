@@ -53,7 +53,7 @@ html.is-master-gallery-open {
   }
 
   .Caption {
-    margin: 1rem auto;
+    margin: $unit auto;
     width: 100%;
     max-width: $layout-fixed - $layout-fixed-gutter;
 

@@ -10,7 +10,7 @@
   margin-left: auto;
   margin-right: auto;
   width: calc(100% - #{$layout-fluid-gutter});
-  max-width: 40rem;
+  max-width: $unit * 40;
   min-height: 100vh;
 
   @media #{$mq-gt-md} {
@@ -34,12 +34,12 @@
   @media #{$mq-lg} {
     &.is-left,
     &.is-right {
-      max-width: 35rem;
+      max-width: $unit * 35;
     }
 
     .has-inset-media > &.is-left,
     .has-inset-media > &.is-right {
-      max-width: 30rem;
+      max-width: $unit * 30;
     }
   }
 
@@ -64,10 +64,10 @@
   & > * {
     flex-shrink: 0;
     margin: 0 !important;
-    padding: 0.75rem 1.75rem;
+    padding: $unit * 0.75 $unit * 1.75;
 
     @media #{$mq-gt-md} {
-      padding: 1.125rem 1.75rem;
+      padding: $unit * 1.125 $unit * 1.75;
     }
   }
 
@@ -112,26 +112,26 @@
   }
 
   & > :first-child {
-    padding-top: 1.5rem;
+    padding-top: $unit * 1.5;
 
     @media #{$mq-gt-md} {
-      padding-top: 2.25rem;
+      padding-top: $unit * 2.25;
     }
 
     .is-not-piecemeal > & {
-      padding-top: 5rem;
+      padding-top: $unit * 5;
     }
   }
 
   & > :last-child {
-    padding-bottom: 1.5rem;
+    padding-bottom: $unit * 1.5;
 
     @media #{$mq-gt-md} {
-      padding-bottom: 2.25rem;
+      padding-bottom: $unit * 2.25;
     }
 
     .is-not-piecemeal > & {
-      padding-bottom: 5rem;
+      padding-bottom: $unit * 5;
     }
   }
 

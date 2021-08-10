@@ -4,8 +4,8 @@
   display: flex;
   clear: both;
   flex-wrap: wrap;
-  margin-left: -0.5rem;
-  margin-right: -0.5rem;
+  margin-left: $unit * -0.5;
+  margin-right: $unit * -0.5;
   font-family: $font-sans;
 
   .u-richtext-invert & {
@@ -15,14 +15,14 @@
 
 .Series > *,
 .Series::after {
-  flex: 1 0 17.5rem;
-  margin: 0 0.5rem;
+  flex: 1 0 $unit * 17.5;
+  margin: 0 $unit * 0.5;
   max-width: calc(100% - #{$unit});
 }
 
 .Series > * {
-  border: 0.0625rem solid transparent;
-  padding: 0.5625rem;
+  border: $unit * 0.0625 solid transparent;
+  padding: $unit * 0.5625;
   font-size: 0.875rem;
   line-height: 1.5;
 
@@ -32,10 +32,10 @@
 
   & > img {
     float: left;
-    margin-right: 0.75rem;
+    margin-right: $unit * 0.75;
 
-    width: 7.9375rem; // 127px wide, 3:2
-    height: 5.2916666667rem;
+    width: $unit * 7.9375; // 127px wide, 3:2
+    height: $unit * 5.2916666667;
     object-fit: cover;
   }
 
@@ -99,7 +99,7 @@
       position: absolute;
       right: 0;
       bottom: 0;
-      padding: 0.125rem 0.125rem 0.0625rem 0.25rem;
+      padding: $unit * 0.125 $unit * 0.125 $unit * 0.0625 $unit * 0.25;
       background-color: $color-grey-300-transparent-70;
       color: $color-black;
 
@@ -112,7 +112,7 @@
       float: right;
       visibility: hidden;
       width: 5.25em;
-      height: 0.5rem;
+      height: $unit * 0.5;
     }
   }
 }
@@ -132,7 +132,7 @@
     }
 
     .Series.has-m3r1::after {
-      flex: 2 0 36rem;
+      flex: 2 0 $unit * 36;
     }
   }
 }

@@ -11,7 +11,7 @@
   }
 
   &:not(.u-pull):not(.u-full) {
-    margin-bottom: 1.5rem;
+    margin-bottom: $unit * 1.5;
   }
 
   @media #{$mq-sm} {

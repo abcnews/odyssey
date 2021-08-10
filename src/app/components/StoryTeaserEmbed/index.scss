@@ -9,8 +9,8 @@
 
   & > a {
     display: block;
-    border: 0.0625rem solid $color-grey-300-transparent-70;
-    padding: 1rem 1.1875rem 0.75rem;
+    border: $unit * 0.0625 solid $color-grey-300-transparent-70;
+    padding: $unit $unit * 1.1875 $unit * 0.75;
 
     &:not(:hover) {
       color: inherit !important;
@@ -22,7 +22,7 @@
     }
 
     & > * {
-      margin: 0 0 0.75rem;
+      margin: 0 0 $unit * 0.75;
     }
 
     & > :last-child {
