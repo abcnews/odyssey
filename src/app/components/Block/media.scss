@@ -55,23 +55,23 @@
 
   .has-inset-media.has-left & > :not(.Block-mediaCaption) {
     @media #{$mq-gt-md} {
-      right: calc(30% - 16rem);
+      right: calc(30% - #{$unit * 16});
       left: auto;
     }
 
     @media #{$mq-xl} {
-      right: calc(30% - 25.75rem);
+      right: calc(30% - #{$unit * 25.75});
     }
   }
 
   .has-inset-media.has-right & > :not(.Block-mediaCaption) {
     @media #{$mq-gt-md} {
       right: auto;
-      left: calc(30% - 16rem);
+      left: calc(30% - #{$unit * 16});
     }
 
     @media #{$mq-xl} {
-      left: calc(30% - 25.75rem);
+      left: calc(30% - #{$unit * 25.75});
     }
   }
 

@@ -15,18 +15,18 @@
 
   @media #{$mq-gt-md} {
     &.is-left {
-      margin-left: calc(25% - 12.5rem);
+      margin-left: calc(25% - #{$unit * 12.5});
 
       .has-inset-media > & {
-        margin-left: calc(25% - 14rem);
+        margin-left: calc(25% - #{$unit * 14});
       }
     }
 
     &.is-right {
-      margin-right: calc(25% - 12.5rem);
+      margin-right: calc(25% - #{$unit * 12.5});
 
       .has-inset-media > & {
-        margin-right: calc(25% - 14rem);
+        margin-right: calc(25% - #{$unit * 14});
       }
     }
   }
@@ -45,11 +45,11 @@
 
   @media #{$mq-xl} {
     &.is-left {
-      margin-left: calc(25% - 17.5rem);
+      margin-left: calc(25% - #{$unit * 17.5});
     }
 
     &.is-right {
-      margin-right: calc(25% - 17.5rem);
+      margin-right: calc(25% - #{$unit * 17.5});
     }
   }
 

@@ -27,7 +27,7 @@
 
     &::before {
       content: '▇▇▇▇▇ ▇▇▇ ▇▇▇▇';
-      padding-bottom: calc(1.25rem + 56.25%);
+      padding-bottom: calc(56.25% + #{$unit * 1.25});
       font-size: 1.125rem;
     }
 

@@ -27,7 +27,7 @@
   }
 
   @media #{$mq-sm} {
-    width: calc(100% - 2.8125rem);
+    width: calc(100% - #{$unit * 2.8125});
   }
 
   @media #{$mq-md} {
@@ -226,7 +226,7 @@
     position: absolute;
     bottom: 0;
     margin-left: 0;
-    max-width: calc(100% - 0.25rem);
+    max-width: calc(100% - #{$unit * 0.25});
     min-height: 0;
     background-color: $color-black-transparent-60;
     color: $color-lightBg;
@@ -238,11 +238,11 @@
     }
 
     @media #{$mq-md} {
-      max-width: calc(100% - 0.5rem);
+      max-width: calc(100% - #{$unit * 0.5});
     }
 
     @media #{$mq-gt-md} {
-      max-width: calc(100% - 0.625rem);
+      max-width: calc(100% - #{$unit * 0.625});
     }
   }
 
