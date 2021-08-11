@@ -1,1 +1,3 @@
-$var--Main-offsetTop: 4rem;
+@import '../../../constants';
+
+$var--Main-offsetTop: $unit * 4;

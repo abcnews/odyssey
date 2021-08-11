@@ -67,14 +67,19 @@ const MOCK_TEXT = {
   nodeType: Node.TEXT_NODE
 };
 
-const REM = 16; // (px)
+const UNIT = 16; // (px)
+const BP = {
+  MD: UNIT * 43.75,
+  LG: UNIT * 61.25,
+  XL: UNIT * 112.5
+};
 const MQ = {};
-MQ.LT_MD = '(max-width: 43.6875rem)';
-MQ.GT_SM = '(min-width: 43.75rem)';
-MQ.LT_LG = '(max-width: 61.1875rem)';
-MQ.GT_MD = '(min-width: 61.25rem)';
-MQ.LT_XL = '(max-width: 112.4375rem)';
-MQ.GT_LG = '(min-width: 112.5rem)';
+MQ.LT_MD = `(max-width: ${BP.MD - 1}px)`;
+MQ.GT_SM = `(min-width: ${BP.MD}px)`;
+MQ.LT_LG = `(max-width: ${BP.LG - 1}px)`;
+MQ.GT_MD = `(min-width: ${BP.LG}px)`;
+MQ.LT_XL = `(max-width: ${BP.XL - 1}px)`;
+MQ.GT_LG = `(min-width: ${BP.XL}px)`;
 MQ.SM = MQ.LT_MD;
 MQ.MD = `${MQ.GT_SM} and ${MQ.LT_LG}`;
 MQ.LG = `${MQ.GT_MD} and ${MQ.LT_XL}`;
@@ -83,7 +88,7 @@ MQ.PORTRAIT = '(orientation: portrait)';
 MQ.LANDSCAPE = '(orientation: landscape)';
 MQ.LANDSCAPE_LT_LG = `${MQ.LANDSCAPE} and ${MQ.LT_LG}`;
 MQ.GT_4_3 = '(min-aspect-ratio: 4/3)';
-MQ.PL_SM = '(max-width: 33.9375em)';
+MQ.PL_SM = `(max-width: ${UNIT * 34 - 1}px)`;
 
 const MQL = Object.keys(MQ).reduce((memo, key) => {
   memo[key] = window.matchMedia(MQ[key]);
@@ -162,7 +167,8 @@ module.exports = {
   MOCK_NODE,
   MOCK_ELEMENT,
   MOCK_TEXT,
-  REM,
+  UNIT,
+  BP,
   MQ,
   MQL,
   SMALLEST_IMAGE,

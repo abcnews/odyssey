@@ -51,7 +51,7 @@
     &:not([controls])::-webkit-media-controls-play-button,
     &:not([controls])::-webkit-media-controls-start-playback-button {
       opacity: 0;
-      width: 0.3125rem;
+      width: $unit * 0.3125;
       pointer-events: none;
     }
   }

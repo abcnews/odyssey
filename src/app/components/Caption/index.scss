@@ -5,8 +5,8 @@
   margin-right: 0;
   margin-bottom: 0;
   margin-left: 0;
-  padding-top: 0.45rem;
-  padding-bottom: 0.4rem;
+  padding-top: $unit * 0.4375;
+  padding-bottom: $unit * 0.375;
   font-family: $font-sans;
 
   @media #{$mq-lt-lg} {
@@ -43,11 +43,11 @@
 
   * > & {
     font-size: 0.8125rem !important;
-    line-height: 1.25rem;
+    line-height: 1.555555556;
   }
 
   :first-child {
-    margin-right: 0.25rem;
+    margin-right: $unit * 0.25;
   }
 
   a,

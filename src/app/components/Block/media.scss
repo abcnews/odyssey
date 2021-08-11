@@ -36,7 +36,7 @@
       position: fixed;
       transform: translate(0, -50%);
       top: 50vh;
-      width: 33rem;
+      width: $unit * 33;
       max-width: 42.5%;
       height: auto;
 
@@ -49,29 +49,29 @@
     }
 
     @media #{$mq-xl} {
-      width: 44rem;
+      width: $unit * 44;
     }
   }
 
   .has-inset-media.has-left & > :not(.Block-mediaCaption) {
     @media #{$mq-gt-md} {
-      right: calc(30% - 16rem);
+      right: calc(30% - #{$unit * 16});
       left: auto;
     }
 
     @media #{$mq-xl} {
-      right: calc(30% - 25.75rem);
+      right: calc(30% - #{$unit * 25.75});
     }
   }
 
   .has-inset-media.has-right & > :not(.Block-mediaCaption) {
     @media #{$mq-gt-md} {
       right: auto;
-      left: calc(30% - 16rem);
+      left: calc(30% - #{$unit * 16});
     }
 
     @media #{$mq-xl} {
-      left: calc(30% - 25.75rem);
+      left: calc(30% - #{$unit * 25.75});
     }
   }
 
@@ -311,11 +311,11 @@
     }
 
     .has-hidden-caption-titles & {
-      padding-top: 0.4rem;
-      padding-bottom: 0.45rem;
+      padding-top: $unit * 0.375;
+      padding-bottom: $unit * 0.4375;
 
       @media #{$mq-sm} {
-        padding: 0.0625rem 0.625rem 0.1875rem;
+        padding: $unit * 0.0625 $unit * 0.625 $unit * 0.1875;
       }
     }
   }

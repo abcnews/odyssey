@@ -3,16 +3,16 @@
 [class*='u-richtext'] {
   > * {
     margin-top: 0;
-    margin-bottom: 1.5rem;
+    margin-bottom: $unit * 1.5;
     color: $color-grey-900;
     font-family: $font-serif;
 
     @media #{$mq-md} {
-      margin-bottom: 2rem;
+      margin-bottom: $unit * 2;
     }
 
     @media #{$mq-gt-md} {
-      margin-bottom: 2.25rem;
+      margin-bottom: $unit * 2.25;
     }
   }
 
@@ -43,7 +43,7 @@
     clear: both;
     margin-left: auto;
     margin-right: auto;
-    max-width: 32rem;
+    max-width: $unit * 32;
     font-size: 1.875rem;
     text-align: center;
 
@@ -107,7 +107,7 @@
   > ol ul,
   > ul ol,
   > ol ol {
-    margin-top: 0.5rem;
+    margin-top: $unit * 0.5;
     margin-bottom: 0;
   }
 
@@ -118,7 +118,7 @@
 
   > ul li,
   > ol li {
-    margin-bottom: 0.5rem;
+    margin-bottom: $unit * 0.5;
     text-align: left;
   }
 
@@ -146,13 +146,13 @@
 
     td,
     th {
-      padding: 0.625rem 0.75rem;
+      padding: $unit * 0.625 $unit * 0.75;
       text-align: left;
       vertical-align: top;
     }
 
     tr > * {
-      border-bottom: 0.0625rem solid $color-grey-300-transparent-70;
+      border-bottom: $unit * 0.0625 solid $color-grey-300-transparent-70;
     }
 
     th {
@@ -183,7 +183,7 @@
 
   > hr {
     border: none;
-    padding-bottom: 0.5rem;
+    padding-bottom: $unit * 0.5;
   }
 
   > h2,
@@ -191,26 +191,26 @@
     &::before {
       content: '';
       display: block;
-      margin: 3rem auto 1rem;
-      width: 7.5rem;
-      height: 0.125rem;
+      margin: $unit * 3 auto $unit;
+      width: $unit * 7.5;
+      height: $unit * 0.125;
       background-color: $color-grey-300-transparent-70;
 
       @media #{$mq-md} {
-        margin: 4rem auto 1.5rem;
+        margin: $unit * 4 auto $unit * 1.5;
       }
 
       @media #{$mq-gt-md} {
-        margin: 5rem auto 1.5rem;
+        margin: $unit * 5 auto $unit * 1.5;
       }
     }
 
     @media #{$mq-md} {
-      padding-bottom: 0.5rem;
+      padding-bottom: $unit * 0.5;
     }
 
     @media #{$mq-gt-md} {
-      padding-bottom: 1rem;
+      padding-bottom: $unit;
     }
   }
 
@@ -223,26 +223,26 @@
 
 [class*='u-richtext'] > [class*='u-richtext'],
 [class*='u-pull'] > [class*='u-richtext'] {
-  margin-top: 0.375rem;
-  border-top: 0.125rem solid $color-grey-300-transparent-70;
-  border-bottom: 0.125rem solid $color-grey-300-transparent-70;
-  padding-top: 2rem;
-  padding-bottom: 0.75rem;
+  margin-top: $unit * 0.375;
+  border-top: $unit * 0.125 solid $color-grey-300-transparent-70;
+  border-bottom: $unit * 0.125 solid $color-grey-300-transparent-70;
+  padding-top: $unit * 2;
+  padding-bottom: $unit * 0.75;
 
   & + [class*='u-richtext'] {
     border-top: none;
-    padding-top: 1rem;
+    padding-top: $unit;
   }
 
   > * {
-    margin-bottom: 1.25rem;
+    margin-bottom: $unit * 1.25;
 
     @media #{$mq-md} {
-      margin-bottom: 1.666666667rem;
+      margin-bottom: $unit * 1.666666667;
     }
 
     @media #{$mq-gt-md} {
-      margin-bottom: 1.875rem;
+      margin-bottom: $unit * 1.875;
     }
   }
 
@@ -255,14 +255,14 @@
 
   > h3,
   > h4 {
-    margin-bottom: 0.5rem;
+    margin-bottom: $unit * 0.5;
 
     @media #{$mq-md} {
-      margin-bottom: 0.666666667rem;
+      margin-bottom: $unit * 0.666666667;
     }
 
     @media #{$mq-gt-md} {
-      margin-bottom: 0.75rem;
+      margin-bottom: $unit * 0.75;
     }
   }
 

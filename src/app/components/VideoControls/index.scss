@@ -135,10 +135,10 @@
 .VideoControls-progress {
   flex: 1 1 auto;
   z-index: 1;
-  margin-left: 1.25rem;
-  margin-bottom: 0.625rem;
-  padding: 0.625rem 0;
-  line-height: 0.5rem;
+  margin-left: $unit * 1.25;
+  margin-bottom: $unit * 0.625;
+  padding: $unit * 0.625 0;
+  font-size: 0;
   cursor: pointer;
   -webkit-tap-highlight-color: $color-black-transparent;
 }
@@ -149,9 +149,9 @@
   appearance: none;
   margin: 0;
   border: none;
-  padding: 0.125rem;
+  padding: $unit * 0.125;
   width: 100%;
-  height: 0.75rem;
+  height: $unit * 0.75;
   background-color: $color-black-transparent-60;
   color: $color-white-transparent-60;
 
@@ -174,14 +174,14 @@
 
 .VideoControls-timeRemaining {
   margin-left: $size-control-margin;
-  padding: 0.25rem;
-  min-width: 3.75rem;
-  height: 2rem;
+  padding: $unit * 0.25;
+  min-width: $unit * 3.75;
+  height: $unit * 2;
   background-color: $color-black-transparent-60;
   color: $color-white;
   font-family: $font-sans;
   font-size: 0.875rem;
-  line-height: 1.5rem;
+  line-height: 1.75;
   text-align: center;
-  letter-spacing: 0.0375rem;
+  letter-spacing: 0.05em;
 }

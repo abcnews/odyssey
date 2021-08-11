@@ -2,7 +2,7 @@
 
 html {
   overflow-x: hidden;
-  font-size: $rem !important;
+  font-size: 16px;
   -webkit-text-size-adjust: none;
   -moz-text-size-adjust: none;
   -ms-text-size-adjust: none;
@@ -77,20 +77,20 @@ body {
 
   /* PL articles (excluding ABC app, which respect device light/dark mode) need white background applied to recirculation */
   main ~ main:last-of-type:not([class]) {
-    margin-top: 1rem;
+    margin-top: $unit;
     border-top: 1px solid #e6e6e6;
-    padding-top: 2rem;
+    padding-top: $unit * 2;
     background-color: #fff;
   }
 }
 
 /* Guess at placeholder styles */
 [data-presentation-layer-async-component='Nav'] {
-  height: 4rem;
+  height: $unit * 4;
   background-color: #0f1010;
 
-  @media #{$mq-pl-sm} {
-    height: 3rem;
+  @media #{$mq-pl-lt-md} {
+    height: $unit * 3;
   }
 }
 

@@ -27,7 +27,7 @@
   }
 
   @media #{$mq-sm} {
-    width: calc(100% - 2.8125rem);
+    width: calc(100% - #{$unit * 2.8125});
   }
 
   @media #{$mq-md} {
@@ -63,25 +63,25 @@
 }
 
 .Gallery-pane {
-  margin: 0 -0.46875rem;
+  margin: 0 $unit * -0.46875;
 
   .is-mosaic & {
-    margin: 0 -0.125rem;
+    margin: 0 $unit * -0.125;
   }
 
   @media #{$mq-md} {
-    margin: 0 -0.9375rem;
+    margin: 0 $unit * -0.9375;
 
     .is-mosaic & {
-      margin: 0 -0.25rem;
+      margin: 0 $unit * -0.25;
     }
   }
 
   @media #{$mq-gt-md} {
-    margin: 0 -1.25rem;
+    margin: 0 $unit * -1.25;
 
     .is-mosaic & {
-      margin: 0 -0.3125rem;
+      margin: 0 $unit * -0.3125;
     }
   }
 }
@@ -113,7 +113,7 @@
   flex: 0 0 100%;
   overflow: hidden;
   position: relative;
-  padding: 0 0.46875rem;
+  padding: 0 $unit * 0.46875;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -124,8 +124,8 @@
 
   .is-mosaic & {
     opacity: 1;
-    margin-bottom: 0.25rem;
-    padding: 0 0.125rem;
+    margin-bottom: $unit * 0.25;
+    padding: 0 $unit * 0.125;
   }
 
   .Gallery:not(.is-mosaic) & {
@@ -138,20 +138,20 @@
   }
 
   @media #{$mq-md} {
-    padding: 0 0.9375rem;
+    padding: 0 $unit * 0.9375;
 
     .is-mosaic & {
-      margin-bottom: 0.5rem;
-      padding: 0 0.25rem;
+      margin-bottom: $unit * 0.5;
+      padding: 0 $unit * 0.25;
     }
   }
 
   @media #{$mq-gt-md} {
-    padding: 0 1.25rem;
+    padding: 0 $unit * 1.25;
 
     .is-mosaic & {
-      margin-bottom: 0.625rem;
-      padding: 0 0.3125rem;
+      margin-bottom: $unit * 0.625;
+      padding: 0 $unit * 0.3125;
     }
   }
 
@@ -226,7 +226,7 @@
     position: absolute;
     bottom: 0;
     margin-left: 0;
-    max-width: calc(100% - 0.25rem);
+    max-width: calc(100% - #{$unit * 0.25});
     min-height: 0;
     background-color: $color-black-transparent-60;
     color: $color-lightBg;
@@ -238,11 +238,11 @@
     }
 
     @media #{$mq-md} {
-      max-width: calc(100% - 0.5rem);
+      max-width: calc(100% - #{$unit * 0.5});
     }
 
     @media #{$mq-gt-md} {
-      max-width: calc(100% - 0.625rem);
+      max-width: calc(100% - #{$unit * 0.625});
     }
   }
 
@@ -273,8 +273,8 @@
   height: 100%;
 
   & > * {
-    margin: 0.5rem 1rem !important;
-    max-width: 49rem !important; /* Roughly equivalent to body copy width, after padding is factored in */
+    margin: $unit * 0.5 $unit !important;
+    max-width: $unit * 49 !important; /* Roughly equivalent to body copy width, after padding is factored in */
 
     .is-mosaic & {
       padding: 0 !important;
@@ -303,7 +303,7 @@
 }
 
 .Gallery-index {
-  padding: 0 0.8rem;
+  padding: 0 $unit * 0.8125;
   min-width: 3.5rem;
   height: $size-control;
   background-color: $color-black-transparent-60;
@@ -311,7 +311,7 @@
   font-family: $font-sans;
   font-size: 0.8125rem;
   line-height: $size-control;
-  letter-spacing: 0.05rem;
+  letter-spacing: 0.05em;
   text-align: right;
 
   .is-mosaic & {

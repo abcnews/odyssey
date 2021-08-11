@@ -2,8 +2,8 @@
 
 .u-layout > .u-full,
 [class*='u-richtext'] > .u-full {
-  margin-top: 2rem;
-  margin-bottom: 2rem;
+  margin-top: $unit * 2;
+  margin-bottom: $unit * 2;
   margin-left: calc(-50vw + 50%) !important;
   margin-left: calc(-50vw + (var(--scrollbar-width, 0px) / 2) + 50%) !important;
   padding-left: 0;
@@ -12,8 +12,8 @@
   width: calc(100vw - var(--scrollbar-width, 0px));
 
   @media #{$mq-gt-md} {
-    margin-top: 3rem;
-    margin-bottom: 3rem;
+    margin-top: $unit * 3;
+    margin-bottom: $unit * 3;
   }
 
   &:first-child,
@@ -32,9 +32,9 @@
 [class*='u-richtext'] > .u-full:not(.Gallery) + a[id] + .u-full:not(.Gallery),
 [class*='u-richtext'] > .u-full:not(.Gallery) + a[name] + .u-full:not(.Gallery),
 [class*='u-richtext'] > .u-full:not(.Gallery) + [data-mount] + .u-full:not(.Gallery) {
-  margin-top: -2rem;
+  margin-top: $unit * -2;
 
   @media #{$mq-gt-md} {
-    margin-top: -3rem;
+    margin-top: $unit * -3;
   }
 }

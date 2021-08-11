@@ -5,17 +5,17 @@
     overflow: visible;
     margin: 0;
     border-width: 0;
-    border-left: 0.625rem solid $color-grey-300-transparent-70;
-    padding: 0 2rem;
+    border-left: $unit * 0.625 solid $color-grey-300-transparent-70;
+    padding: 0 $unit * 2;
     background-color: transparent;
   }
 
   p {
     overflow: visible;
-    margin: 0 0 1rem 0;
+    margin: 0 0 $unit 0;
     color: $color-darkerPrimary;
     font-size: 1.125rem;
-    line-height: 1.66;
+    line-height: 1.666666667;
 
     .u-richtext-invert > & {
       color: $color-lighterPrimary;
@@ -100,7 +100,7 @@
   }
 
   footer {
-    padding-top: 0.25rem;
+    padding-top: $unit * 0.25;
     font-size: 1rem;
     color: $color-grey-300;
 

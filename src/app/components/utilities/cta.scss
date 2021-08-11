@@ -8,15 +8,15 @@
 
   a {
     flex: 0 1 auto;
-    margin: 0.5rem;
-    padding: 0.5rem 2rem;
-    max-width: calc(100% - 1rem);
+    margin: $unit * 0.5;
+    padding: $unit * 0.5 $unit * 2;
+    max-width: calc(100% - #{$unit});
     background-color: $color-black-transparent-30;
     color: $color-white !important;
     font-family: $font-sans;
     font-size: 1.375rem;
     font-weight: bold;
-    line-height: 1.33;
+    line-height: 1.333333333;
     text-align: center;
     text-transform: uppercase;
     transition: filter 0.25s;

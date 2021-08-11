@@ -2,14 +2,14 @@
 
 [class*='u-richtext'] > .u-dropcap::first-letter {
   float: left;
-  padding-top: 0.4rem;
-  padding-right: 0.25rem;
+  padding-top: $unit * 0.4;
+  padding-right: $unit * 0.25;
   font-size: 3.46875rem;
   font-weight: bold;
   line-height: 0.78; // Gecko ignores this
 
   @media #{$mq-gt-sm} {
-    padding-top: 0.5rem;
+    padding-top: $unit * 0.5;
     font-size: 3.625rem;
     line-height: 0.74; // Gecko ignores this
   }

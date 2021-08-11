@@ -2,7 +2,7 @@
 @import '../Main/variables.scss';
 @import './variables.scss';
 
-$abreastChildSpacing: 2.5rem;
+$abreastChildSpacing: $unit * 2.5;
 
 .Header {
   --Header-contentPeek: #{$var--Header-contentPeek};
@@ -102,7 +102,7 @@ $abreastChildSpacing: 2.5rem;
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 6.25rem;
+    height: $unit * 6.25;
     background-image: $gradient-black-vertical-0-0-100-60;
   }
 
@@ -157,7 +157,7 @@ $abreastChildSpacing: 2.5rem;
   position: relative;
   margin-left: $layout-fluid-padding;
   margin-right: $layout-fluid-padding;
-  padding: 1.25rem 0;
+  padding: $unit * 1.25 0;
   text-align: center;
 
   @media #{$mq-md} {
@@ -178,7 +178,7 @@ $abreastChildSpacing: 2.5rem;
       align-items: stretch;
       align-self: flex-end;
       flex-grow: 0;
-      width: 25rem;
+      width: $unit * 25;
 
       & > * {
         padding-left: 0 !important;
@@ -242,13 +242,13 @@ $abreastChildSpacing: 2.5rem;
     content: '';
     transform: translate(0, 100%);
     display: block;
-    margin: 1.125rem auto;
-    width: 9rem;
-    height: 0.125rem;
+    margin: $unit * 1.125 auto;
+    width: $unit * 9;
+    height: $unit * 0.125;
     background-color: $color-grey-300-transparent-70;
 
     @media #{$mq-gt-sm} {
-      width: 18rem;
+      width: $unit * 18;
     }
   }
 
@@ -290,7 +290,7 @@ ul.Header-miscEl > li {
 .Header-byline + *,
 .Header-infoSource,
 .Header-infoSource + * {
-  margin-top: -0.5rem;
+  margin-top: $unit * -0.5;
 }
 
 .Header .Header-content .Header-byline,
