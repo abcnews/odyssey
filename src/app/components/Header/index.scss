@@ -298,6 +298,13 @@ ul.Header-miscEl > li {
   font-size: 0.9375rem;
 }
 
+.Header-byline > span {
+  /* Undo PL's byline styles */
+  font-size: 100%;
+  line-height: normal;
+  letter-spacing: normal;
+}
+
 .Header-byline > em {
   text-transform: lowercase;
 }
