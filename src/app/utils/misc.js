@@ -27,11 +27,12 @@ function twoDigits(number) {
 
 function formattedDate(date) {
   const hours = date.getHours();
+  const hoursModTwelve = hours % 12;
   const minutes = date.getMinutes();
 
-  return `${date.getDate()} ${MONTHS[date.getMonth()]} ${date.getFullYear()}, ${hours}:${
-    minutes < 10 ? '0' : ''
-  }${minutes}${hours < 12 ? 'a' : 'p'}m`;
+  return `${date.getDate()} ${MONTHS[date.getMonth()]} ${date.getFullYear()}, ${
+    hoursModTwelve === 0 ? 12 : hoursModTwelve
+  }:${minutes < 10 ? '0' : ''}${minutes}${hours < 12 ? 'a' : 'p'}m`;
 }
 
 function flatten(lists) {
