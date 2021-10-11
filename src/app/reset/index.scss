@@ -100,7 +100,8 @@ body {
 
 [data-component='SiteNav'],
 [data-component='SiteNavigation'],
-[data-component='SiteNavWithMore'] {
+[data-component='SiteNavWithMore'],
+[data-component='FixedHeader'] {
   display: none;
 }
 
