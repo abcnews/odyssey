@@ -63,7 +63,7 @@
       text-align: left;
     }
 
-    .u-richtext > &:not([class*='u-pull']),
+    [class*='u-richtext'] > &:not([class*='u-pull']),
     .u-pull-out > &:not([class*='u-pull']),
     .u-pull > &:not([class*='u-pull']) {
       padding-left: cells(1);
