@@ -13,9 +13,8 @@
 		"start": "aunty serve"
 	},
 	"dependencies": {
-		"@abcaustralia/abc-components": "^4.12.0",
-		"@abcaustralia/global-components": "^1.0.0",
-		"@abcaustralia/nucleus": "^1.1.0",
+		"@abcaustralia/global-components": "^11.2.5",
+		"@abcaustralia/nucleus": "^11.2.5",
 		"@abcnews/dev-proxy": "^1.1.0",
 		"@abcnews/env-utils": "^3.0.0",
 		"@abcnews/mount-utils": "^1.0.0",
@@ -28,13 +27,13 @@
 		"custom-event-polyfill": "^1.0.7",
 		"debounce": "^1.2.0",
 		"objectFitPolyfill": "^2.2.0",
-		"react": "^16.8.6",
-		"react-dom": "^16.8.6",
+		"react": "^17.0.2",
+		"react-dom": "^17.0.2",
 		"ric": "^1.3.0",
 		"util-dewysiwyg": "git+ssh://git@stash.abc-dev.net.au:7999/news/util-dewysiwyg.git#3.8.0"
 	},
 	"devDependencies": {
-		"@abcnews/aunty": "^12.0.2",
+		"@abcnews/aunty": "^12.1.0",
 		"duplicate-package-checker-webpack-plugin": "^3.0.0",
 		"webpack-bundle-analyzer": "^3.3.2"
 	},

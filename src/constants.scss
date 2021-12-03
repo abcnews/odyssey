@@ -1,3 +1,5 @@
+@use 'sass:math';
+
 $font-sans: 'ABCSans', Helvetica, Arial, sans-serif;
 $font-serif: 'ABCSerif', 'Book Antiqua', 'Palatino Linotype', Palatino, serif;
 
@@ -81,15 +83,15 @@ $bp-lg: $unit * 61.25;
 $bp-xl: $unit * 112.5;
 
 @function cells($numColumns, $totalColumns: 12) {
-  @return $numColumns / $totalColumns * 100%;
+  @return math.div($numColumns, $totalColumns) * 100%;
 }
 
 $layout-fluid: 100%;
 $layout-fixed: $bp-lg;
 $layout-fluid-gutter: $unit * 1.875;
 $layout-fixed-gutter: $unit * 1.75;
-$layout-fluid-padding: $layout-fluid-gutter / 2;
-$layout-fixed-padding: $layout-fixed-gutter / 2;
+$layout-fluid-padding: math.div($layout-fluid-gutter, 2);
+$layout-fixed-padding: math.div($layout-fixed-gutter, 2);
 
 $mq-lt-md: '(max-width: #{$bp-md - 1px})';
 $mq-gt-sm: '(min-width: #{$bp-md})';

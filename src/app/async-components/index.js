@@ -1,6 +1,6 @@
 // External
-const { AppContext } = require('@abcaustralia/nucleus/es6/AppContext/AppContext');
-const GlobalStyles = require('@abcaustralia/nucleus/es6/GlobalStyles/GlobalStyles').default;
+const { AppContextProvider } = require('@abcaustralia/nucleus/es6/AppContext/AppContext');
+const { GlobalStyles } = require('@abcaustralia/nucleus/es6/GlobalStyles/GlobalStyles');
 const React = require('react');
 const ReactDOM = require('react-dom');
 
@@ -16,17 +16,19 @@ const components = {
 let shouldIncludeIcons = true;
 
 module.exports.render = (componentName, props = {}, el) => {
-  if (!el.parentElement) {
+  const Component = components[componentName];
+
+  if (!Component || !el.parentElement) {
     return;
   }
 
   ReactDOM.render(
-    <AppContext.Provider value={{ inlineIconSprite: true, staticPath: '/news-web/', typographyScale: 'compact' }}>
+    <AppContextProvider value={{ inlineIconSprite: true, staticPath: '/news-web/', typographyScale: 'compact' }}>
       <GlobalStyles>
         {(shouldIncludeIcons = shouldIncludeIcons && <Icons />)}
-        {React.createElement(components[componentName], props)}
+        <Component {...props} />
       </GlobalStyles>
-    </AppContext.Provider>,
+    </AppContextProvider>,
     el
   );
 
