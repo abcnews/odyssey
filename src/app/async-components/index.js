@@ -7,9 +7,11 @@ const ReactDOM = require('react-dom');
 // Ours
 require('./root.css');
 const Icons = require('./Icons');
+const Interactive = require('./Interactive');
 const Nav = require('./Nav');
 
 const components = {
+  Interactive,
   Nav
 };
 

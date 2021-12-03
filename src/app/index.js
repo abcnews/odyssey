@@ -272,6 +272,30 @@ function app(terminusDocument) {
     }
   }, 0);
 
+  // Try to resolve Presentation Layer Interactive document-based embeds
+  setTimeout(() => {
+    if (meta.isPL) {
+      let descriptor;
+
+      try {
+        descriptor = window.__API__.document.loaders.articledetail.text.descriptor;
+      } catch (err) {
+        return console.error(err);
+      }
+
+      descriptor.children
+        .filter(({ type }) => type === 'interactive')
+        .forEach(({ props }) => {
+          const containerEl = $(`[itemid="${props.embedURL}"]`);
+
+          if (containerEl) {
+            containerEl.removeAttribute('class');
+            substitute(containerEl.firstElementChild, PresentationLayerAsyncComponent('Interactive', props));
+          }
+        });
+    }
+  }, 0);
+
   // Fix Block classNames on non-updated scrollyteller instances.
   // Stories which depend on this polyfill are tracked here:
   // https://github.com/abcnews/odyssey/pull/64#issuecomment-444763314
@@ -349,11 +373,11 @@ function app(terminusDocument) {
       document.getElementById('iframe-pl').setAttribute('scrolling', 'yes');
       updateScrollable();
       subscribe(updateScrollable);
-      document.querySelector('button[data-preview-desktop]').addEventListener('click', updateScrollable);
+      $('button[data-preview-desktop]').addEventListener('click', updateScrollable);
     }
 
     (function fixIframesAfterPreviewToolsLoaded() {
-      desktopPreviewAreaEl = document.querySelector('.section-desktop-preview-area');
+      desktopPreviewAreaEl = $('.section-desktop-preview-area');
       desktopPreviewAreaEl ? fixIframes() : setTimeout(fixIframesAfterPreviewToolsLoaded, 9);
     })();
   }
