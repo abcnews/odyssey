@@ -2,7 +2,7 @@
 const { TIERS, getTier } = require('@abcnews/env-utils');
 const useSWR = require('swr').default;
 const React = require('react');
-const { useEffect, useRef } = require('react');
+const { useLayoutEffect, useRef } = require('react');
 
 // Ours
 require('./index.scss');
@@ -26,10 +26,12 @@ module.exports = props => {
     fetcher
   );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!data) {
       return;
     }
+
+    ref.current.appendChild(document.createRange().createContextualFragment(data.html));
 
     switch (props.providerType) {
       case 'singleTweet':
@@ -54,7 +56,7 @@ module.exports = props => {
     return <>Loading...</>;
   }
 
-  return <div className="PresentationLayer__Interactive" ref={ref} dangerouslySetInnerHTML={{ __html: data.html }} />;
+  return <div className="PresentationLayer__Interactive" ref={ref} />;
 };
 
 const HiddenErrorMessage = ({ message, ...props }) => (
