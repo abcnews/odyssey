@@ -31,6 +31,7 @@ module.exports = props => {
       return;
     }
 
+    ref.current.innerHTML = '';
     ref.current.appendChild(document.createRange().createContextualFragment(data.html));
 
     switch (props.providerType) {
