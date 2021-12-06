@@ -7,7 +7,7 @@ const { useLayoutEffect, useRef } = require('react');
 // Ours
 require('./index.scss');
 
-const SUPPORTED_PROVIDER_TYPES = ['singleTweet', 'instagram'];
+const SUPPORTED_PROVIDER_TYPES = ['facebook', 'instagram', 'singleTweet'];
 const LOADERS_ENDPOINT = `https://${
   getTier() === TIERS.LIVE ? 'www.abc.net.au' : 'master-news-web.news-web-developer.presentation-layer.abc-prod.net.au'
 }/news-web/api/loader/`;
@@ -36,14 +36,19 @@ module.exports = props => {
 
     // Additional steps to take, in case 3rd party libraries had already been loaded and executed
     switch (props.providerType) {
-      case 'singleTweet':
-        if (window.twttr) {
-          twttr.widgets.load(ref.current);
+      case 'facebook':
+        if (window.FB) {
+          FB.XFBML.parse(ref.current);
         }
         break;
       case 'instagram':
         if (window.instgrm) {
           instgrm.Embeds.process();
+        }
+        break;
+      case 'singleTweet':
+        if (window.twttr) {
+          twttr.widgets.load(ref.current);
         }
         break;
       default:
