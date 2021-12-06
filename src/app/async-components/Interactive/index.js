@@ -7,7 +7,7 @@ const { useLayoutEffect, useRef } = require('react');
 // Ours
 require('./index.scss');
 
-const SUPPORTED_PROVIDER_TYPES = ['singleTweet'];
+const SUPPORTED_PROVIDER_TYPES = ['singleTweet', 'instagram'];
 const LOADERS_ENDPOINT = `https://${
   getTier() === TIERS.LIVE ? 'www.abc.net.au' : 'master-news-web.news-web-developer.presentation-layer.abc-prod.net.au'
 }/news-web/api/loader/`;
@@ -34,10 +34,16 @@ module.exports = props => {
     ref.current.innerHTML = '';
     ref.current.appendChild(document.createRange().createContextualFragment(data.html));
 
+    // Additional steps to take, in case 3rd party libraries had already been loaded and executed
     switch (props.providerType) {
       case 'singleTweet':
         if (window.twttr) {
           twttr.widgets.load(ref.current);
+        }
+        break;
+      case 'instagram':
+        if (window.instgrm) {
+          instgrm.Embeds.process();
         }
         break;
       default:
