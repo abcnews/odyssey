@@ -51,19 +51,21 @@ module.exports = props => {
     }
   }, [data]);
 
+  let placeholder = null;
+
   if (!SUPPORTED_PROVIDER_TYPES.includes(props.providerType)) {
-    return <HiddenErrorMessage message="Unsupported provider type" {...props} />;
+    placeholder = <HiddenErrorMessage message="Unsupported provider type" {...props} />;
+  } else if (error) {
+    placeholder = <HiddenErrorMessage message={`Error loading data: "${String(error)}"`} {...props} />;
+  } else if (!data) {
+    placeholder = <>Loading…</>;
   }
 
-  if (error) {
-    return <HiddenErrorMessage message={`Error loading data: "${String(error)}"`} {...props} />;
-  }
-
-  if (!data) {
-    return <>Loading...</>;
-  }
-
-  return <div className="PresentationLayer__Interactive" ref={ref} />;
+  return (
+    <div className="PresentationLayer__Interactive" ref={ref}>
+      {placeholder}
+    </div>
+  );
 };
 
 const HiddenErrorMessage = ({ message, ...props }) => (
