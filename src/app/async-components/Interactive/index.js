@@ -1,6 +1,6 @@
 // External
 const { TIERS, getTier } = require('@abcnews/env-utils');
-const useSWR = require('swr').default;
+const useSWRImmutable = require('swr/immutable').default;
 const React = require('react');
 const { useLayoutEffect, useRef } = require('react');
 
@@ -17,7 +17,7 @@ const fetcher = (...args) => fetch(...args).then(res => res.json());
 
 module.exports = props => {
   const ref = useRef(null);
-  const { data, error } = useSWR(
+  const { data, error } = useSWRImmutable(
     `${LOADERS_ENDPOINT}${LOADER_NAME}?${new URLSearchParams({
       alignment: props.alignment,
       providerType: props.providerType,
