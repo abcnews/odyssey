@@ -4,7 +4,7 @@ const { url2cmid } = require('@abcnews/url2cmid');
 
 // Ours
 const { INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID, MOCK_ELEMENT, SELECTORS } = require('../../constants');
-const { $, $$, detach, setOrAddMetaTag } = require('../utils/dom');
+const { $, $$, detach } = require('../utils/dom');
 const { trim } = require('../utils/misc');
 
 const FACEBOOK = /facebook\.com/;
@@ -15,29 +15,15 @@ const SHARE_ORDERING = ['facebook', 'twitter', 'native', 'email'];
 
 let meta = null; // singleton
 
-function addPLMetaTags() {
-  let { document } = window.__API__;
+function getArticledetail() {
+  try {
+    // The key is "document" in `newsweb`, and "app" in `newsapp` PL
+    const { document, app } = window.__API__;
 
-  if (document.loaders) {
-    document = document.loaders.articledetail;
-  }
-
-  const { contextSettings } = document;
-  const { published, updated } = document.publishedDatePrepared;
-
-  // Add missing meta tags from publication/update dates
-  if (published) {
-    setOrAddMetaTag('DCTERMS.issued', published.labelDate);
-  }
-  if (updated) {
-    setOrAddMetaTag('DCTERMS.modified', updated.labelDate);
-  }
-
-  // Add missing meta tags based on the `meta.data.name` context setting to Presentation Layer pages
-  if (contextSettings) {
-    const mdn = contextSettings['meta.data.name'] || {};
-
-    Object.keys(mdn).forEach(name => setOrAddMetaTag(name, mdn[name]));
+    return (document || app).loaders.articledetail;
+  } catch (err) {
+    console.error(err);
+    return null;
   }
 }
 
@@ -203,6 +189,7 @@ function initMeta(terminusDocument) {
 
   // Feed terminus document-based props through the above mixins
   meta = mixins.reduce((meta, step) => ({ ...meta, ...(step(meta) || {}) }), {
+    _articledetail: getArticledetail(),
     _terminusDocument: terminusDocument,
     id: terminusDocument.id,
     url: terminusDocument.canonicalURL,

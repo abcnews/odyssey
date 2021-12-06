@@ -275,15 +275,15 @@ function app(terminusDocument) {
   // Try to resolve Presentation Layer Interactive document-based embeds
   setTimeout(() => {
     if (meta.isPL) {
-      let descriptor;
+      let textDescriptor;
 
       try {
-        descriptor = window.__API__.document.loaders.articledetail.text.descriptor;
+        textDescriptor = meta._articledetail.text.descriptor;
       } catch (err) {
         return console.error(err);
       }
 
-      descriptor.children
+      textDescriptor.children
         .filter(({ type }) => type === 'interactive')
         .forEach(({ props }) => {
           const containerEl = $(`[itemid="${props.embedURL}"]`);
