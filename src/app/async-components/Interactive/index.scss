@@ -1,8 +1,22 @@
+.PresentationLayer__HiddenErrorMessage {
+  display: none;
+}
+
 .PresentationLayer__Interactive > * {
   margin-left: auto;
   margin-right: auto;
 }
 
-.PresentationLayer__HiddenErrorMessage {
-  display: none;
+.PresentationLayer__Interactive blockquote {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 16px;
+}
+
+.PresentationLayer__Interactive blockquote > :first-child {
+  margin-top: 0;
+}
+
+.PresentationLayer__Interactive blockquote > :last-child {
+  margin-bottom: 0;
 }
