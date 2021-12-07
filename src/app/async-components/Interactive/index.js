@@ -1,4 +1,5 @@
 // External
+const { AspectRatioContainer } = require('@abcaustralia/nucleus/es6/AspectRatioContainer/AspectRatioContainer');
 const { TIERS, getTier } = require('@abcnews/env-utils');
 const useSWRImmutable = require('swr/immutable').default;
 const React = require('react');
@@ -7,7 +8,15 @@ const { useLayoutEffect, useRef } = require('react');
 // Ours
 require('./index.scss');
 
-const SUPPORTED_PROVIDER_TYPES = ['facebook', 'facebookVideo', 'instagram', 'singleTweet'];
+const SUPPORTED_PROVIDER_TYPES = [
+  'facebook',
+  'facebookVideo',
+  'instagram',
+  'singleTweet',
+  'vimeo',
+  'youtube',
+  'youtubeplaylist'
+];
 const LOADERS_ENDPOINT = `https://${
   getTier() === TIERS.LIVE ? 'www.abc.net.au' : 'master-news-web.news-web-developer.presentation-layer.abc-prod.net.au'
 }/news-web/api/loader/`;
@@ -17,6 +26,7 @@ const fetcher = (...args) => fetch(...args).then(res => res.json());
 
 module.exports = props => {
   const { alignment, embedURL, providerType } = props;
+  const hasAspectRatio = providerType === 'vimeo' || providerType.indexOf('youtube') === 0;
   const ref = useRef(null);
   const { data, error } = useSWRImmutable(
     `${LOADERS_ENDPOINT}${LOADER_NAME}?${new URLSearchParams({
@@ -71,11 +81,13 @@ module.exports = props => {
     placeholder = <>Loading…</>;
   }
 
-  return (
+  const interactive = (
     <div ref={ref} className="PresentationLayer__Interactive" data-provider={providerType}>
       {placeholder}
     </div>
   );
+
+  return hasAspectRatio ? <AspectRatioContainer ratio="16x9">{interactive}</AspectRatioContainer> : interactive;
 };
 
 const HiddenErrorMessage = ({ message, ...props }) => (
