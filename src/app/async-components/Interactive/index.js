@@ -1,4 +1,6 @@
 // External
+const { AspectRatioContainer } = require('@abcaustralia/nucleus/es6/AspectRatioContainer/AspectRatioContainer');
+const { Figure } = require('@abcaustralia/nucleus/es6/Figure/Figure');
 const { TIERS, getTier } = require('@abcnews/env-utils');
 const useSWRImmutable = require('swr/immutable').default;
 const React = require('react');
@@ -7,7 +9,7 @@ const { useLayoutEffect, useRef } = require('react');
 // Ours
 require('./index.scss');
 
-const SUPPORTED_PROVIDER_TYPES = ['facebook', 'instagram', 'singleTweet'];
+const SUPPORTED_PROVIDER_TYPES = ['facebook', 'facebookVideo', 'instagram', 'singleTweet'];
 const LOADERS_ENDPOINT = `https://${
   getTier() === TIERS.LIVE ? 'www.abc.net.au' : 'master-news-web.news-web-developer.presentation-layer.abc-prod.net.au'
 }/news-web/api/loader/`;
@@ -37,6 +39,7 @@ module.exports = props => {
     // Additional steps to take, in case 3rd party libraries had already been loaded and executed
     switch (props.providerType) {
       case 'facebook':
+      case 'facebookVideo':
         if (window.FB) {
           FB.XFBML.parse(ref.current);
         }
