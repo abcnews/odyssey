@@ -1,6 +1,4 @@
 // External
-const { AspectRatioContainer } = require('@abcaustralia/nucleus/es6/AspectRatioContainer/AspectRatioContainer');
-const { Figure } = require('@abcaustralia/nucleus/es6/Figure/Figure');
 const { TIERS, getTier } = require('@abcnews/env-utils');
 const useSWRImmutable = require('swr/immutable').default;
 const React = require('react');
@@ -71,7 +69,7 @@ module.exports = props => {
   }
 
   return (
-    <div className="PresentationLayer__Interactive" ref={ref}>
+    <div ref={ref} className="PresentationLayer__Interactive" data-provider={providerType}>
       {placeholder}
     </div>
   );

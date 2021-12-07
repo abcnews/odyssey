@@ -25,3 +25,24 @@
 .PresentationLayer__Interactive blockquote > :last-child {
   margin-bottom: 0;
 }
+
+.PresentationLayer__Interactive[data-provider='facebook'] .fb-post {
+  display: block;
+  margin: 0 auto;
+  max-width: 350px;
+}
+
+.PresentationLayer__Interactive[data-provider='facebookVideo'] .fb-post span {
+  width: 100% !important;
+}
+
+.PresentationLayer__Interactive[data-provider='facebookVideo'] .fb-post span iframe {
+  width: 100% !important;
+}
+
+.PresentationLayer__Interactive[data-provider='twitter'] .twitter-tweet-rendered {
+  margin: 0 auto !important;
+  background-color: transparent;
+  border: 0;
+  padding: 0;
+}
