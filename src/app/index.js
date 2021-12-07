@@ -289,7 +289,7 @@ function app(terminusDocument) {
           const containerEl = $(`[itemid="${props.embedURL}"]`);
 
           if (containerEl) {
-            containerEl.removeAttribute('class');
+            containerEl.className = 'u-pull';
             substitute(containerEl.firstElementChild, PresentationLayerAsyncComponent('Interactive', props));
           }
         });
