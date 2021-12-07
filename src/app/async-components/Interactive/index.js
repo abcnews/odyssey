@@ -13,6 +13,7 @@ const SUPPORTED_PROVIDER_TYPES = [
   'facebookVideo',
   'instagram',
   'singleTweet',
+  'soundcloud',
   'vimeo',
   'youtube',
   'youtubeplaylist'
