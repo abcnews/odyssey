@@ -2,6 +2,11 @@
   display: none;
 }
 
+.PresentationLayer__Interactive {
+  margin: 0;
+  overflow: hidden;
+}
+
 .PresentationLayer__Interactive > * {
   margin-left: auto;
   margin-right: auto;
