@@ -32,8 +32,11 @@ module.exports = props => {
       return;
     }
 
+    const normalisedHTML = normaliseHTML(data.html, providerType);
+    const documentFragment = document.createRange().createContextualFragment(normalisedHTML);
+
     ref.current.innerHTML = '';
-    ref.current.appendChild(document.createRange().createContextualFragment(data.html));
+    ref.current.appendChild(documentFragment);
 
     // Additional steps to take, in case 3rd party libraries had already been loaded and executed
     switch (providerType) {
@@ -78,3 +81,20 @@ module.exports = props => {
 const HiddenErrorMessage = ({ message, ...props }) => (
   <pre className="PresentationLayer__HiddenErrorMessage">{`${message}. Props: ${JSON.stringify(props, null, 2)}`}</pre>
 );
+
+const normaliseHTML = (html, providerType) => {
+  let normalisedHTML = html;
+
+  switch (providerType) {
+    case 'facebook':
+    case 'facebookVideo':
+      normalisedHTML = normalisedHTML
+        .replace(/data-width="\w*"/g, 'data-width="auto"')
+        .replace(/graph\.facebook\.com/g, 'www.facebook.com');
+      break;
+    default:
+      break;
+  }
+
+  return normalisedHTML;
+};
