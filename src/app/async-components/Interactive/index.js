@@ -9,6 +9,7 @@ const { useLayoutEffect, useRef } = require('react');
 require('./index.scss');
 
 const SUPPORTED_PROVIDER_TYPES = [
+  'documentcloud',
   'facebook',
   'facebookVideo',
   'instagram',
