@@ -79,7 +79,7 @@ module.exports = props => {
   } else if (error) {
     placeholder = <HiddenErrorMessage message={`Error loading data: "${String(error)}"`} {...props} />;
   } else if (!data) {
-    placeholder = <>Loading…</>;
+    placeholder = <div className="PresentationLayer__Loading">Loading…</div>;
   }
 
   const interactive = (
