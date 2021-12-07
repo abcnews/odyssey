@@ -4,6 +4,7 @@
 }
 
 .PresentationLayer__Interactive > * {
+  display: block !important;
   margin: 0 auto !important;
 }
 
@@ -11,10 +12,6 @@
 .PresentationLayer__Interactive[data-provider='instagram'] .instagram-media-rendered,
 .PresentationLayer__Interactive[data-provider='twitter'] .twitter-tweet-rendered {
   max-width: 550px !important;
-}
-
-.PresentationLayer__Interactive[data-provider='facebook'] .fb-post {
-  display: block;
 }
 
 .PresentationLayer__Interactive[data-provider='twitter'] .twitter-tweet-rendered {
@@ -25,6 +22,10 @@
 
 .PresentationLayer__Interactive[data-provider='facebookVideo'] .fb-post span,
 .PresentationLayer__Interactive[data-provider='facebookVideo'] .fb-post span iframe {
+  width: 100% !important;
+}
+
+.PresentationLayer__Interactive iframe {
   width: 100% !important;
 }
 
