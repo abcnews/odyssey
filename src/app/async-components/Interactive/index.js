@@ -26,6 +26,7 @@ const fetcher = (...args) => fetch(...args).then(res => res.json());
 
 module.exports = props => {
   const { alignment, embedURL, providerType } = props;
+  const isSupportedProviderType = SUPPORTED_PROVIDER_TYPES.includes(providerType);
   const hasAspectRatio = providerType === 'vimeo' || providerType.indexOf('youtube') === 0;
   const ref = useRef(null);
   const { data, error } = useSWRImmutable(
@@ -38,7 +39,7 @@ module.exports = props => {
   );
 
   useLayoutEffect(() => {
-    if (!data) {
+    if (!data || !isSupportedProviderType) {
       return;
     }
 
@@ -73,7 +74,7 @@ module.exports = props => {
 
   let placeholder = null;
 
-  if (!SUPPORTED_PROVIDER_TYPES.includes(providerType)) {
+  if (!isSupportedProviderType) {
     placeholder = <HiddenErrorMessage message="Unsupported provider type" {...props} />;
   } else if (error) {
     placeholder = <HiddenErrorMessage message={`Error loading data: "${String(error)}"`} {...props} />;
