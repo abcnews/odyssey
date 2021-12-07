@@ -1,16 +1,34 @@
-.PresentationLayer__HiddenErrorMessage {
-  display: none;
-}
-
 .PresentationLayer__Interactive {
   margin: 0;
   overflow: hidden;
 }
 
 .PresentationLayer__Interactive > * {
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto !important;
 }
+
+.PresentationLayer__Interactive[data-provider='facebook'] .fb-post,
+.PresentationLayer__Interactive[data-provider='instagram'] .instagram-media-rendered,
+.PresentationLayer__Interactive[data-provider='twitter'] .twitter-tweet-rendered {
+  max-width: 550px !important;
+}
+
+.PresentationLayer__Interactive[data-provider='facebook'] .fb-post {
+  display: block;
+}
+
+.PresentationLayer__Interactive[data-provider='twitter'] .twitter-tweet-rendered {
+  background-color: transparent;
+  border: 0;
+  padding: 0;
+}
+
+.PresentationLayer__Interactive[data-provider='facebookVideo'] .fb-post span,
+.PresentationLayer__Interactive[data-provider='facebookVideo'] .fb-post span iframe {
+  width: 100% !important;
+}
+
+/* Placeholder content */
 
 .PresentationLayer__Interactive blockquote {
   border: 1px solid #ccc;
@@ -26,23 +44,8 @@
   margin-bottom: 0;
 }
 
-.PresentationLayer__Interactive[data-provider='facebook'] .fb-post {
-  display: block;
-  margin: 0 auto;
-  max-width: 350px;
-}
+/* Errors */
 
-.PresentationLayer__Interactive[data-provider='facebookVideo'] .fb-post span {
-  width: 100% !important;
-}
-
-.PresentationLayer__Interactive[data-provider='facebookVideo'] .fb-post span iframe {
-  width: 100% !important;
-}
-
-.PresentationLayer__Interactive[data-provider='twitter'] .twitter-tweet-rendered {
-  margin: 0 auto !important;
-  background-color: transparent;
-  border: 0;
-  padding: 0;
+.PresentationLayer__HiddenErrorMessage {
+  display: none;
 }
