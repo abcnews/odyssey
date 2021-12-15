@@ -7,6 +7,7 @@ Edits by Colin Gourlay:
 * Beginning double quotes can appear before periods and ellipses
 * Only expose the `element` function
 * Remove the UMD wrapper.
+* Replace a for...in with a for...of to remove a bug where array method names were being iterated over
 
 The MIT License (MIT)
 
@@ -39,7 +40,8 @@ const TO_BEGINNING_SINGLE_QUOTE = /(\W|^)'(\S)/g;
 const TO_CONJUNCTIONS_POSSESSION = /([a-z])'([a-z])/gi;
 const TO_ABBREVIATED_YEAR = /(\u2018)([0-9]{2}[^\u2019]*)(\u2018([^0-9]|$)|$|\u2019[a-z])/gi;
 const TO_ENDING_SINGLE_QUOTE = /((\u2018[^']*)|[a-z])'([^0-9]|$)/gi;
-const TO_BACKWARDS_APOSTROPHE = /(\B|^)\u2018(?=([^\u2018\u2019]*\u2019\b)*([^\u2018\u2019]*\B\W[\u2018\u2019]\b|[^\u2018\u2019]*$))/gi;
+const TO_BACKWARDS_APOSTROPHE =
+  /(\B|^)\u2018(?=([^\u2018\u2019]*\u2019\b)*([^\u2018\u2019]*\B\W[\u2018\u2019]\b|[^\u2018\u2019]*$))/gi;
 const TO_DOUBLE_PRIME = /"/g;
 const TO_PRIME = /'/g;
 
@@ -86,8 +88,7 @@ function smartquotes(root) {
       }
     }
     text = format(text, true);
-    for (i in textNodes) {
-      nodeInfo = textNodes[i];
+    for (nodeInfo of textNodes) {
       if (nodeInfo[0].nodeValue) {
         nodeInfo[0].nodeValue = substring(text, nodeInfo[0].nodeValue, nodeInfo[1]);
       } else if (nodeInfo[0].value) {
