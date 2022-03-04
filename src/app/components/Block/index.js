@@ -166,20 +166,12 @@ function Block({
 
   let mediaContainerEl;
   if (backgrounds && backgrounds.length) {
-    mediaContainerEl = html`
-      <div class="${mediaClassName}">${backgrounds}</div>
-    `;
+    mediaContainerEl = html`<div class="${mediaClassName}">${backgrounds}</div>`;
   } else {
-    mediaContainerEl = mediaEl
-      ? html`
-          <div class="${mediaClassName}">${mediaEl}</div>
-        `
-      : null;
+    mediaContainerEl = mediaEl ? html`<div class="${mediaClassName}">${mediaEl}</div>` : null;
   }
 
-  const mediaCaptionContainerEl = html`
-    <div class="${mediaCaptionClassName}">${captionEls[0] || null}</div>
-  `;
+  const mediaCaptionContainerEl = html`<div class="${mediaCaptionClassName}">${captionEls[0] || null}</div>`;
 
   if (captionEls.length) {
     mediaContainerEl.appendChild(mediaCaptionContainerEl);
@@ -212,9 +204,7 @@ function Block({
             }
 
             if (memo.length === 0 || !isGrouped || (piecemealBackgroundIndex && piecemealBackgroundIndex.length)) {
-              memo.push(html`
-                <div class="${piecemealContentClassName}">${contentEl}</div>
-              `);
+              memo.push(html`<div class="${piecemealContentClassName}">${contentEl}</div>`);
             } else {
               memo[memo.length - 1].appendChild(contentEl);
             }
@@ -222,9 +212,7 @@ function Block({
             return memo;
           }, [])
         : contentEls.length > 0
-        ? html`
-            <div class="${contentClassName}">${contentEls}</div>
-          `
+        ? html`<div class="${contentClassName}">${contentEls}</div>`
         : null}
     </div>
   `;
@@ -265,6 +253,11 @@ function Block({
     );
 
     subscribe(function _checkIfBackgroundShouldChange(client) {
+      // provide an out if the block is incorrectly configured
+      if (markers.length === 0) {
+        return console.error('Expected to find an active marker during _checkIfBackgroundShouldChange');
+      }
+
       // get the last marker that has a bottom above the fold
       const marker = markers.reduce((activeMarker, currentMarker) => {
         const { top } = currentMarker.getBoundingClientRect();
@@ -363,10 +356,7 @@ function transformSection(section) {
   }
 
   const [, alignment] =
-    section.configString
-      .replace('slideright', '')
-      .replace('slideleft', '')
-      .match(ALIGNMENT_PATTERN) || [];
+    section.configString.replace('slideright', '').replace('slideleft', '').match(ALIGNMENT_PATTERN) || [];
   let sourceMediaEl;
 
   if (shouldSupplant && section.betweenNodes.length) {
