@@ -38,9 +38,11 @@ function transformEl(el) {
   const plPlayerIdEl = $('[data-component="Player"] div[id]', el);
   const videoId = isMarker
     ? mountSC.match(VIDEO_MARKER_PATTERN)[1]
+    : plPlayerIdEl && plPlayerIdEl.id
+    ? plPlayerIdEl.id
     : linkEl
     ? url2cmid(linkEl.getAttribute('href'))
-    : plPlayerIdEl && plPlayerIdEl.id;
+    : false;
 
   if (!videoId) {
     return;
