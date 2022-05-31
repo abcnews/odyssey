@@ -368,7 +368,7 @@ function app(terminusDocument) {
   setTimeout(() => {
     const deprecated = {};
 
-    getMarkers(['image', 'video', 'cover', 'gallerytiled']).forEach(marker => (deprecated[`#${marker.name}`] = true));
+    getMarkers(['image', 'cover', 'gallerytiled']).forEach(marker => (deprecated[`#${marker.name}`] = true));
 
     const keys = Object.keys(deprecated);
 
