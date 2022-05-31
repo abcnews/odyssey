@@ -4,6 +4,7 @@ const { getTrailingMountValue, isExactMount, isPrefixedMount, prefixedMountSelec
 // Ours
 const { MOCK_ELEMENT } = require('../../constants');
 const { $$, detach, detachAll, substitute } = require('./dom');
+const { debug } = require('./logging');
 
 // Grabs a #config mount point preceding `el` (if it exists) and returns its trailing value.
 function grabPrecedingConfigString(el) {
@@ -23,6 +24,8 @@ function _substituteSectionWith(el, remainingBetweenNodes) {
 
   detachAll(remainingBetweenNodes.concat([this.endNode]));
 
+  this.substitutionNode = el;
+
   return substitute(this.startNode, el);
 }
 
@@ -39,6 +42,7 @@ function getSections(names) {
     $$(prefixedMountSelector(name)).forEach(startNode => {
       let nextNode = startNode;
       let isMoreContent = true;
+      let hasEncountredUnexpectedStartMount = false;
       const betweenNodes = [];
       const configString = getTrailingMountValue(startNode, name);
 
@@ -46,6 +50,10 @@ function getSections(names) {
         if (isExactMount(nextNode, endName)) {
           isMoreContent = false;
         } else {
+          if (isPrefixedMount(nextNode, name)) {
+            hasEncountredUnexpectedStartMount = true;
+          }
+
           betweenNodes.push(nextNode);
         }
       }
@@ -57,6 +65,16 @@ function getSections(names) {
         betweenNodes,
         endNode: nextNode
       };
+
+      if (isMoreContent) {
+        debug('No section closing mount found. Excluding section', section);
+        return;
+      }
+
+      if (hasEncountredUnexpectedStartMount) {
+        debug('Encountered unexpected section opener during discovery. Excluding section', section);
+        return;
+      }
 
       section.substituteWith = _substituteSectionWith.bind(section);
       sections.push(section);
