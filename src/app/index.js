@@ -34,11 +34,19 @@ const { initMeta } = require('./meta');
 const { reset } = require('./reset');
 const { mockDecoyActivationsUnderEl } = require('./utils/decoys');
 const { $, $$, after, append, before, detach, detachAll, prepend, substitute } = require('./utils/dom');
+const { debug } = require('./utils/logging');
 const { getMarkers, getSections } = require('./utils/mounts');
 
 function app(terminusDocument) {
   const meta = initMeta(terminusDocument);
-  const storyEl = reset($(meta.isPL ? SELECTORS.PL_STORY : SELECTORS.STORY), meta);
+  let storyEl = $(meta.isPL ? SELECTORS.PL_STORY : SELECTORS.STORY);
+
+  if (!storyEl) {
+    debug('Story is empty. Nothing to do.');
+    return;
+  }
+
+  storyEl = reset(storyEl, meta);
 
   mockDecoyActivationsUnderEl(storyEl); // Mock PL's decoy activation events
   start(); // scheduler loop
@@ -264,6 +272,7 @@ function app(terminusDocument) {
   // Expose API, then notify interested parties
   Object.defineProperty(window, '__ODYSSEY__', { value: api });
   window.dispatchEvent(new CustomEvent('odyssey:api', { detail: api }));
+  debug('Exposed API via custom `odyssey:api` event');
 
   // Add Presentation Layer global nav if it doesn't already exist
   setTimeout(() => {
@@ -321,8 +330,8 @@ function app(terminusDocument) {
       });
     });
 
-    if (meta.isPreview && blockEls.length) {
-      console.debug(`[Odyssey] Fixed classNames of deprecated scrollyteller Blocks`);
+    if (blockEls.length) {
+      debug(`Fixed classNames of deprecated scrollyteller Blocks`);
     }
   }, 2000);
 
@@ -334,8 +343,8 @@ function app(terminusDocument) {
 
     const keys = Object.keys(deprecated);
 
-    if (meta.isPreview && keys.length) {
-      console.debug(`[Odyssey] Deprecated mounts used: ${Object.keys(deprecated).join(', ')}`);
+    if (keys.length) {
+      debug(`Deprecated mounts used: ${Object.keys(deprecated).join(', ')}`);
     }
   }, 5000);
 

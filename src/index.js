@@ -7,6 +7,7 @@ const { proxy } = require('@abcnews/dev-proxy');
 const { GENERATIONS, getGeneration, requestDOMPermit } = require('@abcnews/env-utils');
 const { url2cmid } = require('@abcnews/url2cmid');
 const { terminusFetch } = require('./app/utils/content');
+const { debug } = require('./app/utils/logging');
 
 // Provide a hint as early as possible that the Odyssey format will be driving
 // this story, so that other interactives can opt to wait for Odyssey to load
@@ -29,7 +30,8 @@ proxy('odyssey').then(() => {
   // 1. the article's terminus document, and
   // 2. permission to modify the DOM
   // ...we can run the run the app, using the terminus document to initialise the metadata that's used everywhere
-  Promise.all([terminusFetch(url2cmid(window.location.href)), requestDOMPermit('body')]).then(([terminusDocument]) =>
-    require('./app')(terminusDocument)
-  );
+  Promise.all([terminusFetch(url2cmid(window.location.href)), requestDOMPermit('body')]).then(([terminusDocument]) => {
+    debug('Fetched Terminus article document and obtained DOM permit for "body"');
+    require('./app')(terminusDocument);
+  });
 });
