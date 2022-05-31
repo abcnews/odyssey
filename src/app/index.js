@@ -34,7 +34,7 @@ const { initMeta } = require('./meta');
 const { reset } = require('./reset');
 const { mockDecoyActivationsUnderEl } = require('./utils/decoys');
 const { $, $$, after, append, before, detach, detachAll, prepend, substitute } = require('./utils/dom');
-const { debug } = require('./utils/logging');
+const { conditionalDebug, debug } = require('./utils/logging');
 const { getMarkers, getSections } = require('./utils/mounts');
 
 function app(terminusDocument) {
@@ -42,11 +42,12 @@ function app(terminusDocument) {
   let storyEl = $(meta.isPL ? SELECTORS.PL_STORY : SELECTORS.STORY);
 
   if (!storyEl) {
-    debug('Story is empty. Nothing to do.');
+    debug('Story is empty. Nothing to do');
     return;
   }
 
   storyEl = reset(storyEl, meta);
+  debug('Performed page reset');
 
   mockDecoyActivationsUnderEl(storyEl); // Mock PL's decoy activation events
   start(); // scheduler loop
@@ -63,8 +64,23 @@ function app(terminusDocument) {
   //   nested inside them
   // - Finally, all other sections (which shouldn't nest each other) can safely
   //   be transformed
-  getSections(['remove']).forEach(section => detachAll([section.startNode, ...section.betweenNodes, section.endNode]));
-  getSections(['backdrop']).forEach(section => Backdrop.transformSection(section));
+  const transformedSections = {};
+  const trackTransformedSection = section => {
+    if (!(section.name in transformedSections)) {
+      transformedSections[section.name] = [];
+    }
+
+    transformedSections[section.name].push(section.startNode);
+  };
+
+  getSections(['remove']).forEach(section => {
+    detachAll([section.startNode, ...section.betweenNodes, section.endNode]);
+    trackTransformedSection(section);
+  });
+  getSections(['backdrop']).forEach(section => {
+    Backdrop.transformSection(section);
+    trackTransformedSection(section);
+  });
   getSections(['header', 'block', 'gallery', 'mosaic', 'pull']).forEach(section => {
     switch (section.name) {
       case 'header':
@@ -84,10 +100,14 @@ function app(terminusDocument) {
       default:
         break;
     }
+
+    trackTransformedSection(section);
   });
+  debug(`Transformed sections (${Object.keys(transformedSections).length})`, transformedSections);
 
   if (!hasHeader) {
     prepend(storyEl, Header.Lite(meta));
+    debug('No #header/#endheader mount points found. Inserted lite header');
   }
 
   // Enable drop-caps after headers
@@ -105,8 +125,18 @@ function app(terminusDocument) {
   $$('[class*="u-richtext"] > *')
     .filter(el => RICHTEXT_BLOCK_TAGNAMES.indexOf(el.tagName) > -1)
     .forEach(UQuote.conditionallyApply);
+  debug('Applied quote-mark formatting to qualifying elements');
 
   // Transform markers
+  const transformedMarkers = {};
+  const trackTransformedMarker = marker => {
+    if (!(marker.name in transformedMarkers)) {
+      transformedMarkers[marker.name] = [];
+    }
+
+    transformedMarkers[marker.name].push(marker.node);
+  };
+
   getMarkers([
     'cta',
     'hr',
@@ -154,117 +184,109 @@ function app(terminusDocument) {
       default:
         break;
     }
+
+    trackTransformedMarker(marker);
   });
+  debug(`Transformed markers (${Object.keys(transformedMarkers).length})`, transformedMarkers);
 
   // Activate existing parallaxes
-  $$('.u-parallax').forEach(UParallax.activate);
+  const parallaxes = $$('.u-parallax');
+  parallaxes.forEach(UParallax.activate);
+  conditionalDebug(parallaxes.length > 0, `Activated ${parallaxes.length} parallax effects`);
 
   // Transform video embeds
-  $$('.inline-content.video, .view-inlineMediaPlayer.doctype-abcvideo', storyEl)
+  const videoEmbeds = $$('.inline-content.video, .view-inlineMediaPlayer.doctype-abcvideo', storyEl)
     .concat($$('.embed-content', storyEl).filter(el => $('.type-video', el)))
     .concat(
       $$('[data-component="Figure"]', storyEl).filter(el =>
         $('[data-component="PlayerButton"][aria-label*="Video"]', el)
       )
-    )
-    .forEach(VideoEmbed.transformEl);
+    );
+  videoEmbeds.forEach(VideoEmbed.transformEl);
+  conditionalDebug(videoEmbeds.length > 0, `Transformed ${videoEmbeds.length} video embeds`);
 
   // Transform gallery embeds
-  $$('.inline-content.gallery', storyEl)
+  const galleryEmbeds = $$('.inline-content.gallery', storyEl)
     .concat($$('.embed-content', storyEl).filter(el => $('.type-gallery', el)))
-    .concat($$('[class^="comp-embedded-"]', storyEl).filter(el => $('[data-gallery-id]', el)))
-    .forEach(GalleryEmbed.transformEl);
+    .concat($$('[class^="comp-embedded-"]', storyEl).filter(el => $('[data-gallery-id]', el)));
+  galleryEmbeds.forEach(GalleryEmbed.transformEl);
+  conditionalDebug(galleryEmbeds.length > 0, `Transformed ${galleryEmbeds.length} gallery embeds`);
 
   // Transform image embeds
   const sidePulls = $$('.u-pull-left, .u-pull-right');
-
-  $$('.inline-content.photo,[class*="view-image-embed"]', storyEl)
+  const imageEmbeds = $$('.inline-content.photo,[class*="view-image-embed"]', storyEl)
     .concat($$('.embed-content', storyEl).filter(el => $('.type-photo', el)))
     .concat(
       $$('[data-component="Figure"]', storyEl).filter(
         el => (el.getAttribute('data-uri') || '').indexOf('customimage') === -1 && $('img', el)
       )
-    )
-    .forEach(el => {
-      const isSidePulled = sidePulls.filter(pEl => pEl.contains(el)).length > 0;
+    );
+  imageEmbeds.forEach(el => {
+    const isSidePulled = sidePulls.filter(pEl => pEl.contains(el)).length > 0;
 
-      ImageEmbed.transformEl(el, isSidePulled);
-    });
+    ImageEmbed.transformEl(el, isSidePulled);
+  });
+  conditionalDebug(imageEmbeds.length > 0, `Transformed ${imageEmbeds.length} image embeds`);
 
   // Transform quotes (native and embedded) that haven't already been transformed
-  $$(SELECTORS.QUOTE, storyEl)
-    .filter(el => el.closest('.Quote') === null)
-    .forEach(Quote.transformEl);
+  const nativeQuotesAndQuoteEmbeds = $$(SELECTORS.QUOTE, storyEl).filter(el => el.closest('.Quote') === null);
+  nativeQuotesAndQuoteEmbeds.forEach(Quote.transformEl);
+  conditionalDebug(
+    nativeQuotesAndQuoteEmbeds.length > 0,
+    `Transformed ${nativeQuotesAndQuoteEmbeds.length} native quotes / quote embeds`
+  );
 
   // Nullify nested pulls (outer always wins)
-  $$('[class*="u-pull"] [class*="u-pull"]').forEach(
-    el => (el.className = el.className.replace(/u-pull(-\w+)?/, 'n-pull$1'))
-  );
+  const nestedPulls = $$('[class*="u-pull"] [class*="u-pull"]');
+  nestedPulls.forEach(el => (el.className = el.className.replace(/u-pull(-\w+)?/, 'n-pull$1')));
+  conditionalDebug(nestedPulls.length > 0, `Nullified ${nativeQuotesAndQuoteEmbeds.length} nested pulls`);
 
   // Transform WYSIWYG story teasers (title+image+description convention)
-  $$(SELECTORS.WYSIWYG_EMBED, storyEl)
-    .filter(StoryTeaserEmbed.doesElMatchConvention)
-    .forEach(StoryTeaserEmbed.transformEl);
+  const wysiwygEmbeds = $$(SELECTORS.WYSIWYG_EMBED, storyEl).filter(StoryTeaserEmbed.doesElMatchConvention);
+  wysiwygEmbeds.forEach(StoryTeaserEmbed.transformEl);
+  conditionalDebug(wysiwygEmbeds.length > 0, `Transformed ${wysiwygEmbeds.length} WYSIWYG embeds`);
 
-  // Transform embedded external link captions
-  let eels = $$('.inline-content[class*="embed"]', storyEl).concat(
-    $$('.embed-content', storyEl).filter(el => $('.type-external', el))
+  // Restore thumbnail images in PL post-story content (recirculation)
+  const postStoryThumbnails = $$(
+    '[data-component="Decoy"][data-key="body"] [data-component="IntersectionObserver"]'
+  ).filter(el => {
+    const imgEl = $('img', el);
+    return imgEl && imgEl.getAttribute('data-src');
+  });
+  postStoryThumbnails.forEach(el => {
+    substitute(
+      el,
+      Picture({
+        src: $('img', el).getAttribute('data-src'),
+        ratios: {
+          sm: '3x2',
+          md: '3x2',
+          lg: '3x2',
+          xl: '3x2'
+        }
+      })
+    );
+  });
+  conditionalDebug(
+    postStoryThumbnails.length > 0,
+    `Restored ${postStoryThumbnails.length} post-story image thumbnails`
   );
 
-  (function transformRemainingEELs() {
-    eels = eels.reduce((memo, el) => {
-      if (el.className.indexOf(' embedded') > -1 || $('.embedded', el)) {
-        const captionEl = Caption.createFromEl(el);
-        const originalCaptionEl = $('.embed-caption, .inline-caption, a', el);
-
-        if (captionEl && originalCaptionEl) {
-          substitute(originalCaptionEl, captionEl);
-        }
-      } else {
-        memo.push(el);
-      }
-
-      return memo;
-    }, []);
-
-    if (eels.length > 0) {
-      setTimeout(transformRemainingEELs, 500);
-    }
-  })();
-
-  // Restore thumbnail images in PL recirculation
-  $$('[data-component="Decoy"][data-key="body"] [data-component="IntersectionObserver"]').forEach(el => {
-    const imgEl = $('img', el);
-    const src = imgEl && imgEl.getAttribute('data-src');
-
-    if (src) {
-      substitute(
-        el,
-        Picture({
-          src,
-          ratios: {
-            sm: '3x2',
-            md: '3x2',
-            lg: '3x2',
-            xl: '3x2'
-          }
-        })
-      );
-    }
-  });
-
-  // Embed format credit for non-DSI stories
+  // Append format credit for non-DSI stories
   if (meta.productionUnit !== 'EDL team' && (meta.infoSource || {}).name !== 'Digital Story Innovation Team') {
     append(storyEl, FormatCredit());
+    debug('Appended Odyssey format credit');
   }
 
-  // Embed comments, if enabled
+  // Append comments, if enabled
   if (meta.hasCommentsEnabled) {
     append(storyEl, Comments());
+    debug('Appended comments');
   }
 
-  // Embed master gallery
+  // Append master gallery
   append(storyEl, MasterGallery());
+  debug('Appended master gallery');
 
   // Allow garbage collection
   delete meta.bylineNodes;
@@ -272,12 +294,13 @@ function app(terminusDocument) {
   // Expose API, then notify interested parties
   Object.defineProperty(window, '__ODYSSEY__', { value: api });
   window.dispatchEvent(new CustomEvent('odyssey:api', { detail: api }));
-  debug('Exposed API via custom `odyssey:api` event');
+  debug('Dispatched `odyssey:api` event');
 
   // Add Presentation Layer global nav if it doesn't already exist
   setTimeout(() => {
     if (!meta.isPL && !$('[data-component="Masthead"]')) {
       before(storyEl, PresentationLayerAsyncComponent('Nav'));
+      debug('Appended PL global nav to non-PL story');
     }
   }, 0);
 
@@ -292,16 +315,22 @@ function app(terminusDocument) {
         return console.error(err);
       }
 
-      textDescriptor.children
-        .filter(({ type }) => type === 'interactive')
-        .forEach(({ props }) => {
-          const containerEl = $(`[itemid="${props.embedURL}"]`);
+      const interactives = textDescriptor.children.filter(({ type }) => type === 'interactive');
+      const numInteractivesResolved = 0;
+      interactives.forEach(({ props }) => {
+        const containerEl = $(`[itemid="${props.embedURL}"]`);
 
-          if (containerEl) {
-            containerEl.className = 'u-pull';
-            substitute(containerEl.firstElementChild, PresentationLayerAsyncComponent('Interactive', props));
-          }
-        });
+        if (containerEl) {
+          containerEl.className = 'u-pull';
+          substitute(containerEl.firstElementChild, PresentationLayerAsyncComponent('Interactive', props));
+          numInteractivesResolved++;
+        }
+      });
+
+      conditionalDebug(
+        interactives.length > 0,
+        `Resolved ${numInteractivesResolved}/${interactives.length} interactives`
+      );
     }
   }, 0);
 
@@ -348,10 +377,10 @@ function app(terminusDocument) {
     }
   }, 5000);
 
-  // Fix preview tools's PL preview areas
+  // Fix CM5 preview tools's PL preview areas
   // * Limit PL iframe heights to 100%
   // * Enable/disable the desktop iframe scrolling when it is/isn't 100% in view
-  if (meta.isPreview) {
+  if (!meta.isPL && meta.isPreview) {
     let desktopPreviewAreaEl;
     let desktopPreviewIframeEl;
     let isScrollable = false;

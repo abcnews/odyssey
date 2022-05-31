@@ -7,3 +7,11 @@ export const debug = (...args) => {
     console.debug.apply(null, ['[Odyssey]', ...args]);
   }
 };
+
+export const conditionalDebug = (condition, trueMsg, falseMsg) => {
+  if (condition && trueMsg) {
+    debug(trueMsg);
+  } else if (!condition && falseMsg) {
+    debug(falseMsg);
+  }
+};
