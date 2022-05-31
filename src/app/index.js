@@ -300,7 +300,7 @@ function app(terminusDocument) {
   setTimeout(() => {
     if (!meta.isPL && !$('[data-component="Masthead"]')) {
       before(storyEl, PresentationLayerAsyncComponent('Nav'));
-      debug('Appended PL global nav to non-PL story');
+      debug('[async] Appended PL global nav to non-PL story');
     }
   }, 0);
 
@@ -329,7 +329,7 @@ function app(terminusDocument) {
 
       conditionalDebug(
         interactives.length > 0,
-        `Resolved ${numInteractivesResolved}/${interactives.length} interactives`
+        `[async] Resolved ${numInteractivesResolved}/${interactives.length} interactives`
       );
     }
   }, 0);
@@ -360,7 +360,7 @@ function app(terminusDocument) {
     });
 
     if (blockEls.length) {
-      debug(`Fixed classNames of deprecated scrollyteller Blocks`);
+      debug(`[async] Fixed classNames of deprecated scrollyteller Blocks`);
     }
   }, 2000);
 
@@ -373,7 +373,7 @@ function app(terminusDocument) {
     const keys = Object.keys(deprecated);
 
     if (keys.length) {
-      debug(`Deprecated mounts used: ${Object.keys(deprecated).join(', ')}`);
+      debug(`[async] Deprecated mounts used: ${Object.keys(deprecated).join(', ')}`);
     }
   }, 5000);
 
