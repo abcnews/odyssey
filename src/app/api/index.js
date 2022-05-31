@@ -17,6 +17,7 @@ module.exports.utils = {
   behaviour: require('../utils/behaviour'),
   content: require('../utils/content'),
   dom: require('../utils/dom'),
+  logging: require('../utils/logging'),
   misc: require('../utils/misc'),
   mounts
 };
