@@ -131,13 +131,6 @@ $dls-white-20-opacity: hsla(0, 0%, 100%, 0.2);
   }
 }
 
-.Nav-globalNavButton {
-  &,
-  &:hover {
-    background-color: $dls-white-10-opacity;
-  }
-}
-
 @media print {
   .Nav {
     background: none;

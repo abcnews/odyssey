@@ -27,7 +27,7 @@ module.exports.render = (componentName, props = {}, el) => {
   ReactDOM.render(
     <AppContextProvider value={{ inlineIconSprite: true, staticPath: '/news-web/', typographyScale: 'compact' }}>
       <GlobalStyles>
-        {(shouldIncludeIcons = shouldIncludeIcons && <Icons />)}
+        {shouldIncludeIcons ? (shouldIncludeIcons = false) || <Icons /> : null}
         <Component {...props} />
       </GlobalStyles>
     </AppContextProvider>,
