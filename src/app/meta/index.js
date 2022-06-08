@@ -125,7 +125,7 @@ function initMeta(terminusDocument) {
   const mixins = [
     // Add or update props defined by the 'meta.data.name' context setting
     ({ url, title, description }) => {
-      const metaDataName = terminusDocument.contextSettings['meta.data.name'];
+      const metaDataName = terminusDocument.contextSettings && terminusDocument.contextSettings['meta.data.name'];
 
       return metaDataName
         ? {
