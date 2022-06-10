@@ -199,7 +199,7 @@ function app(terminusDocument) {
     .concat($$('.embed-content', storyEl).filter(el => $('.type-video', el)))
     .concat(
       $$('[data-component="Figure"]', storyEl).filter(el =>
-        $('[data-component="PlayerButton"][aria-label*="Video"]', el)
+        $('[data-component="PlayerButton"][aria-label*="Video"],[data-component="ExpiredMediaWarning"]', el)
       )
     );
   videoEmbeds.forEach(VideoEmbed.transformEl);
