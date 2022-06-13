@@ -22,7 +22,6 @@ function getArticledetail() {
 
     return (document || app).loaders.articledetail;
   } catch (err) {
-    console.error(err);
     return null;
   }
 }
