@@ -246,10 +246,8 @@ function app(terminusDocument) {
   wysiwygEmbeds.forEach(StoryTeaserEmbed.transformEl);
   conditionalDebug(wysiwygEmbeds.length > 0, `Transformed ${wysiwygEmbeds.length} WYSIWYG embeds`);
 
-  // Restore thumbnail images in PL post-story content (recirculation)
-  const postStoryThumbnails = $$(
-    '[data-component="Decoy"][data-key="body"] [data-component="IntersectionObserver"]'
-  ).filter(el => {
+  // Restore post-story Top Stories thumbnail images in PL
+  const postStoryThumbnails = $$('[data-component="TopStories"] [data-component="IntersectionObserver"]').filter(el => {
     const imgEl = $('img', el);
     return imgEl && imgEl.getAttribute('data-src');
   });
