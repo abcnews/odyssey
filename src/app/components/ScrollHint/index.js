@@ -8,7 +8,7 @@ let scrollHintEl = null;
 const ScrollHint = () => {
   // We only ever want one instance
   if (scrollHintEl === null) {
-    scrollHintEl = html` <div class="ScrollHint" role="presentation"></div> `;
+    scrollHintEl = html`<div class="ScrollHint" role="presentation"></div>`;
 
     scrollHintEl.addEventListener('click', () => {
       window.scrollTo({

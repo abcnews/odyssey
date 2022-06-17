@@ -95,7 +95,7 @@ const VideoControls = (player, hasAmbientParent) => {
       `;
   const timeRemainingEl = hasAmbientParent
     ? null
-    : html` <time class="VideoControls-timeRemaining" aria-label="Time Remaining"></time> `;
+    : html`<time class="VideoControls-timeRemaining" aria-label="Time Remaining"></time>`;
   const progressBarEl = hasAmbientParent
     ? null
     : html`
@@ -106,7 +106,7 @@ const VideoControls = (player, hasAmbientParent) => {
           draggable="false"
         ></progress>
       `;
-  const progressEl = hasAmbientParent ? null : html` <div class="VideoControls-progress">${progressBarEl}</div> `;
+  const progressEl = hasAmbientParent ? null : html`<div class="VideoControls-progress">${progressBarEl}</div>`;
   const videoControlsEl = html`
     <div class="VideoControls">${playbackEl} ${muteEl} ${progressEl} ${timeRemainingEl}</div>
   `;

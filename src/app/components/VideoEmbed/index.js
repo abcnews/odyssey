@@ -25,7 +25,7 @@ const VideoEmbed = ({ playerEl, captionEl, alignment, isFull, isCover, isAnon })
     'is-cover': isCover
   });
 
-  return html` <div class="${className}">${playerEl} ${isAnon ? null : captionEl}</div> `;
+  return html`<div class="${className}">${playerEl} ${isAnon ? null : captionEl}</div>`;
 };
 
 export default VideoEmbed;

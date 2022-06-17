@@ -88,7 +88,7 @@ const Header = ({
   const titleEl = html`
     <h1>
       ${isKicker && meta.title.indexOf(': ') > -1
-        ? meta.title.split(': ').map((text, index) => (index === 0 ? html` <small>${text}</small> ` : text))
+        ? meta.title.split(': ').map((text, index) => (index === 0 ? html`<small>${text}</small>` : text))
         : meta.title}
     </h1>
   `;
@@ -106,7 +106,7 @@ const Header = ({
     ? html`
         <p class="Header-infoSource">
           ${meta.infoSource.url
-            ? html` <a href="${meta.infoSource.url}">${meta.infoSource.name}</a> `
+            ? html`<a href="${meta.infoSource.url}">${meta.infoSource.name}</a>`
             : meta.infoSource.name}
         </p>
       `
@@ -123,10 +123,10 @@ const Header = ({
   const contentEls = [titleEl]
     .concat(clonedMiscContentEls)
     .concat([
-      clonedBylineNodes ? html` <p class="Header-byline">${clonedBylineNodes}</p> ` : null,
+      clonedBylineNodes ? html`<p class="Header-byline">${clonedBylineNodes}</p>` : null,
       infoSourceEl,
       updated
-        ? html` <div class="Header-updated">Updated <time datetime="${updated.datetime}">${updated.text}</time></div> `
+        ? html`<div class="Header-updated">Updated <time datetime="${updated.datetime}">${updated.text}</time></div>`
         : null,
       published
         ? html`
@@ -137,7 +137,7 @@ const Header = ({
         : null
     ]);
 
-  const headerContentEl = html` <div class="Header-content u-richtext${isDark ? '-invert' : ''}">${contentEls}</div> `;
+  const headerContentEl = html`<div class="Header-content u-richtext${isDark ? '-invert' : ''}">${contentEls}</div>`;
 
   const headerEl = html`
     <div class="${className}">

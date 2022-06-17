@@ -65,8 +65,8 @@ const YouTubePlayer = ({
   const id = nextId++;
   const posterURL = `https://img.youtube.com/vi/${videoId}/0.jpg`;
   const placeholderEl = Sizer(ratios);
-  const posterEl = html` <img src="${posterURL}" /> `;
-  let videoEl = html` <div id="youtube-video-${id}"></div> `;
+  const posterEl = html`<img src="${posterURL}" />`;
+  let videoEl = html`<div id="youtube-video-${id}"></div>`;
   let youtube;
   let youTubePlayerEl;
   let videoControlsEl;

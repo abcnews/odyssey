@@ -14,7 +14,7 @@ import { refresh as refreshMasterGallery, register as registerWithMasterGallery 
 import Picture from '../Picture';
 
 const GalleryEmbed = ({ galleryEl, captionEl, isAnon }) => {
-  return html` <div class="GalleryEmbed">${galleryEl} ${isAnon ? null : captionEl}</div> `;
+  return html`<div class="GalleryEmbed">${galleryEl} ${isAnon ? null : captionEl}</div>`;
 };
 
 export default GalleryEmbed;

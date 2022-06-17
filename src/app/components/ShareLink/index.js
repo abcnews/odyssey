@@ -10,7 +10,7 @@ const ShareLink = ({ link, shouldBlend }) => {
   const className = `ShareLink ShareLink--${link.id}${shouldBlend ? ' u-blend-luminosity' : ''}`;
 
   if (link.id === 'native') {
-    return html` <button class="${className}" onclick="${() => native(link)}" aria-label="Share this story"></button> `;
+    return html`<button class="${className}" onclick="${() => native(link)}" aria-label="Share this story"></button>`;
   }
 
   return html`

@@ -21,7 +21,7 @@ const MasterGallery = ({ isRefresh = false } = {}) => {
   }
 
   if (items.length === 0) {
-    masterGalleryEl = html` <div class="MasterGallery is-empty"></div> `;
+    masterGalleryEl = html`<div class="MasterGallery is-empty"></div>`;
 
     return masterGalleryEl;
   }

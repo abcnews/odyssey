@@ -23,13 +23,13 @@ const Series = ({ stories, options = {} }) => {
           url && !isCurrent
             ? html`
                 <a href="${url}" onclick="${() => track('series-link', url2cmid(url))}" aria-current="false">
-                  ${thumbnail} ${kicker ? html` <label>${kicker}</label> ` : null} <span>${title}</span>
+                  ${thumbnail} ${kicker ? html`<label>${kicker}</label>` : null} <span>${title}</span>
                 </a>
               `
             : html`
                 <div aria-current="${isCurrent ? 'page' : 'false'}">
-                  ${thumbnail} ${kicker ? html` <label>${kicker}</label> ` : null}
-                  <span>${title}${isCurrent ? [' ', html` <i></i> `] : null}</span>
+                  ${thumbnail} ${kicker ? html`<label>${kicker}</label>` : null}
+                  <span>${title}${isCurrent ? [' ', html`<i></i> `] : null}</span>
                 </div>
               `
         )}

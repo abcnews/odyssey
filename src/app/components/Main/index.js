@@ -11,7 +11,7 @@ const Main = (childNodes, meta) => {
     'has-caption-attributions': meta.hasCaptionAttributions
   });
 
-  const el = html` <main class="${className}">${childNodes}</main> `;
+  const el = html`<main class="${className}">${childNodes}</main>`;
 
   subscribe(function _updateMainOffsetTop() {
     updateOffsetTop(el);

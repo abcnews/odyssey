@@ -23,7 +23,7 @@ const ImageEmbed = ({ pictureEl, captionEl, alignment, isFull, isCover, isAnon }
     'is-cover': isCover
   });
 
-  return html` <div class="${className}">${pictureEl} ${isAnon ? null : captionEl}</div> `;
+  return html`<div class="${className}">${pictureEl} ${isAnon ? null : captionEl}</div>`;
 };
 
 export default ImageEmbed;

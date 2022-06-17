@@ -61,7 +61,7 @@ const VideoPlayer = ({
 
   const placeholderEl = Sizer(ratios);
 
-  const videoEl = html` <video preload="none" tabindex="-1" aria-label="${title}"></video> `;
+  const videoEl = html`<video preload="none" tabindex="-1" aria-label="${title}"></video>`;
 
   const isInitiallySmallViewport = window.matchMedia(MQ.SM).matches;
   const initiallyPreferredRatio = ratios[isInitiallySmallViewport ? 'sm' : 'lg'];

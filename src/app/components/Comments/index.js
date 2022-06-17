@@ -4,13 +4,13 @@ import './index.scss';
 
 const Comments = () => {
   if (!window.ABC) {
-    return html` <div></div> `;
+    return html`<div></div>`;
   }
 
-  const livefyreRootEl = html` <div class="Comments-livefyreRoot u-layout"></div> `;
+  const livefyreRootEl = html`<div class="Comments-livefyreRoot u-layout"></div>`;
 
   if (ABC.News.Mobile) {
-    append(livefyreRootEl, html` <h2>Have your say</h2> `);
+    append(livefyreRootEl, html`<h2>Have your say</h2>`);
   }
 
   if (ABC.News.initLivefyre) {
@@ -24,7 +24,7 @@ const Comments = () => {
     });
   }
 
-  return html` <div class="Comments u-full">${livefyreRootEl}</div> `;
+  return html`<div class="Comments u-full">${livefyreRootEl}</div>`;
 };
 
 export default Comments;

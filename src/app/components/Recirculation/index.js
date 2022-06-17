@@ -14,8 +14,7 @@ const PICTURE_RATIOS = {
 
 const Recirculation = ({ ids, pull }) => {
   const itemEls = ids.map(
-    id =>
-      html` <a class="Recirculation-item" href="/news/${id}" onclick="${() => track('recirculation-link', id)}"></a> `
+    id => html`<a class="Recirculation-item" href="/news/${id}" onclick="${() => track('recirculation-link', id)}"></a>`
   );
 
   const el = html`
@@ -35,7 +34,7 @@ const Recirculation = ({ ids, pull }) => {
       const title = item.titleAlt.md || item.titleAlt.lg || item.title;
       const teaser = item.synopsisAlt.md || item.synopsisAlt.lg || item.synopsis;
 
-      itemEl.appendChild(html` <h2>${title}</h2> `);
+      itemEl.appendChild(html`<h2>${title}</h2>`);
 
       if (item._embedded.mediaThumbnail) {
         itemEl.appendChild(Picture({ src: item._embedded.mediaThumbnail.complete[0].url, ratios: PICTURE_RATIOS }));
@@ -43,10 +42,10 @@ const Recirculation = ({ ids, pull }) => {
       }
 
       if (JSON.stringify(item.text).indexOf(teaser) === -1) {
-        itemEl.appendChild(html` <p>${teaser}</p> `);
+        itemEl.appendChild(html`<p>${teaser}</p>`);
       }
 
-      itemEl.appendChild(html` <div>Read more →</div> `);
+      itemEl.appendChild(html`<div>Read more →</div>`);
 
       el.classList.add('has-children');
     })

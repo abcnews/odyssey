@@ -7,7 +7,7 @@ const UPull = ({ meta = {}, type, nodes = [] }) => {
 
   return html`
     <div class="u-pull${type ? `-${type}` : ''}">
-      ${isRichtext ? html` <div class="u-richtext${meta.isDarkMode ? '-invert' : ''}">${nodes}</div> ` : nodes}
+      ${isRichtext ? html`<div class="u-richtext${meta.isDarkMode ? '-invert' : ''}">${nodes}</div>` : nodes}
     </div>
   `;
 };

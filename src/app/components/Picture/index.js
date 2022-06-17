@@ -86,7 +86,7 @@ const Picture = ({ src = SMALLEST_IMAGE, alt = '', isContained = false, ratios =
   const isManagingSources = (isPL && isPreview) || (MS_VERSION && MS_VERSION < 13);
 
   const imgContainerEl = isManagingSources
-    ? html` <div></div> `
+    ? document.createElement('div')
     : html`
         <picture>
           <source srcset="${xlImageURL}" media="${MQ.XL}" />
@@ -134,7 +134,7 @@ const Picture = ({ src = SMALLEST_IMAGE, alt = '', isContained = false, ratios =
 
       picture.isLoading = true;
       pictureEl.setAttribute('loading', '');
-      imgEl = html` <img alt="${alt}" data-object-fit="" /> `;
+      imgEl = html`<img alt="${alt}" data-object-fit="" />`;
       imgEl.addEventListener('load', picture.loaded, false);
       append(imgContainerEl, imgEl);
 
