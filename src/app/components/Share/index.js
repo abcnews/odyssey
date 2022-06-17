@@ -1,12 +1,9 @@
-// External
-const html = require('bel');
-
-// Ours
-const { track } = require('../../utils/behaviour');
-const { proximityCheck } = require('../../utils/misc');
-const { subscribe, unsubscribe } = require('../../scheduler');
-const ShareLinks = require('../ShareLinks');
-require('./index.scss');
+import html from 'bel';
+import { track } from '../../utils/behaviour';
+import { proximityCheck } from '../../utils/misc';
+import { subscribe, unsubscribe } from '../../scheduler';
+import ShareLinks from '../ShareLinks';
+import './index.scss';
 
 const DEFAULT_TYPE = 'story';
 const INVITATION_RANGE = 0;
@@ -14,7 +11,7 @@ const UPPERCASE_PATTERN = /[A-Z]/g;
 
 const instances = [];
 
-function Share({ type, links }) {
+const Share = ({ type, links }) => {
   const formattedType = (type.length ? type : DEFAULT_TYPE).replace(UPPERCASE_PATTERN, x => ' ' + x.toLowerCase());
 
   const el = html`
@@ -31,7 +28,9 @@ function Share({ type, links }) {
   }
 
   return el;
-}
+};
+
+export default Share;
 
 function _checkIfFirstShareInvitationShouldBeReported(client) {
   instances.forEach((el, index) => {
@@ -42,9 +41,6 @@ function _checkIfFirstShareInvitationShouldBeReported(client) {
   });
 }
 
-function transformMarker(marker, links) {
+export const transformMarker = (marker, links) => {
   marker.substituteWith(Share({ type: marker.configString, links }));
-}
-
-module.exports = Share;
-module.exports.transformMarker = transformMarker;
+};

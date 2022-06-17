@@ -1,6 +1,5 @@
-// Ours
-const { enqueue, subscribe } = require('../../scheduler');
-require('./index.scss');
+import { enqueue, subscribe } from '../../scheduler';
+import './index.scss';
 
 const ALLOWED_RATIOS = ['1x2', '9x16', '2x3', '3x4', '1x1', '4x3', '3x2', '16x9', '2x1'];
 const DEFAULT_SIZE_RATIOS = {
@@ -14,7 +13,7 @@ const SIZES = Object.keys(DEFAULT_SIZE_RATIOS);
 const instances = [];
 let lastKnownNumInstances;
 
-function Sizer(sizeRatios) {
+const Sizer = sizeRatios => {
   const el = document.createElement('div');
 
   el.className = SIZES.reduce((memo, size) => {
@@ -32,7 +31,9 @@ function Sizer(sizeRatios) {
   });
 
   return el;
-}
+};
+
+export default Sizer;
 
 function updateHeightSnapping() {
   enqueue(function _unsnapSizerHeights() {
@@ -54,5 +55,3 @@ function updateHeightSnapping() {
 }
 
 subscribe(updateHeightSnapping, true);
-
-module.exports = Sizer;

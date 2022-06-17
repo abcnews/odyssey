@@ -1,13 +1,14 @@
-require('./unveil');
-require('./fonts.scss');
-require('./keyframes.scss');
-require('./app/components/utilities/index.scss');
-require('./polyfills');
-const { proxy } = require('@abcnews/dev-proxy');
-const { GENERATIONS, getGeneration, requestDOMPermit } = require('@abcnews/env-utils');
-const { url2cmid } = require('@abcnews/url2cmid');
-const { terminusFetch } = require('./app/utils/content');
-const { debug } = require('./app/utils/logging');
+import './unveil';
+import './fonts.scss';
+import './keyframes.scss';
+import './app/components/utilities/index.scss';
+import './polyfills';
+import { proxy } from '@abcnews/dev-proxy';
+import { GENERATIONS, getGeneration, requestDOMPermit } from '@abcnews/env-utils';
+import { url2cmid } from '@abcnews/url2cmid';
+import app from './app';
+import { terminusFetch } from './app/utils/content';
+import { debug } from './app/utils/logging';
 
 // Provide a hint as early as possible that the Odyssey format will be driving
 // this story, so that other interactives can opt to wait for Odyssey to load
@@ -32,6 +33,6 @@ proxy('odyssey').then(() => {
   // ...we can run the run the app, using the terminus document to initialise the metadata that's used everywhere
   Promise.all([terminusFetch(url2cmid(window.location.href)), requestDOMPermit('body')]).then(([terminusDocument]) => {
     debug('Fetched Terminus article document and obtained DOM permit for "body"');
-    require('./app')(terminusDocument);
+    app(terminusDocument);
   });
 });

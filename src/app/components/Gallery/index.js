@@ -1,24 +1,24 @@
-// External
-const { getMountValue, isPrefixedMount } = require('@abcnews/mount-utils');
-const cn = require('classnames');
-const html = require('bel');
-const rawHTML = require('bel/raw');
-const { url2cmid } = require('@abcnews/url2cmid');
+import { getMountValue, isPrefixedMount } from '@abcnews/mount-utils';
+import cn from 'classnames';
+import html from 'bel';
+import rawHTML from 'bel/raw';
+import { url2cmid } from '@abcnews/url2cmid';
+import { SELECTORS, SUPPORTS_PASSIVE, VIDEO_MARKER_PATTERN } from '../../../constants';
+import { getMeta, lookupImageByAssetURL } from '../../meta';
+import { enqueue, invalidateClient, subscribe } from '../../scheduler';
+import { $, append, detach, detectVideoId, getChildImage, isElement, setText } from '../../utils/dom';
+import { dePx, getRatios, returnFalse } from '../../utils/misc';
+import Caption, {
+  createFromElement as createCaptionFromElement,
+  createFromTerminusDoc as createCaptionFromTerminusDoc
+} from '../Caption';
+import Picture from '../Picture';
+import Sizer from '../Sizer';
+import { createFromElement as createQuoteFromElement } from '../Quote';
+import VideoPlayer from '../VideoPlayer';
+import './index.scss';
 
-// Ours
-const { SELECTORS, SUPPORTS_PASSIVE, VIDEO_MARKER_PATTERN } = require('../../../constants');
-const { getMeta, lookupImageByAssetURL } = require('../../meta');
-const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
-const { $, append, detach, detectVideoId, getChildImage, isElement, setText } = require('../../utils/dom');
-const { dePx, getRatios, returnFalse } = require('../../utils/misc');
-const Caption = require('../Caption');
-const Picture = require('../Picture');
-const Sizer = require('../Sizer');
-const Quote = require('../Quote');
-const VideoPlayer = require('../VideoPlayer');
-require('./index.scss');
-
-const MOSAIC_ROW_LENGTHS_PATTERN = /mosaic[a-z]*(\d+)/;
+export const MOSAIC_ROW_LENGTHS_PATTERN = /mosaic[a-z]*(\d+)/;
 const DEFAULT_MOSAIC_SIZE_RATIOS = {
   sm: '1x1',
   md: '3x2',
@@ -34,7 +34,16 @@ const CONTROL_ICON_MARKUP = `<svg role="presentation" viewBox="0 0 40 40">
   <polyline stroke="currentColor" stroke-width="2" fill="none" points="22.25 12.938 16 19.969 22.25 27" />
 </svg>`;
 
-function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconstrained = false }) {
+const RichtextTile = (el, ratios) => {
+  return html`
+    <div class="Gallery-richtextTile">
+      ${Sizer(ratios)}
+      <div class="Gallery-richtextTileContent u-richtext${getMeta().isDarkMode ? '-invert' : ''}">${el}</div>
+    </div>
+  `;
+};
+
+const Gallery = ({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconstrained = false }) => {
   let startItemsTransformXPct;
   let startX;
   let startY;
@@ -453,16 +462,9 @@ function Gallery({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconst
   });
 
   return galleryEl;
-}
+};
 
-function RichtextTile(el, ratios) {
-  return html`
-    <div class="Gallery-richtextTile">
-      ${Sizer(ratios)}
-      <div class="Gallery-richtextTileContent u-richtext${getMeta().isDarkMode ? '-invert' : ''}">${el}</div>
-    </div>
-  `;
-}
+export default Gallery;
 
 function offsetBasedOpacity(itemIndex, itemsTransformXPct) {
   return (
@@ -471,7 +473,7 @@ function offsetBasedOpacity(itemIndex, itemsTransformXPct) {
   );
 }
 
-function transformSection(section) {
+export const transformSection = section => {
   const [, mosaicRowLengthsString] = `${section.name}${section.configString}`.match(MOSAIC_ROW_LENGTHS_PATTERN) || [
     null,
     ''
@@ -540,7 +542,7 @@ function transformSection(section) {
             isInvariablyAmbient: true
           })
         ];
-        const videoCaptionEl = Caption.createFromEl(node, unlink);
+        const videoCaptionEl = createCaptionFromElement(node, unlink);
 
         // Videos that don't have captions right now can append them them later using metadata
         if (!videoCaptionEl) {
@@ -611,12 +613,12 @@ function transformSection(section) {
               linkUrl
             })
           ],
-          captionEl: imageDoc ? Caption.createFromTerminusDoc(imageDoc, unlink) : Caption.createFromEl(node, unlink)
+          captionEl: imageDoc ? createCaptionFromTerminusDoc(imageDoc, unlink) : createCaptionFromElement(node, unlink)
         });
       } else if (isQuote) {
         config.items.push({
           mediaEl: RichtextTile(
-            Quote.createFromEl(node, {
+            createQuoteFromElement(node, {
               isPullquote: true
             }),
             {
@@ -628,7 +630,7 @@ function transformSection(section) {
           ),
           mosaicMediaEls: [
             RichtextTile(
-              Quote.createFromEl(node, {
+              createQuoteFromElement(node, {
                 isPullquote: true
               }),
               {
@@ -639,7 +641,7 @@ function transformSection(section) {
               }
             ),
             RichtextTile(
-              Quote.createFromEl(node, {
+              createQuoteFromElement(node, {
                 isPullquote: true
               }),
               {
@@ -650,7 +652,7 @@ function transformSection(section) {
               }
             ),
             RichtextTile(
-              Quote.createFromEl(node, {
+              createQuoteFromElement(node, {
                 isPullquote: true
               }),
               {
@@ -693,8 +695,4 @@ function transformSection(section) {
   delete config.masterCaptionAttribution;
 
   section.substituteWith(Gallery(config), []);
-}
-
-module.exports = Gallery;
-module.exports.transformSection = transformSection;
-module.exports.MOSAIC_ROW_LENGTHS_PATTERN = MOSAIC_ROW_LENGTHS_PATTERN;
+};

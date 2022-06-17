@@ -1,25 +1,20 @@
-// External
-const html = require('bel');
+import html from 'bel';
+import { EMBED_TAGNAMES } from '../../../constants';
+import { isElement } from '../../utils/dom';
 
-// Ours
-const { EMBED_TAGNAMES } = require('../../../constants');
-const { isElement } = require('../../utils/dom');
-
-function UPull({ meta = {}, type, nodes = [] }) {
+const UPull = ({ meta = {}, type, nodes = [] }) => {
   const isRichtext = nodes.length > 0 && isElement(nodes[0]) && EMBED_TAGNAMES.indexOf(nodes[0].tagName) === -1;
 
   return html`
     <div class="u-pull${type ? `-${type}` : ''}">
-      ${isRichtext
-        ? html`
-            <div class="u-richtext${meta.isDarkMode ? '-invert' : ''}">${nodes}</div>
-          `
-        : nodes}
+      ${isRichtext ? html` <div class="u-richtext${meta.isDarkMode ? '-invert' : ''}">${nodes}</div> ` : nodes}
     </div>
   `;
-}
+};
 
-function transformSection(section, meta) {
+export default UPull;
+
+export const transformSection = (section, meta) => {
   section.substituteWith(
     UPull({
       meta,
@@ -28,7 +23,4 @@ function transformSection(section, meta) {
     }),
     []
   );
-}
-
-module.exports = UPull;
-module.exports.transformSection = transformSection;
+};

@@ -1,5 +1,4 @@
-// External
-const { terminusFetch } = require('../../utils/content');
+import { terminusFetch } from '../../utils/content';
 
 const NO_CMID_ERROR = 'No CMID available for video';
 
@@ -22,7 +21,7 @@ function getSources(item) {
     }));
 }
 
-function getMetadata(videoId, done) {
+export const getMetadata = (videoId, done) => {
   if (!videoId) {
     return done(new Error(NO_CMID_ERROR));
   }
@@ -55,11 +54,8 @@ function getMetadata(videoId, done) {
       return parseMetadata(targetItem);
     });
   });
-}
+};
 
-function hasAudio(el) {
+export const hasAudio = el => {
   return el.mozHasAudio || !!el.webkitAudioDecodedByteCount || !!(el.audioTracks && el.audioTracks.length);
-}
-
-module.exports.getMetadata = getMetadata;
-module.exports.hasAudio = hasAudio;
+};

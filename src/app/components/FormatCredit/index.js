@@ -1,14 +1,11 @@
-// External
-const html = require('bel');
-
-// Ours
-const { track } = require('../../utils/behaviour');
-require('./index.scss');
+import html from 'bel';
+import { track } from '../../utils/behaviour';
+import './index.scss';
 
 const LINK_URL = '/news/interactives/';
 const LINK_TRACKER = () => track('format-credit-link', '*');
 
-module.exports = function FormatCredit() {
+const FormatCredit = () => {
   return html`
     <div class="FormatCredit">
       <p>
@@ -18,3 +15,5 @@ module.exports = function FormatCredit() {
     </div>
   `;
 };
+
+export default FormatCredit;

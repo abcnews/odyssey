@@ -1,16 +1,13 @@
-// External
-const html = require('bel');
-const { url2cmid } = require('@abcnews/url2cmid');
-
-// Ours
-const { getMeta } = require('../../meta');
-const { enqueue, invalidateClient } = require('../../scheduler');
-const { track } = require('../../utils/behaviour');
-const { $, $$, getChildImage, prepend, substitute } = require('../../utils/dom');
-const Caption = require('../Caption');
-const Gallery = require('../Gallery');
-const Picture = require('../Picture');
-require('./index.scss');
+import html from 'bel';
+import { url2cmid } from '@abcnews/url2cmid';
+import { getMeta } from '../../meta';
+import { enqueue, invalidateClient } from '../../scheduler';
+import { track } from '../../utils/behaviour';
+import { $, $$, getChildImage, prepend, substitute } from '../../utils/dom';
+import { createFromTerminusDoc as createCaptionFromTerminusDoc } from '../Caption';
+import Gallery from '../Gallery';
+import Picture from '../Picture';
+import './index.scss';
 
 const TAB_KEY = 9;
 
@@ -18,7 +15,7 @@ const items = [];
 let masterGalleryEl = null; // singleton
 let clickHandler = null;
 
-function MasterGallery({ isRefresh = false } = {}) {
+const MasterGallery = ({ isRefresh = false } = {}) => {
   if (masterGalleryEl && !isRefresh) {
     return masterGalleryEl;
   }
@@ -129,7 +126,9 @@ function MasterGallery({ isRefresh = false } = {}) {
   `;
 
   return masterGalleryEl;
-}
+};
+
+export default MasterGallery;
 
 let externalActiveElement;
 
@@ -156,7 +155,7 @@ function has(id) {
   return items.filter(item => item.id === id).length > 0;
 }
 
-function refresh() {
+export const refresh = () => {
   if (!masterGalleryEl) {
     return;
   }
@@ -165,9 +164,9 @@ function refresh() {
 
   MasterGallery({ isRefresh: true }); // Sets masterGalleryEl;
   substitute(prevMasterGalleryEl, masterGalleryEl);
-}
+};
 
-function register(image) {
+export const register = image => {
   const { id, media } = image;
   const { complete, images } = media.image.primary;
 
@@ -186,10 +185,6 @@ function register(image) {
         md: '4x3'
       }
     }),
-    captionEl: Caption.createFromTerminusDoc(image)
+    captionEl: createCaptionFromTerminusDoc(image)
   });
-}
-
-module.exports = MasterGallery;
-module.exports.refresh = refresh;
-module.exports.register = register;
+};

@@ -1,13 +1,10 @@
-// External
-const html = require('bel');
+import html from 'bel';
+import { MOCK_ELEMENT, MOCK_TEXT } from '../../../constants';
+import { $, detach, isElement, isText } from '../../utils/dom';
+import { trim } from '../../utils/misc';
+import './index.scss';
 
-// Ours
-const { MOCK_ELEMENT, MOCK_TEXT } = require('../../../constants');
-const { $, detach, isElement, isText } = require('../../utils/dom');
-const { trim } = require('../../utils/misc');
-require('./index.scss');
-
-function Caption({ url, text, attribution, unlink }) {
+const Caption = ({ url, text, attribution, unlink }) => {
   if (!text && !attribution) {
     return null;
   }
@@ -18,18 +15,20 @@ function Caption({ url, text, attribution, unlink }) {
       ${attribution ? html` <em class="Caption-attribution">${attribution}</em> ` : null}
     </p>
   `;
-}
+};
 
-function createFromTerminusDoc(doc, unlink) {
+export default Caption;
+
+export const createFromTerminusDoc = (doc, unlink) => {
   return Caption({
     url: `/news/${doc.id}`,
     text: doc.caption || doc.title,
     attribution: doc.byLine && !doc.byLine.type ? doc.byLine.plain : doc.attribution || null,
     unlink
   });
-}
+};
 
-function createFromEl(el, unlink) {
+export const createFromElement = (el, unlink) => {
   if (!isElement(el)) {
     return null;
   }
@@ -115,8 +114,4 @@ function createFromEl(el, unlink) {
   }
 
   return null;
-}
-
-module.exports = Caption;
-module.exports.createFromTerminusDoc = createFromTerminusDoc;
-module.exports.createFromEl = createFromEl;
+};

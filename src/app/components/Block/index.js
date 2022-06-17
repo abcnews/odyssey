@@ -1,19 +1,15 @@
-// External
-const { getMountValue, getTrailingMountValue, isMount, isPrefixedMount } = require('@abcnews/mount-utils');
-const cn = require('classnames');
-const html = require('bel');
-
-// Ours
-const { ALIGNMENT_PATTERN, SCROLLPLAY_PCT_PATTERN, VIDEO_MARKER_PATTERN } = require('../../../constants');
-
-const { enqueue, subscribe } = require('../../scheduler');
-const { $, detach, detectVideoId, getChildImage, isElement } = require('../../utils/dom');
-const { getRatios, trim } = require('../../utils/misc');
-const Caption = require('../Caption');
-const Picture = require('../Picture');
-const VideoPlayer = require('../VideoPlayer');
-const YouTubePlayer = require('../YouTubePlayer');
-require('./index.scss');
+import { getMountValue, getTrailingMountValue, isMount, isPrefixedMount } from '@abcnews/mount-utils';
+import cn from 'classnames';
+import html from 'bel';
+import { ALIGNMENT_PATTERN, SCROLLPLAY_PCT_PATTERN, VIDEO_MARKER_PATTERN } from '../../../constants';
+import { enqueue, subscribe } from '../../scheduler';
+import { $, detach, detectVideoId, getChildImage, isElement } from '../../utils/dom';
+import { getRatios, trim } from '../../utils/misc';
+import { createFromElement as createCaptionFromElement } from '../Caption';
+import Picture from '../Picture';
+import VideoPlayer from '../VideoPlayer';
+import YouTubePlayer from '../YouTubePlayer';
+import './index.scss';
 
 const TRANSITIONS = [
   'colour',
@@ -36,7 +32,7 @@ const TRANSITIONS = [
   
   Media may be captioned/attributed, in which case a captions array (of Caption components) should be supplied
 */
-function Block({
+const Block = ({
   alignment,
   backgrounds,
   captionEls = [],
@@ -55,7 +51,7 @@ function Block({
   videoScrollplayPct,
   transition,
   videoId
-}) {
+}) => {
   if (contentEls.length === 1) {
     isPiecemeal = true;
   }
@@ -320,9 +316,11 @@ function Block({
   }
 
   return blockEl;
-}
+};
 
-function transformSection(section) {
+export default Block;
+
+export const transformSection = section => {
   const hasAttributedMedia = section.configString.indexOf('attributed') > -1;
   const hasCaptionedMedia = section.configString.indexOf('captioned') > -1;
   const hasInsetMedia = section.configString.indexOf('inset') > -1;
@@ -417,7 +415,7 @@ function transformSection(section) {
 
           // Add the caption, if one exists
           if (hasAttributedMedia || hasCaptionedMedia) {
-            config.captionEls.push(Caption.createFromEl(node, true));
+            config.captionEls.push(createCaptionFromElement(node, true));
           }
 
           return null;
@@ -537,7 +535,7 @@ function transformSection(section) {
         if (videoId || imgEl) {
           sourceMediaEl = node;
           if (hasAttributedMedia || hasCaptionedMedia) {
-            _config.captionEls.push(Caption.createFromEl(node, true));
+            _config.captionEls.push(createCaptionFromElement(node, true));
           }
         }
       }
@@ -551,7 +549,4 @@ function transformSection(section) {
   }
 
   section.substituteWith(Block(config), sourceMediaEl ? [sourceMediaEl] : []);
-}
-
-module.exports = Block;
-module.exports.transformSection = transformSection;
+};

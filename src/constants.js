@@ -1,17 +1,17 @@
-const NEWLINE = '\n';
-const HYPHEN = '-';
-const CSS_URL = /url\('?"?(.*?)"?'?\)/;
-const ALIGNMENT_PATTERN = /(left|right)/;
-const ONLY_RATIO_PATTERN = /^\d+x\d+$/;
-const RATIO_PATTERN = /(\d+x\d+)/;
-const SM_RATIO_PATTERN = /sm(\d+x\d+)/;
-const MD_RATIO_PATTERN = /md(\d+x\d+)/;
-const LG_RATIO_PATTERN = /lg(\d+x\d+)/;
-const XL_RATIO_PATTERN = /xl(\d+x\d+)/;
-const VIDEO_MARKER_PATTERN = /(?:video|youtube)(\w+)/;
-const SCROLLPLAY_PCT_PATTERN = /scrollplay(\d+)/;
+export const NEWLINE = '\n';
+export const HYPHEN = '-';
+export const CSS_URL = /url\('?"?(.*?)"?'?\)/;
+export const ALIGNMENT_PATTERN = /(left|right)/;
+export const ONLY_RATIO_PATTERN = /^\d+x\d+$/;
+export const RATIO_PATTERN = /(\d+x\d+)/;
+export const SM_RATIO_PATTERN = /sm(\d+x\d+)/;
+export const MD_RATIO_PATTERN = /md(\d+x\d+)/;
+export const LG_RATIO_PATTERN = /lg(\d+x\d+)/;
+export const XL_RATIO_PATTERN = /xl(\d+x\d+)/;
+export const VIDEO_MARKER_PATTERN = /(?:video|youtube)(\w+)/;
+export const SCROLLPLAY_PCT_PATTERN = /scrollplay(\d+)/;
 
-const SELECTORS = {
+export const SELECTORS = {
   MAIN: '.page_margins#main_content,body>.content,.main-content-container,main#content',
   STORY: '.article.section,article>.story.richtext,.article-detail-page .article-text',
   PL_STORY:
@@ -27,10 +27,10 @@ const SELECTORS = {
     'blockquote:not([class]),.quote--pullquote,.inline-content.quote,.embed-quote,.comp-rich-text-blockquote,.view-inline-pullquote,[data-component="Blockquote"],[data-component="Pullquote"]'
 };
 
-const RICHTEXT_BLOCK_TAGNAMES = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'OL', 'UL'];
-const EMBED_TAGNAMES = ['ASIDE', 'BLOCKQUOTE', 'DIV', 'FIGURE'];
+export const RICHTEXT_BLOCK_TAGNAMES = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'OL', 'UL'];
+export const EMBED_TAGNAMES = ['ASIDE', 'BLOCKQUOTE', 'DIV', 'FIGURE'];
 
-const MOCK_NODE = {
+export const MOCK_NODE = {
   nodeValue: '',
   parentNode: null,
   parentElement: null,
@@ -42,7 +42,7 @@ const MOCK_NODE = {
   textContent: ''
 };
 
-const MOCK_ELEMENT = {
+export const MOCK_ELEMENT = {
   ...MOCK_NODE,
   nodeType: Node.ELEMENT_NODE,
   tagName: 'MOCK-ELEMENT',
@@ -62,18 +62,18 @@ const MOCK_ELEMENT = {
   matches: _ => false
 };
 
-const MOCK_TEXT = {
+export const MOCK_TEXT = {
   ...MOCK_NODE,
   nodeType: Node.TEXT_NODE
 };
 
-const UNIT = 16; // (px)
-const BP = {
+export const UNIT = 16; // (px)
+export const BP = {
   MD: UNIT * 43.75,
   LG: UNIT * 61.25,
   XL: UNIT * 112.5
 };
-const MQ = {};
+export const MQ = {};
 MQ.LT_MD = `(max-width: ${BP.MD - 1}px)`;
 MQ.GT_SM = `(min-width: ${BP.MD}px)`;
 MQ.LT_LG = `(max-width: ${BP.LG - 1}px)`;
@@ -90,15 +90,16 @@ MQ.LANDSCAPE_LT_LG = `${MQ.LANDSCAPE} and ${MQ.LT_LG}`;
 MQ.GT_4_3 = '(min-aspect-ratio: 4/3)';
 MQ.PL_SM = `(max-width: ${UNIT * 34 - 1}px)`;
 
-const MQL = Object.keys(MQ).reduce((memo, key) => {
+export const MQL = Object.keys(MQ).reduce((memo, key) => {
   memo[key] = window.matchMedia(MQ[key]);
 
   return memo;
 }, {});
+window.ODYSSEY_MQL = MQL;
 
-const SMALLEST_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAAAADs=';
+export const SMALLEST_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAAAADs=';
 
-const MS_VERSION = (ua => {
+export const MS_VERSION = (ua => {
   const msie = ua.indexOf('MSIE ');
 
   if (msie > 0) {
@@ -122,7 +123,7 @@ const MS_VERSION = (ua => {
   }
 })(window.navigator.userAgent);
 
-const SUPPORTS_PASSIVE = (isSupported => {
+export const SUPPORTS_PASSIVE = (isSupported => {
   try {
     const options = Object.defineProperty({}, 'passive', {
       get: function () {
@@ -136,44 +137,12 @@ const SUPPORTS_PASSIVE = (isSupported => {
   return isSupported;
 })(false);
 
-const INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID = '10766144'; // This document is managed in Core Media
+export const INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID = '10766144'; // This document is managed in Core Media
 
-const IS_PROBABLY_RESISTING_FINGERPRINTING = (() => {
+export const IS_PROBABLY_RESISTING_FINGERPRINTING = (() => {
   // performance.mark will return undefined or a PerformanceMark object, depending on spec
   performance.mark && performance.mark('odyssey');
 
   // performance.getEntries will return an array of PerformanceEntry objects
   return ((performance.getEntries && performance.getEntries()) || []).length === 0;
 })();
-
-window.ODYSSEY_MQL = MQL;
-
-module.exports = {
-  NEWLINE,
-  HYPHEN,
-  CSS_URL,
-  ALIGNMENT_PATTERN,
-  ONLY_RATIO_PATTERN,
-  RATIO_PATTERN,
-  SM_RATIO_PATTERN,
-  MD_RATIO_PATTERN,
-  LG_RATIO_PATTERN,
-  XL_RATIO_PATTERN,
-  VIDEO_MARKER_PATTERN,
-  SCROLLPLAY_PCT_PATTERN,
-  SELECTORS,
-  RICHTEXT_BLOCK_TAGNAMES,
-  EMBED_TAGNAMES,
-  MOCK_NODE,
-  MOCK_ELEMENT,
-  MOCK_TEXT,
-  UNIT,
-  BP,
-  MQ,
-  MQL,
-  SMALLEST_IMAGE,
-  MS_VERSION,
-  SUPPORTS_PASSIVE,
-  INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID,
-  IS_PROBABLY_RESISTING_FINGERPRINTING
-};

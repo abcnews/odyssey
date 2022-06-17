@@ -1,12 +1,9 @@
-// External
-const { Client } = require('@abcnews/poll-counters-client');
-
-// Ours
-const { getMeta } = require('../meta');
+import { Client } from '@abcnews/poll-counters-client';
+import { getMeta } from '../meta';
 
 const clients = {};
 
-module.exports.track = function(name, value, cb) {
+export const track = (name, value, cb) => {
   if (name == null || value == null) {
     throw new Error('Behaviour tracking requires a name and value');
   }

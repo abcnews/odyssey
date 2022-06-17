@@ -1,14 +1,11 @@
-// External
-const html = require('bel');
-
-// Ours
-const { setText } = require('../../utils/dom');
-const { twoDigits, whenKeyIn } = require('../../utils/misc');
-require('./index.scss');
+import html from 'bel';
+import { setText } from '../../utils/dom';
+import { twoDigits, whenKeyIn } from '../../utils/misc';
+import './index.scss';
 
 const STEP_SECONDS = 5;
 
-function VideoControls(player, hasAmbientParent) {
+const VideoControls = (player, hasAmbientParent) => {
   let steppingKeysHeldDown = [];
   let wasPlayingBeforeStepping;
   let isScrubbing;
@@ -98,9 +95,7 @@ function VideoControls(player, hasAmbientParent) {
       `;
   const timeRemainingEl = hasAmbientParent
     ? null
-    : html`
-        <time class="VideoControls-timeRemaining" aria-label="Time Remaining"></time>
-      `;
+    : html` <time class="VideoControls-timeRemaining" aria-label="Time Remaining"></time> `;
   const progressBarEl = hasAmbientParent
     ? null
     : html`
@@ -111,11 +106,7 @@ function VideoControls(player, hasAmbientParent) {
           draggable="false"
         ></progress>
       `;
-  const progressEl = hasAmbientParent
-    ? null
-    : html`
-        <div class="VideoControls-progress">${progressBarEl}</div>
-      `;
+  const progressEl = hasAmbientParent ? null : html` <div class="VideoControls-progress">${progressBarEl}</div> `;
   const videoControlsEl = html`
     <div class="VideoControls">${playbackEl} ${muteEl} ${progressEl} ${timeRemainingEl}</div>
   `;
@@ -151,6 +142,6 @@ function VideoControls(player, hasAmbientParent) {
   };
 
   return videoControlsEl;
-}
+};
 
-module.exports = VideoControls;
+export default VideoControls;

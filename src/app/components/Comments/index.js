@@ -1,28 +1,16 @@
-// External
-const html = require('bel');
+import html from 'bel';
+import { append } from '../../utils/dom';
+import './index.scss';
 
-// Ours
-const { append } = require('../../utils/dom');
-require('./index.scss');
-
-function Comments() {
+const Comments = () => {
   if (!window.ABC) {
-    return html`
-      <div></div>
-    `;
+    return html` <div></div> `;
   }
 
-  const livefyreRootEl = html`
-    <div class="Comments-livefyreRoot u-layout"></div>
-  `;
+  const livefyreRootEl = html` <div class="Comments-livefyreRoot u-layout"></div> `;
 
   if (ABC.News.Mobile) {
-    append(
-      livefyreRootEl,
-      html`
-        <h2>Have your say</h2>
-      `
-    );
+    append(livefyreRootEl, html` <h2>Have your say</h2> `);
   }
 
   if (ABC.News.initLivefyre) {
@@ -36,11 +24,9 @@ function Comments() {
     });
   }
 
-  return html`
-    <div class="Comments u-full">${livefyreRootEl}</div>
-  `;
-}
+  return html` <div class="Comments u-full">${livefyreRootEl}</div> `;
+};
 
-module.exports = Comments;
+export default Comments;
 
 // [1] Config options: https://stash.abc-dev.net.au/projects/NEWS/repos/interactive-livefyre/browse/src/initComments.js

@@ -1,5 +1,5 @@
-const { enqueue, subscribe } = require('./scheduler');
-const { proximityCheck } = require('./utils/misc');
+import { enqueue, subscribe } from './scheduler';
+import { proximityCheck } from './utils/misc';
 
 const AMBIENT_PLAYABLE_RANGE = 0.5;
 
@@ -7,11 +7,11 @@ const players = [];
 
 let nextUntitledMediaCharCode = 65;
 
-module.exports.getNextUntitledMediaCharCode = () => nextUntitledMediaCharCode++;
+export const getNextUntitledMediaCharCode = () => nextUntitledMediaCharCode++;
 
-const forEachPlayer = (module.exports.forEachPlayer = fn => players.forEach(fn));
+export const forEachPlayer = fn => players.forEach(fn);
 
-module.exports.registerPlayer = player => {
+export const registerPlayer = player => {
   players.push(player);
 
   if (players.length === 1) {

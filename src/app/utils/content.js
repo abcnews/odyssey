@@ -1,5 +1,5 @@
-const { GENERATIONS, getGeneration } = require('@abcnews/env-utils');
-const { fetchOne } = require('@abcnews/terminus-fetch');
+import { GENERATIONS, getGeneration } from '@abcnews/env-utils';
+import { fetchOne } from '@abcnews/terminus-fetch';
 
 const API_KEY = '***REMOVED***';
 const VERSION = getGeneration() !== GENERATIONS.PL ? 'v1' : 'v2';
@@ -16,7 +16,7 @@ const VERSION = getGeneration() !== GENERATIONS.PL ? 'v1' : 'v2';
 // v2 unless the terminusBaseURL query param exists, which specifies a version to
 // use.
 
-module.exports.terminusFetch = (_options, done) => {
+export const terminusFetch = (_options, done) => {
   const options = typeof _options === 'object' ? _options : { id: _options };
 
   return fetchOne({ apikey: API_KEY, version: VERSION, ...options }, done);

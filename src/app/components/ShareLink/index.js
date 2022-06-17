@@ -1,22 +1,16 @@
-// External
-const html = require('bel');
-
-// Ours
-const { track } = require('../../utils/behaviour');
-
-require('./index.scss');
+import html from 'bel';
+import { track } from '../../utils/behaviour';
+import './index.scss';
 
 function native({ id, url, title, description }) {
   navigator.share({ text: description, title, url }).then(() => track('share-link', id));
 }
 
-module.exports = function ShareLink({ link, shouldBlend }) {
+const ShareLink = ({ link, shouldBlend }) => {
   const className = `ShareLink ShareLink--${link.id}${shouldBlend ? ' u-blend-luminosity' : ''}`;
 
   if (link.id === 'native') {
-    return html`
-      <button class="${className}" onclick="${() => native(link)}" aria-label="Share this story"></button>
-    `;
+    return html` <button class="${className}" onclick="${() => native(link)}" aria-label="Share this story"></button> `;
   }
 
   return html`
@@ -28,3 +22,5 @@ module.exports = function ShareLink({ link, shouldBlend }) {
     ></a>
   `;
 };
+
+export default ShareLink;
