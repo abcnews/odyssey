@@ -1,5 +1,4 @@
-// Ours
-const { IS_PROBABLY_RESISTING_FINGERPRINTING } = require('../../../constants');
+import { IS_PROBABLY_RESISTING_FINGERPRINTING } from '../../../constants';
 
 const CANVAS_MAX = 48;
 const BLUR_RADIUS = 4;
@@ -10,7 +9,7 @@ const TRANSPARENT_IMAGE_ERROR = "Images with transparency shouldn't have placeho
 const cache = {};
 const protocol = String(window.location.protocol);
 
-function blurImage(url, done) {
+export const blurImage = (url, done) => {
   if (protocol === 'https:' && url.indexOf(protocol) === -1) {
     return done(new Error(MIXED_CONTENT_ERROR));
   }
@@ -68,9 +67,7 @@ function blurImage(url, done) {
 
   imgEl.crossOrigin = 'Anonymous';
   imgEl.src = url;
-}
-
-module.exports.blurImage = blurImage;
+};
 
 /*
 

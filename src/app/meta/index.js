@@ -1,11 +1,8 @@
-// External
-const { getGeneration, getTier, GENERATIONS, TIERS } = require('@abcnews/env-utils');
-const { url2cmid } = require('@abcnews/url2cmid');
-
-// Ours
-const { INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID, MOCK_ELEMENT, SELECTORS } = require('../../constants');
-const { $, $$, detach } = require('../utils/dom');
-const { trim } = require('../utils/misc');
+import { getGeneration, getTier, GENERATIONS, TIERS } from '@abcnews/env-utils';
+import { url2cmid } from '@abcnews/url2cmid';
+import { INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID, MOCK_ELEMENT, SELECTORS } from '../../constants';
+import { $, $$, detach } from '../utils/dom';
+import { trim } from '../utils/misc';
 
 const FACEBOOK = /facebook\.com/;
 const TWITTER = /twitter\.com/;
@@ -93,7 +90,7 @@ function getRelatedStoriesIds() {
   return $$(`
     .attached-content > .inline-content.story > a,
     .related > article > a,
-    [data-component="RelatedStories"] article > a
+    [data-component="RelatedStories"] [data-component="RelatedStoriesCard"] a
   `).map(el => url2cmid(el.href));
 }
 
@@ -116,7 +113,7 @@ function getRelatedMedia() {
   return detach(relatedMediaEl);
 }
 
-function initMeta(terminusDocument) {
+export const initMeta = terminusDocument => {
   if (meta) {
     throw new Error('Cannot create meta more than once.');
   }
@@ -208,17 +205,17 @@ function initMeta(terminusDocument) {
   });
 
   return meta;
-}
+};
 
-function getMeta() {
+export const getMeta = () => {
   if (!meta) {
     throw new Error('Cannot read meta before it is created.');
   }
 
   return meta;
-}
+};
 
-function lookupImageByAssetURL(url) {
+export const lookupImageByAssetURL = url => {
   const { imagesByBinaryKey, imagesById } = getMeta();
   const [, binaryKey] = url.match(/\/([0-9a-f]{32})\b/) || [];
 
@@ -227,10 +224,4 @@ function lookupImageByAssetURL(url) {
   }
 
   return meta.imagesById[url2cmid(url)] || null;
-}
-
-module.exports = {
-  initMeta,
-  getMeta,
-  lookupImageByAssetURL
 };

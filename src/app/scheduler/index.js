@@ -1,8 +1,5 @@
-// External
-const debounce = require('debounce');
-
-// Ours
-const { IS_PROBABLY_RESISTING_FINGERPRINTING } = require('../../constants');
+import debounce from 'debounce';
+import { IS_PROBABLY_RESISTING_FINGERPRINTING } from '../../constants';
 
 // Preferably use a "millisecond budget", falling back
 // to a "ticks budget" if we can reasonably assume that
@@ -55,13 +52,13 @@ function flush() {
   isFlushing = false;
 }
 
-function enqueue(task, ...params) {
+export const enqueue = (task, ...params) => {
   if (hasStarted && !isFlushing) {
     requestAnimationFrame(flush);
   }
 
   queue.push([task, params]);
-}
+};
 
 function notifySubscribers(hasChanged) {
   // `window.innerHeight` can change on mobile browser during scrolling because
@@ -120,16 +117,16 @@ const onClientInvalidated_debounced = debounce(onClientInvalidated, 50);
 
 const onClientInvalidatedTasks = [onClientInvalidated, onClientInvalidated_debounced];
 
-function invalidateClient() {
+export const invalidateClient = () => {
   const [firstQueuedTask] = queue[0] || [];
 
   // Try to avoid queueing more than one onClientInvalidated task
   if (!firstQueuedTask || onClientInvalidatedTasks.indexOf(firstQueuedTask) === -1) {
     enqueue(onClientInvalidated, true);
   }
-}
+};
 
-function start() {
+export const start = () => {
   if (hasStarted) {
     return;
   }
@@ -139,9 +136,9 @@ function start() {
   window.addEventListener('resize', onClientInvalidated_debounced, false);
   window.addEventListener('orientationchange', onClientInvalidated_debounced, false);
   invalidateClient();
-}
+};
 
-function subscribe(subscriber, shouldIgnoreUnchangedClients) {
+export const subscribe = (subscriber, shouldIgnoreUnchangedClients) => {
   if (typeof subscriber !== 'function') {
     return;
   }
@@ -151,14 +148,8 @@ function subscribe(subscriber, shouldIgnoreUnchangedClients) {
   if (hasStarted) {
     invalidateClient();
   }
-}
+};
 
-function unsubscribe(subscriber) {
+export const unsubscribe = subscriber => {
   return subscribers.delete(subscriber);
-}
-
-module.exports.enqueue = enqueue;
-module.exports.invalidateClient = invalidateClient;
-module.exports.start = start;
-module.exports.subscribe = subscribe;
-module.exports.unsubscribe = unsubscribe;
+};

@@ -1,16 +1,16 @@
 // ECMAScript
-require('core-js/stable/array/fill');
-require('core-js/stable/dom-collections/iterator');
-require('core-js/stable/object/entries');
-require('core-js/stable/set/index');
-require('core-js/stable/string/starts-with');
-require('core-js/stable/symbol');
-require('core-js/stable/symbol/iterator');
+import 'core-js/stable/array/fill';
+import 'core-js/stable/dom-collections/iterator';
+import 'core-js/stable/object/entries';
+import 'core-js/stable/set/index';
+import 'core-js/stable/string/starts-with';
+import 'core-js/stable/symbol';
+import 'core-js/stable/symbol/iterator';
 // Browser APIs
-require('custom-event-polyfill');
-require('ric');
+import 'custom-event-polyfill';
+import 'ric';
 // CSS
-require('objectFitPolyfill');
+import 'objectFitPolyfill';
 
 if (!Element.prototype.matches) {
   Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;

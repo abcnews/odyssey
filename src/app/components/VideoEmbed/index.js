@@ -1,21 +1,18 @@
-// External
-const { getMountValue, isMount } = require('@abcnews/mount-utils');
-const cn = require('classnames');
-const html = require('bel');
-const { url2cmid } = require('@abcnews/url2cmid');
+import { getMountValue, isMount } from '@abcnews/mount-utils';
+import cn from 'classnames';
+import html from 'bel';
+import { url2cmid } from '@abcnews/url2cmid';
+import { ALIGNMENT_PATTERN, VIDEO_MARKER_PATTERN, SCROLLPLAY_PCT_PATTERN } from '../../../constants';
+import { invalidateClient } from '../../scheduler';
+import { $, $$, substitute } from '../../utils/dom';
+import { getRatios } from '../../utils/misc';
+import { grabPrecedingConfigString } from '../../utils/mounts';
+import { createFromElement as createCaptionFromElement } from '../Caption';
+import VideoPlayer from '../VideoPlayer';
+import YouTubePlayer from '../YouTubePlayer';
+import './index.scss';
 
-// Ours
-const { ALIGNMENT_PATTERN, VIDEO_MARKER_PATTERN, SCROLLPLAY_PCT_PATTERN } = require('../../../constants');
-const { invalidateClient } = require('../../scheduler');
-const { $, $$, substitute } = require('../../utils/dom');
-const { getRatios } = require('../../utils/misc');
-const { grabPrecedingConfigString } = require('../../utils/mounts');
-const Caption = require('../Caption');
-const VideoPlayer = require('../VideoPlayer');
-const YouTubePlayer = require('../YouTubePlayer');
-require('./index.scss');
-
-function VideoEmbed({ playerEl, captionEl, alignment, isFull, isCover, isAnon }) {
+const VideoEmbed = ({ playerEl, captionEl, alignment, isFull, isCover, isAnon }) => {
   if (isCover) {
     isFull = true;
     isAnon = true;
@@ -28,10 +25,12 @@ function VideoEmbed({ playerEl, captionEl, alignment, isFull, isCover, isAnon })
     'is-cover': isCover
   });
 
-  return html` <div class="${className}">${playerEl} ${isAnon ? null : captionEl}</div> `;
-}
+  return html`<div class="${className}">${playerEl} ${isAnon ? null : captionEl}</div>`;
+};
 
-function transformEl(el) {
+export default VideoEmbed;
+
+export const transformElement = el => {
   const mountSC = isMount(el) ? getMountValue(el) : '';
   const isMarker = !!mountSC.match(VIDEO_MARKER_PATTERN);
   const linkEl = $('a[href]', el);
@@ -56,7 +55,7 @@ function transformEl(el) {
   const unlink = configString.includes('unlink');
 
   const isYouTube = isMarker && mountSC.indexOf('youtube') === 0;
-  const captionEl = !isMarker ? Caption.createFromEl(el, unlink) : null;
+  const captionEl = !isMarker ? createCaptionFromElement(el, unlink) : null;
   const title = captionEl ? captionEl.children[0].textContent : null;
 
   const options = {
@@ -91,12 +90,8 @@ function transformEl(el) {
       })
     )
   );
-}
+};
 
-function transformMarker(marker) {
-  return transformEl(marker.node);
-}
-
-module.exports = VideoEmbed;
-module.exports.transformEl = transformEl;
-module.exports.transformMarker = transformMarker;
+export const transformMarker = marker => {
+  return transformElement(marker.node);
+};

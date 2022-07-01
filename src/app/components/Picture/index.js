@@ -1,16 +1,13 @@
-// External
-const { getImages } = require('@abcnews/terminus-fetch');
-const html = require('bel');
-
-// Ours
-const { MQ, MQL, RATIO_PATTERN, SMALLEST_IMAGE, MS_VERSION } = require('../../../constants');
-const { getMeta, lookupImageByAssetURL } = require('../../meta');
-const { enqueue, subscribe, unsubscribe } = require('../../scheduler');
-const { $, $$, append, detach } = require('../../utils/dom');
-const { proximityCheck } = require('../../utils/misc');
-const Sizer = require('../Sizer');
-const { blurImage } = require('./blur');
-require('./index.scss');
+import { getImages } from '@abcnews/terminus-fetch';
+import html from 'bel';
+import { MQ, MQL, RATIO_PATTERN, SMALLEST_IMAGE, MS_VERSION } from '../../../constants';
+import { getMeta, lookupImageByAssetURL } from '../../meta';
+import { enqueue, subscribe, unsubscribe } from '../../scheduler';
+import { $, $$, append, detach } from '../../utils/dom';
+import { proximityCheck } from '../../utils/misc';
+import Sizer from '../Sizer';
+import { blurImage } from './blur';
+import './index.scss';
 
 const WIDTHS = [700, 940, 1400, 2150];
 const SIZES = {
@@ -28,12 +25,12 @@ const DEFAULT_RATIOS = {
   lg: '16x9',
   xl: '16x9'
 };
-const PLACEHOLDER_PROPERTY = '--placeholder-image';
+export const PLACEHOLDER_PROPERTY = '--placeholder-image';
 const IMAGE_LOAD_RANGE = 1;
 
 const pictures = [];
 
-function Picture({ src = SMALLEST_IMAGE, alt = '', isContained = false, ratios = {}, linkUrl = '' }) {
+const Picture = ({ src = SMALLEST_IMAGE, alt = '', isContained = false, ratios = {}, linkUrl = '' }) => {
   const imageDoc = lookupImageByAssetURL(src); // Will only work if image's document was catalogued during initMeta
 
   ratios = {
@@ -89,7 +86,7 @@ function Picture({ src = SMALLEST_IMAGE, alt = '', isContained = false, ratios =
   const isManagingSources = (isPL && isPreview) || (MS_VERSION && MS_VERSION < 13);
 
   const imgContainerEl = isManagingSources
-    ? html` <div></div> `
+    ? document.createElement('div')
     : html`
         <picture>
           <source srcset="${xlImageURL}" media="${MQ.XL}" />
@@ -137,7 +134,7 @@ function Picture({ src = SMALLEST_IMAGE, alt = '', isContained = false, ratios =
 
       picture.isLoading = true;
       pictureEl.setAttribute('loading', '');
-      imgEl = html` <img alt="${alt}" data-object-fit="" /> `;
+      imgEl = html`<img alt="${alt}" data-object-fit="" />`;
       imgEl.addEventListener('load', picture.loaded, false);
       append(imgContainerEl, imgEl);
 
@@ -210,7 +207,9 @@ function Picture({ src = SMALLEST_IMAGE, alt = '', isContained = false, ratios =
   }
 
   return pictureEl;
-}
+};
+
+export default Picture;
 
 function _checkIfPicturesNeedToBeLoaded(client) {
   pictures.forEach(picture => {
@@ -234,10 +233,6 @@ function _checkIfObjectFitPolyfillNeedsToRun() {
     window.objectFitPolyfill();
   }
 }
-
-module.exports = Picture;
-
-module.exports.PLACEHOLDER_PROPERTY = PLACEHOLDER_PROPERTY;
 
 function resizeCM5ImageURL(url, ratio = '16x9', size = 'md') {
   return ensurePhase1Asset(url)

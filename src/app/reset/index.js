@@ -1,13 +1,10 @@
-// External
-const html = require('bel');
-const dewysiwyg = require('util-dewysiwyg');
-
-// Ours
-const { SELECTORS } = require('../../constants');
-const Main = require('../components/Main');
-const { $, $$, append, before, detach, detachAll, setOrAddMetaTag, substitute } = require('../utils/dom');
-const { literalList, trim } = require('../utils/misc');
-require('./index.scss');
+import html from 'bel';
+import dewysiwyg from 'util-dewysiwyg';
+import { SELECTORS } from '../../constants';
+import Main from '../components/Main';
+import { $, $$, append, before, detach, detachAll, setOrAddMetaTag, substitute } from '../utils/dom';
+import { literalList, trim } from '../utils/misc';
+import './index.scss';
 
 const TEMPLATE_REMOVABLES = {
   // Common (non-PL)
@@ -120,7 +117,7 @@ function promoteToMain(storyEl, meta) {
   return mainEl;
 }
 
-function reset(storyEl, meta) {
+export const reset = (storyEl, meta) => {
   const { isDarkMode, isPL, isPreview, theme } = meta;
 
   // Try to feature-detect IE11, and apply an attribute to the root element for fallback styles to target
@@ -183,7 +180,7 @@ function reset(storyEl, meta) {
 
   $$(P1S_FLOAT.SELECTOR, storyEl).forEach(el => {
     const [, side] = el.className.match(P1S_FLOAT.PATTERN);
-    const pullEl = html` <div class="u-pull-${side}"></div> `;
+    const pullEl = html`<div class="u-pull-${side}"></div>`;
 
     el.classList.remove(side);
     el.classList.add('full');
@@ -194,7 +191,7 @@ function reset(storyEl, meta) {
   $$(P2_FLOAT.SELECTOR, storyEl).forEach(el => {
     if (el.className.indexOf('view-') > -1) {
       const [, , side] = el.className.match(P2_FLOAT.PATTERN);
-      const pullEl = html` <div class="u-pull-${side}"></div> `;
+      const pullEl = html`<div class="u-pull-${side}"></div>`;
 
       el.classList.remove(side);
       el.classList.add('full');
@@ -236,6 +233,4 @@ function reset(storyEl, meta) {
   }
 
   return storyEl;
-}
-
-module.exports.reset = reset;
+};

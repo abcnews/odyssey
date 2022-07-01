@@ -1,9 +1,8 @@
-// Ours
-const { enqueue, subscribe } = require('../../scheduler');
+import { enqueue, subscribe } from '../../scheduler';
 
 const parallaxes = [];
 
-function activate(el) {
+export const activate = el => {
   if (parallaxes.find(parallax => parallax.el === el)) {
     return;
   }
@@ -17,7 +16,7 @@ function activate(el) {
   if (parallaxes.length === 1) {
     subscribe(_checkIfParallaxesPropertiesNeedToBeUpdated);
   }
-}
+};
 
 function _checkIfParallaxesPropertiesNeedToBeUpdated() {
   parallaxes.forEach(parallax => {
@@ -41,5 +40,3 @@ function _checkIfParallaxesPropertiesNeedToBeUpdated() {
     }
   });
 }
-
-module.exports.activate = activate;

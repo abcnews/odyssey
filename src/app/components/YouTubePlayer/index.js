@@ -1,15 +1,12 @@
-// External
-const html = require('bel');
-
-// Ours
-const { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } = require('../../media');
-const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
-const { toggleAttribute } = require('../../utils/dom');
-const { PLACEHOLDER_PROPERTY } = require('../Picture');
-const { blurImage } = require('../Picture/blur');
-const Sizer = require('../Sizer');
-const VideoControls = require('../VideoControls');
-require('./index.scss');
+import html from 'bel';
+import { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } from '../../media';
+import { enqueue, invalidateClient, subscribe } from '../../scheduler';
+import { toggleAttribute } from '../../utils/dom';
+import { PLACEHOLDER_PROPERTY } from '../Picture';
+import { blurImage } from '../Picture/blur';
+import Sizer from '../Sizer';
+import VideoControls from '../VideoControls';
+import './index.scss';
 
 const DEFAULT_YOUTUBE_CONFIG = {
   controls: 0,
@@ -28,7 +25,7 @@ const DEFAULT_RATIO = '16x9';
 const players = [];
 let nextId = 0;
 
-function YouTubePlayer({
+const YouTubePlayer = ({
   videoId,
   ratios = {},
   title,
@@ -38,7 +35,7 @@ function YouTubePlayer({
   isLoop,
   isMuted,
   scrollplayPct
-}) {
+}) => {
   ratios = {
     sm: ratios.sm || DEFAULT_RATIO,
     md: ratios.md || DEFAULT_RATIO,
@@ -68,12 +65,8 @@ function YouTubePlayer({
   const id = nextId++;
   const posterURL = `https://img.youtube.com/vi/${videoId}/0.jpg`;
   const placeholderEl = Sizer(ratios);
-  const posterEl = html`
-    <img src="${posterURL}" />
-  `;
-  let videoEl = html`
-    <div id="youtube-video-${id}"></div>
-  `;
+  const posterEl = html`<img src="${posterURL}" />`;
+  let videoEl = html`<div id="youtube-video-${id}"></div>`;
   let youtube;
   let youTubePlayerEl;
   let videoControlsEl;
@@ -318,7 +311,9 @@ function YouTubePlayer({
   `;
 
   return youTubePlayerEl;
-}
+};
+
+export default YouTubePlayer;
 
 function _resizePlayers() {
   players.forEach(player => player.resize());
@@ -345,5 +340,3 @@ function loadYouTubeAPI(cb) {
   script.src = '//www.youtube.com/iframe_api';
   document.head.appendChild(script);
 }
-
-module.exports = YouTubePlayer;

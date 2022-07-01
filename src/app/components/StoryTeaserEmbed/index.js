@@ -1,15 +1,12 @@
-// External
-const html = require('bel');
-const { url2cmid } = require('@abcnews/url2cmid');
+import html from 'bel';
+import { url2cmid } from '@abcnews/url2cmid';
+import { track } from '../../utils/behaviour';
+import { MOCK_ELEMENT } from '../../../constants';
+import { $, $$, getChildImage, substitute } from '../../utils/dom';
+import { trim } from '../../utils/misc';
+import './index.scss';
 
-// Ours
-const { track } = require('../../utils/behaviour');
-const { MOCK_ELEMENT } = require('../../../constants');
-const { $, $$, getChildImage, substitute } = require('../../utils/dom');
-const { trim } = require('../../utils/misc');
-require('./index.scss');
-
-function StoryTeaserEmbed({ title, description, url, imageURL }) {
+const StoryTeaserEmbed = ({ title, description, url, imageURL }) => {
   const id = url2cmid(url);
 
   return html`
@@ -21,13 +18,15 @@ function StoryTeaserEmbed({ title, description, url, imageURL }) {
       </a>
     </aside>
   `;
-}
+};
+
+export default StoryTeaserEmbed;
 
 function isPLRelatedCard(el) {
   return el.getAttribute('data-component') === 'RelatedCard';
 }
 
-function doesElMatchConvention(el) {
+export const doesElMatchConvention = el => {
   // We only accept PL Related Cards or P1/2 WYSIWYG teasers that have
   // a title, a _self-targeting link and an image, but don't bundle an
   // interactive (such as the podcast player).
@@ -35,9 +34,9 @@ function doesElMatchConvention(el) {
     isPLRelatedCard(el) ||
     !!($('h2', el) && $$('a[target="_self"]', el).length === 3 && getChildImage(el) && !$('.init-interactive', el))
   );
-}
+};
 
-function transformEl(el) {
+export const transformElement = el => {
   const title = $('h2,h3', el).textContent;
   const url = $('a', el).getAttribute('href');
   let imageURL = (getChildImage(el) || MOCK_ELEMENT).getAttribute('src');
@@ -63,8 +62,4 @@ function transformEl(el) {
   );
 
   substitute(el, StoryTeaserEmbed({ title, url, imageURL, description }));
-}
-
-module.exports = StoryTeaserEmbed;
-module.exports.doesElMatchConvention = doesElMatchConvention;
-module.exports.transformEl = transformEl;
+};

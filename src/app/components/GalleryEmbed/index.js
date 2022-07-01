@@ -1,23 +1,25 @@
-// External
-const cn = require('classnames');
-const html = require('bel');
-const { url2cmid } = require('@abcnews/url2cmid');
+import cn from 'classnames';
+import html from 'bel';
+import { url2cmid } from '@abcnews/url2cmid';
+import { terminusFetch } from '../../utils/content';
+import { $, $$, substitute } from '../../utils/dom';
+import { getRatios } from '../../utils/misc';
+import { grabPrecedingConfigString } from '../../utils/mounts';
+import {
+  createFromElement as createCaptionFromElement,
+  createFromTerminusDoc as createCaptionFromTerminusDoc
+} from '../Caption';
+import Gallery, { MOSAIC_ROW_LENGTHS_PATTERN } from '../Gallery';
+import { refresh as refreshMasterGallery, register as registerWithMasterGallery } from '../MasterGallery';
+import Picture from '../Picture';
 
-// Ours
-const { terminusFetch } = require('../../utils/content');
-const { $, $$, substitute } = require('../../utils/dom');
-const { getRatios } = require('../../utils/misc');
-const { grabPrecedingConfigString } = require('../../utils/mounts');
-const Caption = require('../Caption');
-const Gallery = require('../Gallery');
-const MasterGallery = require('../MasterGallery');
-const Picture = require('../Picture');
+const GalleryEmbed = ({ galleryEl, captionEl, isAnon }) => {
+  return html`<div class="GalleryEmbed">${galleryEl} ${isAnon ? null : captionEl}</div>`;
+};
 
-function GalleryEmbed({ galleryEl, captionEl, isAnon }) {
-  return html` <div class="GalleryEmbed">${galleryEl} ${isAnon ? null : captionEl}</div> `;
-}
+export default GalleryEmbed;
 
-function transformEl(el) {
+export const transformElement = el => {
   const linkEls = $$('a', el);
   const galleryId = url2cmid(linkEls[linkEls.length - 1].getAttribute('href'));
 
@@ -26,7 +28,7 @@ function transformEl(el) {
   }
 
   const configString = grabPrecedingConfigString(el);
-  const [, mosaicRowLengthsString] = `${configString}`.match(Gallery.MOSAIC_ROW_LENGTHS_PATTERN) || [null, ''];
+  const [, mosaicRowLengthsString] = `${configString}`.match(MOSAIC_ROW_LENGTHS_PATTERN) || [null, ''];
   const ratios = getRatios(configString);
   const unlink = configString.includes('unlink');
 
@@ -42,7 +44,7 @@ function transformEl(el) {
   terminusFetch({ id: galleryId, type: 'gallery' }).then(galleryDoc => {
     // Mosaics should have a master caption
     if (config.mosaicRowLengths.length > 0) {
-      config.masterCaptionEl = Caption.createFromEl(
+      config.masterCaptionEl = createCaptionFromElement(
         html`
           <div
             data-caption-config="${JSON.stringify({
@@ -66,7 +68,7 @@ function transformEl(el) {
         const id = url2cmid(src); // imageDoc.id will be wrong for ImageProxy documents
         const linkUrl = `/news/${id}`;
 
-        MasterGallery.register(imageDoc);
+        registerWithMasterGallery(imageDoc);
 
         return {
           id,
@@ -116,7 +118,7 @@ function transformEl(el) {
               linkUrl
             })
           ],
-          captionEl: Caption.createFromTerminusDoc(imageDoc, unlink)
+          captionEl: createCaptionFromTerminusDoc(imageDoc, unlink)
         };
       });
 
@@ -124,10 +126,7 @@ function transformEl(el) {
 
       substitute(placeholderEl, galleryEl);
       setTimeout(galleryEl.api.measureDimensions, 0);
-      MasterGallery.refresh();
+      refreshMasterGallery();
     });
   });
-}
-
-module.exports = GalleryEmbed;
-module.exports.transformEl = transformEl;
+};

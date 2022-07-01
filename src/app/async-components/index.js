@@ -1,14 +1,11 @@
-// External
-const { AppContextProvider } = require('@abcaustralia/nucleus/es6/AppContext/AppContext');
-const { GlobalStyles } = require('@abcaustralia/nucleus/es6/GlobalStyles/GlobalStyles');
-const React = require('react');
-const ReactDOM = require('react-dom');
-
-// Ours
-require('./root.css');
-const Icons = require('./Icons');
-const Interactive = require('./Interactive');
-const Nav = require('./Nav');
+import { AppContextProvider } from '@abcaustralia/nucleus/es6/AppContext/AppContext';
+import { GlobalStyles } from '@abcaustralia/nucleus/es6/GlobalStyles/GlobalStyles';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './root.css';
+import Icons from './Icons';
+import Interactive from './Interactive';
+import Nav from './Nav';
 
 const components = {
   Interactive,
@@ -17,7 +14,7 @@ const components = {
 
 let shouldIncludeIcons = true;
 
-module.exports.render = (componentName, props = {}, el) => {
+export const render = (componentName, props = {}, el) => {
   const Component = components[componentName];
 
   if (!Component || !el.parentElement) {

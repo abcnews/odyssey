@@ -1,14 +1,11 @@
-// External
-const { GlobalSearchLink } = require('@abcaustralia/global-components/es6/GlobalSearchLink/GlobalSearchLink');
-const { BrandLogo } = require('@abcaustralia/nucleus/es6/BrandLogo/BrandLogo');
-const { MastheadBox } = require('@abcaustralia/nucleus/es6/MastheadBox/MastheadBox');
-const { MastheadLogoLink } = require('@abcaustralia/nucleus/es6/MastheadLogoLink/MastheadLogoLink');
-const React = require('react');
+import { GlobalSearchLink } from '@abcaustralia/global-components/es6/GlobalSearchLink/GlobalSearchLink';
+import { BrandLogo } from '@abcaustralia/nucleus/es6/BrandLogo/BrandLogo';
+import { MastheadBox } from '@abcaustralia/nucleus/es6/MastheadBox/MastheadBox';
+import { MastheadLogoLink } from '@abcaustralia/nucleus/es6/MastheadLogoLink/MastheadLogoLink';
+import React from 'react';
+import './index.scss';
 
-// Ours
-require('./index.scss');
-
-module.exports = () => (
+const Nav = () => (
   <MastheadBox contentAnchor="#content" className="Nav" data-component="Masthead">
     <div className="Nav-row">
       <MastheadLogoLink className="Nav-logoLink" linkHref={`${window.location.origin}/news/`}>
@@ -23,3 +20,5 @@ module.exports = () => (
     </div>
   </MastheadBox>
 );
+
+export default Nav;

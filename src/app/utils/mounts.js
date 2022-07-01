@@ -1,13 +1,10 @@
-// External
-const { getTrailingMountValue, isExactMount, isPrefixedMount, prefixedMountSelector } = require('@abcnews/mount-utils');
-
-// Ours
-const { MOCK_ELEMENT } = require('../../constants');
-const { $$, detach, detachAll, substitute } = require('./dom');
-const { debug } = require('./logging');
+import { getTrailingMountValue, isExactMount, isPrefixedMount, prefixedMountSelector } from '@abcnews/mount-utils';
+import { MOCK_ELEMENT } from '../../constants';
+import { $$, detach, detachAll, substitute } from './dom';
+import { debug } from './logging';
 
 // Grabs a #config mount point preceding `el` (if it exists) and returns its trailing value.
-function grabPrecedingConfigString(el) {
+export const grabPrecedingConfigString = el => {
   const prevEl = el.previousElementSibling || MOCK_ELEMENT;
 
   if (!isPrefixedMount(prevEl, 'config')) {
@@ -17,7 +14,7 @@ function grabPrecedingConfigString(el) {
   detach(prevEl);
 
   return getTrailingMountValue(prevEl, 'config');
-}
+};
 
 function _substituteSectionWith(el, remainingBetweenNodes) {
   remainingBetweenNodes = Array.isArray(remainingBetweenNodes) ? remainingBetweenNodes : this.betweenNodes;
@@ -29,7 +26,7 @@ function _substituteSectionWith(el, remainingBetweenNodes) {
   return substitute(this.startNode, el);
 }
 
-function getSections(names) {
+export const getSections = names => {
   if (typeof names === 'string') {
     names = [names];
   }
@@ -82,9 +79,9 @@ function getSections(names) {
   });
 
   return sections;
-}
+};
 
-function getMarkers(names) {
+export const getMarkers = names => {
   if (typeof names === 'string') {
     names = [names];
   }
@@ -106,10 +103,4 @@ function getMarkers(names) {
       })
     );
   }, []);
-}
-
-module.exports = {
-  grabPrecedingConfigString,
-  getSections,
-  getMarkers
 };

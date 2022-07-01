@@ -1,12 +1,9 @@
-// External
-const { AspectRatioContainer } = require('@abcaustralia/nucleus/es6/AspectRatioContainer/AspectRatioContainer');
-const { TIERS, getTier } = require('@abcnews/env-utils');
-const useSWRImmutable = require('swr/immutable').default;
-const React = require('react');
-const { useLayoutEffect, useRef } = require('react');
-
-// Ours
-require('./index.scss');
+import { AspectRatioContainer } from '@abcaustralia/nucleus/es6/AspectRatioContainer/AspectRatioContainer';
+import { TIERS, getTier } from '@abcnews/env-utils';
+import { default as useSWRImmutable } from 'swr/immutable';
+import React from 'react';
+import { useLayoutEffect, useRef } from 'react';
+import './index.scss';
 
 const SUPPORTED_PROVIDER_TYPES = [
   'documentcloud',
@@ -26,7 +23,7 @@ const LOADER_NAME = 'oembed';
 
 const fetcher = (...args) => fetch(...args).then(res => res.json());
 
-module.exports = props => {
+const Interactive = props => {
   const { alignment, embedURL, providerType } = props;
   const isSupportedProviderType = SUPPORTED_PROVIDER_TYPES.includes(providerType);
   const hasAspectRatio = providerType === 'vimeo' || providerType.indexOf('youtube') === 0;
@@ -113,3 +110,5 @@ const normaliseHTML = (html, providerType) => {
 
   return normalisedHTML;
 };
+
+export default Interactive;

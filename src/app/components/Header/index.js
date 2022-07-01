@@ -1,23 +1,20 @@
-// External
-const { getMountValue, isMount } = require('@abcnews/mount-utils');
-const cn = require('classnames');
-const html = require('bel');
-const { url2cmid } = require('@abcnews/url2cmid');
+import { getMountValue, isMount } from '@abcnews/mount-utils';
+import cn from 'classnames';
+import html from 'bel';
+import { url2cmid } from '@abcnews/url2cmid';
+import { MS_VERSION, VIDEO_MARKER_PATTERN } from '../../../constants';
+import { enqueue, subscribe } from '../../scheduler';
+import { terminusFetch } from '../../utils/content';
+import { $, detach, detectVideoId, getChildImage, isElement } from '../../utils/dom';
+import { clampNumber, dePx, formattedDate, getRatios, trim } from '../../utils/misc';
+import ScrollHint from '../ScrollHint';
+import Picture from '../Picture';
+import { activate as activateUParallax } from '../UParallax';
+import VideoPlayer from '../VideoPlayer';
+import YouTubePlayer from '../YouTubePlayer';
+import './index.scss';
 
-// Ours
-const { MS_VERSION, VIDEO_MARKER_PATTERN } = require('../../../constants');
-const { enqueue, subscribe } = require('../../scheduler');
-const { terminusFetch } = require('../../utils/content');
-const { $, detach, detectVideoId, getChildImage, isElement } = require('../../utils/dom');
-const { clampNumber, dePx, formattedDate, getRatios, trim } = require('../../utils/misc');
-const ScrollHint = require('../ScrollHint');
-const Picture = require('../Picture');
-const UParallax = require('../UParallax');
-const VideoPlayer = require('../VideoPlayer');
-const YouTubePlayer = require('../YouTubePlayer');
-require('./index.scss');
-
-function Header({
+const Header = ({
   imgEl,
   interactiveEl,
   isAbreast,
@@ -32,7 +29,7 @@ function Header({
   ratios = {},
   shouldVideoPlayOnce,
   videoId
-}) {
+}) => {
   isFloating = isFloating || (isLayered && !imgEl && !videoId && !interactiveEl);
   isLayered = isLayered || isFloating;
   isDark = isLayered || typeof isDark === 'boolean' ? isDark : meta.isDarkMode;
@@ -85,13 +82,13 @@ function Header({
 
   if (mediaEl && !interactiveEl && !isLayered && !isAbreast) {
     mediaEl.classList.add('u-parallax');
-    UParallax.activate(mediaEl);
+    activateUParallax(mediaEl);
   }
 
   const titleEl = html`
     <h1>
       ${isKicker && meta.title.indexOf(': ') > -1
-        ? meta.title.split(': ').map((text, index) => (index === 0 ? html` <small>${text}</small> ` : text))
+        ? meta.title.split(': ').map((text, index) => (index === 0 ? html`<small>${text}</small>` : text))
         : meta.title}
     </h1>
   `;
@@ -109,7 +106,7 @@ function Header({
     ? html`
         <p class="Header-infoSource">
           ${meta.infoSource.url
-            ? html` <a href="${meta.infoSource.url}">${meta.infoSource.name}</a> `
+            ? html`<a href="${meta.infoSource.url}">${meta.infoSource.name}</a>`
             : meta.infoSource.name}
         </p>
       `
@@ -126,10 +123,10 @@ function Header({
   const contentEls = [titleEl]
     .concat(clonedMiscContentEls)
     .concat([
-      clonedBylineNodes ? html` <p class="Header-byline">${clonedBylineNodes}</p> ` : null,
+      clonedBylineNodes ? html`<p class="Header-byline">${clonedBylineNodes}</p>` : null,
       infoSourceEl,
       updated
-        ? html` <div class="Header-updated">Updated <time datetime="${updated.datetime}">${updated.text}</time></div> `
+        ? html`<div class="Header-updated">Updated <time datetime="${updated.datetime}">${updated.text}</time></div>`
         : null,
       published
         ? html`
@@ -140,7 +137,7 @@ function Header({
         : null
     ]);
 
-  const headerContentEl = html` <div class="Header-content u-richtext${isDark ? '-invert' : ''}">${contentEls}</div> `;
+  const headerContentEl = html`<div class="Header-content u-richtext${isDark ? '-invert' : ''}">${contentEls}</div>`;
 
   const headerEl = html`
     <div class="${className}">
@@ -183,11 +180,13 @@ function Header({
   }
 
   return headerEl;
-}
+};
 
-function Lite(meta) {
+export default Header;
+
+export const Lite = meta => {
   return Header({ meta, imgEl: meta.relatedMedia && getChildImage(meta.relatedMedia.cloneNode(true)) });
-}
+};
 
 function updateContentPeek(headerEl) {
   let titleHeight = 0;
@@ -231,7 +230,7 @@ function fetchInfoSourceLogo(meta, el, variant) {
   });
 }
 
-function transformSection(section, meta) {
+export const transformSection = (section, meta) => {
   const ratios = getRatios(section.configString);
   const isFloating = section.configString.indexOf('floating') > -1;
   const isLayered = isFloating || section.configString.indexOf('layered') > -1;
@@ -332,8 +331,4 @@ function transformSection(section, meta) {
   );
 
   section.substituteWith(Header(config));
-}
-
-module.exports = Header;
-module.exports.Lite = Lite;
-module.exports.transformSection = transformSection;
+};

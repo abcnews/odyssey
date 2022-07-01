@@ -1,12 +1,9 @@
-// External
-const html = require('bel');
-
-// Ours
-const { invalidateClient } = require('../../scheduler');
-const { track } = require('../../utils/behaviour');
-const { terminusFetch } = require('../../utils/content');
-const Picture = require('../Picture');
-require('./index.scss');
+import html from 'bel';
+import { invalidateClient } from '../../scheduler';
+import { track } from '../../utils/behaviour';
+import { terminusFetch } from '../../utils/content';
+import Picture from '../Picture';
+import './index.scss';
 
 const PICTURE_RATIOS = {
   sm: '16x9',
@@ -15,12 +12,9 @@ const PICTURE_RATIOS = {
   xl: '16x9'
 };
 
-function Recirculation({ ids, pull }) {
+const Recirculation = ({ ids, pull }) => {
   const itemEls = ids.map(
-    id =>
-      html`
-        <a class="Recirculation-item" href="/news/${id}" onclick="${() => track('recirculation-link', id)}"></a>
-      `
+    id => html`<a class="Recirculation-item" href="/news/${id}" onclick="${() => track('recirculation-link', id)}"></a>`
   );
 
   const el = html`
@@ -40,11 +34,7 @@ function Recirculation({ ids, pull }) {
       const title = item.titleAlt.md || item.titleAlt.lg || item.title;
       const teaser = item.synopsisAlt.md || item.synopsisAlt.lg || item.synopsis;
 
-      itemEl.appendChild(
-        html`
-          <h2>${title}</h2>
-        `
-      );
+      itemEl.appendChild(html`<h2>${title}</h2>`);
 
       if (item._embedded.mediaThumbnail) {
         itemEl.appendChild(Picture({ src: item._embedded.mediaThumbnail.complete[0].url, ratios: PICTURE_RATIOS }));
@@ -52,31 +42,25 @@ function Recirculation({ ids, pull }) {
       }
 
       if (JSON.stringify(item.text).indexOf(teaser) === -1) {
-        itemEl.appendChild(
-          html`
-            <p>${teaser}</p>
-          `
-        );
+        itemEl.appendChild(html`<p>${teaser}</p>`);
       }
 
-      itemEl.appendChild(
-        html`
-          <div>Read more →</div>
-        `
-      );
+      itemEl.appendChild(html`<div>Read more →</div>`);
 
       el.classList.add('has-children');
     })
   );
 
   return el;
-}
+};
+
+export default Recirculation;
 
 const DIGITS_PATTERN = /\d+/;
 const PULL_PATTERN = /[a-z]+/;
 let nextRelatedStoriesIdsIndex = 0;
 
-function transformMarker(marker, meta) {
+export const transformMarker = (marker, meta) => {
   const [digits] = marker.configString.match(DIGITS_PATTERN) || [1];
   const [pull] = marker.configString.match(PULL_PATTERN) || ['right'];
   let ids;
@@ -98,7 +82,4 @@ function transformMarker(marker, meta) {
   if (ids && ids.length) {
     marker.substituteWith(Recirculation({ ids, pull }));
   }
-}
-
-module.exports = Recirculation;
-module.exports.transformMarker = transformMarker;
+};

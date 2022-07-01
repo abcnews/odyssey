@@ -1,15 +1,12 @@
-// External
-const cn = require('classnames');
-const html = require('bel');
-const { url2cmid } = require('@abcnews/url2cmid');
-
-// Ours
-const { invalidateClient } = require('../../scheduler');
-const { track } = require('../../utils/behaviour');
-const { terminusFetch } = require('../../utils/content');
-const { $, $$, detach, prepend, substitute } = require('../../utils/dom');
-const Picture = require('../Picture');
-require('./index.scss');
+import cn from 'classnames';
+import html from 'bel';
+import { url2cmid } from '@abcnews/url2cmid';
+import { invalidateClient } from '../../scheduler';
+import { track } from '../../utils/behaviour';
+import { terminusFetch } from '../../utils/content';
+import { $, $$, detach, prepend, substitute } from '../../utils/dom';
+import Picture from '../Picture';
+import './index.scss';
 
 const PICTURE_RATIOS = {
   sm: '3x2',
@@ -18,7 +15,7 @@ const PICTURE_RATIOS = {
   xl: '3x2'
 };
 
-function WhatNextItem({ id, teaser, url }) {
+const WhatNextItem = ({ id, teaser, url }) => {
   const parts = teaser.split(' ');
   const splitIndex = Math.max(parts.length - 2, 0);
   const initialParts = parts.slice(0, splitIndex);
@@ -29,9 +26,9 @@ function WhatNextItem({ id, teaser, url }) {
       <h2>${initialParts.join(' ')} <span>${lastTwoParts.join(' ')}</span></h2>
     </a>
   `;
-}
+};
 
-function WhatNext({ stories }) {
+const WhatNext = ({ stories }) => {
   const itemEls = stories.map(WhatNextItem);
 
   stories.forEach(({ id, teaser }, index) => {
@@ -68,9 +65,11 @@ function WhatNext({ stories }) {
       ${itemEls}
     </div>
   `;
-}
+};
 
-function transformMarker(marker) {
+export default WhatNext;
+
+export const transformMarker = marker => {
   if (!window.CSS || typeof CSS.supports !== 'function' || !CSS.supports('display', 'grid')) {
     return;
   }
@@ -103,7 +102,4 @@ function transformMarker(marker) {
 
   substitute(nextEl, WhatNext({ stories }));
   detach(marker.node);
-}
-
-module.exports = WhatNext;
-module.exports.transformMarker = transformMarker;
+};

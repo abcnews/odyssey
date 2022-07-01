@@ -1,4 +1,4 @@
-const { TIERS, getTier } = require('@abcnews/env-utils');
+import { TIERS, getTier } from '@abcnews/env-utils';
 
 const SHOULD_ALWAYS_DEBUG = String(window.location.search).indexOf('debug=1') > -1;
 

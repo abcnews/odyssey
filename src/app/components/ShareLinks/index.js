@@ -1,12 +1,9 @@
-// External
-const html = require('bel');
+import html from 'bel';
+import ShareLink from '../ShareLink';
+import './index.scss';
 
-// Ours
-const ShareLink = require('../ShareLink');
-require('./index.scss');
-
-module.exports = function ShareLinks({ links, shouldBlend }) {
-  return html`
-    <div class="ShareLinks">${links.map(link => ShareLink({ link, shouldBlend }))}</div>
-  `;
+const ShareLinks = ({ links, shouldBlend }) => {
+  return html`<div class="ShareLinks">${links.map(link => ShareLink({ link, shouldBlend }))}</div>`;
 };
+
+export default ShareLinks;

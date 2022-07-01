@@ -7,7 +7,7 @@
 // the activation events for 'Decoy'-like nodes in its DOM tree, to honor
 // requests made by other interactive apps that are running in the same page.
 
-function mockDecoyActivationsUnderEl(storyEl) {
+export const mockDecoyActivationsUnderEl = storyEl => {
   const currentlyInactiveDecoyEls = Array.from(
     storyEl.querySelectorAll('[data-component="Decoy"]:not([data-clone="true"])')
   );
@@ -37,8 +37,4 @@ function mockDecoyActivationsUnderEl(storyEl) {
       });
     }
   });
-}
-
-module.exports = {
-  mockDecoyActivationsUnderEl
 };

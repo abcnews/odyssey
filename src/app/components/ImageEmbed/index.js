@@ -1,19 +1,16 @@
-// External
-const cn = require('classnames');
-const html = require('bel');
-const { url2cmid } = require('@abcnews/url2cmid');
+import cn from 'classnames';
+import html from 'bel';
+import { url2cmid } from '@abcnews/url2cmid';
+import { ALIGNMENT_PATTERN } from '../../../constants';
+import { lookupImageByAssetURL } from '../../meta';
+import { getChildImage, substitute } from '../../utils/dom';
+import { getRatios } from '../../utils/misc';
+import { grabPrecedingConfigString } from '../../utils/mounts';
+import { createFromTerminusDoc as createCaptionFromTerminusDoc } from '../Caption';
+import Picture from '../Picture';
+import './index.scss';
 
-// Ours
-const { ALIGNMENT_PATTERN } = require('../../../constants');
-const { lookupImageByAssetURL } = require('../../meta');
-const { getChildImage, substitute } = require('../../utils/dom');
-const { getRatios } = require('../../utils/misc');
-const { grabPrecedingConfigString } = require('../../utils/mounts');
-const Caption = require('../Caption');
-const Picture = require('../Picture');
-require('./index.scss');
-
-function ImageEmbed({ pictureEl, captionEl, alignment, isFull, isCover, isAnon }) {
+const ImageEmbed = ({ pictureEl, captionEl, alignment, isFull, isCover, isAnon }) => {
   if (isCover) {
     isFull = true;
     isAnon = true;
@@ -26,10 +23,12 @@ function ImageEmbed({ pictureEl, captionEl, alignment, isFull, isCover, isAnon }
     'is-cover': isCover
   });
 
-  return html` <div class="${className}">${pictureEl} ${isAnon ? null : captionEl}</div> `;
-}
+  return html`<div class="${className}">${pictureEl} ${isAnon ? null : captionEl}</div>`;
+};
 
-function transformEl(el, preserveOriginalRatio) {
+export default ImageEmbed;
+
+export const transformElement = (el, preserveOriginalRatio) => {
   const imgEl = getChildImage(el);
 
   if (!imgEl) {
@@ -62,7 +61,7 @@ function transformEl(el, preserveOriginalRatio) {
       },
       linkUrl: `/news/${imageDoc.id}`
     }),
-    captionEl: Caption.createFromTerminusDoc(imageDoc, unlink),
+    captionEl: createCaptionFromTerminusDoc(imageDoc, unlink),
     alignment,
     isFull: configString.indexOf('full') > -1,
     isCover: configString.indexOf('cover') > -1,
@@ -70,7 +69,4 @@ function transformEl(el, preserveOriginalRatio) {
   });
 
   substitute(el, imageEmbedEl);
-}
-
-module.exports = ImageEmbed;
-module.exports.transformEl = transformEl;
+};

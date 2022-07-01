@@ -61,7 +61,7 @@ function format(str, retainLength) {
     .replace(TO_PRIME, '\u2032');
 }
 
-function smartquotes(root) {
+const smartquotes = root => {
   var TEXT_NODE = (typeof Element !== 'undefined' && Element.TEXT_NODE) || 3;
 
   handleElement(root);
@@ -103,6 +103,6 @@ function smartquotes(root) {
   }
 
   return root;
-}
+};
 
-module.exports = smartquotes;
+export default smartquotes;

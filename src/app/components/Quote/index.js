@@ -1,16 +1,13 @@
-// External
-const cn = require('classnames');
-const html = require('bel');
+import cn from 'classnames';
+import html from 'bel';
+import { ALIGNMENT_PATTERN, MOCK_NODE } from '../../../constants';
+import { $, $$, append, detach, isElement, isInlineElement, isText, prepend, substitute } from '../../utils/dom';
+import { trim } from '../../utils/misc';
+import { grabPrecedingConfigString } from '../../utils/mounts';
+import { conditionallyApply as conditionallyApplyUQuote } from '../UQuote';
+import './index.scss';
 
-// Ours
-const { ALIGNMENT_PATTERN, MOCK_NODE } = require('../../../constants');
-const { $, $$, append, detach, isElement, isInlineElement, isText, prepend, substitute } = require('../../utils/dom');
-const { trim } = require('../../utils/misc');
-const { grabPrecedingConfigString } = require('../../utils/mounts');
-const UQuote = require('../UQuote');
-require('./index.scss');
-
-function Quote({ isPullquote = false, alignment, parEls = [], attributionNodes = [] }) {
+const Quote = ({ isPullquote = false, alignment, parEls = [], attributionNodes = [] }) => {
   const className = cn('Quote', {
     'is-pullquote': isPullquote,
     [`u-pull-${alignment}`]: alignment
@@ -27,7 +24,7 @@ function Quote({ isPullquote = false, alignment, parEls = [], attributionNodes =
 
   // Smart double quotes & indentation
   if (parEls.length) {
-    parEls.forEach(parEl => UQuote.conditionallyApply(parEl, isPullquote));
+    parEls.forEach(parEl => conditionallyApplyUQuote(parEl, isPullquote));
   }
 
   return html`
@@ -35,9 +32,11 @@ function Quote({ isPullquote = false, alignment, parEls = [], attributionNodes =
       <blockquote>${parEls.concat(attributionEl)}</blockquote>
     </div>
   `;
-}
+};
 
-function createFromEl(el, options) {
+export default Quote;
+
+export const createFromElement = (el, options) => {
   if (!isElement(el)) {
     return null;
   }
@@ -57,7 +56,7 @@ function createFromEl(el, options) {
   Content:
     *-B   => Native Blockquote
     *-P   => Native Pullquote
-    *-E   => Embedded WYSIWYG Teaser (viewtype=quote)
+    *-E   => Embedded Teaser (viewtype=quote)
 
   e.g. P1S-P denotes a Phase 1 (Standard) Native Pullquote
 
@@ -156,11 +155,11 @@ function createFromEl(el, options) {
   }
 
   return null;
-}
+};
 
-function transformEl(el, options) {
-  substitute(el, createFromEl(el, options));
-}
+export const transformElement = (el, options) => {
+  substitute(el, createFromElement(el, options));
+};
 
 function isBr(node) {
   return isElement(node) && node.tagName === 'BR';
@@ -233,7 +232,3 @@ function linebreaksToParagraphs(el) {
 
   return el;
 }
-
-module.exports = Quote;
-module.exports.createFromEl = createFromEl;
-module.exports.transformEl = transformEl;

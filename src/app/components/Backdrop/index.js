@@ -1,9 +1,8 @@
-// External
-const cn = require('classnames');
-const html = require('bel');
-require('./index.scss');
+import cn from 'classnames';
+import html from 'bel';
+import './index.scss';
 
-function Backdrop({ bgColor = 'rgb(255, 255, 255)', isDark = false, contentEls = [] }) {
+const Backdrop = ({ bgColor = 'rgb(255, 255, 255)', isDark = false, contentEls = [] }) => {
   return html`
     <div class="Backdrop u-full" style="background-color: ${bgColor}">
       <div
@@ -16,12 +15,14 @@ function Backdrop({ bgColor = 'rgb(255, 255, 255)', isDark = false, contentEls =
       </div>
     </div>
   `;
-}
+};
+
+export default Backdrop;
 
 const HEX3_PATTERN = /^([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])$/;
 const HEX6_PATTERN = /^([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/;
 
-function transformSection(section) {
+export const transformSection = section => {
   let [, hr, hg, hb] = section.configString.match(HEX6_PATTERN) || [];
 
   if (!hr) {
@@ -49,7 +50,4 @@ function transformSection(section) {
     }),
     []
   );
-}
-
-module.exports = Backdrop;
-module.exports.transformSection = transformSection;
+};

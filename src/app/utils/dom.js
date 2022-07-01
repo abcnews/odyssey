@@ -1,4 +1,4 @@
-const { url2cmid } = require('@abcnews/url2cmid');
+import { url2cmid } from '@abcnews/url2cmid';
 
 const INLINE_TAG_NAMES = [
   'b',
@@ -35,29 +35,31 @@ const INLINE_TAG_NAMES = [
   'textarea'
 ];
 
-function isText(node) {
+export const isText = node => {
   return node && node.nodeType === Node.TEXT_NODE;
-}
+};
 
-function isElement(node) {
+export const isElement = node => {
   return node && node.nodeType === Node.ELEMENT_NODE;
-}
+};
 
-function isInlineElement(node) {
+export const isInlineElement = node => {
   return isElement(node) && INLINE_TAG_NAMES.indexOf(node.tagName.toLowerCase()) > -1;
-}
+};
 
-function isDocument(node) {
+export const isDocument = node => {
   return node && node.nodeType === Node.DOCUMENT_NODE;
-}
+};
 
-function $(selector, root) {
+export const $ = (selector, root) => {
   root = isElement(root) ? root : document;
 
   return root.querySelector(selector);
-}
+};
 
-function $$(selector, roots) {
+export const select = $;
+
+export const $$ = (selector, roots) => {
   roots = Array.isArray(roots) ? roots : [roots];
   roots = isElement(roots[0]) ? roots : [document];
 
@@ -70,43 +72,45 @@ function $$(selector, roots) {
 
     return acc;
   }, []);
-}
+};
 
-function detach(node = {}) {
+export const selectAll = $$;
+
+export const detach = (node = {}) => {
   if (node != null && node.parentNode) {
     node.parentNode.removeChild(node);
   }
 
   return node;
-}
+};
 
-function detachAll(nodes) {
+export const detachAll = nodes => {
   return nodes.map(detach);
-}
+};
 
-function append(parent, node) {
+export const append = (parent, node) => {
   parent.appendChild(node);
-}
+};
 
-function prepend(parent, node) {
+export const prepend = (parent, node) => {
   parent.insertBefore(node, parent.firstChild);
-}
+};
 
-function before(sibling, node) {
+export const before = (sibling, node) => {
   sibling.parentNode.insertBefore(node, sibling);
-}
+};
 
-function after(sibling, node) {
+export const after = (sibling, node) => {
   sibling.parentNode.insertBefore(node, sibling.nextSibling);
-}
+};
 
-function substitute(node, replacementNode) {
+export const substitute = (node, replacementNode) => {
   before(node, replacementNode);
 
   return detach(node);
-}
+};
 
-function setText(el, text) {
+export const setText = (el, text) => {
   let node = el.firstChild;
 
   if (node === null || !isText(node)) {
@@ -114,19 +118,19 @@ function setText(el, text) {
   } else {
     node.nodeValue = text;
   }
-}
+};
 
-function toggleAttribute(node, attribute, shouldBeApplied) {
+export const toggleAttribute = (node, attribute, shouldBeApplied) => {
   node[`${shouldBeApplied ? 'set' : 'remove'}Attribute`](attribute, '');
-}
+};
 
-function toggleBooleanAttributes(node, map) {
+export const toggleBooleanAttributes = (node, map) => {
   Object.keys(map).forEach(name => {
     toggleAttribute(node, name, map[name]);
   });
-}
+};
 
-function setOrAddMetaTag(name, content) {
+export const setOrAddMetaTag = (name, content) => {
   let el = $(`meta[name="${name}"]`);
 
   if (!el) {
@@ -136,9 +140,9 @@ function setOrAddMetaTag(name, content) {
   }
 
   el.setAttribute('content', content);
-}
+};
 
-function getChildImage(el) {
+export const getChildImage = el => {
   if (!isElement(el)) {
     return;
   }
@@ -167,9 +171,9 @@ function getChildImage(el) {
   }
 
   return imgEl;
-}
+};
 
-function detectVideoId(node) {
+export const detectVideoId = node => {
   const classList = node.className.split(' ');
   const linkEl = $('a[href]', node);
   let videoId;
@@ -194,28 +198,4 @@ function detectVideoId(node) {
   }
 
   return videoId;
-}
-
-module.exports = {
-  isText,
-  isElement,
-  isDocument,
-  $,
-  $$,
-  detach,
-  detachAll,
-  append,
-  prepend,
-  before,
-  after,
-  substitute,
-  setText,
-  toggleAttribute,
-  toggleBooleanAttributes,
-  setOrAddMetaTag,
-  getChildImage,
-  detectVideoId,
-  // Deprecated API
-  select: $,
-  selectAll: $$
 };

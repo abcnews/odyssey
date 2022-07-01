@@ -1,4 +1,4 @@
-module.exports.PresentationLayerAsyncComponent = (componentName, props) => {
+export const PresentationLayerAsyncComponent = (componentName, props) => {
   const el = document.createElement('div');
 
   el.setAttribute('data-presentation-layer-async-component', componentName);

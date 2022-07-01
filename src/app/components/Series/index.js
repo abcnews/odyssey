@@ -1,17 +1,14 @@
-// External
-const cn = require('classnames');
-const html = require('bel');
-const { url2cmid } = require('@abcnews/url2cmid');
-
-// Ours
-const { MOCK_ELEMENT } = require('../../../constants');
-const { track } = require('../../utils/behaviour');
-const { $, $$, detach, getChildImage, substitute } = require('../../utils/dom');
-require('./index.scss');
+import cn from 'classnames';
+import html from 'bel';
+import { url2cmid } from '@abcnews/url2cmid';
+import { MOCK_ELEMENT } from '../../../constants';
+import { track } from '../../utils/behaviour';
+import { $, $$, detach, getChildImage, substitute } from '../../utils/dom';
+import './index.scss';
 
 const CURRENT_STORY_ID = url2cmid(window.location.href);
 
-function Series({ stories, options = {} }) {
+const Series = ({ stories, options = {} }) => {
   const className = cn('Series', {
     'has-m2r1': stories.length % 2 === 1,
     'has-m3r1': stories.length % 3 === 1,
@@ -26,21 +23,23 @@ function Series({ stories, options = {} }) {
           url && !isCurrent
             ? html`
                 <a href="${url}" onclick="${() => track('series-link', url2cmid(url))}" aria-current="false">
-                  ${thumbnail} ${kicker ? html` <label>${kicker}</label> ` : null} <span>${title}</span>
+                  ${thumbnail} ${kicker ? html`<label>${kicker}</label>` : null} <span>${title}</span>
                 </a>
               `
             : html`
                 <div aria-current="${isCurrent ? 'page' : 'false'}">
-                  ${thumbnail} ${kicker ? html` <label>${kicker}</label> ` : null}
-                  <span>${title}${isCurrent ? [' ', html` <i></i> `] : null}</span>
+                  ${thumbnail} ${kicker ? html`<label>${kicker}</label>` : null}
+                  <span>${title}${isCurrent ? [' ', html`<i></i> `] : null}</span>
                 </div>
               `
         )}
     </div>
   `;
-}
+};
 
-function transformMarker(marker) {
+export default Series;
+
+export const transformMarker = marker => {
   const nextEl = marker.node.nextElementSibling;
   const listEl = nextEl.tagName === 'OL' || nextEl.tagName === 'UL' ? nextEl : $('ol, ul', nextEl);
 
@@ -75,7 +74,4 @@ function transformMarker(marker) {
 
   substitute(listEl, Series({ stories, options }));
   detach(marker.node);
-}
-
-module.exports = Series;
-module.exports.transformMarker = transformMarker;
+};

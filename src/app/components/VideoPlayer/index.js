@@ -1,18 +1,15 @@
-// External
-const html = require('bel');
-
-// Ours
-const { MQ, MS_VERSION, ONLY_RATIO_PATTERN, SMALLEST_IMAGE, UNIT } = require('../../../constants');
-const { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } = require('../../media');
-const { enqueue, invalidateClient, subscribe } = require('../../scheduler');
-const { toggleAttribute, toggleBooleanAttributes } = require('../../utils/dom');
-const { PLACEHOLDER_PROPERTY } = require('../Picture');
-const { blurImage } = require('../Picture/blur');
-const Sizer = require('../Sizer');
-const VideoControls = require('../VideoControls');
-const { trackProgress } = require('./stats');
-const { getMetadata, hasAudio } = require('./utils');
-require('./index.scss');
+import html from 'bel';
+import { MQ, MS_VERSION, ONLY_RATIO_PATTERN, SMALLEST_IMAGE, UNIT } from '../../../constants';
+import { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } from '../../media';
+import { enqueue, invalidateClient, subscribe } from '../../scheduler';
+import { toggleAttribute, toggleBooleanAttributes } from '../../utils/dom';
+import { PLACEHOLDER_PROPERTY } from '../Picture';
+import { blurImage } from '../Picture/blur';
+import Sizer from '../Sizer';
+import VideoControls from '../VideoControls';
+import { trackProgress } from './stats';
+import { getMetadata, hasAudio } from './utils';
+import './index.scss';
 
 const FUZZY_INCREMENT_FPS = 30;
 const FUZZY_INCREMENT_INTERVAL = 1000 / FUZZY_INCREMENT_FPS;
@@ -20,7 +17,7 @@ const DEFAULT_RATIO = '16x9';
 
 let hasSubscribed = false;
 
-function VideoPlayer({
+const VideoPlayer = ({
   videoId,
   ratios = {},
   title,
@@ -30,7 +27,7 @@ function VideoPlayer({
   isLoop,
   isMuted,
   scrollplayPct
-}) {
+}) => {
   let videoPlayerEl;
   let videoControlsEl;
   let fuzzyCurrentTime = 0;
@@ -64,7 +61,7 @@ function VideoPlayer({
 
   const placeholderEl = Sizer(ratios);
 
-  const videoEl = html` <video preload="none" tabindex="-1" aria-label="${title}"></video> `;
+  const videoEl = html`<video preload="none" tabindex="-1" aria-label="${title}"></video>`;
 
   const isInitiallySmallViewport = window.matchMedia(MQ.SM).matches;
   const initiallyPreferredRatio = ratios[isInitiallySmallViewport ? 'sm' : 'lg'];
@@ -338,7 +335,7 @@ function VideoPlayer({
   videoPlayerEl.api = player;
 
   return videoPlayerEl;
-}
+};
 
 function toggleMutePreference(event) {
   event.stopPropagation();
@@ -357,6 +354,8 @@ function toggleMutePreference(event) {
     player.setMuted(shouldBeMuted);
   });
 }
+
+export default VideoPlayer;
 
 const mql = window.matchMedia(`(max-height: ${UNIT * 30}px)`);
 let mqlDidMatch = mql.matches;
@@ -398,5 +397,3 @@ function _checkIfVideoPlayersNeedToUpdateUIBasedOnMedia() {
     });
   });
 }
-
-module.exports = VideoPlayer;
