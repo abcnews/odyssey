@@ -11,7 +11,7 @@
   max-height: 100vh;
 
   &.is-fixed {
-    clip-path: inset(0);
+    clip-path: inset(-0.5px 0); // claiming vertical 0.5px closes sub-pixel gaps between adjacent Blocks
     max-height: none;
 
     _:-ms-fullscreen,
