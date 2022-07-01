@@ -11,9 +11,13 @@
   max-height: 100vh;
 
   &.is-fixed {
-    clip: rect(0, auto, auto, 0);
-    -webkit-clip-path: inset(0 0 0 0);
+    clip-path: inset(0);
     max-height: none;
+
+    _:-ms-fullscreen,
+    :root & {
+      clip: rect(0, auto, auto, 0);
+    }
 
     & > * {
       position: fixed;
@@ -77,8 +81,12 @@
 
   .has-inset-media &:not(.is-fixed) {
     @media #{$mq-lt-lg} {
-      clip: rect(0, auto, auto, 0);
-      -webkit-clip-path: inset(0 0 0 0);
+      clip-path: inset(0);
+
+      _:-ms-fullscreen,
+      :root & {
+        clip: rect(0, auto, auto, 0);
+      }
     }
   }
 
