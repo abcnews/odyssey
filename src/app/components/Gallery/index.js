@@ -341,7 +341,7 @@ const Gallery = ({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconst
     });
   });
 
-  const itemEls = items.map(({ id, mediaEl, mosaicMediaEl, captionEl, flexBasisPct }, index) => {
+  const itemEls = items.map(({ id, mediaEl, mosaicMediaEl, captionEl, flexBasisPct, rowLength }, index) => {
     if (mediaEl.api && mediaEl.api.loaded) {
       // Because Picture instances have multiple possible aspect ratios,
       // they call `loadedHook` (if one exists) each time its <img> lazy-loads.
@@ -357,6 +357,7 @@ const Gallery = ({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconst
         style="flex: 0 1 ${flexBasisPct}%; max-width: ${flexBasisPct}%"
         data-id="${id || 'n/a'}"
         data-index="${index}"
+        data-row-length="${rowLength}"
         tabindex="-1"
         ondragstart=${returnFalse}
         onmouseup=${swipeIntent}

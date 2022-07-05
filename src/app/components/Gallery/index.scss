@@ -280,6 +280,16 @@
       padding: 0 !important;
     }
   }
+
+  @media #{$mq-sm} {
+    [data-row-length='2'] & > .Quote.is-pullquote p {
+      font-size: 1.125rem;
+    }
+
+    [data-row-length='3'] & > .Quote.is-pullquote p {
+      font-size: 0.875rem;
+    }
+  }
 }
 
 .Gallery-controls {
