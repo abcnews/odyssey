@@ -90,12 +90,6 @@ const P2_FLOAT = {
   REPLACEMENT: 'u-pull-$2'
 };
 
-function addIE11StyleHint() {
-  if ('-ms-scroll-limit' in document.documentElement.style && '-ms-ime-align' in document.documentElement.style) {
-    document.documentElement.setAttribute('ie11', '');
-  }
-}
-
 function resetMetaViewport() {
   setOrAddMetaTag('viewport', 'width=device-width, initial-scale=1, minimum-scale=1');
 }
@@ -119,9 +113,6 @@ function promoteToMain(storyEl, meta) {
 
 export const reset = (storyEl, meta) => {
   const { isDarkMode, isPL, isPreview, theme } = meta;
-
-  // Try to feature-detect IE11, and apply an attribute to the root element for fallback styles to target
-  addIE11StyleHint();
 
   // Update (or add) the meta viewport tag so that touch devices don't introduce a click delay
   resetMetaViewport();

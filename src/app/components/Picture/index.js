@@ -1,9 +1,9 @@
 import { getImages } from '@abcnews/terminus-fetch';
 import html from 'bel';
-import { MQ, MQL, RATIO_PATTERN, SMALLEST_IMAGE, MS_VERSION } from '../../../constants';
+import { MQ, MQL, RATIO_PATTERN, SMALLEST_IMAGE } from '../../../constants';
 import { getMeta, lookupImageByAssetURL } from '../../meta';
 import { enqueue, subscribe, unsubscribe } from '../../scheduler';
-import { $, $$, append, detach } from '../../utils/dom';
+import { append, detach } from '../../utils/dom';
 import { proximityCheck } from '../../utils/misc';
 import Sizer from '../Sizer';
 import { blurImage } from './blur';
@@ -71,19 +71,15 @@ const Picture = ({ src = SMALLEST_IMAGE, alt = '', isContained = false, ratios =
 
   const placeholderEl = Sizer(ratios);
 
-  // The <img> element will be rendered inside a container element because:
-  // * We want to use <picture> where possible to automatically manage sources
-  //   (based on the viewport size)
-  // * The object-fit polyfill needs a container so that it can manipulate the
-  //   style attributes of both it and the image.
+  // The <img> element will be rendered inside a container element because we
+  // want to use <picture> where possible to automatically manage sources
+  // (based on the viewport size)
   // Note: We cannot use <picture> & <source>s on PL preview sites, because
   // `imageset`s aren't allowed Mixed Content (http asset loaded on https page).
-  // We have to manually manage the <img> src attribute sources to work around
-  // this. Seeing as this does a similar job to the <picture> element, we also
-  // use this technique for IE, rather than add the picturefill library.
+  // We have to manually manage <img> src attribute sources to work around this
   // https://snook.ca/archives/html_and_css/mixed-content-responsive-images
   const { isPL, isPreview } = getMeta();
-  const isManagingSources = (isPL && isPreview) || (MS_VERSION && MS_VERSION < 13);
+  const isManagingSources = isPL && isPreview;
 
   const imgContainerEl = isManagingSources
     ? document.createElement('div')
@@ -170,10 +166,6 @@ const Picture = ({ src = SMALLEST_IMAGE, alt = '', isContained = false, ratios =
       if (picture.loadedHook) {
         picture.loadedHook(imgEl);
       }
-
-      if (window.objectFitPolyfill) {
-        window.objectFitPolyfill(imgEl);
-      }
     },
     setSrc: ({ hasChanged }) => {
       if (!imgEl || !hasChanged) {
@@ -203,7 +195,6 @@ const Picture = ({ src = SMALLEST_IMAGE, alt = '', isContained = false, ratios =
 
   if (pictures.length === 1) {
     subscribe(_checkIfPicturesNeedToBeLoaded);
-    subscribe(_checkIfObjectFitPolyfillNeedsToRun, true);
   }
 
   return pictureEl;
@@ -226,12 +217,6 @@ function _checkIfPicturesNeedToBeLoaded(client) {
       });
     }
   });
-}
-
-function _checkIfObjectFitPolyfillNeedsToRun() {
-  if (window.objectFitPolyfill) {
-    window.objectFitPolyfill();
-  }
 }
 
 function resizeCM5ImageURL(url, ratio = '16x9', size = 'md') {

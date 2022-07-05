@@ -1,8 +1,8 @@
 import './unveil';
+import './polyfills';
 import './fonts.scss';
 import './keyframes.scss';
 import './app/components/utilities/index.scss';
-import './polyfills';
 import { proxy } from '@abcnews/dev-proxy';
 import { GENERATIONS, getGeneration, requestDOMPermit } from '@abcnews/env-utils';
 import { url2cmid } from '@abcnews/url2cmid';
@@ -16,6 +16,11 @@ import { debug } from './app/utils/logging';
 window.__IS_ODYSSEY_FORMAT__ = true;
 
 proxy('odyssey').then(() => {
+  // Don't run on IE or old-Edge, which we no longer support
+  if (/* IE <= 9 */ (document.all && !window.atob) || /* IE >= 10 */ window.navigator.msPointerEnabled) {
+    return;
+  }
+
   // When this runs as Associated JS, rather than init-interactive,
   // we still need to let Phase 1 know (somehow) that we intend to
   // takeover the article and implement our own audio/video players

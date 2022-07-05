@@ -1,5 +1,4 @@
 import {
-  HYPHEN,
   NEWLINE,
   SM_RATIO_PATTERN,
   MD_RATIO_PATTERN,
@@ -7,14 +6,8 @@ import {
   XL_RATIO_PATTERN
 } from '../../constants';
 
-const SLUG_ALLOWED_PATTERN = /[^\w\s\-\_]/g;
-const SLUG_REPLACE_PATTERN = /[-\s]+/g;
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const TRIM_PATTERN = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
-
-export const returnFalse = () => {
-  return false;
-};
 
 export const trim = str => {
   return str.replace(TRIM_PATTERN, '');

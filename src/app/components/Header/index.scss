@@ -1,5 +1,4 @@
 @import '../../../constants';
-@import '../Main/variables.scss';
 @import './variables.scss';
 
 $abreastChildSpacing: $unit * 2.5;
@@ -26,20 +25,12 @@ $abreastChildSpacing: $unit * 2.5;
     display: flex;
     flex-direction: column-reverse;
     min-height: calc(100vh - var(--Main-offsetTop));
-
-    [ie11] & {
-      min-height: calc(100vh - #{$var--Main-offsetTop});
-    }
   }
 
   &.is-floating {
     z-index: 2;
     margin-bottom: calc(-100vh + var(--Main-offsetTop)) !important;
     background-color: transparent !important;
-
-    [ie11] & {
-      margin-bottom: calc(-100vh + #{$var--Main-offsetTop}) !important;
-    }
   }
 
   @media #{$mq-gt-md} {
@@ -70,10 +61,6 @@ $abreastChildSpacing: $unit * 2.5;
 
   :not(.is-layered) > & {
     max-height: calc(100vh - var(--Main-offsetTop) - var(--Header-contentPeek));
-
-    [ie11] & {
-      max-height: calc(100vh - #{$var--Main-offsetTop + $var--Header-contentPeek});
-    }
   }
 
   .is-layered > & {
@@ -117,11 +104,6 @@ $abreastChildSpacing: $unit * 2.5;
       // Enforce 3x4 aspect ratio
       max-width: calc(75vh - var(--Main-offsetTop) - var(--Header-contentPeek) - #{$abreastChildSpacing * 2});
 
-      [ie11] & {
-        max-height: calc(100vh - #{$var--Main-offsetTop + $var--Header-contentPeek + $abreastChildSpacing * 2});
-        max-width: calc(75vh - #{$var--Main-offsetTop + $var--Header-contentPeek + $abreastChildSpacing * 2});
-      }
-
       &::after {
         content: none;
       }
@@ -134,22 +116,11 @@ $abreastChildSpacing: $unit * 2.5;
       // Enforce 1x1 aspect ratio
       width: calc(100vh - var(--Main-offsetTop) - var(--Header-contentPeek) - #{$abreastChildSpacing * 2});
       max-width: none;
-
-      [ie11] & {
-        width: calc(100vh - #{$var--Main-offsetTop + $var--Header-contentPeek + $abreastChildSpacing * 2});
-      }
     }
   }
 
   & > .ScrollHint {
     position: absolute;
-  }
-}
-
-/* In Firefox, parallax headers aren't clipped properly */
-@supports (-moz-appearance: meterbar) {
-  :not(.is-layered) > .Header-media [data-component='OdysseyParallax_App'] > * {
-    clip: rect(0, auto, calc(100vh - var(--Main-offsetTop) - var(--Header-contentPeek)), 0);
   }
 }
 

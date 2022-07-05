@@ -305,11 +305,6 @@ const Block = ({
           if (captionEls[activeIndex]) {
             mediaCaptionContainerEl.appendChild(captionEls[activeIndex]);
           }
-
-          // Ensure that newly visible images have their object-fit properties polyfilled in IE11
-          if (window.objectFitPolyfill) {
-            window.objectFitPolyfill();
-          }
         });
       }
     });

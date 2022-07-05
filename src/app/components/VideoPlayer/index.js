@@ -1,5 +1,5 @@
 import html from 'bel';
-import { MQ, MS_VERSION, ONLY_RATIO_PATTERN, SMALLEST_IMAGE, UNIT } from '../../../constants';
+import { MQ, ONLY_RATIO_PATTERN, SMALLEST_IMAGE, UNIT } from '../../../constants';
 import { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } from '../../media';
 import { enqueue, invalidateClient, subscribe } from '../../scheduler';
 import { toggleAttribute, toggleBooleanAttributes } from '../../utils/dom';
@@ -155,11 +155,6 @@ const VideoPlayer = ({
   });
 
   videoEl.addEventListener('ended', () => {
-    if (MS_VERSION === 11) {
-      // IE11 mistakenly loops videos
-      videoEl.pause();
-    }
-
     player.isUserInControl = true;
     videoEl.setAttribute('ended', '');
     videoEl.setAttribute('paused', '');
@@ -327,7 +322,7 @@ const VideoPlayer = ({
   }
 
   videoPlayerEl = html`
-    <div class="VideoPlayer${isContained ? ' is-contained' : ''}">
+    <div class="VideoPlayer${isContained ? ' is-contained' : ''}" draggable="false">
       ${placeholderEl} ${videoEl} ${isAmbient ? null : videoControlsEl}
     </div>
   `;

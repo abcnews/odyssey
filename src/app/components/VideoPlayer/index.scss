@@ -5,11 +5,7 @@
   overflow: hidden;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
-  -webkit-user-drag: none;
-  user-drag: none;
   background-color: $color-darkBg;
 
   .u-full > & {
@@ -28,21 +24,6 @@
     vertical-align: top;
     object-fit: cover;
 
-    &:-webkit-full-screen {
-      background-image: none !important;
-      object-fit: contain;
-    }
-
-    &:-moz-full-screen {
-      background-image: none !important;
-      object-fit: contain;
-    }
-
-    &:-ms-full-screen {
-      background-image: none !important;
-      object-fit: contain;
-    }
-
     &:fullscreen {
       background-image: none !important;
       object-fit: contain;
@@ -53,32 +34,6 @@
       opacity: 0;
       width: $unit * 0.3125;
       pointer-events: none;
-    }
-  }
-
-  // Until IE/Edge supports object-fit, un-constrained ambient
-  // (native control-less) video elements need to be resized, transformed
-  // and (effectively) clipped to cover their parents
-  _:-ms-lang(x),
-  &:not(.is-contained) video:not([controls]) {
-    transform: translate(-50%, -50%);
-    top: 50%;
-    left: 50%;
-    z-index: 0;
-    min-width: 100%;
-    min-height: 100%;
-    max-width: none;
-  }
-  @media (orientation: portrait) {
-    _:-ms-lang(x),
-    &:not(.is-contained) video:not([controls]) {
-      width: auto;
-    }
-  }
-  @media (orientation: landscape) {
-    _:-ms-lang(x),
-    &:not(.is-contained) video:not([controls]) {
-      height: auto;
     }
   }
 
