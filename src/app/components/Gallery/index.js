@@ -2,12 +2,11 @@ import { getMountValue, isPrefixedMount } from '@abcnews/mount-utils';
 import cn from 'classnames';
 import html from 'bel';
 import rawHTML from 'bel/raw';
-import { url2cmid } from '@abcnews/url2cmid';
 import { SELECTORS, SUPPORTS_PASSIVE, VIDEO_MARKER_PATTERN } from '../../../constants';
 import { getMeta, lookupImageByAssetURL } from '../../meta';
 import { enqueue, invalidateClient, subscribe } from '../../scheduler';
 import { $, append, detach, detectVideoId, getChildImage, isElement, setText } from '../../utils/dom';
-import { dePx, getRatios, returnFalse } from '../../utils/misc';
+import { dePx, getRatios } from '../../utils/misc';
 import Caption, {
   createFromElement as createCaptionFromElement,
   createFromTerminusDoc as createCaptionFromTerminusDoc
@@ -19,12 +18,7 @@ import VideoPlayer from '../VideoPlayer';
 import './index.scss';
 
 export const MOSAIC_ROW_LENGTHS_PATTERN = /mosaic[a-z]*(\d+)/;
-const DEFAULT_MOSAIC_SIZE_RATIOS = {
-  sm: '1x1',
-  md: '3x2',
-  lg: '16x9',
-  xl: '16x9'
-};
+
 const PCT_PATTERN = /(-?[0-9\.]+)%/;
 const SWIPE_THRESHOLD = 25;
 const AXIS_THRESHOLD = 5;
@@ -347,7 +341,6 @@ const Gallery = ({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconst
       // they call `loadedHook` (if one exists) each time its <img> lazy-loads.
       mediaEl.api.loadedHook = imgEl => {
         imgEl.onload = measureDimensions;
-        imgEl.setAttribute('draggable', 'false');
       };
     }
 
@@ -359,7 +352,8 @@ const Gallery = ({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconst
         data-index="${index}"
         data-row-length="${rowLength}"
         tabindex="-1"
-        ondragstart=${returnFalse}
+        draggable="false"
+        ondragstart=${() => false}
         onmouseup=${swipeIntent}
         onclick=${stopIfIgnoringClicks}
       >
@@ -453,7 +447,9 @@ const Gallery = ({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconst
   `;
 
   const galleryEl = html`
-    <div class="${className}"><div class="Gallery-layout">${controlsEl} ${paneEl} ${masterCaptionEl}</div></div>
+    <div class="${className}" draggable="false">
+      <div class="Gallery-layout">${controlsEl} ${paneEl} ${masterCaptionEl}</div>
+    </div>
   `;
 
   galleryEl.api = { goToItem, measureDimensions };

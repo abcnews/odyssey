@@ -1,12 +1,11 @@
 import { getMountValue, isMount } from '@abcnews/mount-utils';
 import cn from 'classnames';
 import html from 'bel';
-import { url2cmid } from '@abcnews/url2cmid';
-import { MS_VERSION, VIDEO_MARKER_PATTERN } from '../../../constants';
+import { VIDEO_MARKER_PATTERN } from '../../../constants';
 import { enqueue, subscribe } from '../../scheduler';
 import { terminusFetch } from '../../utils/content';
 import { $, detach, detectVideoId, getChildImage, isElement } from '../../utils/dom';
-import { clampNumber, dePx, formattedDate, getRatios, trim } from '../../utils/misc';
+import { clampNumber, formattedDate, getRatios, trim } from '../../utils/misc';
 import ScrollHint from '../ScrollHint';
 import Picture from '../Picture';
 import { activate as activateUParallax } from '../UParallax';
@@ -153,25 +152,6 @@ const Header = ({
   `;
 
   fetchInfoSourceLogo(meta, infoSourceEl, isLayered ? 'layered' : isDark ? 'dark' : 'light');
-
-  if (isLayered && MS_VERSION > 9 && MS_VERSION < 12) {
-    // https://github.com/philipwalton/flexbugs#3-min-height-on-a-flex-container-wont-apply-to-its-flex-items
-    let heightOverride;
-
-    subscribe(function _checkIfHeaderHeightNeedsToBeUpdated() {
-      const headerElMinHeight = dePx(window.getComputedStyle(headerEl).minHeight);
-      const headerContentElHeight = headerContentEl.getBoundingClientRect().height;
-      const headerContentElMarginTop = dePx(window.getComputedStyle(headerContentEl).marginTop);
-      const nextHeightOverride = Math.max(headerElMinHeight, headerContentElHeight + headerContentElMarginTop);
-
-      if (nextHeightOverride !== heightOverride) {
-        heightOverride = nextHeightOverride;
-        enqueue(function _updateHeaderHeight() {
-          headerEl.style.height = heightOverride + 'px';
-        });
-      }
-    }, true);
-  }
 
   if (!isLayered && !isAbreast) {
     subscribe(function _updateContentPeek() {

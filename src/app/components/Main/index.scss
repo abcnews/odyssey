@@ -1,8 +1,7 @@
 @import '../../../constants';
-@import './variables';
 
 .Main {
-  --Main-offsetTop: #{$var--Main-offsetTop};
+  --Main-offsetTop: $unit * 4; // default: will change
   display: block;
   line-height: normal;
 

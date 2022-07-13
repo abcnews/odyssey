@@ -144,8 +144,6 @@
 }
 
 .VideoControls-progressBar {
-  -webkit-appearance: none;
-  -moz-appearance: none;
   appearance: none;
   margin: 0;
   border: none;
@@ -164,10 +162,6 @@
   }
 
   &::-moz-progress-bar {
-    background: $color-white-transparent-60;
-  }
-
-  &::-ms-fill {
     background: $color-white-transparent-60;
   }
 }

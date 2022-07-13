@@ -14,11 +14,6 @@
     clip-path: inset(-0.5px 0); // claiming vertical 0.5px closes sub-pixel gaps between adjacent Blocks
     max-height: none;
 
-    _:-ms-fullscreen,
-    :root & {
-      clip: rect(0, auto, auto, 0);
-    }
-
     & > * {
       position: fixed;
       top: 0;
@@ -82,11 +77,6 @@
   .has-inset-media &:not(.is-fixed) {
     @media #{$mq-lt-lg} {
       clip-path: inset(0);
-
-      _:-ms-fullscreen,
-      :root & {
-        clip: rect(0, auto, auto, 0);
-      }
     }
   }
 

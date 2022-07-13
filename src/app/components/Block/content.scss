@@ -1,5 +1,4 @@
 @import '../../../constants';
-@import '../Main/variables.scss';
 
 .Block-content {
   display: flex;
@@ -55,10 +54,6 @@
 
   .Header.is-floating + .Block > &:nth-child(2) {
     margin-top: calc(100vh - var(--Main-offsetTop));
-
-    [ie11] & {
-      margin-top: calc(100vh - #{$var--Main-offsetTop});
-    }
   }
 
   & > * {

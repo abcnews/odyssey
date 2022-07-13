@@ -4,11 +4,7 @@
   overflow: hidden;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
-  -webkit-user-drag: none;
-  user-drag: none;
 }
 
 .Gallery-layout {
@@ -116,11 +112,7 @@
   padding: 0 $unit * 0.46875;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
-  -webkit-user-drag: none;
-  user-drag: none;
 
   .is-mosaic & {
     opacity: 1;
@@ -158,8 +150,6 @@
   // mediaEl
   & > :not(.Caption) {
     cursor: pointer;
-    cursor: -webkit-grab;
-    cursor: -moz-grab;
     cursor: grab;
     transition: opacity 0.125s;
     will-change: opacity;
@@ -173,8 +163,6 @@
     }
 
     .is-moving & {
-      cursor: -webkit-grabbing;
-      cursor: -moz-grabbing;
       cursor: grabbing;
       transition-duration: 0s;
     }
