@@ -81,7 +81,7 @@ export const createFromElement = (el, options) => {
         attributionNodes: ($('.p--pullquote-byline', clone) || MOCK_NODE).childNodes
       };
     }
-  } else if (clone.tagName === 'ASIDE') {
+  } else if (clone.getAttribute('data-component') === 'EmphasisedText' || clone.tagName === 'ASIDE') {
     // PL-P, P2-P
     config = {
       isPullquote: true,
