@@ -42,7 +42,7 @@ Subscribed functions (`.subscribe()`) will be called with the viewport's dimensi
 
 Place `#mount` tags in Core Media articles to define your own sections/markers, then correctly parse them (.`getSections()`|`getMarkers()`) for use with your own components/transforms.
 
-*Note: This is aliased to `api.utils.anchors.*` for backwards compatibility.*
+_Note: This is aliased to `api.utils.anchors._` for backwards compatibility.\*
 
 ### `api.utils.dom.*`
 
@@ -74,6 +74,7 @@ module.exports = {
 
 ## Authors
 
+- Josh Byrd ([Byrd.Joshua@abc.net.au](mailto:Byrd.Joshua@abc.net.au))
 - Simon Elvery ([Elvery.Simon@abc.net.au](mailto:Elvery.Simon@abc.net.au))
 - Colin Gourlay ([Gourlay.Colin@abc.net.au](mailto:Gourlay.Colin@abc.net.au))
 - Nathan Hoad ([Hoad.Nathan@abc.net.au](mailto:Hoad.Nathan@abc.net.au))
