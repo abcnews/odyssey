@@ -1,7 +1,7 @@
 import cn from 'classnames';
 import html from 'bel';
 import { url2cmid } from '@abcnews/url2cmid';
-import { MOCK_ELEMENT } from '../../../constants';
+import { MOCK_ELEMENT, MOCK_NODE } from '../../../constants';
 import { track } from '../../utils/behaviour';
 import { $, $$, detach, getChildImage, substitute } from '../../utils/dom';
 import './index.scss';
@@ -54,16 +54,16 @@ export const transformMarker = marker => {
   }
 
   const stories = listItemEls.map(listItemEl => {
-    const linkEl = (listItemEl.firstChild || MOCK_ELEMENT).tagName === 'A' ? listItemEl.firstChild : null;
+    const linkEl = $('a', listItemEl);
     const isCurrent = linkEl && url2cmid(linkEl.href) === CURRENT_STORY_ID;
-    const textParts = (linkEl ? linkEl.textContent : listItemEl.firstChild.nodeValue).split(': ');
+    const [title, kicker] = (linkEl || listItemEl).textContent.split(': ').reverse();
     const thumbnailImageEl = getChildImage(listItemEl);
 
     return {
       isCurrent,
-      kicker: textParts.length > 1 ? textParts[0] : null,
+      kicker,
       thumbnail: thumbnailImageEl ? thumbnailImageEl.cloneNode(true) : null,
-      title: textParts[textParts.length - 1],
+      title,
       url: linkEl ? linkEl.href : ''
     };
   });

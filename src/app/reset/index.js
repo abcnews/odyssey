@@ -48,7 +48,7 @@ const TEMPLATE_REMOVABLES = {
     .view-hero-media
   `),
   // PL
-  'link[data-chunk^="page."]': literalList(`
+  'link[data-chunk="main"],link[data-chunk^="page."]': literalList(`
     [data-component="AppDetailLayout"]
     [data-component="DetailLayout"]
     [data-component="WebContentWarning"]
