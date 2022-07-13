@@ -19,7 +19,7 @@ module.exports = {
       ...(config.resolve.alias || {}),
       react: path.resolve(__dirname, 'node_modules/react'),
       'react-dom': path.resolve(__dirname, 'node_modules/react-dom'),
-      'react-is': path.resolve(__dirname, 'node_modules/downshift/node_modules/react-is'),
+      'react-is': path.resolve(__dirname, 'node_modules/downshift/node_modules/react-is')
     };
 
     // Stop `import()`-ed chunks from being split into `[name].js` and `vendors~[name].js`

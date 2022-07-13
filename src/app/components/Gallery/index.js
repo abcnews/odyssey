@@ -447,7 +447,9 @@ const Gallery = ({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconst
   `;
 
   const galleryEl = html`
-    <div class="${className}" draggable="false"><div class="Gallery-layout">${controlsEl} ${paneEl} ${masterCaptionEl}</div></div>
+    <div class="${className}" draggable="false">
+      <div class="Gallery-layout">${controlsEl} ${paneEl} ${masterCaptionEl}</div>
+    </div>
   `;
 
   galleryEl.api = { goToItem, measureDimensions };
