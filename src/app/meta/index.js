@@ -220,8 +220,8 @@ export const lookupImageByAssetURL = url => {
   const [, binaryKey] = url.match(/\/([0-9a-f]{32})\b/) || [];
 
   if (binaryKey) {
-    return meta.imagesByBinaryKey[binaryKey];
+    return imagesByBinaryKey[binaryKey];
   }
 
-  return meta.imagesById[url2cmid(url)] || null;
+  return imagesById[url2cmid(url)] || null;
 };
