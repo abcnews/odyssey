@@ -17,14 +17,14 @@
     "@abcaustralia/global-components": "^11.2.5",
     "@abcaustralia/nucleus": "^11.2.5",
     "@abcnews/dev-proxy": "^1.1.0",
-    "@abcnews/env-utils": "^3.0.0",
+    "@abcnews/env-utils": "^3.0.1",
     "@abcnews/mount-utils": "^1.0.0",
     "@abcnews/poll-counters-client": "^1.3.1",
     "@abcnews/terminus-fetch": "^4.0.1",
     "@abcnews/url2cmid": "^1.1.0",
     "bel": "^6.0.0",
     "classnames": "^2.2.6",
-    "core-js": "^3.1.2",
+    "core-js": "^3.23.4",
     "debounce": "^1.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -33,7 +33,7 @@
     "util-dewysiwyg": "git+ssh://git@stash.abc-dev.net.au:7999/news/util-dewysiwyg.git#3.8.0"
   },
   "devDependencies": {
-    "@abcnews/aunty": "^12.2.0",
+    "@abcnews/aunty": "^12.2.2",
     "duplicate-package-checker-webpack-plugin": "^3.0.0"
   },
   "browserslist": [
