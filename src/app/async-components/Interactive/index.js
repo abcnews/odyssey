@@ -25,7 +25,7 @@ const fetcher = (...args) => fetch(...args).then(res => res.json());
 
 const Interactive = props => {
   const { alignment, embedURL, providerType } = props;
-  const isSupportedProviderType = SUPPORTED_PROVIDER_TYPES.includes(providerType);
+  const isSupportedProviderType = SUPPORTED_PROVIDER_TYPES.indexOf(providerType) > -1;
   const hasAspectRatio = providerType === 'vimeo' || providerType.indexOf('youtube') === 0;
   const ref = useRef(null);
   const { data, error } = useSWRImmutable(

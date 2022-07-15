@@ -46,7 +46,7 @@ export const transformElement = (el, preserveOriginalRatio) => {
   const configString = grabPrecedingConfigString(el);
   const [, alignment] = configString.match(ALIGNMENT_PATTERN) || [];
   const ratios = getRatios(configString);
-  const unlink = configString.includes('unlink');
+  const unlink = configString.indexOf('unlink') > -1;
   const alt = imgEl.getAttribute('alt');
 
   const imageEmbedEl = ImageEmbed({

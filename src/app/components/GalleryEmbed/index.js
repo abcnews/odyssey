@@ -30,7 +30,7 @@ export const transformElement = el => {
   const configString = grabPrecedingConfigString(el);
   const [, mosaicRowLengthsString] = `${configString}`.match(MOSAIC_ROW_LENGTHS_PATTERN) || [null, ''];
   const ratios = getRatios(configString);
-  const unlink = configString.includes('unlink');
+  const unlink = configString.indexOf('unlink') > -1;
 
   const placeholderEl = document.createElement('div');
 

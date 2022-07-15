@@ -475,9 +475,9 @@ export const transformSection = section => {
     null,
     ''
   ];
-  const isUnconstrained = mosaicRowLengthsString.length && section.configString.includes('full');
+  const isUnconstrained = mosaicRowLengthsString.length && section.configString.indexOf('full') > -1;
   const ratios = getRatios(section.configString);
-  const unlink = section.configString.includes('unlink');
+  const unlink = section.configString.indexOf('unlink') > -1;
 
   const nodes = [].concat(section.betweenNodes);
 

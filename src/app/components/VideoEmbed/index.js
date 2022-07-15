@@ -52,7 +52,7 @@ export const transformElement = el => {
 
   const configString = grabPrecedingConfigString(el);
   const [, alignment] = configString.match(ALIGNMENT_PATTERN) || [];
-  const unlink = configString.includes('unlink');
+  const unlink = configString.indexOf('unlink') > -1;
 
   const isYouTube = isMarker && mountSC.indexOf('youtube') === 0;
   const captionEl = !isMarker ? createCaptionFromElement(el, unlink) : null;
