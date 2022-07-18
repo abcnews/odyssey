@@ -1,6 +1,6 @@
 import { getGeneration, getTier, GENERATIONS, TIERS } from '@abcnews/env-utils';
 import { url2cmid } from '@abcnews/url2cmid';
-import { INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID, MOCK_ELEMENT, SELECTORS } from '../../constants';
+import { INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID, SELECTORS } from '../../constants';
 import { $, $$, detach } from '../utils/dom';
 import { trim } from '../utils/misc';
 
@@ -135,6 +135,21 @@ export const initMeta = terminusDocument => {
             isDarkMode: metaDataName['dark-mode'] === true
           }
         : null;
+    },
+    // Discover if the page was rendered by the News app
+    () => {
+      let isNewsApp = false;
+
+      try {
+        const pageURL =
+          window && window.location !== window.parent.location ? document.referrer : document.location.href;
+
+        isNewsApp = pageURL.indexOf('newsapp') > -1;
+      } catch (err) {}
+
+      return {
+        isNewsApp
+      };
     },
     // Parse share links from the DOM, using url & title props
     ({ url, title }) => ({
