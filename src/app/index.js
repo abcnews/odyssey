@@ -1,5 +1,4 @@
-import html from 'bel';
-import { RICHTEXT_BLOCK_TAGNAMES, SELECTORS } from '../constants';
+import { MOCK_ELEMENT, RICHTEXT_BLOCK_TAGNAMES, SELECTORS } from '../constants';
 import api from './api';
 import { PresentationLayerAsyncComponent } from './async-components/loader';
 import { transformSection as transformSectionIntoBackdrop } from './components/Backdrop';
@@ -245,6 +244,18 @@ export default terminusDocument => {
   const wysiwygEmbeds = $$(SELECTORS.WYSIWYG_EMBED, storyEl).filter(doesElMatchConventionOfStoryTeaserEmbed);
   wysiwygEmbeds.forEach(transformElementIntoStoryTeaserEmbed);
   conditionalDebug(wysiwygEmbeds.length > 0, `Transformed ${wysiwygEmbeds.length} WYSIWYG embeds`);
+
+  // In the News app, restore light mode override to PL Datawrapper embeds when on light backgrounds
+  const datawrapperIframes = !meta.isNewsApp
+    ? []
+    : $$(`[data-component="Iframe"] iframe[src*="datawrapper"]`, storyEl).filter(
+        el => (el.closest('[class*="u-richtext]') || MOCK_ELEMENT).className.indexOf('u-richtext-invert') === -1
+      );
+  datawrapperIframes.forEach(el => (el.src = `${el.src}&dark=false`));
+  conditionalDebug(
+    datawrapperIframes.length > 0,
+    `Restored light mode to ${datawrapperIframes.length} Datawrapper embeds`
+  );
 
   // Restore post-story Top Stories thumbnail images in PL
   const postStoryThumbnails = $$('[data-component="TopStories"] [data-component="IntersectionObserver"]').filter(el => {
