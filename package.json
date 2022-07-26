@@ -33,7 +33,7 @@
 		"util-dewysiwyg": "git+ssh://git@stash.abc-dev.net.au:7999/news/util-dewysiwyg.git#3.8.0"
 	},
 	"devDependencies": {
-		"@abcnews/aunty": "^12.2.2",
+		"@abcnews/aunty": "^13.0.0",
 		"duplicate-package-checker-webpack-plugin": "^3.0.0"
 	},
 	"browserslist": [

@@ -1,9 +1,8 @@
 # dependencies
 /node_modules
 
-# builds
-/.build
-.deploy
+# output
+/.aunty
 
 # design
 *.sketch
