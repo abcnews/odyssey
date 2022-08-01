@@ -1,7 +1,6 @@
 import { SELECTORS } from '../../constants';
 import Main from '../components/Main';
 import { $, $$, append, before, detach, detachAll } from '../utils/dom';
-import { trim } from '../utils/misc';
 import './index.scss';
 
 const TEMPLATE_REMOVABLES = {
@@ -64,7 +63,7 @@ export const reset = (storyEl, meta) => {
 
   // Remove elements that don't contain any text
   $$(WHITESPACE_REMOVABLES, storyEl).forEach(el => {
-    if (trim(el.textContent).length === 0) {
+    if ((el.textContent || '').trim().length === 0) {
       detach(el);
     }
   });

@@ -290,7 +290,13 @@ export const transformSection = (section, meta) => {
         }
       }
 
-      if (!videoId && !imgEl && !interactiveEl && isElement(node) && (trim(node.textContent).length > 0 || !!mountSC)) {
+      if (
+        !videoId &&
+        !imgEl &&
+        !interactiveEl &&
+        isElement(node) &&
+        ((node.textContent || '').trim().length > 0 || !!mountSC)
+      ) {
         config.miscContentEls.push(node);
       }
 

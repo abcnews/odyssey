@@ -1,11 +1,6 @@
-import { NEWLINE, SM_RATIO_PATTERN, MD_RATIO_PATTERN, LG_RATIO_PATTERN, XL_RATIO_PATTERN } from '../../constants';
+import { SM_RATIO_PATTERN, MD_RATIO_PATTERN, LG_RATIO_PATTERN, XL_RATIO_PATTERN } from '../../constants';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const TRIM_PATTERN = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
-
-export const trim = str => {
-  return str.replace(TRIM_PATTERN, '');
-};
 
 export const twoDigits = number => {
   return `${number < 10 ? '0' : ''}${number}`;

@@ -40,7 +40,7 @@ function getBylineNodes() {
   const bylineSubEl = $('p', bylineEl);
 
   return Array.from((bylineSubEl || bylineEl).childNodes)
-    .filter(node => node !== infoSourceEl && trim(node.textContent).length > -1)
+    .filter(node => node !== infoSourceEl && (node.textContent || '').trim().length > -1)
     .map(node => {
       const clone = node.cloneNode(true);
 

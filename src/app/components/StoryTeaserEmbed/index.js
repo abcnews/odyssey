@@ -54,12 +54,11 @@ export const transformElement = el => {
     $$('noscript', el).forEach(noscriptEl => noscriptEl.parentElement.removeChild(noscriptEl));
   }
 
-  const description = trim(
-    String(el.textContent)
-      .replace(title, '')
-      .replace('Read more', '')
-      .replace(/\.{1}(\S)/g, '. $1')
-  );
+  const description = (el.textContent || '')
+    .replace(title, '')
+    .replace('Read more', '')
+    .replace(/\.{1}(\S)/g, '. $1')
+    .trim();
 
   substitute(el, StoryTeaserEmbed({ title, url, imageURL, description }));
 };

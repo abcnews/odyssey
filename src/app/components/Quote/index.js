@@ -196,7 +196,7 @@ function _linebreaksToParagraphsReducer(state, node, index, nodes) {
   if (isText(node)) {
     // Push the text element onto the stack if it
     // contains more than empty space
-    if (trim(node.nodeValue).length) {
+    if ((node.nodeValue || '').trim().length) {
       state.stack.push(node);
     }
   } else if (isInlineElement(node)) {
