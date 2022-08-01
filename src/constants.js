@@ -19,8 +19,7 @@ export const SELECTORS = {
   ].join(),
   SHARE_TOOLS: '[data-component="FixedHeader"] [data-component="Popover"]',
   BYLINE: 'header [data-component="Heading"]~[data-component="Byline"]',
-  WYSIWYG_EMBED:
-    '.inline-content.wysiwyg,.embed-wysiwyg.richtext,.view-wysiwyg,[data-component="LegacyWysiwyg"],[data-component="RelatedCard"]',
+  WYSIWYG_EMBED: '[data-component="LegacyWysiwyg"],[data-component="RelatedCard"]',
   QUOTE:
     'blockquote:not([class]),.quote--pullquote,.inline-content.quote,.embed-quote,.comp-rich-text-blockquote,.view-inline-pullquote,[data-component="Blockquote"],[data-component="EmphasisedText"],[data-component="Pullquote"]'
 };
