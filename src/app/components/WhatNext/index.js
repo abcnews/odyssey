@@ -70,10 +70,6 @@ const WhatNext = ({ stories }) => {
 export default WhatNext;
 
 export const transformMarker = marker => {
-  if (!window.CSS || typeof CSS.supports !== 'function' || !CSS.supports('display', 'grid')) {
-    return;
-  }
-
   const nextEl = marker.node.nextElementSibling;
 
   if (!nextEl || (nextEl.tagName !== 'OL' && nextEl.tagName !== 'UL')) {
