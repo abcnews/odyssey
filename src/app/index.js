@@ -329,34 +329,4 @@ export default terminusDocument => {
       `[async] Resolved ${numInteractivesResolved}/${interactives.length} interactives`
     );
   }, 0);
-
-  // Fix Block classNames on non-updated scrollyteller instances.
-  // Stories which depend on this polyfill are tracked here:
-  // https://github.com/abcnews/odyssey/pull/64#issuecomment-444763314
-  setTimeout(() => {
-    const alignmentPattern = /\sis-(left|right)/;
-    const blockEls = $$('.Block.is-richtext');
-
-    blockEls.forEach(el => {
-      const [, alignment] = el.className.match(alignmentPattern) || [];
-
-      el.className = el.className.replace(' is-richtext', '');
-
-      if (alignment) {
-        el.className = `${el.className} has-${alignment}`;
-      }
-
-      $$('.Block-content', el).forEach(el => {
-        el.className = el.className.replace(' u-layout', '');
-
-        if (alignment && !el.className.match(alignmentPattern)) {
-          el.className = `${el.className} is-${alignment}`;
-        }
-      });
-    });
-
-    if (blockEls.length) {
-      debug(`[async] Fixed classNames of deprecated scrollyteller Blocks`);
-    }
-  }, 2000);
 };
