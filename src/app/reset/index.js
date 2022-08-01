@@ -13,7 +13,7 @@ const TEMPLATE_REMOVABLES = {
     'ul>li>span:first-child',
     '[data-component="NewsTicker"]',
     '[data-component="StickyHeader"]',
-    '[data-component="Sidebar"]:first-child'
+    ':not(aside)>[data-component="Sidebar"]'
   ].join(),
   // PL (App)
   'link[data-chunk="page.App"]': 'main:not([class*="u-"])'
