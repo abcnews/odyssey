@@ -21,6 +21,11 @@ proxy('odyssey').then(() => {
     return;
   }
 
+  // Don't run on non-PL website generations
+  if (getGeneration() !== GENERATIONS.PL) {
+    return;
+  }
+
   // Once we've got:
   // 1. the article's terminus document, and
   // 2. permission to modify the DOM
