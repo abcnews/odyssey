@@ -201,18 +201,10 @@ export default terminusDocument => {
 
   // Transform image embeds
   const sidePulls = $$('.u-pull-left, .u-pull-right');
-  const imageEmbeds = $$('.inline-content.photo,[class*="view-image-embed"]', mainEl)
-    .concat($$('.embed-content', mainEl).filter(el => $('.type-photo', el)))
-    .concat(
-      $$('[data-component="Figure"]', mainEl).filter(
-        el => (el.getAttribute('data-uri') || '').indexOf('customimage') === -1 && $('img', el)
-      )
-    );
-  imageEmbeds.forEach(el => {
-    const isSidePulled = sidePulls.filter(pEl => pEl.contains(el)).length > 0;
-
-    transformElementIntoImageEmbed(el, isSidePulled);
-  });
+  const imageEmbeds = $$('[data-component="Figure"]', mainEl).filter(
+    el => (el.getAttribute('data-uri') || '').indexOf('customimage') === -1 && $('img', el)
+  );
+  imageEmbeds.forEach(el => transformElementIntoImageEmbed(el, sidePulls.filter(pEl => pEl.contains(el)).length > 0));
   conditionalDebug(imageEmbeds.length > 0, `Transformed ${imageEmbeds.length} image embeds`);
 
   // Transform quotes (native and embedded) that haven't already been transformed
