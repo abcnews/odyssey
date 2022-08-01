@@ -30,7 +30,6 @@ function getDataAttribute(name) {
 }
 
 function getBylineNodes() {
-  const infoSourceEl = $(SELECTORS.INFO_SOURCE);
   const bylineEl = $(SELECTORS.BYLINE);
 
   if (!bylineEl) {
@@ -40,7 +39,7 @@ function getBylineNodes() {
   const bylineSubEl = $('p', bylineEl);
 
   return Array.from((bylineSubEl || bylineEl).childNodes)
-    .filter(node => node !== infoSourceEl && (node.textContent || '').trim().length > -1)
+    .filter(node => (node.textContent || '').trim().length > -1)
     .map(node => {
       const clone = node.cloneNode(true);
 

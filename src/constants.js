@@ -19,9 +19,7 @@ export const SELECTORS = {
   ].join(),
   SHARE_TOOLS: '[data-component="FixedHeader"] [data-component="Popover"]',
   TITLE: '.article h1,header h1,h1[itemprop="name"]',
-  BYLINE: '.view-byline,header>.attribution,.byline,header [data-component="Heading"]~[data-component="Byline"]',
-  INFO_SOURCE: '.bylinepromo,.program,[data-component="InfoSource"]',
-  INFO_SOURCE_LINK: '.bylinepromo>a,.program>a,[data-component="InfoSource"]>a',
+  BYLINE: 'header [data-component="Heading"]~[data-component="Byline"]',
   WYSIWYG_EMBED:
     '.inline-content.wysiwyg,.embed-wysiwyg.richtext,.view-wysiwyg,[data-component="LegacyWysiwyg"],[data-component="RelatedCard"]',
   QUOTE:
