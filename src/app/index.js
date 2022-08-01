@@ -31,27 +31,27 @@ import {
   transformMarker as transformMarkerIntoVideoEmbed
 } from './components/VideoEmbed';
 import { transformMarker as transformMarkerIntoWhatNext } from './components/WhatNext';
-import { start, subscribe } from './scheduler';
+import { start } from './scheduler';
 import { initMeta } from './meta';
 import { reset } from './reset';
 import { mockDecoyActivationsUnderEl } from './utils/decoys';
-import { $, $$, after, append, before, detachAll, prepend, substitute } from './utils/dom';
+import { $, $$, append, detachAll, prepend, substitute } from './utils/dom';
 import { conditionalDebug, debug } from './utils/logging';
 import { getMarkers, getSections } from './utils/mounts';
 
 export default terminusDocument => {
   const meta = initMeta(terminusDocument);
-  let storyEl = $(SELECTORS.PL_STORY);
+  const storyEl = $(SELECTORS.STORY);
 
   if (!storyEl) {
     debug('Story is empty. Nothing to do');
     return;
   }
 
-  storyEl = reset(storyEl, meta);
+  const mainEl = reset(storyEl, meta);
   debug('Performed page reset');
 
-  mockDecoyActivationsUnderEl(storyEl); // Mock PL's decoy activation events
+  mockDecoyActivationsUnderEl(mainEl); // Mock PL's decoy activation events
   start(); // scheduler loop
 
   // Register all embedded images with MasterGallery
@@ -108,7 +108,7 @@ export default terminusDocument => {
   debug(`Transformed sections (${Object.keys(transformedSections).length})`, transformedSections);
 
   if (!hasHeader) {
-    prepend(storyEl, LiteHeader(meta));
+    prepend(mainEl, LiteHeader(meta));
     debug('No #header/#endheader mount points found. Inserted lite header');
   }
 
@@ -194,10 +194,10 @@ export default terminusDocument => {
   conditionalDebug(parallaxes.length > 0, `Activated ${parallaxes.length} parallax effects`);
 
   // Transform video embeds
-  const videoEmbeds = $$('.inline-content.video, .view-inlineMediaPlayer.doctype-abcvideo', storyEl)
-    .concat($$('.embed-content', storyEl).filter(el => $('.type-video', el)))
+  const videoEmbeds = $$('.inline-content.video, .view-inlineMediaPlayer.doctype-abcvideo', mainEl)
+    .concat($$('.embed-content', mainEl).filter(el => $('.type-video', el)))
     .concat(
-      $$('[data-component="Figure"]', storyEl).filter(el =>
+      $$('[data-component="Figure"]', mainEl).filter(el =>
         $('[data-component="PlayerButton"][aria-label*="Video"],[data-component="ExpiredMediaWarning"]', el)
       )
     );
@@ -205,18 +205,18 @@ export default terminusDocument => {
   conditionalDebug(videoEmbeds.length > 0, `Transformed ${videoEmbeds.length} video embeds`);
 
   // Transform gallery embeds
-  const galleryEmbeds = $$('.inline-content.gallery', storyEl)
-    .concat($$('.embed-content', storyEl).filter(el => $('.type-gallery', el)))
-    .concat($$('[class^="comp-embedded-"]', storyEl).filter(el => $('[data-gallery-id]', el)));
+  const galleryEmbeds = $$('.inline-content.gallery', mainEl)
+    .concat($$('.embed-content', mainEl).filter(el => $('.type-gallery', el)))
+    .concat($$('[class^="comp-embedded-"]', mainEl).filter(el => $('[data-gallery-id]', el)));
   galleryEmbeds.forEach(transformElementIntoGalleryEmbed);
   conditionalDebug(galleryEmbeds.length > 0, `Transformed ${galleryEmbeds.length} gallery embeds`);
 
   // Transform image embeds
   const sidePulls = $$('.u-pull-left, .u-pull-right');
-  const imageEmbeds = $$('.inline-content.photo,[class*="view-image-embed"]', storyEl)
-    .concat($$('.embed-content', storyEl).filter(el => $('.type-photo', el)))
+  const imageEmbeds = $$('.inline-content.photo,[class*="view-image-embed"]', mainEl)
+    .concat($$('.embed-content', mainEl).filter(el => $('.type-photo', el)))
     .concat(
-      $$('[data-component="Figure"]', storyEl).filter(
+      $$('[data-component="Figure"]', mainEl).filter(
         el => (el.getAttribute('data-uri') || '').indexOf('customimage') === -1 && $('img', el)
       )
     );
@@ -228,7 +228,7 @@ export default terminusDocument => {
   conditionalDebug(imageEmbeds.length > 0, `Transformed ${imageEmbeds.length} image embeds`);
 
   // Transform quotes (native and embedded) that haven't already been transformed
-  const nativeQuotesAndQuoteEmbeds = $$(SELECTORS.QUOTE, storyEl).filter(el => el.closest('.Quote') === null);
+  const nativeQuotesAndQuoteEmbeds = $$(SELECTORS.QUOTE, mainEl).filter(el => el.closest('.Quote') === null);
   nativeQuotesAndQuoteEmbeds.forEach(transformElementIntoQuote);
   conditionalDebug(
     nativeQuotesAndQuoteEmbeds.length > 0,
@@ -241,14 +241,14 @@ export default terminusDocument => {
   conditionalDebug(nestedPulls.length > 0, `Nullified ${nativeQuotesAndQuoteEmbeds.length} nested pulls`);
 
   // Transform WYSIWYG story teasers (title+image+description convention)
-  const wysiwygEmbeds = $$(SELECTORS.WYSIWYG_EMBED, storyEl).filter(doesElMatchConventionOfStoryTeaserEmbed);
+  const wysiwygEmbeds = $$(SELECTORS.WYSIWYG_EMBED, mainEl).filter(doesElMatchConventionOfStoryTeaserEmbed);
   wysiwygEmbeds.forEach(transformElementIntoStoryTeaserEmbed);
   conditionalDebug(wysiwygEmbeds.length > 0, `Transformed ${wysiwygEmbeds.length} WYSIWYG embeds`);
 
   // In the News app, restore light mode override to PL Datawrapper embeds when on light backgrounds
   const datawrapperIframes = !meta.isNewsApp
     ? []
-    : $$(`[data-component="Iframe"] iframe[src*="datawrapper"]`, storyEl).filter(
+    : $$(`[data-component="Iframe"] iframe[src*="datawrapper"]`, mainEl).filter(
         el => (el.closest('[class*="u-richtext]') || MOCK_ELEMENT).className.indexOf('u-richtext-invert') === -1
       );
   datawrapperIframes.forEach(el => (el.src = `${el.src}&dark=false`));
@@ -283,18 +283,18 @@ export default terminusDocument => {
 
   // Append format credit for non-DSI stories
   if (meta.productionUnit !== 'EDL team' && (meta.infoSource || {}).name !== 'Digital Story Innovation Team') {
-    append(storyEl, FormatCredit());
+    append(mainEl, FormatCredit());
     debug('Appended Odyssey format credit');
   }
 
   // Append comments, if enabled
   if (meta.hasCommentsEnabled) {
-    append(storyEl, Comments());
+    append(mainEl, Comments());
     debug('Appended comments');
   }
 
   // Append master gallery
-  append(storyEl, MasterGallery());
+  append(mainEl, MasterGallery());
   debug('Appended master gallery');
 
   // Expose API, then notify interested parties

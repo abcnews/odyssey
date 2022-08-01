@@ -12,10 +12,11 @@ export const VIDEO_MARKER_PATTERN = /(?:video|youtube)(\w+)/;
 export const SCROLLPLAY_PCT_PATTERN = /scrollplay(\d+)/;
 
 export const SELECTORS = {
-  MAIN: '.page_margins#main_content,body>.content,.main-content-container,main#content',
-  STORY: '.article.section,article>.story.richtext,.article-detail-page .article-text',
-  PL_STORY:
-    '[data-component="Decoy"][data-key="article"]>div>div:not([class]),[data-component="Decoy"][data-key="article"] [data-component="GridRow"] div:not([class])',
+  MAIN: 'main#content',
+  STORY: [
+    '[data-component="Decoy"][data-key="article"]>div>div:not([class])',
+    '[data-component="Decoy"][data-key="article"] [data-component="GridRow"] div:not([class])'
+  ].join(),
   SHARE_TOOLS: '[data-component="FixedHeader"] [data-component="Popover"]',
   TITLE: '.article h1,header h1,h1[itemprop="name"]',
   BYLINE: '.view-byline,header>.attribution,.byline,header [data-component="Heading"]~[data-component="Byline"]',

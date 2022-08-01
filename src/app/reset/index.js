@@ -52,7 +52,7 @@ export const reset = (storyEl, meta) => {
     document.documentElement.classList.add('is-dark-mode');
   }
 
-  storyEl = promoteToMain(storyEl, meta);
+  const mainEl = promoteToMain(storyEl, meta);
 
   // Remove elements we don't need
   Object.keys(TEMPLATE_REMOVABLES).forEach(templateBodySelector => {
@@ -62,14 +62,14 @@ export const reset = (storyEl, meta) => {
   });
 
   // Remove elements that don't contain any text
-  $$(WHITESPACE_REMOVABLES, storyEl).forEach(el => {
+  $$(WHITESPACE_REMOVABLES, mainEl).forEach(el => {
     if ((el.textContent || '').trim().length === 0) {
       detach(el);
     }
   });
 
   // Fix PL top-level links that aren't inside paragraphs.
-  Array.from(storyEl.children).forEach(el => {
+  Array.from(mainEl.children).forEach(el => {
     if (el.tagName === 'A' && el.hasAttribute('href')) {
       const pEl = document.createElement('p');
 
@@ -79,7 +79,7 @@ export const reset = (storyEl, meta) => {
   });
 
   // Treat WYSIWYG teaser embeds as nested richtext content
-  $$(SELECTORS.WYSIWYG_EMBED, storyEl).forEach(el => {
+  $$(SELECTORS.WYSIWYG_EMBED, mainEl).forEach(el => {
     el.className = `u-richtext${isDarkMode ? '-invert' : ''}`;
   });
 
@@ -92,11 +92,11 @@ export const reset = (storyEl, meta) => {
       '[data-component="ListItem"]',
       'p'
     ].join(),
-    storyEl
+    mainEl
   ).forEach(el => {
     el.removeAttribute('class');
     el.removeAttribute('data-component');
   });
 
-  return storyEl;
+  return mainEl;
 };
