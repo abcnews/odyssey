@@ -78,8 +78,8 @@ const Picture = ({ src = SMALLEST_IMAGE, alt = '', isContained = false, ratios =
   // `imageset`s aren't allowed Mixed Content (http asset loaded on https page).
   // We have to manually manage <img> src attribute sources to work around this
   // https://snook.ca/archives/html_and_css/mixed-content-responsive-images
-  const { isPL, isPreview } = getMeta();
-  const isManagingSources = isPL && isPreview;
+  const { isPreview } = getMeta();
+  const isManagingSources = isPreview;
 
   const imgContainerEl = isManagingSources
     ? document.createElement('div')

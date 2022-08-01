@@ -112,7 +112,7 @@ function promoteToMain(storyEl, meta) {
 }
 
 export const reset = (storyEl, meta) => {
-  const { isDarkMode, isPL, isPreview, theme } = meta;
+  const { isDarkMode, isPreview, theme } = meta;
 
   // Update (or add) the meta viewport tag so that touch devices don't introduce a click delay
   resetMetaViewport();
@@ -148,16 +148,14 @@ export const reset = (storyEl, meta) => {
   });
 
   // Fix PL top-level links that aren't inside paragraphs.
-  if (isPL) {
-    Array.from(storyEl.children).forEach(el => {
-      if (el.tagName === 'A' && el.hasAttribute('href')) {
-        const pEl = document.createElement('p');
+  Array.from(storyEl.children).forEach(el => {
+    if (el.tagName === 'A' && el.hasAttribute('href')) {
+      const pEl = document.createElement('p');
 
-        before(el.nextElementSibling, pEl);
-        append(pEl, el);
-      }
-    });
-  }
+      before(el.nextElementSibling, pEl);
+      append(pEl, el);
+    }
+  });
 
   $$(SELECTORS.WYSIWYG_EMBED, storyEl).forEach(el => {
     dewysiwyg.normalise(el);
@@ -194,21 +192,19 @@ export const reset = (storyEl, meta) => {
   });
 
   // Clean up Presentation Layer components
-  if (isPL) {
-    $$(
-      literalList(`
-      [data-component="ContentLink"]
-      [data-component="Heading"]
-      [data-component="List"]
-      [data-component="ListItem"]
-      p
-    `),
-      storyEl
-    ).forEach(el => {
-      el.removeAttribute('class');
-      el.removeAttribute('data-component');
-    });
-  }
+  $$(
+    literalList(`
+    [data-component="ContentLink"]
+    [data-component="Heading"]
+    [data-component="List"]
+    [data-component="ListItem"]
+    p
+  `),
+    storyEl
+  ).forEach(el => {
+    el.removeAttribute('class');
+    el.removeAttribute('data-component');
+  });
 
   if (isPreview) {
     $$(PREVIEW_CTX_SELECTOR, storyEl).forEach(el => {

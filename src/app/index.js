@@ -41,7 +41,7 @@ import { getMarkers, getSections } from './utils/mounts';
 
 export default terminusDocument => {
   const meta = initMeta(terminusDocument);
-  let storyEl = $(meta.isPL ? SELECTORS.PL_STORY : SELECTORS.STORY);
+  let storyEl = $(SELECTORS.PL_STORY);
 
   if (!storyEl) {
     debug('Story is empty. Nothing to do');
@@ -312,32 +312,30 @@ export default terminusDocument => {
 
   // Try to resolve Presentation Layer Interactive document-based embeds
   setTimeout(() => {
-    if (meta.isPL) {
-      let textDescriptor;
+    let textDescriptor;
 
-      try {
-        textDescriptor = meta._articledetail.text.descriptor;
-      } catch (err) {
-        return console.error(err);
-      }
-
-      const interactives = textDescriptor.children.filter(({ type }) => type === 'interactive');
-      const numInteractivesResolved = 0;
-      interactives.forEach(({ props }) => {
-        const containerEl = $(`[itemid="${props.embedURL}"]`);
-
-        if (containerEl) {
-          containerEl.className = 'u-pull';
-          substitute(containerEl.firstElementChild, PresentationLayerAsyncComponent('Interactive', props));
-          numInteractivesResolved++;
-        }
-      });
-
-      conditionalDebug(
-        interactives.length > 0,
-        `[async] Resolved ${numInteractivesResolved}/${interactives.length} interactives`
-      );
+    try {
+      textDescriptor = meta._articledetail.text.descriptor;
+    } catch (err) {
+      return console.error(err);
     }
+
+    const interactives = textDescriptor.children.filter(({ type }) => type === 'interactive');
+    const numInteractivesResolved = 0;
+    interactives.forEach(({ props }) => {
+      const containerEl = $(`[itemid="${props.embedURL}"]`);
+
+      if (containerEl) {
+        containerEl.className = 'u-pull';
+        substitute(containerEl.firstElementChild, PresentationLayerAsyncComponent('Interactive', props));
+        numInteractivesResolved++;
+      }
+    });
+
+    conditionalDebug(
+      interactives.length > 0,
+      `[async] Resolved ${numInteractivesResolved}/${interactives.length} interactives`
+    );
   }, 0);
 
   // Fix Block classNames on non-updated scrollyteller instances.
