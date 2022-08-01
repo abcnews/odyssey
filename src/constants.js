@@ -18,7 +18,6 @@ export const SELECTORS = {
     '[data-component="Decoy"][data-key="article"] [data-component="GridRow"] div:not([class])'
   ].join(),
   SHARE_TOOLS: '[data-component="FixedHeader"] [data-component="Popover"]',
-  TITLE: '.article h1,header h1,h1[itemprop="name"]',
   BYLINE: 'header [data-component="Heading"]~[data-component="Byline"]',
   WYSIWYG_EMBED:
     '.inline-content.wysiwyg,.embed-wysiwyg.richtext,.view-wysiwyg,[data-component="LegacyWysiwyg"],[data-component="RelatedCard"]',
