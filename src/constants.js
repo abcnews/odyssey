@@ -16,7 +16,7 @@ export const SELECTORS = {
   STORY: '.article.section,article>.story.richtext,.article-detail-page .article-text',
   PL_STORY:
     '[data-component="Decoy"][data-key="article"]>div>div:not([class]),[data-component="Decoy"][data-key="article"] [data-component="GridRow"] div:not([class])',
-  SHARE_TOOLS: '.share-tools-list,.share,.tools',
+  SHARE_TOOLS: '[data-component="FixedHeader"] [data-component="Popover"]',
   TITLE: '.article h1,header h1,h1[itemprop="name"]',
   BYLINE: '.view-byline,header>.attribution,.byline,header [data-component="Heading"]~[data-component="Byline"]',
   INFO_SOURCE: '.bylinepromo,.program,[data-component="InfoSource"]',

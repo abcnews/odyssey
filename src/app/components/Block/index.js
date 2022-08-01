@@ -4,7 +4,7 @@ import html from 'bel';
 import { ALIGNMENT_PATTERN, SCROLLPLAY_PCT_PATTERN, VIDEO_MARKER_PATTERN } from '../../../constants';
 import { enqueue, subscribe } from '../../scheduler';
 import { $, detach, detectVideoId, getChildImage, isElement } from '../../utils/dom';
-import { getRatios, trim } from '../../utils/misc';
+import { getRatios } from '../../utils/misc';
 import { createFromElement as createCaptionFromElement } from '../Caption';
 import Picture from '../Picture';
 import VideoPlayer from '../VideoPlayer';

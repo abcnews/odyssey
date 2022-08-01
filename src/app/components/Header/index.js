@@ -5,7 +5,7 @@ import { VIDEO_MARKER_PATTERN } from '../../../constants';
 import { enqueue, subscribe } from '../../scheduler';
 import { terminusFetch } from '../../utils/content';
 import { $, detach, detectVideoId, getChildImage, isElement } from '../../utils/dom';
-import { clampNumber, formattedDate, getRatios, trim } from '../../utils/misc';
+import { clampNumber, formattedDate, getRatios } from '../../utils/misc';
 import ScrollHint from '../ScrollHint';
 import Picture from '../Picture';
 import { activate as activateUParallax } from '../UParallax';

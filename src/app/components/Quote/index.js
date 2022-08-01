@@ -2,7 +2,6 @@ import cn from 'classnames';
 import html from 'bel';
 import { ALIGNMENT_PATTERN, MOCK_NODE } from '../../../constants';
 import { $, $$, append, detach, isElement, isInlineElement, isText, prepend, substitute } from '../../utils/dom';
-import { trim } from '../../utils/misc';
 import { grabPrecedingConfigString } from '../../utils/mounts';
 import { conditionallyApply as conditionallyApplyUQuote } from '../UQuote';
 import './index.scss';

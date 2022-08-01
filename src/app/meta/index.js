@@ -54,35 +54,36 @@ function getBylineNodes() {
 }
 
 function getShareLinks({ url, title }) {
-  const links = navigator.share ? [{ id: 'native', url, title }] : [];
-
   return $$('a', $(SELECTORS.SHARE_TOOLS))
-    .reduce((links, linkEl) => {
-      const url = linkEl.href;
-      let link;
+    .reduce(
+      (links, linkEl) => {
+        const url = linkEl.href;
+        let link;
 
-      switch (url) {
-        case (url.match(FACEBOOK) || {}).input:
-          link = { id: 'facebook', url };
-          break;
-        case (url.match(TWITTER) || {}).input:
-          link = { id: 'twitter', url };
-          break;
-        case (url.match(EMAIL) || {}).input:
-          if (!navigator.share) {
-            link = { id: 'email', url };
-          }
-          break;
-        default:
-          break;
-      }
+        switch (url) {
+          case (url.match(FACEBOOK) || {}).input:
+            link = { id: 'facebook', url };
+            break;
+          case (url.match(TWITTER) || {}).input:
+            link = { id: 'twitter', url };
+            break;
+          case (url.match(EMAIL) || {}).input:
+            if (!navigator.share) {
+              link = { id: 'email', url };
+            }
+            break;
+          default:
+            break;
+        }
 
-      if (link && !links.find(({ id }) => id === link.id)) {
-        links.push(link);
-      }
+        if (link && !links.find(({ id }) => id === link.id)) {
+          links.push(link);
+        }
 
-      return links;
-    }, links)
+        return links;
+      },
+      navigator.share ? [{ id: 'native', url, title }] : []
+    )
     .sort((a, b) => SHARE_ORDERING.indexOf(a.id) - SHARE_ORDERING.indexOf(b.id));
 }
 

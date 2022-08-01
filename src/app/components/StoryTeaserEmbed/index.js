@@ -3,7 +3,6 @@ import { url2cmid } from '@abcnews/url2cmid';
 import { track } from '../../utils/behaviour';
 import { MOCK_ELEMENT } from '../../../constants';
 import { $, $$, getChildImage, substitute } from '../../utils/dom';
-import { trim } from '../../utils/misc';
 import './index.scss';
 
 const StoryTeaserEmbed = ({ title, description, url, imageURL }) => {
