@@ -194,13 +194,9 @@ export default terminusDocument => {
   conditionalDebug(parallaxes.length > 0, `Activated ${parallaxes.length} parallax effects`);
 
   // Transform video embeds
-  const videoEmbeds = $$('.inline-content.video, .view-inlineMediaPlayer.doctype-abcvideo', mainEl)
-    .concat($$('.embed-content', mainEl).filter(el => $('.type-video', el)))
-    .concat(
-      $$('[data-component="Figure"]', mainEl).filter(el =>
-        $('[data-component="PlayerButton"][aria-label*="Video"],[data-component="ExpiredMediaWarning"]', el)
-      )
-    );
+  const videoEmbeds = $$('[data-component="Figure"]', mainEl).filter(el =>
+    $('[data-component="PlayerButton"][aria-label*="Video"],[data-component="ExpiredMediaWarning"]', el)
+  );
   videoEmbeds.forEach(transformElementIntoVideoEmbed);
   conditionalDebug(videoEmbeds.length > 0, `Transformed ${videoEmbeds.length} video embeds`);
 
