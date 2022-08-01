@@ -215,6 +215,7 @@ export const initMeta = terminusDocument => {
           url: terminusDocument.sourceURL
         }
       : null,
+    // keep isPL around until we can audit Odyssey plugins and ensure none depend on it
     isPL: true,
     isPreview: getTier() === TIERS.PREVIEW
   });
