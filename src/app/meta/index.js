@@ -1,4 +1,4 @@
-import { getGeneration, getTier, GENERATIONS, TIERS } from '@abcnews/env-utils';
+import { getTier, TIERS } from '@abcnews/env-utils';
 import { url2cmid } from '@abcnews/url2cmid';
 import { INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID, SELECTORS } from '../../constants';
 import { $, $$, detach } from '../utils/dom';
@@ -215,7 +215,7 @@ export const initMeta = terminusDocument => {
           url: terminusDocument.sourceURL
         }
       : null,
-    isPL: getGeneration() === GENERATIONS.PL,
+    isPL: true,
     isPreview: getTier() === TIERS.PREVIEW
   });
 
