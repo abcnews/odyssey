@@ -130,18 +130,6 @@ export const toggleBooleanAttributes = (node, map) => {
   });
 };
 
-export const setOrAddMetaTag = (name, content) => {
-  let el = $(`meta[name="${name}"]`);
-
-  if (!el) {
-    el = document.createElement('meta');
-    el.setAttribute('name', name);
-    document.head.appendChild(el);
-  }
-
-  el.setAttribute('content', content);
-};
-
 export const getChildImage = el => {
   if (!isElement(el)) {
     return;

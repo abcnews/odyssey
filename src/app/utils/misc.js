@@ -27,14 +27,6 @@ export const flatten = lists => {
   }, []);
 };
 
-export const literalList = (str, { skipTrim, allowEmpty } = {}) => {
-  return str
-    .split(NEWLINE)
-    .map(x => (skipTrim ? x : x.trim()))
-    .filter(x => (allowEmpty ? x : x.length))
-    .join();
-};
-
 export const getRatios = str => {
   const [, sm] = str.match(SM_RATIO_PATTERN) || [];
   const [, md] = str.match(MD_RATIO_PATTERN) || [];

@@ -1,121 +1,41 @@
-import html from 'bel';
-import dewysiwyg from 'util-dewysiwyg';
 import { SELECTORS } from '../../constants';
 import Main from '../components/Main';
-import { $, $$, append, before, detach, detachAll, setOrAddMetaTag, substitute } from '../utils/dom';
-import { literalList, trim } from '../utils/misc';
+import { $, $$, append, before, detach, detachAll } from '../utils/dom';
+import { trim } from '../utils/misc';
 import './index.scss';
 
 const TEMPLATE_REMOVABLES = {
-  // Common (non-PL)
-  html: literalList(`
-    #abcHeader.global
-  `),
-  // P1S
-  '.platform-standard:not(.platform-mobile)': literalList(`
-    #container_header
-    #container_subheader
-    #container_nav
-    .ticker
-    .ticker-container
-    .page:not(.featured-scroller):not([id])
-    h1
-    .tools
-    .byline
-    .published
-    .attached-content
-    .authorpromo
-    .statepromo
-    .newsFromOtherSites
-    .topics
-  `),
-  // P1M
-  '.platform-mobile:not(.platform-standard)': literalList(`
-    header > .site
-    header > .section
-    .ticker-container
-    .content > article
-    .share
-    .related:not(.m-recirc)
-  `),
-  // P2
-  '.platform-standard.platform-mobile': literalList(`
-    #page-header
-    .view-navigationPrimary
-    .view-collection-subbanner-placed
-    .view-ticker
-    .article-detail-page > .container-fluid > div.row
-    .view-hero-media
-  `),
   // PL
-  'link[data-chunk="main"],link[data-chunk^="page."]': literalList(`
-    [data-component="AppDetailLayout"]
-    [data-component="DetailLayout"]
-    [data-component="WebContentWarning"]
-    ol>li>span:first-child
-    ul>li>span:first-child
-    [data-component="NewsTicker"]
-    [data-component="StickyHeader"]
-    [data-component="Sidebar"]:first-child
-  `),
+  'link[data-chunk="main"],link[data-chunk^="page."]': [
+    '[data-component="AppDetailLayout"]',
+    '[data-component="DetailLayout"]',
+    '[data-component="WebContentWarning"]',
+    'ol>li>span:first-child',
+    'ul>li>span:first-child',
+    '[data-component="NewsTicker"]',
+    '[data-component="StickyHeader"]',
+    '[data-component="Sidebar"]:first-child'
+  ].join(),
   // PL (App)
-  'link[data-chunk="page.App"]': literalList(`
-    main:not([class*="u-"])
-  `)
+  'link[data-chunk="page.App"]': 'main:not([class*="u-"])'
 };
 
-const WHITESPACE_REMOVABLES = `
-  p
-`;
-
-const PREVIEW_CTX_SELECTOR = 'span[id^="CTX"]';
-const PREVIEW_SCRIPT_PATTERN = /(?:coremedia|joo\.classLoader)/;
-
-const P1S_FLOAT = {
-  SELECTOR: `
-    .inline-content.left,
-    .inline-content.right
-  `,
-  PATTERN: /inline-content.*(left|right)/
-};
-
-const P2_FLOAT = {
-  SELECTOR: `
-    .comp-embedded-float-left,
-    .comp-embedded-float-right,
-    [class*="view-inline"].left,
-    [class*="view-inline"].right
-  `,
-  PATTERN: /(comp-embedded-float-|view-inline[\w-]+\s)(left|right)/,
-  REPLACEMENT: 'u-pull-$2'
-};
-
-function resetMetaViewport() {
-  setOrAddMetaTag('viewport', 'width=device-width, initial-scale=1, minimum-scale=1');
-}
+const WHITESPACE_REMOVABLES = 'p';
 
 function promoteToMain(storyEl, meta) {
   const existingMainEl = $(SELECTORS.MAIN);
-  const id = existingMainEl.getAttribute('id');
   const mainEl = Main(Array.from(storyEl.childNodes), meta);
 
-  if (id) {
-    mainEl.setAttribute('id', id);
-    existingMainEl.removeAttribute('id');
-  }
-
+  mainEl.setAttribute('id', existingMainEl.getAttribute('id'));
+  existingMainEl.removeAttribute('id');
   existingMainEl.removeAttribute('role');
-
   before(existingMainEl, mainEl);
 
   return mainEl;
 }
 
 export const reset = (storyEl, meta) => {
-  const { isDarkMode, isPreview, theme } = meta;
-
-  // Update (or add) the meta viewport tag so that touch devices don't introduce a click delay
-  resetMetaViewport();
+  const { isDarkMode, theme } = meta;
 
   // Apply theme, if defined
   if (typeof theme === 'string') {
@@ -135,12 +55,14 @@ export const reset = (storyEl, meta) => {
 
   storyEl = promoteToMain(storyEl, meta);
 
+  // Remove elements we don't need
   Object.keys(TEMPLATE_REMOVABLES).forEach(templateBodySelector => {
     if ($(templateBodySelector)) {
       detachAll($$(TEMPLATE_REMOVABLES[templateBodySelector]));
     }
   });
 
+  // Remove elements that don't contain any text
   $$(WHITESPACE_REMOVABLES, storyEl).forEach(el => {
     if (trim(el.textContent).length === 0) {
       detach(el);
@@ -157,67 +79,25 @@ export const reset = (storyEl, meta) => {
     }
   });
 
+  // Treat WYSIWYG teaser embeds as nested richtext content
   $$(SELECTORS.WYSIWYG_EMBED, storyEl).forEach(el => {
-    dewysiwyg.normalise(el);
-
-    if (el.getAttribute('data-component')) {
-      el.className = '';
-    }
-
-    el.className = `${el.className} u-richtext${isDarkMode ? '-invert' : ''}`;
-  });
-
-  $$(P1S_FLOAT.SELECTOR, storyEl).forEach(el => {
-    const [, side] = el.className.match(P1S_FLOAT.PATTERN);
-    const pullEl = html`<div class="u-pull-${side}"></div>`;
-
-    el.classList.remove(side);
-    el.classList.add('full');
-    before(el, pullEl);
-    append(pullEl, el);
-  });
-
-  $$(P2_FLOAT.SELECTOR, storyEl).forEach(el => {
-    if (el.className.indexOf('view-') > -1) {
-      const [, , side] = el.className.match(P2_FLOAT.PATTERN);
-      const pullEl = html`<div class="u-pull-${side}"></div>`;
-
-      el.classList.remove(side);
-      el.classList.add('full');
-      before(el, pullEl);
-      append(pullEl, el);
-    } else {
-      el.className = el.className.replace(P2_FLOAT.PATTERN, P2_FLOAT.REPLACEMENT);
-    }
+    el.className = `u-richtext${isDarkMode ? '-invert' : ''}`;
   });
 
   // Clean up Presentation Layer components
   $$(
-    literalList(`
-    [data-component="ContentLink"]
-    [data-component="Heading"]
-    [data-component="List"]
-    [data-component="ListItem"]
-    p
-  `),
+    [
+      '[data-component="ContentLink"]',
+      '[data-component="Heading"]',
+      '[data-component="List"]',
+      '[data-component="ListItem"]',
+      'p'
+    ].join(),
     storyEl
   ).forEach(el => {
     el.removeAttribute('class');
     el.removeAttribute('data-component');
   });
-
-  if (isPreview) {
-    $$(PREVIEW_CTX_SELECTOR, storyEl).forEach(el => {
-      Array.from(el.children).forEach(childEl => {
-        if (childEl.tagName === 'SCRIPT' && childEl.textContent.match(PREVIEW_SCRIPT_PATTERN)) {
-          detach(childEl);
-        } else {
-          before(el, childEl);
-        }
-      });
-      detach(el);
-    });
-  }
 
   return storyEl;
 };
