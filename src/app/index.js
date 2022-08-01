@@ -6,7 +6,6 @@ import { transformSection as transformSectionIntoBlock } from './components/Bloc
 import Comments from './components/Comments';
 import FormatCredit from './components/FormatCredit';
 import { transformSection as transformSectionIntoGallery } from './components/Gallery';
-import { transformElement as transformElementIntoGalleryEmbed } from './components/GalleryEmbed';
 import { Lite as LiteHeader, transformSection as transformSectionIntoHeader } from './components/Header';
 import { transformMarker as transformMarkerIntoHR } from './components/HR';
 import { transformElement as transformElementIntoImageEmbed } from './components/ImageEmbed';
@@ -199,13 +198,6 @@ export default terminusDocument => {
   );
   videoEmbeds.forEach(transformElementIntoVideoEmbed);
   conditionalDebug(videoEmbeds.length > 0, `Transformed ${videoEmbeds.length} video embeds`);
-
-  // Transform gallery embeds
-  const galleryEmbeds = $$('.inline-content.gallery', mainEl)
-    .concat($$('.embed-content', mainEl).filter(el => $('.type-gallery', el)))
-    .concat($$('[class^="comp-embedded-"]', mainEl).filter(el => $('[data-gallery-id]', el)));
-  galleryEmbeds.forEach(transformElementIntoGalleryEmbed);
-  conditionalDebug(galleryEmbeds.length > 0, `Transformed ${galleryEmbeds.length} gallery embeds`);
 
   // Transform image embeds
   const sidePulls = $$('.u-pull-left, .u-pull-right');

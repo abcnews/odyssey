@@ -155,17 +155,6 @@ function has(id) {
   return items.filter(item => item.id === id).length > 0;
 }
 
-export const refresh = () => {
-  if (!masterGalleryEl) {
-    return;
-  }
-
-  const prevMasterGalleryEl = masterGalleryEl;
-
-  MasterGallery({ isRefresh: true }); // Sets masterGalleryEl;
-  substitute(prevMasterGalleryEl, masterGalleryEl);
-};
-
 export const register = image => {
   const { id, media } = image;
   const { complete, images } = media.image.primary;
