@@ -2,17 +2,11 @@ import { AppContextProvider } from '@abcaustralia/nucleus/es6/AppContext/AppCont
 import { GlobalStyles } from '@abcaustralia/nucleus/es6/GlobalStyles/GlobalStyles';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './root.css';
-import Icons from './Icons';
 import Interactive from './Interactive';
-import Nav from './Nav';
 
 const components = {
-  Interactive,
-  Nav
+  Interactive
 };
-
-let shouldIncludeIcons = true;
 
 export const render = (componentName, props = {}, el) => {
   const Component = components[componentName];
@@ -24,7 +18,6 @@ export const render = (componentName, props = {}, el) => {
   ReactDOM.render(
     <AppContextProvider value={{ inlineIconSprite: true, staticPath: '/news-web/', typographyScale: 'compact' }}>
       <GlobalStyles>
-        {shouldIncludeIcons ? (shouldIncludeIcons = false) || <Icons /> : null}
         <Component {...props} />
       </GlobalStyles>
     </AppContextProvider>,

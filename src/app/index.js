@@ -302,14 +302,6 @@ export default terminusDocument => {
   window.dispatchEvent(new CustomEvent('odyssey:api', { detail: api }));
   debug('Dispatched `odyssey:api` event');
 
-  // Add Presentation Layer global nav if it doesn't already exist
-  setTimeout(() => {
-    if (!meta.isPL && !$('[data-component="Masthead"]')) {
-      before(storyEl, PresentationLayerAsyncComponent('Nav'));
-      debug('[async] Appended PL global nav to non-PL story');
-    }
-  }, 0);
-
   // Try to resolve Presentation Layer Interactive document-based embeds
   setTimeout(() => {
     let textDescriptor;
