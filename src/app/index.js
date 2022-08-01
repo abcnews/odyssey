@@ -359,17 +359,4 @@ export default terminusDocument => {
       debug(`[async] Fixed classNames of deprecated scrollyteller Blocks`);
     }
   }, 2000);
-
-  // Notify console of deprecated mounts
-  setTimeout(() => {
-    const deprecated = {};
-
-    getMarkers(['image', 'cover', 'gallerytiled']).forEach(marker => (deprecated[`#${marker.name}`] = true));
-
-    const keys = Object.keys(deprecated);
-
-    if (keys.length) {
-      debug(`[async] Deprecated mounts used: ${Object.keys(deprecated).join(', ')}`);
-    }
-  }, 5000);
 };
