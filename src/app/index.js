@@ -380,47 +380,4 @@ export default terminusDocument => {
       debug(`[async] Deprecated mounts used: ${Object.keys(deprecated).join(', ')}`);
     }
   }, 5000);
-
-  // Fix CM5 preview tools's PL preview areas
-  // * Limit PL iframe heights to 100%
-  // * Enable/disable the desktop iframe scrolling when it is/isn't 100% in view
-  if (!meta.isPL && meta.isPreview) {
-    let desktopPreviewAreaEl;
-    let desktopPreviewIframeEl;
-    let isScrollable = false;
-
-    function updateScrollable() {
-      const { top } = desktopPreviewAreaEl.getBoundingClientRect();
-      const shouldBeScrollable = top <= 0;
-
-      if (isScrollable !== shouldBeScrollable) {
-        desktopPreviewIframeEl.setAttribute('scrolling', shouldBeScrollable ? 'yes' : 'no');
-
-        isScrollable = shouldBeScrollable;
-      }
-
-      if (shouldBeScrollable) {
-        window.scrollTo(window.scrollX, window.scrollY + top);
-      }
-    }
-
-    function fixIframes() {
-      const styleEl = document.createElement('style');
-
-      styleEl.appendChild(document.createTextNode(`#iframe-pl,#iframe-pl-desktop{height:100% !important;}`));
-      document.head.appendChild(styleEl);
-      desktopPreviewIframeEl = desktopPreviewAreaEl.querySelector('iframe');
-
-      document.getElementById('iframe-app').setAttribute('scrolling', 'yes');
-      document.getElementById('iframe-pl').setAttribute('scrolling', 'yes');
-      updateScrollable();
-      subscribe(updateScrollable);
-      $('button[data-preview-desktop]').addEventListener('click', updateScrollable);
-    }
-
-    (function fixIframesAfterPreviewToolsLoaded() {
-      desktopPreviewAreaEl = $('.section-desktop-preview-area');
-      desktopPreviewAreaEl ? fixIframes() : setTimeout(fixIframesAfterPreviewToolsLoaded, 9);
-    })();
-  }
 };
