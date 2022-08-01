@@ -162,23 +162,9 @@ export const getChildImage = el => {
 };
 
 export const detectVideoId = node => {
-  const classList = node.className.split(' ');
-  const linkEl = $('a[href]', node);
   let videoId;
 
-  // P1 & P2
-  if (linkEl) {
-    videoId =
-      ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
-        (classList.indexOf('view-inlineMediaPlayer') > -1 && classList.indexOf('doctype-abcvideo') > -1) ||
-        (classList.indexOf('view-hero-media') > -1 && $('.view-inlineMediaPlayer.doctype-abcvideo', node)) ||
-        (classList.indexOf('embed-content') > -1 && $('.type-video', node))) &&
-      url2cmid(linkEl.getAttribute('href'));
-  }
-
-  // PL
   if (
-    !videoId &&
     node.getAttribute('data-component') === 'Figure' &&
     $('[data-component="PlayerButton"][aria-label*="Video"]', node)
   ) {
