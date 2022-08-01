@@ -1,7 +1,6 @@
 import cn from 'classnames';
 import html from 'bel';
 import { url2cmid } from '@abcnews/url2cmid';
-import { MOCK_ELEMENT, MOCK_NODE } from '../../../constants';
 import { track } from '../../utils/behaviour';
 import { $, $$, detach, getChildImage, substitute } from '../../utils/dom';
 import './index.scss';
