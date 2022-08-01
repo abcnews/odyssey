@@ -2,7 +2,6 @@ import { getTier, TIERS } from '@abcnews/env-utils';
 import { url2cmid } from '@abcnews/url2cmid';
 import { INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID, SELECTORS } from '../../constants';
 import { $, $$, detach } from '../utils/dom';
-import { trim } from '../utils/misc';
 
 const FACEBOOK = /facebook\.com/;
 const TWITTER = /twitter\.com/;
@@ -87,24 +86,16 @@ function getShareLinks({ url, title }) {
 }
 
 function getRelatedStoriesIds() {
-  return $$(`
-    .attached-content > .inline-content.story > a,
-    .related > article > a,
-    [data-component="RelatedStories"] [data-component="RelatedStoriesCard"] a
-  `).map(el => url2cmid(el.href));
+  return $$('[data-component="RelatedStories"] [data-component="RelatedStoriesCard"] a').map(el => url2cmid(el.href));
 }
 
 function getRelatedMedia() {
-  const relatedMediaEl = $(`
-    .view-hero-media,
-    .content > article > header + figure,
-    .published + .inline-content.full.photo,
-    .published + .inline-content.full.video,
-    .attached-content > .inline-content.photo,
-    .attached-content > .inline-content.video,
-    [data-component="FeatureMedia"] [data-component="Figure"],
-    [data-component="FeatureMedia"] [data-component="WebContentWarning"]
-  `);
+  const relatedMediaEl = $(
+    [
+      '[data-component="FeatureMedia"] [data-component="Figure"]',
+      '[data-component="FeatureMedia"] [data-component="WebContentWarning"]'
+    ].join()
+  );
 
   if (!relatedMediaEl) {
     return null;
