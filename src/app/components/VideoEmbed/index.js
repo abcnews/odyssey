@@ -33,13 +33,13 @@ export const transformElement = el => {
   const mountSC = isMount(el) ? getMountValue(el) : '';
   const isMarker = !!mountSC.match(VIDEO_MARKER_PATTERN);
   const linkEl = $('a[href]', el);
-  const plPlayerIdEl = $('[data-component="Player"] div[id]', el);
-  const plExpiredMediaWarningEl = $('[data-component="ExpiredMediaWarning"]', el);
+  const playerIdEl = $('[data-component="Player"] div[id]', el);
+  const expiredMediaWarningEl = $('[data-component="ExpiredMediaWarning"]', el);
   const videoId = isMarker
     ? mountSC.match(VIDEO_MARKER_PATTERN)[1]
-    : plPlayerIdEl && plPlayerIdEl.id
-    ? plPlayerIdEl.id
-    : plExpiredMediaWarningEl
+    : playerIdEl && playerIdEl.id
+    ? playerIdEl.id
+    : expiredMediaWarningEl
     ? el.getAttribute('data-uri').match(/\d+/)
     : linkEl
     ? url2cmid(linkEl.getAttribute('href'))

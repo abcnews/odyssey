@@ -219,7 +219,7 @@ const VideoPlayer = ({
 
       videoEl.pause();
     },
-    togglePlayback: (event, wasScrollBased) => {
+    togglePlayback: (_event, wasScrollBased) => {
       if (!wasScrollBased && !player.isAmbient) {
         player.isUserInControl = true;
       }
