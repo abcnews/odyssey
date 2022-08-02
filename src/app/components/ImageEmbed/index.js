@@ -1,6 +1,5 @@
 import cn from 'classnames';
 import html from 'bel';
-import { url2cmid } from '@abcnews/url2cmid';
 import { ALIGNMENT_PATTERN } from '../../../constants';
 import { lookupImageByAssetURL } from '../../meta';
 import { getChildImage, substitute } from '../../utils/dom';
@@ -28,7 +27,7 @@ const ImageEmbed = ({ pictureEl, captionEl, alignment, isFull, isCover, isAnon }
 
 export default ImageEmbed;
 
-export const transformElement = (el, preserveOriginalRatio) => {
+export const transformElement = el => {
   const imgEl = getChildImage(el);
 
   if (!imgEl) {
@@ -39,7 +38,8 @@ export const transformElement = (el, preserveOriginalRatio) => {
   const imageDoc = lookupImageByAssetURL(src);
 
   if (!imageDoc || imageDoc.media.image.primary.complete.length < 2) {
-    // Custom Images appear to be Images in Terminus V2. We should ignore them.
+    // Custom Images appear to be Images in Terminus V2. We should ignore them (for now).
+    // TODO: A custom image embed solution. Captionless with custom aspect ratio? #config for max-width?
     return;
   }
 
