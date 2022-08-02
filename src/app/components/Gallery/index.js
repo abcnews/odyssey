@@ -489,7 +489,6 @@ export const transformSection = section => {
         return config;
       }
 
-      const classList = node.className.split(' ');
       const isQuote = node.matches(SELECTORS.QUOTE);
       const imgEl = getChildImage(node);
       const videoId = isPrefixedMount(node, 'video')
