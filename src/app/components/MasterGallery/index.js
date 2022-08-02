@@ -1,9 +1,8 @@
 import html from 'bel';
 import { url2cmid } from '@abcnews/url2cmid';
-import { getMeta } from '../../meta';
 import { enqueue, invalidateClient } from '../../scheduler';
 import { track } from '../../utils/behaviour';
-import { $, $$, getChildImage, prepend, substitute } from '../../utils/dom';
+import { $, $$, prepend } from '../../utils/dom';
 import { createFromTerminusDoc as createCaptionFromTerminusDoc } from '../Caption';
 import Gallery from '../Gallery';
 import Picture from '../Picture';
@@ -15,8 +14,8 @@ const items = [];
 let masterGalleryEl = null; // singleton
 let clickHandler = null;
 
-const MasterGallery = ({ isRefresh = false } = {}) => {
-  if (masterGalleryEl && !isRefresh) {
+const MasterGallery = () => {
+  if (masterGalleryEl) {
     return masterGalleryEl;
   }
 
