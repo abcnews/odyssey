@@ -1,6 +1,6 @@
 import { getImages } from '@abcnews/terminus-fetch';
 import html from 'bel';
-import { MQ, MQL, RATIO_PATTERN, SMALLEST_IMAGE } from '../../../constants';
+import { MQ, MQL, SMALLEST_IMAGE } from '../../../constants';
 import { getMeta, lookupImageByAssetURL } from '../../meta';
 import { enqueue, subscribe, unsubscribe } from '../../scheduler';
 import { append, detach } from '../../utils/dom';
@@ -17,8 +17,6 @@ const SIZES = {
   '1x1': { sm: '700x700', md: '940x940', lg: '1400x1400', xl: '1400x1400' },
   '3x4': { sm: '700x933', md: '940x1253', lg: '940x1253', xl: '940x1253' }
 };
-const P1_RATIO_SIZE_PATTERN = /(\d+x\d+)-(\d+x\d+)/;
-const P2_RATIO_SIZE_PATTERN = /(\d+x\d+)-([a-z]+)/;
 const DEFAULT_RATIOS = {
   sm: '1x1',
   md: '3x2',
@@ -50,23 +48,13 @@ const Picture = ({ src = SMALLEST_IMAGE, alt = '', isContained = false, ratios =
   if (imageDoc) {
     alt = imageDoc.alt;
 
-    if (imageDoc.media.image.primary.binaryKey) {
-      // CM10 Image document
-      const { renditions } = getImages(imageDoc, WIDTHS);
+    const { renditions } = getImages(imageDoc, WIDTHS);
 
-      smImageURL = getMostSuitableRenditionURL(renditions, ratios.sm, 'sm') || smImageURL;
-      mdImageURL = getMostSuitableRenditionURL(renditions, ratios.md, 'md') || mdImageURL;
-      lansdcapeLtLgImageURL = getMostSuitableRenditionURL(renditions, ratios.lg, 'md') || lansdcapeLtLgImageURL;
-      lgImageURL = getMostSuitableRenditionURL(renditions, ratios.lg, 'lg') || lgImageURL;
-      xlImageURL = getMostSuitableRenditionURL(renditions, ratios.xl, 'xl') || xlImageURL;
-    } else {
-      // CM5 Image document
-      smImageURL = resizeCM5ImageURL(src, ratios.sm, 'sm');
-      mdImageURL = resizeCM5ImageURL(src, ratios.md, 'md');
-      lansdcapeLtLgImageURL = resizeCM5ImageURL(src, ratios.lg, 'md');
-      lgImageURL = resizeCM5ImageURL(src, ratios.lg, 'lg');
-      xlImageURL = resizeCM5ImageURL(src, ratios.xl, 'xl');
-    }
+    smImageURL = getMostSuitableRenditionURL(renditions, ratios.sm, 'sm') || smImageURL;
+    mdImageURL = getMostSuitableRenditionURL(renditions, ratios.md, 'md') || mdImageURL;
+    lansdcapeLtLgImageURL = getMostSuitableRenditionURL(renditions, ratios.lg, 'md') || lansdcapeLtLgImageURL;
+    lgImageURL = getMostSuitableRenditionURL(renditions, ratios.lg, 'lg') || lgImageURL;
+    xlImageURL = getMostSuitableRenditionURL(renditions, ratios.xl, 'xl') || xlImageURL;
   }
 
   const placeholderEl = Sizer(ratios);
@@ -217,22 +205,6 @@ function _checkIfPicturesNeedToBeLoaded(client) {
       });
     }
   });
-}
-
-function resizeCM5ImageURL(url, ratio = '16x9', size = 'md') {
-  return ensurePhase1Asset(url)
-    .replace(RATIO_PATTERN, ratio)
-    .replace(P1_RATIO_SIZE_PATTERN, `$1-${SIZES[ratio][size]}`);
-}
-
-function ensurePhase1Asset(url) {
-  const match = url.match(P2_RATIO_SIZE_PATTERN);
-
-  if (!match) {
-    return url;
-  }
-
-  return url.split('?')[0].replace('cm/r', 'news/').replace(match[1], '16x9').replace(match[2], SIZES['16x9'].md);
 }
 
 function getMostSuitableRenditionURL(renditions, preferredRatio, preferredSize) {

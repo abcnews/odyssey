@@ -3,7 +3,6 @@ export const HYPHEN = '-';
 export const CSS_URL = /url\('?"?(.*?)"?'?\)/;
 export const ALIGNMENT_PATTERN = /(left|right)/;
 export const ONLY_RATIO_PATTERN = /^\d+x\d+$/;
-export const RATIO_PATTERN = /(\d+x\d+)/;
 export const SM_RATIO_PATTERN = /sm(\d+x\d+)/;
 export const MD_RATIO_PATTERN = /md(\d+x\d+)/;
 export const LG_RATIO_PATTERN = /lg(\d+x\d+)/;
