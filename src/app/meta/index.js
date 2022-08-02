@@ -164,19 +164,8 @@ export const initMeta = terminusDocument => {
 
             if (docType === 'Image' || docType === 'ImageProxy') {
               memo.images.push(item);
-              memo.imagesById[id] = item;
-
-              const { binaryKey, complete } = media.image.primary;
-
-              if (binaryKey) {
-                memo.imagesByBinaryKey[binaryKey] = item;
-              } else if (docType === 'ImageProxy' && complete) {
-                const proxiedId = url2cmid(complete[0].url);
-
-                if (proxiedId) {
-                  memo.imagesById[proxiedId] = item;
-                }
-              }
+              memo.imagesById[id] = item; // not currently used
+              memo.imagesByBinaryKey[media.image.primary.binaryKey] = item;
             }
 
             return memo;
@@ -223,12 +212,12 @@ export const getMeta = () => {
 };
 
 export const lookupImageByAssetURL = url => {
-  const { imagesByBinaryKey, imagesById } = getMeta();
+  const { imagesByBinaryKey } = getMeta();
   const [, binaryKey] = url.match(/\/([0-9a-f]{32})\b/) || [];
 
   if (binaryKey) {
     return imagesByBinaryKey[binaryKey];
   }
 
-  return imagesById[url2cmid(url)] || null;
+  return null;
 };
