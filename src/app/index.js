@@ -208,7 +208,7 @@ export default terminusDocument => {
   conditionalDebug(imageEmbeds.length > 0, `Transformed ${imageEmbeds.length} image embeds`);
 
   // Transform quotes (native and embedded) that haven't already been transformed
-  const nativeQuotesAndQuoteEmbeds = $$(SELECTORS.QUOTE, mainEl).filter(el => el.closest('.Quote') === null);
+  const nativeQuotesAndQuoteEmbeds = $$(SELECTORS.QUOTE, mainEl);
   nativeQuotesAndQuoteEmbeds.forEach(transformElementIntoQuote);
   conditionalDebug(
     nativeQuotesAndQuoteEmbeds.length > 0,

@@ -1,50 +1,9 @@
-import { url2cmid } from '@abcnews/url2cmid';
-
-const INLINE_TAG_NAMES = [
-  'b',
-  'big',
-  'br',
-  'i',
-  'small',
-  'tt',
-  'abbr',
-  'acronym',
-  'cite',
-  'code',
-  'dfn',
-  'em',
-  'kbd',
-  'strong',
-  'samp',
-  'time',
-  'var',
-  'a',
-  'bdo',
-  'img',
-  'map',
-  'object',
-  'q',
-  'script',
-  'span',
-  'sub',
-  'sup',
-  'button',
-  'input',
-  'label',
-  'select',
-  'textarea'
-];
-
 export const isText = node => {
   return node && node.nodeType === Node.TEXT_NODE;
 };
 
 export const isElement = node => {
   return node && node.nodeType === Node.ELEMENT_NODE;
-};
-
-export const isInlineElement = node => {
-  return isElement(node) && INLINE_TAG_NAMES.indexOf(node.tagName.toLowerCase()) > -1;
 };
 
 export const isDocument = node => {
