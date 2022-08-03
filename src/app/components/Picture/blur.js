@@ -4,7 +4,6 @@ const CANVAS_MAX = 48;
 const BLUR_RADIUS = 4;
 const NO_READ_ASSUMPTION_ERROR = "Assuming we won't be able to read image data from <canvas>";
 const MIXED_CONTENT_ERROR = 'Not attempting to load Mixed Content';
-const ABC_CDN_ERROR = 'Not attempting to load ABC CDN image (which has no CORS headers in place yet)';
 const TRANSPARENT_IMAGE_ERROR = "Images with transparency shouldn't have placeholders";
 const cache = {};
 const protocol = String(window.location.protocol);
@@ -12,10 +11,6 @@ const protocol = String(window.location.protocol);
 export const blurImage = (url, done) => {
   if (protocol === 'https:' && url.indexOf(protocol) === -1) {
     return done(new Error(MIXED_CONTENT_ERROR));
-  }
-
-  if (url.indexOf('abc-cdn') > -1) {
-    return done(new Error(ABC_CDN_ERROR));
   }
 
   if (IS_PROBABLY_RESISTING_FINGERPRINTING) {
