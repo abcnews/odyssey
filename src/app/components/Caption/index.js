@@ -1,6 +1,6 @@
 import html from 'bel';
 import { MOCK_ELEMENT, MOCK_TEXT } from '../../../constants';
-import { $, detach, isElement, isText } from '../../utils/dom';
+import { $, isElement, isText } from '../../utils/dom';
 import './index.scss';
 
 const Caption = ({ url, text, attribution, unlink }) => {
@@ -18,14 +18,13 @@ const Caption = ({ url, text, attribution, unlink }) => {
 
 export default Caption;
 
-export const createFromTerminusDoc = (doc, unlink) => {
-  return Caption({
+export const createFromTerminusDoc = (doc, unlink) =>
+  Caption({
     url: `/news/${doc.id}`,
     text: doc.caption || doc.title,
     attribution: doc.byLine && !doc.byLine.type ? doc.byLine.plain : doc.attribution || null,
     unlink
   });
-};
 
 export const createFromElement = (el, unlink) => {
   if (!isElement(el)) {
@@ -38,78 +37,20 @@ export const createFromElement = (el, unlink) => {
     el = el.firstElementChild;
   }
 
+  if (el.getAttribute('data-component') !== 'Figure') {
+    return null;
+  }
+
   const clone = el.cloneNode(true);
-  let config;
+  const config = {
+    url: `/news/${clone.getAttribute('id')}`,
+    text: [MOCK_TEXT]
+      .concat(Array.from(($('figcaption', clone) || MOCK_ELEMENT).childNodes))
+      .filter(isText)
+      .sort((a, b) => b.nodeValue.length - a.nodeValue.length)[0].nodeValue,
+    attribution: (($('cite', clone) || MOCK_ELEMENT).textContent || '').slice(1, -1).trim(),
+    unlink
+  };
 
-  if (clone.className.indexOf('embedded-external-link') > -1) {
-    // P2 (external)
-    config = {
-      url: ($('.embed-caption a', clone) || MOCK_ELEMENT).getAttribute('href'),
-      text: [
-        (($('.embed-label', clone) || MOCK_ELEMENT).textContent || '').trim(),
-        (($('.embed-caption a span', clone) || MOCK_ELEMENT).textContent || '').trim(),
-        (($('.inline-caption span', clone) || MOCK_ELEMENT).textContent || '').trim()
-      ].join(' '),
-      attribution: ''
-    };
-  } else if (
-    clone.className.indexOf(' photo') > -1 ||
-    clone.className.indexOf(' video') > -1 ||
-    clone.className.indexOf(' embedded') > -1
-  ) {
-    // P1S
-    config = {
-      url: ($('a', clone) || MOCK_ELEMENT).getAttribute('href'),
-      attribution: (detach($('.source', clone) || MOCK_ELEMENT).textContent || '').slice(1, -1).trim()
-    };
-    if (clone.className.indexOf(' embedded') === -1) {
-      detach($('.inline-caption strong', clone));
-    }
-    config.text = (($('.inline-caption', clone) || MOCK_ELEMENT).textContent || '').trim();
-  } else if ($('.type-photo, .type-video, .type-external', clone)) {
-    // P1M
-    if (!$('.type-external', clone) || clone.textContent.indexOf(':') > -1) {
-      detach($('h3 strong', clone));
-    }
-    config = {
-      url: ($('a', clone) || MOCK_ELEMENT).getAttribute('href'),
-      text: (($('h3', clone) || MOCK_ELEMENT).textContent || '').trim(),
-      attribution: (($('.attribution', clone) || MOCK_ELEMENT).textContent || '').trim()
-    };
-  } else if (clone.getAttribute('data-component') === 'Figure') {
-    // Presentation Layer
-    config = {
-      url: `/news/${clone.getAttribute('id')}`,
-      text: [MOCK_TEXT]
-        .concat(Array.from(($('figcaption', clone) || MOCK_ELEMENT).childNodes))
-        .filter(isText)
-        .sort((a, b) => b.nodeValue.length - a.nodeValue.length)[0].nodeValue,
-      attribution: (($('cite', clone) || MOCK_ELEMENT).textContent || '').slice(1, -1).trim()
-    };
-  } else if ($('figcaption', clone)) {
-    // P2 (image)
-    config = {
-      url: `/news/${($('[data-contentidshared]', clone) || MOCK_ELEMENT).getAttribute('data-contentidshared')}`,
-      text: (($('figcaption .lightbox-trigger', clone) || MOCK_ELEMENT).textContent || '').trim(),
-      attribution: (($('figcaption .byline', clone) || MOCK_ELEMENT).textContent || '').slice(1, -1).trim()
-    };
-  } else if ($('.comp-video-player', clone)) {
-    // P2 (video)
-    config = {
-      url: ($('.comp-video-player ~ .caption a', clone) || MOCK_ELEMENT).getAttribute('href'),
-      text: (($('.comp-video-player ~ .caption a', clone) || MOCK_ELEMENT).textContent || '').trim(),
-      attribution: (($('.comp-video-player ~ .caption .byline', clone) || MOCK_ELEMENT).textContent || '')
-        .slice(1, -1)
-        .trim()
-    };
-  }
-
-  if (config) {
-    // Option to remove caption link
-    if (unlink) Object.assign(config, { unlink: true });
-
-    return Caption(Object.assign(config));
-  }
-
-  return null;
+  return Caption(Object.assign(config));
 };
