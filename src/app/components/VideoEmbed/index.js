@@ -30,13 +30,13 @@ const VideoEmbed = ({ playerEl, captionEl, alignment, isFull, isCover, isAnon })
 export default VideoEmbed;
 
 export const transformElement = el => {
-  const mountSC = isMount(el) ? getMountValue(el) : '';
-  const isMarker = !!mountSC.match(VIDEO_MARKER_PATTERN);
+  const mountValue = isMount(el) ? getMountValue(el) : '';
+  const isVideoMarker = !!mountValue.match(VIDEO_MARKER_PATTERN);
   const linkEl = $('a[href]', el);
   const playerIdEl = $('[data-component="Player"] div[id]', el);
   const expiredMediaWarningEl = $('[data-component="ExpiredMediaWarning"]', el);
-  const videoId = isMarker
-    ? mountSC.match(VIDEO_MARKER_PATTERN)[1]
+  const videoId = isVideoMarker
+    ? mountValue.match(VIDEO_MARKER_PATTERN)[1]
     : playerIdEl && playerIdEl.id
     ? playerIdEl.id
     : expiredMediaWarningEl
@@ -53,8 +53,8 @@ export const transformElement = el => {
   const [, alignment] = configString.match(ALIGNMENT_PATTERN) || [];
   const unlink = configString.indexOf('unlink') > -1;
 
-  const isYouTube = isMarker && mountSC.indexOf('youtube') === 0;
-  const captionEl = !isMarker ? createCaptionFromElement(el, unlink) : null;
+  const isYouTube = isVideoMarker && mountValue.indexOf('youtube') === 0;
+  const captionEl = !isVideoMarker ? createCaptionFromElement(el, unlink) : null;
   const title = captionEl ? captionEl.children[0].textContent : null;
 
   const options = {

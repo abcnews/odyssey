@@ -388,7 +388,8 @@ export const transformSection = section => {
     config.backgrounds = [];
     config.contentEls = section.betweenNodes
       .map(node => {
-        const mountSC = isMount(node) ? getMountValue(node) : '';
+        const mountValue = isMount(node) ? getMountValue(node) : '';
+        const isVideoMarker = !!mountValue.match(VIDEO_MARKER_PATTERN);
 
         let img = getChildImage(node);
         if (img) {
@@ -418,10 +419,10 @@ export const transformSection = section => {
 
         // See if we have a video we can use for a background
         let videoMarker = {};
-        if (!!mountSC.match(VIDEO_MARKER_PATTERN)) {
+        if (isVideoMarker) {
           videoMarker = {
-            isVideoYouTube: !!mountSC.split('youtube')[1],
-            videoId: mountSC.match(VIDEO_MARKER_PATTERN)[1]
+            isVideoYouTube: !!mountValue.split('youtube')[1],
+            videoId: mountValue.match(VIDEO_MARKER_PATTERN)[1]
           };
         } else {
           videoMarker.videoId = detectVideoId(node);
@@ -507,11 +508,11 @@ export const transformSection = section => {
       let imgEl;
 
       if (!_config.videoId && !_config.imgEl && isElement(node)) {
-        const mountSC = isMount(node) ? getMountValue(node) : '';
+        const mountValue = isMount(node) ? getMountValue(node) : '';
 
-        if (!!mountSC.match(VIDEO_MARKER_PATTERN)) {
-          _config.isVideoYouTube = !!mountSC.split('youtube')[1];
-          _config.videoId = videoId = mountSC.match(VIDEO_MARKER_PATTERN)[1];
+        if (!!mountValue.match(VIDEO_MARKER_PATTERN)) {
+          _config.isVideoYouTube = !!mountValue.split('youtube')[1];
+          _config.videoId = videoId = mountValue.match(VIDEO_MARKER_PATTERN)[1];
         } else {
           videoId = detectVideoId(node);
         }

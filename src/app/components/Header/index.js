@@ -240,7 +240,8 @@ export const transformSection = (section, meta) => {
   const config = candidateNodes.reduce(
     (config, node) => {
       const classList = node.className ? node.className.split(' ') : [];
-      const mountSC = isMount(node) ? getMountValue(node) : '';
+      const mountValue = isMount(node) ? getMountValue(node) : '';
+      const isVideoMarker = !!mountValue.match(VIDEO_MARKER_PATTERN);
       let videoId;
       let imgEl;
       let interactiveEl;
@@ -272,9 +273,9 @@ export const transformSection = (section, meta) => {
           }
 
           config.videoId = videoId = ((parentEl.getAttribute('data-uri') || '').match(/\d+/) || [null])[0];
-        } else if (!!mountSC.match(VIDEO_MARKER_PATTERN)) {
-          config.isVideoYouTube = !!mountSC.split('youtube')[1];
-          config.videoId = videoId = mountSC.match(VIDEO_MARKER_PATTERN)[1];
+        } else if (isVideoMarker) {
+          config.isVideoYouTube = !!mountValue.split('youtube')[1];
+          config.videoId = videoId = mountValue.match(VIDEO_MARKER_PATTERN)[1];
         } else {
           videoId = detectVideoId(node);
 
