@@ -251,7 +251,17 @@ export default terminusDocument => {
     `Restored light mode to ${datawrapperIframes.length} Datawrapper embeds`
   );
 
-  // Restore post-story Top Stories thumbnail images in PL
+  // Append format credit for non-DSI stories
+  if (meta.productionUnit !== 'EDL team' && (meta.infoSource || {}).name !== 'Digital Story Innovation Team') {
+    append(mainEl, FormatCredit());
+    debug('Appended Odyssey format credit');
+  }
+
+  // Append master gallery
+  append(mainEl, MasterGallery());
+  debug('Appended master gallery');
+
+  // Restore post-story Top Stories thumbnail images
   const postStoryThumbnails = $$('[data-component="TopStories"] [data-component="IntersectionObserver"]').filter(el => {
     const imgEl = $('img', el);
     return imgEl && imgEl.getAttribute('data-src');
@@ -274,16 +284,6 @@ export default terminusDocument => {
     postStoryThumbnails.length > 0,
     `Restored ${postStoryThumbnails.length} post-story image thumbnails`
   );
-
-  // Append format credit for non-DSI stories
-  if (meta.productionUnit !== 'EDL team' && (meta.infoSource || {}).name !== 'Digital Story Innovation Team') {
-    append(mainEl, FormatCredit());
-    debug('Appended Odyssey format credit');
-  }
-
-  // Append master gallery
-  append(mainEl, MasterGallery());
-  debug('Appended master gallery');
 
   // Expose API, then notify interested parties
   Object.defineProperty(window, '__ODYSSEY__', { value: api });
