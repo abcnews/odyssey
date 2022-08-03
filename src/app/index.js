@@ -1,6 +1,5 @@
 import { MOCK_ELEMENT, RICHTEXT_BLOCK_TAGNAMES, SELECTORS } from '../constants';
 import api from './api';
-import { AsyncComponent } from './async-components/loader';
 import { transformSection as transformSectionIntoBackdrop } from './components/Backdrop';
 import { transformSection as transformSectionIntoBlock } from './components/Block';
 import FormatCredit from './components/FormatCredit';
@@ -8,6 +7,7 @@ import { transformSection as transformSectionIntoGallery } from './components/Ga
 import { Lite as LiteHeader, transformSection as transformSectionIntoHeader } from './components/Header';
 import { transformMarker as transformMarkerIntoHR } from './components/HR';
 import { transformElement as transformElementIntoImageEmbed } from './components/ImageEmbed';
+import { transformElement as transformElementIntoInteractiveEmbed } from './components/InteractiveEmbed';
 import MasterGallery, { register as registerWithMasterGallery } from './components/MasterGallery';
 import Picture from './components/Picture';
 import { transformElement as transformElementIntoQuote } from './components/Quote';
@@ -222,6 +222,23 @@ export default terminusDocument => {
   wysiwygEmbeds.forEach(transformElementIntoStoryTeaserEmbed);
   conditionalDebug(wysiwygEmbeds.length > 0, `Transformed ${wysiwygEmbeds.length} WYSIWYG embeds`);
 
+  // Transform interactive embeds (things like Tweets & Instagram posts)
+  const interactiveEmbeds = meta._articledetail.text.descriptor.children
+    .filter(({ type }) => type === 'interactive')
+    .reduce((memo, { props }) => {
+      const el = $(`[itemid="${props.embedURL}"]`);
+
+      if (el) {
+        el.setAttribute('data-provider', props.providerType);
+
+        return [...memo, el];
+      }
+
+      return memo;
+    }, []);
+  interactiveEmbeds.forEach(transformElementIntoInteractiveEmbed);
+  conditionalDebug(interactiveEmbeds > 0, `Transformed ${interactiveEmbeds.length} interactive embeds`);
+
   // In the News app, restore light mode override to PL Datawrapper embeds when on light backgrounds
   const datawrapperIframes = !meta.isNewsApp
     ? []
@@ -272,33 +289,4 @@ export default terminusDocument => {
   Object.defineProperty(window, '__ODYSSEY__', { value: api });
   window.dispatchEvent(new CustomEvent('odyssey:api', { detail: api }));
   debug('Dispatched `odyssey:api` event');
-
-  // Try to resolve Interactive document-based embeds
-  setTimeout(() => {
-    let textDescriptor;
-
-    try {
-      textDescriptor = meta._articledetail.text.descriptor;
-    } catch (err) {
-      return console.error(err);
-    }
-
-    const interactives = textDescriptor.children.filter(({ type }) => type === 'interactive');
-    let numInteractivesResolved = 0;
-
-    interactives.forEach(({ props }) => {
-      const containerEl = $(`[itemid="${props.embedURL}"]`);
-
-      if (containerEl) {
-        containerEl.className = 'u-pull';
-        substitute(containerEl.firstElementChild, AsyncComponent('Interactive', props));
-        numInteractivesResolved++;
-      }
-    });
-
-    conditionalDebug(
-      interactives.length > 0,
-      `[async] Resolved ${numInteractivesResolved}/${interactives.length} interactives`
-    );
-  }, 0);
 };

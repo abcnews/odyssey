@@ -1,0 +1,66 @@
+.InteractiveEmbed {
+  overflow: hidden;
+}
+
+.InteractiveEmbed > * {
+  display: block !important;
+  margin: 0 auto !important;
+}
+
+.InteractiveEmbed[data-provider='facebook'] .fb-post,
+.InteractiveEmbed[data-provider='instagram'] .instagram-media-rendered,
+.InteractiveEmbed[data-provider='twitter'] .twitter-tweet-rendered {
+  max-width: 550px !important;
+}
+
+.InteractiveEmbed[data-provider='twitter'] .twitter-tweet-rendered {
+  background-color: transparent;
+  border: 0;
+  padding: 0;
+}
+
+.InteractiveEmbed[data-provider='facebookVideo'] .fb-post span,
+.InteractiveEmbed[data-provider='facebookVideo'] .fb-post span iframe {
+  width: 100% !important;
+}
+
+.InteractiveEmbed iframe {
+  width: 100% !important;
+}
+
+.InteractiveEmbedAspect {
+  height: 0;
+  position: relative;
+  overflow: hidden;
+  width: auto;
+  max-width: 100%;
+  padding-bottom: calc(100% * 1 / var(--aspect-ratio));
+}
+
+.InteractiveEmbedAspect iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Placeholder content */
+
+.InteractiveEmbedLoader {
+  text-align: center;
+}
+
+.InteractiveEmbed blockquote {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 16px;
+}
+
+.InteractiveEmbed blockquote > :first-child {
+  margin-top: 0;
+}
+
+.InteractiveEmbed blockquote > :last-child {
+  margin-bottom: 0;
+}
