@@ -15,7 +15,6 @@ import './index.scss';
 
 const Header = ({
   imgEl,
-  interactiveEl,
   isAbreast,
   isDark,
   isFloating,
@@ -29,10 +28,10 @@ const Header = ({
   shouldVideoPlayOnce,
   videoId
 }) => {
-  isFloating = isFloating || (isLayered && !imgEl && !videoId && !interactiveEl);
+  isFloating = isFloating || (isLayered && !imgEl && !videoId);
   isLayered = isLayered || isFloating;
   isDark = isLayered || typeof isDark === 'boolean' ? isDark : meta.isDarkMode;
-  isAbreast = !isFloating && !isLayered && (imgEl || videoId || interactiveEl) && isAbreast;
+  isAbreast = !isFloating && !isLayered && (imgEl || videoId) && isAbreast;
 
   const className = cn(
     'Header',
@@ -55,9 +54,7 @@ const Header = ({
 
   let mediaEl;
 
-  if (interactiveEl) {
-    mediaEl = interactiveEl.cloneNode(true);
-  } else if (imgEl) {
+  if (imgEl) {
     mediaEl = Picture({
       src: imgEl.src,
       alt: imgEl.getAttribute('alt'),
@@ -79,7 +76,7 @@ const Header = ({
         });
   }
 
-  if (mediaEl && !interactiveEl && !isLayered && !isAbreast) {
+  if (mediaEl && !isLayered && !isAbreast) {
     mediaEl.classList.add('u-parallax');
     activateUParallax(mediaEl);
   }
@@ -239,41 +236,13 @@ export const transformSection = (section, meta) => {
 
   const config = candidateNodes.reduce(
     (config, node) => {
-      const classList = node.className ? node.className.split(' ') : [];
       const mountValue = isMount(node) ? getMountValue(node) : '';
       const isVideoMarker = !!mountValue.match(VIDEO_MARKER_PATTERN);
       let videoId;
       let imgEl;
-      let interactiveEl;
 
-      // If we found an init-interactive then it takes over being the header media
-      if (!isNoMedia && !config.interactiveEl && isElement(node)) {
-        // special case for parallax mounts
-        const isParallax = mountSC.indexOf('parallax') === 0;
-
-        // normal init-interactives
-        const isInteractive =
-          classList.indexOf('init-interactive') > -1 ||
-          node.querySelector('[class^="init-interactive"]') ||
-          mountSC.indexOf('interactive') === 0;
-
-        if (isParallax || isInteractive) {
-          config.interactiveEl = interactiveEl = node;
-        }
-      }
-
-      if (!isNoMedia && !config.videoId && !config.imgEl && !config.interactiveEl && isElement(node)) {
-        const leadVideoEl = $('video', node); // Phase 1 (Mobile) renders lead videos (Media field) as <video> elements
-
-        if (leadVideoEl) {
-          let parentEl = leadVideoEl.parentElement;
-
-          while (parentEl.className.indexOf('media-wrapper-dl') === -1 && parentEl !== document.documentElement) {
-            parentEl = parentEl.parentElement;
-          }
-
-          config.videoId = videoId = ((parentEl.getAttribute('data-uri') || '').match(/\d+/) || [null])[0];
-        } else if (isVideoMarker) {
+      if (!isNoMedia && !config.videoId && !config.imgEl && isElement(node)) {
+        if (isVideoMarker) {
           config.isVideoYouTube = !!mountValue.split('youtube')[1];
           config.videoId = videoId = mountValue.match(VIDEO_MARKER_PATTERN)[1];
         } else {
@@ -291,13 +260,7 @@ export const transformSection = (section, meta) => {
         }
       }
 
-      if (
-        !videoId &&
-        !imgEl &&
-        !interactiveEl &&
-        isElement(node) &&
-        ((node.textContent || '').trim().length > 0 || !!mountSC)
-      ) {
+      if (!videoId && !imgEl && isElement(node) && ((node.textContent || '').trim().length > 0 || !!mountValue)) {
         config.miscContentEls.push(node);
       }
 
