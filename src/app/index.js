@@ -3,7 +3,6 @@ import api from './api';
 import { PresentationLayerAsyncComponent } from './async-components/loader';
 import { transformSection as transformSectionIntoBackdrop } from './components/Backdrop';
 import { transformSection as transformSectionIntoBlock } from './components/Block';
-import Comments from './components/Comments';
 import FormatCredit from './components/FormatCredit';
 import { transformSection as transformSectionIntoGallery } from './components/Gallery';
 import { Lite as LiteHeader, transformSection as transformSectionIntoHeader } from './components/Header';
@@ -265,12 +264,6 @@ export default terminusDocument => {
   if (meta.productionUnit !== 'EDL team' && (meta.infoSource || {}).name !== 'Digital Story Innovation Team') {
     append(mainEl, FormatCredit());
     debug('Appended Odyssey format credit');
-  }
-
-  // Append comments, if enabled
-  if (meta.hasCommentsEnabled) {
-    append(mainEl, Comments());
-    debug('Appended comments');
   }
 
   // Append master gallery

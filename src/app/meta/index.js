@@ -122,7 +122,6 @@ export const initMeta = terminusDocument => {
             description: metaDataName['replacement-description'] || description,
             theme: metaDataName.theme || null,
             hasCaptionAttributions: metaDataName['caption-attributions'] !== false,
-            hasCommentsEnabled: metaDataName['showLivefyreComments'] === true,
             isDarkMode: metaDataName['dark-mode'] === true
           }
         : null;
