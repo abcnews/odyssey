@@ -14,7 +14,6 @@
     "start": "aunty serve"
   },
   "dependencies": {
-    "@abcaustralia/nucleus": "^11.2.5",
     "@abcnews/dev-proxy": "^1.1.0",
     "@abcnews/env-utils": "^3.0.1",
     "@abcnews/mount-utils": "^1.0.0",
@@ -37,11 +36,5 @@
   "browserslist": [
     "> 1% in AU",
     "Firefox ESR"
-  ],
-  "abc": {
-    "css": {
-      "libraryDir": "./node_modules/@abcaustralia/nucleus/css",
-      "logVariables": "false"
-    }
-  }
+  ]
 }

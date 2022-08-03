@@ -1,8 +1,8 @@
-export const PresentationLayerAsyncComponent = (componentName, props) => {
+export const AsyncComponent = (componentName, props) => {
   const el = document.createElement('div');
 
-  el.setAttribute('data-presentation-layer-async-component', componentName);
-  import(/* webpackChunkName: "abc-components" */ '.').then(({ render }) => render(componentName, props, el));
+  el.setAttribute('data-async-component', componentName);
+  import(/* webpackChunkName: "async-components" */ '.').then(({ render }) => render(componentName, props, el));
 
   return el;
 };

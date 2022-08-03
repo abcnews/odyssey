@@ -1,6 +1,6 @@
 import { MOCK_ELEMENT, RICHTEXT_BLOCK_TAGNAMES, SELECTORS } from '../constants';
 import api from './api';
-import { PresentationLayerAsyncComponent } from './async-components/loader';
+import { AsyncComponent } from './async-components/loader';
 import { transformSection as transformSectionIntoBackdrop } from './components/Backdrop';
 import { transformSection as transformSectionIntoBlock } from './components/Block';
 import FormatCredit from './components/FormatCredit';
@@ -149,8 +149,6 @@ export default terminusDocument => {
     'tease',
     'whatnext'
   ]).forEach(marker => {
-    let el;
-
     switch (marker.name) {
       case 'cta':
         transformMarkerIntoUCTA(marker);
@@ -275,7 +273,7 @@ export default terminusDocument => {
   window.dispatchEvent(new CustomEvent('odyssey:api', { detail: api }));
   debug('Dispatched `odyssey:api` event');
 
-  // Try to resolve Presentation Layer Interactive document-based embeds
+  // Try to resolve Interactive document-based embeds
   setTimeout(() => {
     let textDescriptor;
 
@@ -293,7 +291,7 @@ export default terminusDocument => {
 
       if (containerEl) {
         containerEl.className = 'u-pull';
-        substitute(containerEl.firstElementChild, PresentationLayerAsyncComponent('Interactive', props));
+        substitute(containerEl.firstElementChild, AsyncComponent('Interactive', props));
         numInteractivesResolved++;
       }
     });

@@ -1,8 +1,9 @@
-import { AspectRatioContainer } from '@abcaustralia/nucleus/es6/AspectRatioContainer/AspectRatioContainer';
 import { TIERS, getTier } from '@abcnews/env-utils';
 import { default as useSWRImmutable } from 'swr/immutable';
 import React from 'react';
 import { useLayoutEffect, useRef } from 'react';
+import AspectRatioContainer from '../AspectRatioContainer';
+
 import './index.scss';
 
 const SUPPORTED_PROVIDER_TYPES = [
@@ -78,11 +79,11 @@ const Interactive = props => {
   } else if (error) {
     placeholder = <HiddenErrorMessage message={`Error loading data: "${String(error)}"`} {...props} />;
   } else if (!data) {
-    placeholder = <div className="PresentationLayer__Loading">Loading…</div>;
+    placeholder = <div className="AsyncComponent__Loading">Loading…</div>;
   }
 
   const interactive = (
-    <div ref={ref} className="PresentationLayer__Interactive" data-provider={providerType}>
+    <div ref={ref} className="AsyncComponent__Interactive" data-provider={providerType}>
       {placeholder}
     </div>
   );
@@ -91,7 +92,7 @@ const Interactive = props => {
 };
 
 const HiddenErrorMessage = ({ message, ...props }) => (
-  <pre className="PresentationLayer__HiddenErrorMessage">{`${message}. Props: ${JSON.stringify(props, null, 2)}`}</pre>
+  <pre className="AsyncComponent__HiddenErrorMessage">{`${message}. Props: ${JSON.stringify(props, null, 2)}`}</pre>
 );
 
 const normaliseHTML = (html, providerType) => {
