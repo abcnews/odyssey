@@ -322,7 +322,8 @@ export default terminusDocument => {
       }
 
       const interactives = textDescriptor.children.filter(({ type }) => type === 'interactive');
-      const numInteractivesResolved = 0;
+      let numInteractivesResolved = 0;
+
       interactives.forEach(({ props }) => {
         const containerEl = $(`[itemid="${props.embedURL}"]`);
 
