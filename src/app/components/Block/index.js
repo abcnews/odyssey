@@ -3,7 +3,7 @@ import cn from 'classnames';
 import html from 'bel';
 import { ALIGNMENT_PATTERN, SCROLLPLAY_PCT_PATTERN, VIDEO_MARKER_PATTERN } from '../../../constants';
 import { enqueue, subscribe } from '../../scheduler';
-import { $, detach, detectVideoId, getChildImage, isElement } from '../../utils/dom';
+import { detach, detectVideoId, getChildImage, isElement } from '../../utils/dom';
 import { getRatios } from '../../utils/misc';
 import { createFromElement as createCaptionFromElement } from '../Caption';
 import Picture from '../Picture';
@@ -26,11 +26,11 @@ const TRANSITIONS = [
 /*
   Block media can be one of:
 
-  * imageEl - an image document
+  * imgEl - an image document
   * videoId - a video document CMID or a Youtube video ID (when isVideoYouTube=true)
-  * backgrounds - an array of acceptable values for imageEl/videoId
+  * backgrounds - an array of acceptable values for imgEl/videoId
   
-  Media may be captioned/attributed, in which case a captions array (of Caption components) should be supplied
+  Media may be captioned/attributed, in which case captionEls (an array of Caption components) should be supplied
 */
 const Block = ({
   alignment,
@@ -88,21 +88,23 @@ const Block = ({
   };
 
   let mediaEl;
+  let backgroundsEls;
 
   if (backgrounds) {
-    backgrounds = backgrounds.map(element => {
+    backgroundsEls = backgrounds.map(background => {
       // Try to resolve the background element
-      let backgroundEl;
-      if (element.tagName === 'IMG') {
+      let backgroundEl = document.createElement('div'); // placeholder
+
+      if (background.tagName === 'IMG') {
         backgroundEl = Picture({
-          src: element.src,
-          alt: element.getAttribute('alt'),
+          src: background.src,
+          alt: background.getAttribute('alt'),
           ratios
         });
-      } else if (element.videoId) {
-        if (element.isVideoYouTube) {
+      } else if (background.videoId) {
+        if (background.isVideoYouTube) {
           backgroundEl = YouTubePlayer({
-            videoId: element.videoId,
+            videoId: background.videoId,
             ratios,
             isLoop: shouldVideoPlayOnce ? false : undefined,
             isAmbient: true,
@@ -110,7 +112,7 @@ const Block = ({
           });
         } else {
           backgroundEl = VideoPlayer({
-            videoId: element.videoId,
+            videoId: background.videoId,
             ratios,
             isContained,
             isLoop: shouldVideoPlayOnce ? false : undefined,
@@ -120,6 +122,7 @@ const Block = ({
       }
 
       backgroundEl.classList.add('background-transition');
+
       if (TRANSITIONS.indexOf(transition) > -1) {
         backgroundEl.classList.add(transition);
       } else {
@@ -161,8 +164,8 @@ const Block = ({
   }
 
   let mediaContainerEl;
-  if (backgrounds && backgrounds.length) {
-    mediaContainerEl = html`<div class="${mediaClassName}">${backgrounds}</div>`;
+  if (backgroundsEls && backgroundsEls.length) {
+    mediaContainerEl = html`<div class="${mediaClassName}">${backgroundsEls}</div>`;
   } else {
     mediaContainerEl = mediaEl ? html`<div class="${mediaClassName}">${mediaEl}</div>` : null;
   }
@@ -232,7 +235,7 @@ const Block = ({
     });
   }
 
-  if (backgrounds && backgrounds.length) {
+  if (backgroundsEls && backgroundsEls.length) {
     // In theory, this could be any colour
     if (transition.length === 6 && transition.match(/^[0-9a-f]{6}$/)) {
       blockEl.style.setProperty('background-color', '#' + transition);
@@ -245,7 +248,7 @@ const Block = ({
 
     // keep a list of light/dark for each marker, so captions have the correct theme
     const lightDarkForMarkerIndex = markers.map(
-      (element, index) => element.getAttribute('data-lightdark') || (isLight ? 'light' : 'dark')
+      element => element.getAttribute('data-lightdark') || (isLight ? 'light' : 'dark')
     );
 
     subscribe(function _checkIfBackgroundShouldChange(client) {
@@ -269,27 +272,27 @@ const Block = ({
         activeIndex = newActiveIndex;
 
         enqueue(function _updateBackground() {
-          backgrounds.forEach((background, index) => {
+          backgroundsEls.forEach((backgroundEl, index) => {
             // Only keep the previous 1 and next 1 in the context
             if (index >= activeIndex - 1 && index <= activeIndex + 1) {
-              background.style.removeProperty('display');
+              backgroundEl.style.removeProperty('display');
             } else {
-              background.style.setProperty('display', 'none');
+              backgroundEl.style.setProperty('display', 'none');
             }
 
             // Transition between the images
             if (index === activeIndex) {
-              background.style.removeProperty('visibility');
-              background.classList.add('transition-in');
-              background.classList.remove('transition-out');
+              backgroundEl.style.removeProperty('visibility');
+              backgroundEl.classList.add('transition-in');
+              backgroundEl.classList.remove('transition-out');
             } else if (index === previousActiveIndex) {
-              background.style.removeProperty('visibility');
-              background.classList.add('transition-out');
-              background.classList.remove('transition-in');
+              backgroundEl.style.removeProperty('visibility');
+              backgroundEl.classList.add('transition-out');
+              backgroundEl.classList.remove('transition-in');
             } else {
-              background.style.setProperty('visibility', 'hidden');
-              background.classList.remove('transition-in');
-              background.classList.remove('transition-out');
+              backgroundEl.style.setProperty('visibility', 'hidden');
+              backgroundEl.classList.remove('transition-in');
+              backgroundEl.classList.remove('transition-out');
             }
           });
 
@@ -390,11 +393,11 @@ export const transformSection = section => {
       .map(node => {
         const mountValue = isMount(node) ? getMountValue(node) : '';
         const isVideoMarker = !!mountValue.match(VIDEO_MARKER_PATTERN);
+        let imgEl = getChildImage(node);
 
-        let img = getChildImage(node);
-        if (img) {
+        if (imgEl) {
           // We found an image to use as one of the backgrounds
-          config.backgrounds.push(img);
+          config.backgrounds.push(imgEl);
           config.ratios = getRatios(section.configString);
 
           // Graft a 'marker' onto the next paragraph
@@ -419,6 +422,7 @@ export const transformSection = section => {
 
         // See if we have a video we can use for a background
         let videoMarker = {};
+
         if (isVideoMarker) {
           videoMarker = {
             isVideoYouTube: !!mountValue.split('youtube')[1],
