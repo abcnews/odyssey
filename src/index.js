@@ -1,6 +1,5 @@
 import './unveil';
 import './polyfills';
-import './fonts.scss';
 import './keyframes.scss';
 import './app/components/utilities/index.scss';
 import { proxy } from '@abcnews/dev-proxy';
