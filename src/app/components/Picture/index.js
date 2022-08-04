@@ -1,5 +1,6 @@
 import { getImages } from '@abcnews/terminus-fetch';
 import cn from 'classnames';
+import html from 'nanohtml';
 import { MQ, SMALLEST_IMAGE } from '../../../constants';
 import { lookupImageByAssetURL } from '../../meta';
 import { enqueue, subscribe } from '../../scheduler';
@@ -60,26 +61,21 @@ const Picture = ({ src = SMALLEST_IMAGE, alt = '', isContained = false, ratios =
     alt = imageDoc.alt;
   }
 
-  const rootEl = document.createElement('a');
   const placeholderEl = Sizer(ratios);
-  const pictureEl = document.createElement('picture');
-  let imgEl = null;
 
-  Object.entries(sources).forEach(([media, srcset]) => {
-    const sourceEl = document.createElement('source');
+  const pictureEl = html`<picture
+    >${Object.entries(sources).map(
+      ([media, srcset]) => html`<source media=${media} srcset=${srcset}></source>`
+    )}</picture
+  >`;
 
-    sourceEl.setAttribute('media', media);
-    sourceEl.setAttribute('srcset', srcset);
-    append(pictureEl, sourceEl);
-  });
+  const rootEl = html`<a class=${cn('Picture', { 'is-contained': isContained })}>${placeholderEl}${pictureEl}</a>`;
 
   if (linkUrl) {
-    rootEl.href = linkUrl;
+    rootEl.setAttribute('href', linkUrl);
   }
 
-  rootEl.className = cn('Picture', { 'is-contained': isContained });
-  append(rootEl, placeholderEl);
-  append(rootEl, pictureEl);
+  let imgEl = null;
 
   const picture = {
     getRect: () => {
