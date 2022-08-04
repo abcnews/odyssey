@@ -1,6 +1,5 @@
-import cn from 'classnames';
-import html from 'nanohtml';
 import { url2cmid } from '@abcnews/url2cmid';
+import html from 'nanohtml';
 import { invalidateClient } from '../../scheduler';
 import { track } from '../../utils/behaviour';
 import { terminusFetch } from '../../utils/content';
@@ -58,7 +57,7 @@ const WhatNext = ({ stories }) => {
       role="navigation"
       class="${`WhatNext${itemEls.length > 2 ? ' u-pull' : ''}`}"
       data-length="${itemEls.reduce(
-        (memo, el, index) => `${memo} gt${index}`,
+        (memo, _el, index) => `${memo} gt${index}`,
         `${itemEls.length} ${itemEls.length % 2 ? 'odd' : 'even'}`
       )}"
     >

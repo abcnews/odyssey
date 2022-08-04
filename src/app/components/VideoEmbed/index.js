@@ -1,7 +1,7 @@
 import { getMountValue, isMount } from '@abcnews/mount-utils';
+import { url2cmid } from '@abcnews/url2cmid';
 import cn from 'classnames';
 import html from 'nanohtml';
-import { url2cmid } from '@abcnews/url2cmid';
 import { ALIGNMENT_PATTERN, VIDEO_MARKER_PATTERN, SCROLLPLAY_PCT_PATTERN } from '../../../constants';
 import { $, substitute } from '../../utils/dom';
 import { getRatios } from '../../utils/misc';

@@ -1,6 +1,6 @@
+import { url2cmid } from '@abcnews/url2cmid';
 import cn from 'classnames';
 import html from 'nanohtml';
-import { url2cmid } from '@abcnews/url2cmid';
 import { track } from '../../utils/behaviour';
 import { $, $$, detach, getChildImage, substitute } from '../../utils/dom';
 import './index.scss';

@@ -1,5 +1,5 @@
-import html from 'nanohtml';
 import { url2cmid } from '@abcnews/url2cmid';
+import html from 'nanohtml';
 import { enqueue, invalidateClient } from '../../scheduler';
 import { track } from '../../utils/behaviour';
 import { $, $$, prepend } from '../../utils/dom';
