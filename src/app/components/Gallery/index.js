@@ -1,7 +1,7 @@
 import { getMountValue, isPrefixedMount } from '@abcnews/mount-utils';
 import cn from 'classnames';
-import html from 'bel';
-import rawHTML from 'bel/raw';
+import html from 'nanohtml';
+import rawHTML from 'nanohtml/raw';
 import { SELECTORS, SUPPORTS_PASSIVE, VIDEO_MARKER_PATTERN } from '../../../constants';
 import { getMeta, lookupImageByAssetURL } from '../../meta';
 import { enqueue, invalidateClient, subscribe } from '../../scheduler';

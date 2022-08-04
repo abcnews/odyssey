@@ -1,4 +1,4 @@
-import html from 'bel';
+import html from 'nanohtml';
 import { enqueue, subscribe, unsubscribe } from '../../scheduler';
 import { detach } from '../../utils/dom';
 import './index.scss';

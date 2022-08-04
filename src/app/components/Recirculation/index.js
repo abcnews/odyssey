@@ -1,4 +1,4 @@
-import html from 'bel';
+import html from 'nanohtml';
 import { invalidateClient } from '../../scheduler';
 import { track } from '../../utils/behaviour';
 import { terminusFetch } from '../../utils/content';

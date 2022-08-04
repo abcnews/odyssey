@@ -1,4 +1,4 @@
-import html from 'bel';
+import html from 'nanohtml';
 import { MQ, ONLY_RATIO_PATTERN, SMALLEST_IMAGE, UNIT } from '../../../constants';
 import { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } from '../../media';
 import { enqueue, invalidateClient, subscribe } from '../../scheduler';

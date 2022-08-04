@@ -1,5 +1,5 @@
 import cn from 'classnames';
-import html from 'bel';
+import html from 'nanohtml';
 import { ALIGNMENT_PATTERN } from '../../../constants';
 import { lookupImageByAssetURL } from '../../meta';
 import { getChildImage, substitute } from '../../utils/dom';

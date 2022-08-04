@@ -1,5 +1,5 @@
 import cn from 'classnames';
-import html from 'bel';
+import html from 'nanohtml';
 import './index.scss';
 
 const Backdrop = ({ bgColor = 'rgb(255, 255, 255)', isDark = false, contentEls = [] }) => {

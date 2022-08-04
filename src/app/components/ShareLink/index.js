@@ -1,4 +1,4 @@
-import html from 'bel';
+import html from 'nanohtml';
 import { track } from '../../utils/behaviour';
 import './index.scss';
 

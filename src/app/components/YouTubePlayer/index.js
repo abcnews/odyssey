@@ -1,4 +1,4 @@
-import html from 'bel';
+import html from 'nanohtml';
 import { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } from '../../media';
 import { enqueue, invalidateClient, subscribe } from '../../scheduler';
 import { toggleAttribute } from '../../utils/dom';

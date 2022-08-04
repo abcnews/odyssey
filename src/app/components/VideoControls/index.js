@@ -1,4 +1,4 @@
-import html from 'bel';
+import html from 'nanohtml';
 import { setText } from '../../utils/dom';
 import { twoDigits, whenKeyIn } from '../../utils/misc';
 import './index.scss';

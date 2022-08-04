@@ -1,6 +1,6 @@
 import { getMountValue, isMount } from '@abcnews/mount-utils';
 import cn from 'classnames';
-import html from 'bel';
+import html from 'nanohtml';
 import { VIDEO_MARKER_PATTERN } from '../../../constants';
 import { enqueue, subscribe } from '../../scheduler';
 import { terminusFetch } from '../../utils/content';

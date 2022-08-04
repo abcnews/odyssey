@@ -1,5 +1,5 @@
 import cn from 'classnames';
-import html from 'bel';
+import html from 'nanohtml';
 import { enqueue, subscribe } from '../../scheduler';
 import './index.scss';
 

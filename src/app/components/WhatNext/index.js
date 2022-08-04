@@ -1,5 +1,5 @@
 import cn from 'classnames';
-import html from 'bel';
+import html from 'nanohtml';
 import { url2cmid } from '@abcnews/url2cmid';
 import { invalidateClient } from '../../scheduler';
 import { track } from '../../utils/behaviour';

@@ -1,4 +1,4 @@
-import html from 'bel';
+import html from 'nanohtml';
 import { EMBED_TAGNAMES } from '../../../constants';
 import { isElement } from '../../utils/dom';
 

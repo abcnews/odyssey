@@ -1,4 +1,4 @@
-import html from 'bel';
+import html from 'nanohtml';
 import { url2cmid } from '@abcnews/url2cmid';
 import { enqueue, invalidateClient } from '../../scheduler';
 import { track } from '../../utils/behaviour';

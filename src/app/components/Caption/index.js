@@ -1,4 +1,4 @@
-import html from 'bel';
+import html from 'nanohtml';
 import { MOCK_ELEMENT, MOCK_TEXT } from '../../../constants';
 import { $, isElement, isText } from '../../utils/dom';
 import './index.scss';
