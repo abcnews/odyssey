@@ -1,8 +1,8 @@
 import { getImages } from '@abcnews/terminus-fetch';
-import html from 'bel';
-import { MQ, MQL, SMALLEST_IMAGE } from '../../../constants';
-import { getMeta, lookupImageByAssetURL } from '../../meta';
-import { enqueue, subscribe, unsubscribe } from '../../scheduler';
+import cn from 'classnames';
+import { MQ, SMALLEST_IMAGE } from '../../../constants';
+import { lookupImageByAssetURL } from '../../meta';
+import { enqueue, subscribe } from '../../scheduler';
 import { append, detach } from '../../utils/dom';
 import { proximityCheck } from '../../utils/misc';
 import Sizer from '../Sizer';
@@ -29,8 +29,6 @@ const IMAGE_LOAD_RANGE = 1;
 const pictures = [];
 
 const Picture = ({ src = SMALLEST_IMAGE, alt = '', isContained = false, ratios = {}, linkUrl = '' }) => {
-  const imageDoc = lookupImageByAssetURL(src); // Will only work if image's document was catalogued during initMeta
-
   ratios = {
     sm: ratios.sm || DEFAULT_RATIOS.sm,
     md: ratios.md || DEFAULT_RATIOS.md,
@@ -38,78 +36,66 @@ const Picture = ({ src = SMALLEST_IMAGE, alt = '', isContained = false, ratios =
     xl: ratios.xl || DEFAULT_RATIOS.xl
   };
 
-  // Defaults for image of unknown origin
-  let smImageURL = src;
-  let mdImageURL = src;
-  let lansdcapeLtLgImageURL = src;
-  let lgImageURL = src;
-  let xlImageURL = src;
+  const sources = {
+    [MQ.SM]: src,
+    [MQ.MD]: src,
+    [MQ.LANDSCAPE_LT_LG]: src,
+    [MQ.LG]: src,
+    [MQ.XL]: src
+  };
+
+  const imageDoc = lookupImageByAssetURL(src); // Will only work if image's document was catalogued during initMeta
 
   if (imageDoc) {
-    alt = imageDoc.alt;
-
     const { renditions } = getImages(imageDoc, WIDTHS);
 
-    smImageURL = getMostSuitableRenditionURL(renditions, ratios.sm, 'sm') || smImageURL;
-    mdImageURL = getMostSuitableRenditionURL(renditions, ratios.md, 'md') || mdImageURL;
-    lansdcapeLtLgImageURL = getMostSuitableRenditionURL(renditions, ratios.lg, 'md') || lansdcapeLtLgImageURL;
-    lgImageURL = getMostSuitableRenditionURL(renditions, ratios.lg, 'lg') || lgImageURL;
-    xlImageURL = getMostSuitableRenditionURL(renditions, ratios.xl, 'xl') || xlImageURL;
+    if (renditions && renditions.length) {
+      sources[MQ.SM] = pickRenditionURL(renditions, ratios.sm, 'sm');
+      sources[MQ.MD] = pickRenditionURL(renditions, ratios.md, 'md');
+      sources[MQ.LANDSCAPE_LT_LG] = pickRenditionURL(renditions, ratios.lg, 'md');
+      sources[MQ.LG] = pickRenditionURL(renditions, ratios.lg, 'lg');
+      sources[MQ.XL] = pickRenditionURL(renditions, ratios.xl, 'xl');
+    }
+
+    alt = imageDoc.alt;
   }
 
+  const rootEl = document.createElement('a');
   const placeholderEl = Sizer(ratios);
+  const pictureEl = document.createElement('picture');
+  let imgEl = null;
 
-  // The <img> element will be rendered inside a container element because we
-  // want to use <picture> where possible to automatically manage sources
-  // (based on the viewport size)
-  // Note: We cannot use <picture> & <source>s on PL preview sites, because
-  // `imageset`s aren't allowed Mixed Content (http asset loaded on https page).
-  // We have to manually manage <img> src attribute sources to work around this
-  // https://snook.ca/archives/html_and_css/mixed-content-responsive-images
-  const { isPreview } = getMeta();
-  const isManagingSources = isPreview;
+  Object.entries(sources).forEach(([media, srcset]) => {
+    const sourceEl = document.createElement('source');
 
-  const imgContainerEl = isManagingSources
-    ? document.createElement('div')
-    : html`
-        <picture>
-          <source srcset="${xlImageURL}" media="${MQ.XL}" />
-          <source srcset="${lgImageURL}" media="${MQ.LG}" />
-          <source srcset="${lansdcapeLtLgImageURL}" media="${MQ.LANDSCAPE_LT_LG}" />
-          <source srcset="${mdImageURL}" media="${MQ.MD}" />
-          <source srcset="${smImageURL}" media="${MQ.SM}" />
-        </picture>
-      `;
-
-  const pictureEl = html`
-    <a class="Picture${isContained ? ' is-contained' : ''}"> ${placeholderEl} ${imgContainerEl} </a>
-  `;
+    sourceEl.setAttribute('media', media);
+    sourceEl.setAttribute('srcset', srcset);
+    append(pictureEl, sourceEl);
+  });
 
   if (linkUrl) {
-    pictureEl.href = linkUrl;
+    rootEl.href = linkUrl;
   }
 
-  let imgEl = null;
+  rootEl.className = cn('Picture', { 'is-contained': isContained });
+  append(rootEl, placeholderEl);
+  append(rootEl, pictureEl);
 
   const picture = {
     getRect: () => {
       // Fixed images should use their parent's rect, as they're always in the viewport
-      const position = window.getComputedStyle(pictureEl).position;
-      const el = position === 'fixed' ? pictureEl.parentElement : pictureEl;
+      const position = window.getComputedStyle(rootEl).position;
+      const measurableEl = position === 'fixed' ? rootEl.parentElement : rootEl;
 
-      return el.getBoundingClientRect();
+      return measurableEl.getBoundingClientRect();
     },
     unload: () => {
       picture.isLoading = false;
       picture.isLoaded = false;
-      pictureEl.removeAttribute('loading');
-      pictureEl.removeAttribute('loaded');
+      rootEl.removeAttribute('loading');
+      rootEl.removeAttribute('loaded');
       detach(imgEl);
       imgEl = null;
-
-      if (isManagingSources) {
-        unsubscribe(picture.setSrc);
-      }
     },
     load: () => {
       if (imgEl) {
@@ -117,15 +103,11 @@ const Picture = ({ src = SMALLEST_IMAGE, alt = '', isContained = false, ratios =
       }
 
       picture.isLoading = true;
-      pictureEl.setAttribute('loading', '');
-      imgEl = html`<img alt="${alt}" data-object-fit="" />`;
+      rootEl.setAttribute('loading', '');
+      imgEl = document.createElement('img');
+      imgEl.setAttribute('alt', alt);
       imgEl.addEventListener('load', picture.loaded, false);
-      append(imgContainerEl, imgEl);
-
-      if (isManagingSources) {
-        picture.setSrc({ hasChanged: true });
-        subscribe(picture.setSrc);
-      }
+      append(pictureEl, imgEl);
 
       if (!picture.hasPlaceholder) {
         enqueue(function _createAndAddPlaceholderImage() {
@@ -147,29 +129,12 @@ const Picture = ({ src = SMALLEST_IMAGE, alt = '', isContained = false, ratios =
 
       picture.isLoading = false;
       picture.isLoaded = true;
-      pictureEl.removeAttribute('loading');
-      pictureEl.setAttribute('loaded', '');
+      rootEl.removeAttribute('loading');
+      rootEl.setAttribute('loaded', '');
       imgEl.removeEventListener('load', picture.loaded);
 
       if (picture.loadedHook) {
         picture.loadedHook(imgEl);
-      }
-    },
-    setSrc: ({ hasChanged }) => {
-      if (!imgEl || !hasChanged) {
-        return;
-      }
-
-      if (MQL.XL.matches) {
-        imgEl.src = xlImageURL;
-      } else if (MQL.LG.matches) {
-        imgEl.src = lgImageURL;
-      } else if (MQL.LANDSCAPE_LT_LG.matches) {
-        imgEl.src = lansdcapeLtLgImageURL;
-      } else if (MQL.MD.matches) {
-        imgEl.src = mdImageURL;
-      } else if (MQL.SM.matches) {
-        imgEl.src = smImageURL;
       }
     },
     forget: () => {
@@ -179,13 +144,13 @@ const Picture = ({ src = SMALLEST_IMAGE, alt = '', isContained = false, ratios =
 
   pictures.push(picture);
 
-  pictureEl.api = picture;
+  rootEl.api = picture;
 
   if (pictures.length === 1) {
     subscribe(_checkIfPicturesNeedToBeLoaded);
   }
 
-  return pictureEl;
+  return rootEl;
 };
 
 export default Picture;
@@ -207,7 +172,7 @@ function _checkIfPicturesNeedToBeLoaded(client) {
   });
 }
 
-function getMostSuitableRenditionURL(renditions, preferredRatio, preferredSize) {
+function pickRenditionURL(renditions, preferredRatio, preferredSize) {
   if (!renditions || !renditions.length) {
     return null;
   }
