@@ -35,7 +35,7 @@ function getBylineNodes() {
     return [];
   }
 
-  const bylineSubEl = $('p', bylineEl);
+  const bylineSubEl = $('p,[data-component="Text"]', bylineEl);
 
   return Array.from((bylineSubEl || bylineEl).childNodes)
     .filter(node => (node.textContent || '').trim().length > -1)
