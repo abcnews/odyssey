@@ -6,7 +6,7 @@ import { blurImage } from '../Picture/blur';
 import Sizer from '../Sizer';
 import VideoControls from '../VideoControls';
 import { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } from '../VideoPlayer/players';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 const DEFAULT_YOUTUBE_CONFIG = {
   controls: 0,
@@ -309,6 +309,8 @@ const YouTubePlayer = ({
       ${placeholderEl} ${videoEl} ${isAmbient ? null : videoControlsEl} ${posterEl}
     </div>
   `;
+
+  styles.use();
 
   return youTubePlayerEl;
 };

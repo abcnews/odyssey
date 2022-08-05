@@ -3,10 +3,12 @@ import html from 'nanohtml';
 import { MOCK_ELEMENT } from '../../constants';
 import { track } from '../../utils/behaviour';
 import { $, $$, getChildImage, substitute } from '../../utils/dom';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 const StoryTeaserEmbed = ({ title, description, url, imageURL }) => {
   const id = url2cmid(url);
+
+  styles.use();
 
   return html`
     <aside class="StoryTeaserEmbed">

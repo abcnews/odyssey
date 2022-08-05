@@ -5,7 +5,7 @@ import { track } from '../../utils/behaviour';
 import { terminusFetch } from '../../utils/content';
 import { $, $$, detach, prepend, substitute } from '../../utils/dom';
 import Picture from '../Picture';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 const PICTURE_RATIOS = {
   sm: '3x2',
@@ -51,6 +51,8 @@ const WhatNext = ({ stories }) => {
       invalidateClient();
     });
   });
+
+  styles.use();
 
   return html`
     <div

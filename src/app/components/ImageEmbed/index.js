@@ -7,7 +7,7 @@ import { getRatios } from '../../utils/misc';
 import { grabPrecedingConfigString } from '../../utils/mounts';
 import { createFromTerminusDoc as createCaptionFromTerminusDoc } from '../Caption';
 import Picture from '../Picture';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 const ImageEmbed = ({ pictureEl, captionEl, alignment, isFull, isCover, isAnon }) => {
   if (isCover) {
@@ -21,6 +21,8 @@ const ImageEmbed = ({ pictureEl, captionEl, alignment, isFull, isCover, isAnon }
     'u-full': isFull,
     'is-cover': isCover
   });
+
+  styles.use();
 
   return html`<div class="${className}">${pictureEl} ${isAnon ? null : captionEl}</div>`;
 };

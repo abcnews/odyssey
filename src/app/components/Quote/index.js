@@ -4,7 +4,7 @@ import { ALIGNMENT_PATTERN, MOCK_NODE } from '../../constants';
 import { $, $$, isElement, substitute } from '../../utils/dom';
 import { grabPrecedingConfigString } from '../../utils/mounts';
 import { conditionallyApply as conditionallyApplyUQuote } from '../UQuote';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 const Quote = ({ isPullquote = false, alignment, parEls = [], attributionNodes = [] }) => {
   const className = cn('Quote', {
@@ -25,6 +25,8 @@ const Quote = ({ isPullquote = false, alignment, parEls = [], attributionNodes =
   if (parEls.length) {
     parEls.forEach(parEl => conditionallyApplyUQuote(parEl, isPullquote));
   }
+
+  styles.use();
 
   return html`
     <div class="${className}">

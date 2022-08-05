@@ -4,7 +4,7 @@ import html from 'nanohtml';
 import { ALIGNMENT_PATTERN } from '../../constants';
 import { substitute } from '../../utils/dom';
 import { grabPrecedingConfigString } from '../../utils/mounts';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 const SUPPORTED_PROVIDER_TYPES = [
   'documentcloud',
@@ -88,6 +88,8 @@ const InteractiveEmbed = ({ url, providerType, alignment, isFull }) => {
       console.error(err);
       embedContainerEl.innerHTML = '';
     });
+
+  styles.use();
 
   return el;
 };

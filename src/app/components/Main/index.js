@@ -1,7 +1,7 @@
 import cn from 'classnames';
 import html from 'nanohtml';
 import { enqueue, subscribe } from '../../scheduler';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 const Main = (childNodes, meta) => {
   const className = cn('Main', 'u-layout', {
@@ -17,6 +17,8 @@ const Main = (childNodes, meta) => {
       el.style.setProperty('--Main-offsetTop', Math.round(el.offsetTop) + 'px');
     });
   }, true);
+
+  styles.use();
 
   return el;
 };

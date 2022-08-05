@@ -1,12 +1,14 @@
 import html from 'nanohtml';
 import { MOCK_ELEMENT, MOCK_TEXT } from '../../constants';
 import { $, isElement, isText } from '../../utils/dom';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 const Caption = ({ url, text, attribution, unlink }) => {
   if (!text && !attribution) {
     return null;
   }
+
+  styles.use();
 
   return html`
     <p class="Caption" title="${text}${attribution ? ` (${attribution})` : ''}">

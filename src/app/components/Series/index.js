@@ -3,7 +3,7 @@ import cn from 'classnames';
 import html from 'nanohtml';
 import { track } from '../../utils/behaviour';
 import { $, $$, detach, getChildImage, substitute } from '../../utils/dom';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 const CURRENT_STORY_ID = url2cmid(window.location.href);
 
@@ -13,6 +13,8 @@ const Series = ({ stories, options = {} }) => {
     'has-m3r1': stories.length % 3 === 1,
     'has-m3r2': stories.length % 3 === 2
   });
+
+  styles.use();
 
   return html`
     <div role="navigation" class="${className}">

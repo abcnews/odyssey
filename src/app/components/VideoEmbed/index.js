@@ -9,7 +9,7 @@ import { grabPrecedingConfigString } from '../../utils/mounts';
 import { createFromElement as createCaptionFromElement } from '../Caption';
 import VideoPlayer from '../VideoPlayer';
 import YouTubePlayer from '../YouTubePlayer';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 const VideoEmbed = ({ playerEl, captionEl, alignment, isFull, isCover, isAnon }) => {
   if (isCover) {
@@ -23,6 +23,8 @@ const VideoEmbed = ({ playerEl, captionEl, alignment, isFull, isCover, isAnon })
     'u-full': isFull,
     'is-cover': isCover
   });
+
+  styles.use();
 
   return html`<div class="${className}">${playerEl} ${isAnon ? null : captionEl}</div>`;
 };

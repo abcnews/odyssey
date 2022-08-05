@@ -8,7 +8,7 @@ import { append, detach } from '../../utils/dom';
 import { proximityCheck } from '../../utils/misc';
 import Sizer from '../Sizer';
 import { blurImage } from './blur';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 const WIDTHS = [700, 940, 1400, 2150];
 const SIZES = {
@@ -145,6 +145,8 @@ const Picture = ({ src = SMALLEST_IMAGE, alt = '', isContained = false, ratios =
   if (pictures.length === 1) {
     subscribe(_checkIfPicturesNeedToBeLoaded);
   }
+
+  styles.use();
 
   return rootEl;
 };

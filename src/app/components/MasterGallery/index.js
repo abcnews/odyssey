@@ -6,7 +6,7 @@ import { $, $$, prepend } from '../../utils/dom';
 import { createFromTerminusDoc as createCaptionFromTerminusDoc } from '../Caption';
 import Gallery from '../Gallery';
 import Picture from '../Picture';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 const TAB_KEY = 9;
 
@@ -123,6 +123,8 @@ const MasterGallery = () => {
       <div class="MasterGallery-container u-richtext-invert">${galleryEl}</div>
     </div>
   `;
+
+  styles.use();
 
   return masterGalleryEl;
 };

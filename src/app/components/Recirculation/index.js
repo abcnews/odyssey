@@ -3,7 +3,7 @@ import { invalidateClient } from '../../scheduler';
 import { track } from '../../utils/behaviour';
 import { terminusFetch } from '../../utils/content';
 import Picture from '../Picture';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 const PICTURE_RATIOS = {
   sm: '16x9',
@@ -50,6 +50,8 @@ const Recirculation = ({ ids, pull }) => {
       el.classList.add('has-children');
     })
   );
+
+  styles.use();
 
   return el;
 };

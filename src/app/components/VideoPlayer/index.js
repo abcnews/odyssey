@@ -9,7 +9,7 @@ import VideoControls from '../VideoControls';
 import { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } from './players';
 import { trackProgress } from './stats';
 import { getMetadata, hasAudio } from './utils';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 const FUZZY_INCREMENT_FPS = 30;
 const FUZZY_INCREMENT_INTERVAL = 1000 / FUZZY_INCREMENT_FPS;
@@ -328,6 +328,8 @@ const VideoPlayer = ({
   `;
 
   videoPlayerEl.api = player;
+
+  styles.use();
 
   return videoPlayerEl;
 };

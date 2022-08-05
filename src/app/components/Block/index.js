@@ -9,7 +9,7 @@ import { createFromElement as createCaptionFromElement } from '../Caption';
 import Picture from '../Picture';
 import VideoPlayer from '../VideoPlayer';
 import YouTubePlayer from '../YouTubePlayer';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 const TRANSITIONS = [
   'colour',
@@ -312,6 +312,8 @@ const Block = ({
       }
     });
   }
+
+  styles.use();
 
   return blockEl;
 };

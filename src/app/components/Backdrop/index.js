@@ -1,8 +1,10 @@
 import cn from 'classnames';
 import html from 'nanohtml';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 const Backdrop = ({ bgColor = 'rgb(255, 255, 255)', isDark = false, contentEls = [] }) => {
+  styles.use();
+
   return html`
     <div class="Backdrop u-full" style="background-color: ${bgColor}">
       <div

@@ -1,10 +1,9 @@
 @import '../../constants';
-@import './variables.scss';
 
 $abreastChildSpacing: $unit * 2.5;
 
 .Header {
-  --Header-contentPeek: #{$var--Header-contentPeek};
+  --Header-contentPeek: #{$unit * 9};
   overflow: hidden;
   position: relative;
   line-height: 1.5;

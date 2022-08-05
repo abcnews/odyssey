@@ -1,6 +1,6 @@
 import html from 'nanohtml';
 import { track } from '../../utils/behaviour';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 function native({ id, url, title, description }) {
   navigator.share({ text: description, title, url }).then(() => track('share-link', id));
@@ -8,6 +8,8 @@ function native({ id, url, title, description }) {
 
 const ShareLink = ({ link, shouldBlend }) => {
   const className = `ShareLink ShareLink--${link.id}${shouldBlend ? ' u-blend-luminosity' : ''}`;
+
+  styles.use();
 
   if (link.id === 'native') {
     return html`<button class="${className}" onclick="${() => native(link)}" aria-label="Share this story"></button>`;

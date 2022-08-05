@@ -15,7 +15,7 @@ import Picture from '../Picture';
 import { createFromElement as createQuoteFromElement } from '../Quote';
 import Sizer from '../Sizer';
 import VideoPlayer from '../VideoPlayer';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 export const MOSAIC_ROW_LENGTHS_PATTERN = /mosaic[a-z]*(\d+)/;
 
@@ -457,6 +457,8 @@ const Gallery = ({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconst
   requestAnimationFrame(() => {
     goToItem((currentIndex = 0));
   });
+
+  styles.use();
 
   return galleryEl;
 };

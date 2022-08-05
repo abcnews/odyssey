@@ -11,7 +11,7 @@ import ScrollHint from '../ScrollHint';
 import { activate as activateUParallax } from '../UParallax';
 import VideoPlayer from '../VideoPlayer';
 import YouTubePlayer from '../YouTubePlayer';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 const Header = ({
   imgEl,
@@ -155,6 +155,8 @@ const Header = ({
       updateContentPeek(headerEl);
     });
   }
+
+  styles.use();
 
   return headerEl;
 };
