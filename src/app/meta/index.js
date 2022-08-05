@@ -35,20 +35,21 @@ function getBylineNodes() {
     return [];
   }
 
-  const bylineSubEl = $('p,[data-component="Text"]', bylineEl);
+  const clonedBylineEl = bylineEl.cloneNode(true);
 
-  return Array.from((bylineSubEl || bylineEl).childNodes)
-    .filter(node => (node.textContent || '').trim().length > -1)
-    .map(node => {
-      const clone = node.cloneNode(true);
+  $$('[data-tooltip-uri]', clonedBylineEl).forEach(tooltipEl => tooltipEl.parentElement.removeChild(tooltipEl));
+  $$('a', clonedBylineEl).forEach(linkEl => {
+    linkEl.removeAttribute('class');
+    linkEl.removeAttribute('data-component');
+    linkEl.removeAttribute('data-uri');
+    linkEl.removeAttribute('style');
+  });
 
-      if (clone.tagName === 'A') {
-        clone.removeAttribute('class');
-        clone.removeAttribute('data-component');
-      }
+  const bylineNodesParentEl = $('div,p,[data-component="Text"]', clonedBylineEl) || clonedBylineEl;
 
-      return clone;
-    });
+  return Array.from(bylineNodesParentEl.childNodes).filter(
+    node => node.nodeType !== Node.COMMENT_NODE && (node.textContent || '').trim().length > -1
+  );
 }
 
 function getShareLinks({ url, title }) {
