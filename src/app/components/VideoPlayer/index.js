@@ -1,8 +1,7 @@
 import html from 'nanohtml';
-import { MQ, ONLY_RATIO_PATTERN, SMALLEST_IMAGE, UNIT } from '../../constants';
+import { MQ, ONLY_RATIO_PATTERN, PLACEHOLDER_IMAGE_CUSTOM_PROPERTY, SMALLEST_IMAGE, UNIT } from '../../constants';
 import { enqueue, invalidateClient, subscribe } from '../../scheduler';
 import { toggleAttribute, toggleBooleanAttributes } from '../../utils/dom';
-import { PLACEHOLDER_PROPERTY } from '../Picture';
 import { blurImage } from '../Picture/blur';
 import Sizer from '../Sizer';
 import VideoControls from '../VideoControls';
@@ -253,7 +252,7 @@ const VideoPlayer = ({
               return;
             }
 
-            placeholderEl.style.setProperty(PLACEHOLDER_PROPERTY, `url("${blurredImageURL}")`);
+            placeholderEl.style.setProperty(PLACEHOLDER_IMAGE_CUSTOM_PROPERTY, `url("${blurredImageURL}")`);
           });
         });
       }

@@ -3,33 +3,34 @@ import cn from 'classnames';
 import html from 'nanohtml';
 import { MQ, SMALLEST_IMAGE } from '../../constants';
 import { lookupImageByAssetURL } from '../../meta';
-import { enqueue, subscribe } from '../../scheduler';
-import { append, detach } from '../../utils/dom';
-import { proximityCheck } from '../../utils/misc';
+import { append } from '../../utils/dom';
 import Sizer from '../Sizer';
-import { blurImage } from './blur';
 import styles from './index.lazy.scss';
+import { addLazyLoadableAPI } from './lazy';
 
-const WIDTHS = [700, 940, 1400, 2150];
-const SIZES = {
-  '16x9': { sm: '700x394', md: '940x529', lg: '2150x1210', xl: '2150x1210' },
-  '3x2': { sm: '700x467', md: '940x627', lg: '940x627', xl: '940x627' },
-  '4x3': { sm: '700x525', md: '940x705', lg: '940x705', xl: '940x705' },
-  '1x1': { sm: '700x700', md: '940x940', lg: '1400x1400', xl: '1400x1400' },
-  '3x4': { sm: '700x933', md: '940x1253', lg: '940x1253', xl: '940x1253' }
-};
 const DEFAULT_RATIOS = {
   sm: '1x1',
   md: '3x2',
   lg: '16x9',
   xl: '16x9'
 };
-export const PLACEHOLDER_PROPERTY = '--placeholder-image';
-const IMAGE_LOAD_RANGE = 1;
+const WIDTHS = [700, 940, 1400, 2150];
+const RATIO_SIZE_WIDTH_INDICES = {
+  '16x9': { sm: 0, md: 1, lg: 3, xl: 3 },
+  '3x2': { sm: 0, md: 1, lg: 1, xl: 1 },
+  '4x3': { sm: 0, md: 1, lg: 1, xl: 1 },
+  '1x1': { sm: 0, md: 1, lg: 2, xl: 2 },
+  '3x4': { sm: 0, md: 1, lg: 1, xl: 1 }
+};
 
-const pictures = [];
-
-const Picture = ({ src = SMALLEST_IMAGE, alt = '', isContained = false, ratios = {}, linkUrl = '' }) => {
+const Picture = ({
+  src = SMALLEST_IMAGE,
+  alt = '',
+  ratios = {},
+  linkUrl = '',
+  isContained = false,
+  shouldLazyLoad = true
+}) => {
   ratios = {
     sm: ratios.sm || DEFAULT_RATIOS.sm,
     md: ratios.md || DEFAULT_RATIOS.md,
@@ -61,7 +62,7 @@ const Picture = ({ src = SMALLEST_IMAGE, alt = '', isContained = false, ratios =
     alt = imageDoc.alt;
   }
 
-  const placeholderEl = Sizer(ratios);
+  const sizerEl = Sizer(ratios);
 
   const pictureEl = html`<picture
     >${Object.entries(sources).map(
@@ -69,81 +70,23 @@ const Picture = ({ src = SMALLEST_IMAGE, alt = '', isContained = false, ratios =
     )}</picture
   >`;
 
-  const rootEl = html`<a class=${cn('Picture', { 'is-contained': isContained })}>${placeholderEl}${pictureEl}</a>`;
+  const rootEl = html`<a class=${cn('Picture', { 'is-contained': isContained })}>${sizerEl}${pictureEl}</a>`;
 
   if (linkUrl) {
     rootEl.setAttribute('href', linkUrl);
   }
 
-  let imgEl = null;
+  if (shouldLazyLoad) {
+    addLazyLoadableAPI({ rootEl, placeholderEl: sizerEl, pictureEl, blurSrc: src, alt });
+  } else {
+    const imgEl = document.createElement('img');
 
-  const picture = {
-    getRect: () => {
-      // Fixed images should use their parent's rect, as they're always in the viewport
-      const position = window.getComputedStyle(rootEl).position;
-      const measurableEl = position === 'fixed' ? rootEl.parentElement : rootEl;
+    imgEl.setAttribute('alt', alt);
+    imgEl.addEventListener('load', () => rootEl.api.loadedHook && rootEl.api.loadedHook(imgEl));
+    append(pictureEl, imgEl);
 
-      return measurableEl.getBoundingClientRect();
-    },
-    unload: () => {
-      picture.isLoading = false;
-      picture.isLoaded = false;
-      rootEl.removeAttribute('loading');
-      rootEl.removeAttribute('loaded');
-      detach(imgEl);
-      imgEl = null;
-    },
-    load: () => {
-      if (imgEl) {
-        picture.unload();
-      }
-
-      picture.isLoading = true;
-      rootEl.setAttribute('loading', '');
-      imgEl = document.createElement('img');
-      imgEl.setAttribute('alt', alt);
-      imgEl.addEventListener('load', picture.loaded, false);
-      append(pictureEl, imgEl);
-
-      if (!picture.hasPlaceholder) {
-        enqueue(function _createAndAddPlaceholderImage() {
-          blurImage(src, (err, blurredImageURL) => {
-            if (err) {
-              return;
-            }
-
-            picture.hasPlaceholder = true;
-            placeholderEl.style.setProperty(PLACEHOLDER_PROPERTY, `url("${blurredImageURL}")`);
-          });
-        });
-      }
-    },
-    loaded: () => {
-      if (!imgEl) {
-        return;
-      }
-
-      picture.isLoading = false;
-      picture.isLoaded = true;
-      rootEl.removeAttribute('loading');
-      rootEl.setAttribute('loaded', '');
-      imgEl.removeEventListener('load', picture.loaded);
-
-      if (picture.loadedHook) {
-        picture.loadedHook(imgEl);
-      }
-    },
-    forget: () => {
-      pictures.splice(pictures.indexOf(picture), 1);
-    }
-  };
-
-  pictures.push(picture);
-
-  rootEl.api = picture;
-
-  if (pictures.length === 1) {
-    subscribe(_checkIfPicturesNeedToBeLoaded);
+    rootEl.api = {};
+    rootEl.setAttribute('loaded', '');
   }
 
   styles.use();
@@ -153,30 +96,13 @@ const Picture = ({ src = SMALLEST_IMAGE, alt = '', isContained = false, ratios =
 
 export default Picture;
 
-function _checkIfPicturesNeedToBeLoaded(client) {
-  pictures.forEach(picture => {
-    const rect = picture.getRect();
-    const isInLoadRange = proximityCheck(rect, client, IMAGE_LOAD_RANGE);
-
-    if (isInLoadRange && !picture.isLoading && !picture.isLoaded) {
-      enqueue(function _loadPicture() {
-        picture.load();
-      });
-    } else if (!isInLoadRange && (picture.isLoading || picture.isLoaded)) {
-      enqueue(function _unloadPicture() {
-        picture.unload();
-      });
-    }
-  });
-}
-
 function pickRenditionURL(renditions, preferredRatio, preferredSize) {
   if (!renditions || !renditions.length) {
     return null;
   }
 
   const renditionsSortedByWidth = [...renditions].sort((a, b) => b.width - a.width);
-  const preferredWidth = +SIZES[preferredRatio][preferredSize].split('x')[0];
+  const preferredWidth = WIDTHS[RATIO_SIZE_WIDTH_INDICES[preferredRatio][preferredSize]];
 
   return (
     renditionsSortedByWidth.find(({ ratio, width }) => ratio === preferredRatio && width === preferredWidth) ||

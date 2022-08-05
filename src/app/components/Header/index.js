@@ -58,7 +58,8 @@ const Header = ({
     mediaEl = Picture({
       src: imgEl.src,
       alt: imgEl.getAttribute('alt'),
-      ratios
+      ratios,
+      shouldLazyLoad: false
     });
   } else if (videoId) {
     mediaEl = isVideoYouTube

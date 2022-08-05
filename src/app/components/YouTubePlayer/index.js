@@ -1,7 +1,7 @@
 import html from 'nanohtml';
+import { PLACEHOLDER_IMAGE_CUSTOM_PROPERTY } from '../../constants';
 import { enqueue, invalidateClient, subscribe } from '../../scheduler';
 import { toggleAttribute } from '../../utils/dom';
-import { PLACEHOLDER_PROPERTY } from '../Picture';
 import { blurImage } from '../Picture/blur';
 import Sizer from '../Sizer';
 import VideoControls from '../VideoControls';
@@ -94,7 +94,7 @@ const YouTubePlayer = ({
           return;
         }
 
-        placeholderEl.style.setProperty(PLACEHOLDER_PROPERTY, `url("${blurredImageURL}")`);
+        placeholderEl.style.setProperty(PLACEHOLDER_IMAGE_CUSTOM_PROPERTY, `url("${blurredImageURL}")`);
       });
     });
   }

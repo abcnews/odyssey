@@ -117,3 +117,5 @@ export const IS_PROBABLY_RESISTING_FINGERPRINTING = (() => {
   // performance.getEntries will return an array of PerformanceEntry objects
   return ((performance.getEntries && performance.getEntries()) || []).length === 0;
 })();
+
+export const PLACEHOLDER_IMAGE_CUSTOM_PROPERTY = '--placeholder-image';
