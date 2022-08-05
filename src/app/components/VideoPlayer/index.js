@@ -1,12 +1,12 @@
 import html from 'nanohtml';
-import { MQ, ONLY_RATIO_PATTERN, SMALLEST_IMAGE, UNIT } from '../../../constants';
-import { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } from '../../media';
+import { MQ, ONLY_RATIO_PATTERN, SMALLEST_IMAGE, UNIT } from '../../constants';
 import { enqueue, invalidateClient, subscribe } from '../../scheduler';
 import { toggleAttribute, toggleBooleanAttributes } from '../../utils/dom';
 import { PLACEHOLDER_PROPERTY } from '../Picture';
 import { blurImage } from '../Picture/blur';
 import Sizer from '../Sizer';
 import VideoControls from '../VideoControls';
+import { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } from './players';
 import { trackProgress } from './stats';
 import { getMetadata, hasAudio } from './utils';
 import './index.scss';

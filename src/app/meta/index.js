@@ -1,6 +1,6 @@
 import { getTier, TIERS } from '@abcnews/env-utils';
 import { url2cmid } from '@abcnews/url2cmid';
-import { INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID, SELECTORS } from '../../constants';
+import { INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID, SELECTORS } from '../constants';
 import { $, $$, detach } from '../utils/dom';
 
 const FACEBOOK = /facebook\.com/;

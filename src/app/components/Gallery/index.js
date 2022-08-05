@@ -2,7 +2,7 @@ import { getMountValue, isPrefixedMount } from '@abcnews/mount-utils';
 import cn from 'classnames';
 import html from 'nanohtml';
 import rawHTML from 'nanohtml/raw';
-import { SELECTORS, SUPPORTS_PASSIVE, VIDEO_MARKER_PATTERN } from '../../../constants';
+import { SELECTORS, SUPPORTS_PASSIVE, VIDEO_MARKER_PATTERN } from '../../constants';
 import { getMeta, lookupImageByAssetURL } from '../../meta';
 import { enqueue, invalidateClient, subscribe } from '../../scheduler';
 import { $, append, detach, detectVideoId, getChildImage, isElement, setText } from '../../utils/dom';
@@ -12,8 +12,8 @@ import Caption, {
   createFromTerminusDoc as createCaptionFromTerminusDoc
 } from '../Caption';
 import Picture from '../Picture';
-import Sizer from '../Sizer';
 import { createFromElement as createQuoteFromElement } from '../Quote';
+import Sizer from '../Sizer';
 import VideoPlayer from '../VideoPlayer';
 import './index.scss';
 

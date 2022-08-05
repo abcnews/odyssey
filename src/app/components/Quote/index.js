@@ -1,6 +1,6 @@
 import cn from 'classnames';
 import html from 'nanohtml';
-import { ALIGNMENT_PATTERN, MOCK_NODE } from '../../../constants';
+import { ALIGNMENT_PATTERN, MOCK_NODE } from '../../constants';
 import { $, $$, isElement, substitute } from '../../utils/dom';
 import { grabPrecedingConfigString } from '../../utils/mounts';
 import { conditionallyApply as conditionallyApplyUQuote } from '../UQuote';

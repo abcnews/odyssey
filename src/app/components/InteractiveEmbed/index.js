@@ -1,7 +1,7 @@
 import { TIERS, getTier } from '@abcnews/env-utils';
 import cn from 'classnames';
 import html from 'nanohtml';
-import { ALIGNMENT_PATTERN } from '../../../constants';
+import { ALIGNMENT_PATTERN } from '../../constants';
 import { substitute } from '../../utils/dom';
 import { grabPrecedingConfigString } from '../../utils/mounts';
 import './index.scss';

@@ -1,4 +1,4 @@
-import { IS_PROBABLY_RESISTING_FINGERPRINTING } from '../../../constants';
+import { IS_PROBABLY_RESISTING_FINGERPRINTING } from '../../constants';
 
 const CANVAS_MAX = 48;
 const BLUR_RADIUS = 4;

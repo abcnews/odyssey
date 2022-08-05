@@ -1,5 +1,6 @@
-import { MOCK_ELEMENT, RICHTEXT_BLOCK_TAGNAMES, SELECTORS } from '../constants';
-import api from './api';
+import { reset } from './reset';
+import './components/utilities/index.scss';
+// ^^^ modules above must be imported before everything else to preserve CSS injection order
 import { transformSection as transformSectionIntoBackdrop } from './components/Backdrop';
 import { transformSection as transformSectionIntoBlock } from './components/Block';
 import FormatCredit from './components/FormatCredit';
@@ -21,21 +22,24 @@ import {
 } from './components/StoryTeaserEmbed';
 import { transformMarker as transformMarkerIntoUCTA } from './components/UCTA';
 import { conditionallyApply as conditionallyApplyUDropcap } from './components/UDropcap';
-import { conditionallyApply as conditionallyApplyUQuote } from './components/UQuote';
 import { activate as activateUParallax } from './components/UParallax';
 import { transformSection as transformSectionIntoUPull } from './components/UPull';
+import { conditionallyApply as conditionallyApplyUQuote } from './components/UQuote';
 import {
   transformElement as transformElementIntoVideoEmbed,
   transformMarker as transformMarkerIntoVideoEmbed
 } from './components/VideoEmbed';
 import { transformMarker as transformMarkerIntoWhatNext } from './components/WhatNext';
-import { start } from './scheduler';
+import { MOCK_ELEMENT, RICHTEXT_BLOCK_TAGNAMES, SELECTORS } from './constants';
+import './keyframes.scss';
 import { initMeta } from './meta';
-import { reset } from './reset';
+import { start } from './scheduler';
 import { mockDecoyActivationsUnderEl } from './utils/decoys';
 import { $, $$, append, detachAll, prepend, substitute } from './utils/dom';
 import { conditionalDebug, debug } from './utils/logging';
 import { getMarkers, getSections } from './utils/mounts';
+// API must be imported last so import order above isn't upset
+import api from './api';
 
 export default terminusDocument => {
   const meta = initMeta(terminusDocument);

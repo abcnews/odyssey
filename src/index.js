@@ -1,7 +1,5 @@
 import './unveil';
 import './polyfills';
-import './keyframes.scss';
-import './app/components/utilities/index.scss';
 import { proxy } from '@abcnews/dev-proxy';
 import { GENERATIONS, getGeneration, requestDOMPermit } from '@abcnews/env-utils';
 import { url2cmid } from '@abcnews/url2cmid';

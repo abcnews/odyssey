@@ -1,7 +1,7 @@
 import { getImages } from '@abcnews/terminus-fetch';
 import cn from 'classnames';
 import html from 'nanohtml';
-import { MQ, SMALLEST_IMAGE } from '../../../constants';
+import { MQ, SMALLEST_IMAGE } from '../../constants';
 import { lookupImageByAssetURL } from '../../meta';
 import { enqueue, subscribe } from '../../scheduler';
 import { append, detach } from '../../utils/dom';

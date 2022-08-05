@@ -1,11 +1,11 @@
 import html from 'nanohtml';
-import { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } from '../../media';
 import { enqueue, invalidateClient, subscribe } from '../../scheduler';
 import { toggleAttribute } from '../../utils/dom';
 import { PLACEHOLDER_PROPERTY } from '../Picture';
 import { blurImage } from '../Picture/blur';
 import Sizer from '../Sizer';
 import VideoControls from '../VideoControls';
+import { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } from '../VideoPlayer/players';
 import './index.scss';
 
 const DEFAULT_YOUTUBE_CONFIG = {

@@ -1,7 +1,7 @@
 import { getMountValue, getTrailingMountValue, isMount, isPrefixedMount } from '@abcnews/mount-utils';
 import cn from 'classnames';
 import html from 'nanohtml';
-import { ALIGNMENT_PATTERN, SCROLLPLAY_PCT_PATTERN, VIDEO_MARKER_PATTERN } from '../../../constants';
+import { ALIGNMENT_PATTERN, SCROLLPLAY_PCT_PATTERN, VIDEO_MARKER_PATTERN } from '../../constants';
 import { enqueue, subscribe } from '../../scheduler';
 import { detach, detectVideoId, getChildImage, isElement } from '../../utils/dom';
 import { getRatios } from '../../utils/misc';

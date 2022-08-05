@@ -1,5 +1,5 @@
-import { enqueue, subscribe } from './scheduler';
-import { proximityCheck } from './utils/misc';
+import { enqueue, subscribe } from '../../scheduler';
+import { proximityCheck } from '../../utils/misc';
 
 const AMBIENT_PLAYABLE_RANGE = 0.5;
 

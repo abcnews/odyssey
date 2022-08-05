@@ -1,6 +1,6 @@
 import cn from 'classnames';
 import html from 'nanohtml';
-import { ALIGNMENT_PATTERN } from '../../../constants';
+import { ALIGNMENT_PATTERN } from '../../constants';
 import { lookupImageByAssetURL } from '../../meta';
 import { getChildImage, substitute } from '../../utils/dom';
 import { getRatios } from '../../utils/misc';

@@ -1,5 +1,5 @@
-import { SELECTORS } from '../../constants';
 import Main from '../components/Main';
+import { SELECTORS } from '../constants';
 import { $, $$, append, before, detach, detachAll } from '../utils/dom';
 import './index.scss';
 

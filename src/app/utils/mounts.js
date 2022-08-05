@@ -1,5 +1,5 @@
 import { getTrailingMountValue, isExactMount, isPrefixedMount, prefixedMountSelector } from '@abcnews/mount-utils';
-import { MOCK_ELEMENT } from '../../constants';
+import { MOCK_ELEMENT } from '../constants';
 import { $$, detach, detachAll, substitute } from './dom';
 import { debug } from './logging';
 

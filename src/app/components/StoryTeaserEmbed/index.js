@@ -1,7 +1,7 @@
 import { url2cmid } from '@abcnews/url2cmid';
 import html from 'nanohtml';
+import { MOCK_ELEMENT } from '../../constants';
 import { track } from '../../utils/behaviour';
-import { MOCK_ELEMENT } from '../../../constants';
 import { $, $$, getChildImage, substitute } from '../../utils/dom';
 import './index.scss';
 

@@ -1,13 +1,13 @@
 import { getMountValue, isMount } from '@abcnews/mount-utils';
 import cn from 'classnames';
 import html from 'nanohtml';
-import { VIDEO_MARKER_PATTERN } from '../../../constants';
+import { VIDEO_MARKER_PATTERN } from '../../constants';
 import { enqueue, subscribe } from '../../scheduler';
 import { terminusFetch } from '../../utils/content';
 import { $, detach, detectVideoId, getChildImage, isElement } from '../../utils/dom';
 import { clampNumber, formattedDate, getRatios } from '../../utils/misc';
-import ScrollHint from '../ScrollHint';
 import Picture from '../Picture';
+import ScrollHint from '../ScrollHint';
 import { activate as activateUParallax } from '../UParallax';
 import VideoPlayer from '../VideoPlayer';
 import YouTubePlayer from '../YouTubePlayer';
