@@ -1,11 +1,10 @@
-import './unveil';
-import './polyfills';
 import { proxy } from '@abcnews/dev-proxy';
 import { GENERATIONS, getGeneration, requestDOMPermit } from '@abcnews/env-utils';
 import { url2cmid } from '@abcnews/url2cmid';
-import app from './app';
 import { terminusFetch } from './app/utils/content';
 import { debug, debugWhen } from './app/utils/logging';
+import './polyfills';
+import './unveil';
 
 // Provide a hint as early as possible that the Odyssey format will be driving
 // this story, so that other interactives can opt to wait for Odyssey to load
@@ -24,12 +23,21 @@ proxy('odyssey').then(() => {
   }
 
   // Once we've got:
-  //   1. the article's terminus document, and
-  const terminusFetchTask = terminusFetch(url2cmid(window.location.href));
-  debugWhen(terminusFetchTask, 'Fetched Terminus article document');
-  //   2. permission to modify the DOM
-  const requestDOMPermitTask = requestDOMPermit('body');
-  debugWhen(requestDOMPermitTask, 'Obtained DOM permit for "body"');
+
+  // 1. the dynamically imported app module, and
+  const importAppModuleTask = import(/* webpackChunkName: "app" */ './app');
+  debugWhen(importAppModuleTask, 'Imported app module');
+
+  // 2. the article's terminus document, and
+  const fetchArticleDocumentTask = terminusFetch(url2cmid(window.location.href));
+  debugWhen(fetchArticleDocumentTask, 'Fetched article document');
+
+  // 3. permission to modify the DOM
+  const obtainBodyDOMPermitTask = requestDOMPermit('body');
+  debugWhen(obtainBodyDOMPermitTask, 'Obtained "body" DOM permit');
+
   // ...we can run the app, using the terminus document to initialise metadata
-  Promise.all([terminusFetchTask, requestDOMPermitTask]).then(([terminusDocument]) => app(terminusDocument));
+  Promise.all([importAppModuleTask, fetchArticleDocumentTask, obtainBodyDOMPermitTask]).then(
+    ([appModule, terminusDocument]) => appModule.default(terminusDocument)
+  );
 });

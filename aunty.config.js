@@ -14,7 +14,21 @@ module.exports = {
 
     return config;
   },
+  webpack: config => {
+    // Stop `import()`-ed chunks from being split into `[name].js` and `vendors~[name].js`
+    config.optimization = {
+      ...(config.optimization || {}),
+      splitChunks: {
+        cacheGroups: {
+          defaultVendors: false
+        }
+      }
+    };
+
+    return config;
+  },
   serve: {
+    hasBundleAnalysis: true,
     hot: false
   }
 };
