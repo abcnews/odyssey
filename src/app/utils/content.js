@@ -1,4 +1,5 @@
 import { fetchOne } from '@abcnews/terminus-fetch';
+import { getMeta } from '../meta';
 
 const API_KEY = '***REMOVED***';
 
@@ -13,6 +14,13 @@ export const fetchDocument = _options => {
   }
 
   return cache[key];
+};
+
+export const getOrFetchDocument = _options => {
+  const { id } = typeof _options === 'object' ? _options : { id: _options };
+  const localDocument = getMeta().mediaById[id];
+
+  return localDocument ? Promise.resolve(localDocument) : fetchDocument(_options);
 };
 
 function deepFreeze(object) {

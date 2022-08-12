@@ -1,7 +1,7 @@
 import html from 'nanohtml';
 import { invalidateClient } from '../../scheduler';
 import { track } from '../../utils/behaviour';
-import { fetchDocument } from '../../utils/content';
+import { getOrFetchDocument } from '../../utils/content';
 import Picture from '../Picture';
 import styles from './index.lazy.scss';
 
@@ -23,7 +23,7 @@ const Recirculation = ({ ids, pull }) => {
 
   el.classList.add('has-children');
   ids.forEach((id, index) =>
-    fetchDocument(id)
+    getOrFetchDocument(id)
       .then(doc => {
         const itemEl = itemEls[index];
         const title = doc.titleAlt.md || doc.titleAlt.lg || doc.title;

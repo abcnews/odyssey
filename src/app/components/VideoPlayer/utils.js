@@ -1,5 +1,4 @@
-import { getMeta } from '../../meta';
-import { fetchDocument } from '../../utils/content';
+import { getOrFetchDocument } from '../../utils/content';
 
 const NO_CMID_ERROR = 'No CMID available for video';
 
@@ -19,17 +18,14 @@ export const getMetadata = videoId =>
       return reject(new Error(NO_CMID_ERROR));
     }
 
-    // We may already have the document referernced by videoId locally
-    const localVideoOrTeaserDoc = getMeta().mediaById[videoId];
-
-    (localVideoOrTeaserDoc ? Promise.resolve(localVideoOrTeaserDoc) : fetchDocument({ id: videoId, type: 'video' }))
+    getOrFetchDocument({ id: videoId, type: 'video' })
       .then(videoDocOrTeaserDoc => {
         // Even if the first document teases another, keep this alternativeText
         const alternativeText = videoDocOrTeaserDoc.title;
 
         if (videoDocOrTeaserDoc.target) {
           // We need to fetch & parse the (teased) target document
-          return fetchDocument({ id: videoDocOrTeaserDoc.target.id, type: 'video' })
+          return getOrFetchDocument({ id: videoDocOrTeaserDoc.target.id, type: 'video' })
             .then(videoDoc =>
               resolve({
                 alternativeText,
