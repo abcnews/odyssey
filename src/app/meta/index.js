@@ -159,13 +159,25 @@ export const initMeta = terminusDocument => {
         .concat(terminusDocument._embedded.mediaFeatured || [])
         .concat(terminusDocument._embedded.mediaRelated || [])
         .reduce(
-          (memo, item) => {
-            const { docType, id, media } = item;
+          (memo, doc) => {
+            const { docType, id, media } = doc;
 
-            if (docType === 'Image' || docType === 'ImageProxy') {
-              memo.images.push(item);
-              memo.imagesById[id] = item; // not currently used
-              memo.imagesByBinaryKey[media.image.primary.binaryKey] = item;
+            if (!memo.mediaById[id]) {
+              memo.media.push(doc);
+              memo.mediaById[id] = doc;
+            }
+
+            switch (docType) {
+              case 'Image':
+              case 'ImageProxy':
+                if (!memo.imagesById[id]) {
+                  memo.images.push(doc);
+                  memo.imagesById[id] = doc;
+                  memo.imagesByBinaryKey[media.image.primary.binaryKey] = doc;
+                }
+                break;
+              default:
+                break;
             }
 
             return memo;
@@ -173,7 +185,9 @@ export const initMeta = terminusDocument => {
           {
             images: [],
             imagesByBinaryKey: {},
-            imagesById: {}
+            imagesById: {},
+            media: [],
+            mediaById: {}
           }
         )
   ];
