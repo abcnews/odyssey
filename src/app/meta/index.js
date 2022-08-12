@@ -1,6 +1,7 @@
 import { getTier, TIERS } from '@abcnews/env-utils';
 import { url2cmid } from '@abcnews/url2cmid';
 import { INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID, SELECTORS } from '../constants';
+import { fetchDocument } from '../utils/content';
 import { $, $$, detach } from '../utils/dom';
 
 const FACEBOOK = /facebook\.com/;
@@ -153,14 +154,14 @@ export const initMeta = terminusDocument => {
       relatedMedia: getRelatedMedia(),
       relatedStoriesIds: getRelatedStoriesIds()
     }),
-    // Create media lookups
+    // Create media lookups & pre-emptively fetch Teaser document targets we'll use later
     () =>
       (terminusDocument._embedded.mediaEmbedded || [])
         .concat(terminusDocument._embedded.mediaFeatured || [])
         .concat(terminusDocument._embedded.mediaRelated || [])
         .reduce(
           (memo, doc) => {
-            const { docType, id, media } = doc;
+            const { docType, id, media, target } = doc;
 
             if (!memo.mediaById[id]) {
               memo.media.push(doc);
@@ -168,6 +169,12 @@ export const initMeta = terminusDocument => {
             }
 
             switch (docType) {
+              case 'Teaser':
+                if (target) {
+                  // Pre-empt a future fetch of the target document
+                  fetchDocument({ id: target.id, type: target.docType.toLowerCase() });
+                }
+                break;
               case 'Image':
               case 'ImageProxy':
                 if (!memo.imagesById[id]) {
