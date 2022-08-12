@@ -4,7 +4,7 @@ const API_KEY = '***REMOVED***';
 
 const cache = {};
 
-export const terminusFetch = _options => {
+export const fetchDocument = _options => {
   const options = typeof _options === 'object' ? _options : { id: _options };
   const key = options.id;
 

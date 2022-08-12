@@ -2,7 +2,7 @@ import { url2cmid } from '@abcnews/url2cmid';
 import html from 'nanohtml';
 import { invalidateClient } from '../../scheduler';
 import { track } from '../../utils/behaviour';
-import { terminusFetch } from '../../utils/content';
+import { fetchDocument } from '../../utils/content';
 import { $, $$, detach, prepend, substitute } from '../../utils/dom';
 import Picture from '../Picture';
 import styles from './index.lazy.scss';
@@ -33,7 +33,7 @@ const WhatNext = ({ stories }) => {
   stories
     .filter(({ id }) => !!id)
     .forEach(({ id, teaser }, index) =>
-      terminusFetch(id).then(doc => {
+      fetchDocument(id).then(doc => {
         if (!doc._embedded.mediaThumbnail) {
           return;
         }

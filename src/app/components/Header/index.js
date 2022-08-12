@@ -3,7 +3,7 @@ import cn from 'classnames';
 import html from 'nanohtml';
 import { VIDEO_MARKER_PATTERN } from '../../constants';
 import { enqueue, subscribe } from '../../scheduler';
-import { terminusFetch } from '../../utils/content';
+import { fetchDocument } from '../../utils/content';
 import { $, detach, detectVideoId, getChildImage, isElement } from '../../utils/dom';
 import { clampNumber, formattedDate, getRatios } from '../../utils/misc';
 import Picture from '../Picture';
@@ -188,12 +188,12 @@ function fetchInfoSourceLogo(meta, el, variant) {
     return;
   }
 
-  terminusFetch({ id: meta.infoSourceLogosHTMLFragmentId, type: 'htmlfragment' }).then(htmlFragmentDoc => {
+  fetchDocument({ id: meta.infoSourceLogosHTMLFragmentId, type: 'htmlfragment' }).then(htmlFragmentDoc => {
     const logoDocsRefs = htmlFragmentDoc.contextSettings['meta.data.name'];
     const logoDocRef = logoDocsRefs[`${meta.infoSource.name} (${variant})`] || logoDocsRefs[meta.infoSource.name];
 
     if (logoDocRef) {
-      terminusFetch({ id: logoDocRef.id, type: logoDocRef.docType.toLowerCase() }).then(imageDoc => {
+      fetchDocument({ id: logoDocRef.id, type: logoDocRef.docType.toLowerCase() }).then(imageDoc => {
         const image = imageDoc.media.image.primary.complete[0];
         const imageRatio = image.height / image.width;
 

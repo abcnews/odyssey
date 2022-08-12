@@ -1,7 +1,7 @@
 import { proxy } from '@abcnews/dev-proxy';
 import { GENERATIONS, getGeneration, requestDOMPermit } from '@abcnews/env-utils';
 import { url2cmid } from '@abcnews/url2cmid';
-import { terminusFetch } from './app/utils/content';
+import { fetchDocument } from './app/utils/content';
 import { debug, debugWhen } from './app/utils/logging';
 import './polyfills';
 import './unveil';
@@ -29,7 +29,7 @@ proxy('odyssey').then(() => {
   debugWhen(importAppModuleTask, 'Imported app module');
 
   // 2. the article's terminus document, and
-  const fetchArticleDocumentTask = terminusFetch(url2cmid(window.location.href));
+  const fetchArticleDocumentTask = fetchDocument(url2cmid(window.location.href));
   debugWhen(fetchArticleDocumentTask, 'Fetched article document');
 
   // 3. permission to modify the DOM
