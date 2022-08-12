@@ -230,8 +230,7 @@ const VideoPlayer = ({
   };
 
   getMetadata(videoId).then(metadata => {
-    const { alternativeText, posterURL } = metadata;
-    let { sources } = metadata;
+    const { alternativeText, posterURL, sources } = metadata;
 
     if (alternativeText) {
       player.alternativeText = alternativeText;
@@ -254,25 +253,21 @@ const VideoPlayer = ({
       }
     }
 
-    sources.sort((a, b) => a.size - b.size);
-
     const [portraitSources, landscapeSources] = sources.reduce(
       // 1x1 is considered portrait
       (memo, source) => (memo[+(source.width > source.height)].push(source), memo),
       [[], []]
     );
-
-    sources =
+    const candidateSources =
       isInitiallyPreferredPortraitContainer && portraitSources.length
         ? portraitSources
         : landscapeSources.length
         ? landscapeSources
         : sources;
-
-    const source = sources[isInitiallySmallViewport ? 0 : sources.length - 1];
+    const source = candidateSources[isInitiallySmallViewport ? 0 : candidateSources.length - 1];
 
     if (source) {
-      videoEl.src = source.src;
+      videoEl.src = source.url;
     }
 
     registerPlayer(player);

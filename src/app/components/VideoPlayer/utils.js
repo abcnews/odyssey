@@ -2,24 +2,15 @@ import { terminusFetch } from '../../utils/content';
 
 const NO_CMID_ERROR = 'No CMID available for video';
 
-function getPosterURL(item) {
+const getPosterURL = videoDoc => {
   try {
-    return item.media.image ? item.media.image.poster.images['16x9'] : null;
+    return videoDoc.media.image ? videoDoc.media.image.poster.images['16x9'] : null;
   } catch (e) {
     return null;
   }
-}
+};
 
-function getSources(item) {
-  return item.media.video.renditions.files
-    .sort((a, b) => +b.bitRate - +a.bitRate)
-    .map(rendition => ({
-      src: rendition.src || rendition.url,
-      size: +rendition.size,
-      width: +rendition.width || 0,
-      height: +rendition.height || 0
-    }));
-}
+const getSources = videoDoc => [...videoDoc.media.video.renditions.files].sort((a, b) => a.size - b.size);
 
 export const getMetadata = videoId =>
   new Promise((resolve, reject) => {
