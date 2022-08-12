@@ -26,34 +26,29 @@ export const getMetadata = (videoId, done) => {
     return done(new Error(NO_CMID_ERROR));
   }
 
-  terminusFetch({ id: videoId, type: 'video' }, (err, item) => {
-    if (err) {
-      return done(err);
-    }
-
-    // Even if the first document proxies another, keep this alternativeText
-    const alternativeText = item.title;
-
-    function parseMetadata(item) {
-      return done(null, {
-        alternativeText,
-        posterURL: getPosterURL(item),
-        sources: getSources(item)
-      });
-    }
-
-    if (!item.target) {
-      return parseMetadata(item);
-    }
-
-    terminusFetch({ id: item.target.id, type: 'video' }, (err, targetItem) => {
-      if (err) {
-        return done(err);
+  terminusFetch({ id: videoId, type: 'video' })
+    .then(videoDocOrVideoProxyDoc => {
+      function parseMetadata(videoDoc) {
+        return done(null, {
+          alternativeText,
+          posterURL: getPosterURL(videoDoc),
+          sources: getSources(videoDoc)
+        });
       }
 
-      return parseMetadata(targetItem);
-    });
-  });
+      // Even if the first document proxies another, keep this alternativeText
+      const alternativeText = videoDocOrVideoProxyDoc.title;
+      const isVideoProxyDoc = !!videoDocOrVideoProxyDoc.target;
+
+      if (!isVideoProxyDoc) {
+        return parseMetadata(videoDocOrVideoProxyDoc);
+      }
+
+      terminusFetch({ id: videoDocOrVideoProxyDoc.target.id, type: 'video' })
+        .then(videoDoc => parseMetadata(videoDoc))
+        .catch(err => done(err));
+    })
+    .catch(err => done(err));
 };
 
 export const hasAudio = el => {

@@ -23,32 +23,28 @@ const Recirculation = ({ ids, pull }) => {
 
   el.classList.add('has-children');
   ids.forEach((id, index) =>
-    terminusFetch(id, (err, item) => {
-      if (err) {
-        itemEl.classList.add('is-missing');
+    terminusFetch(id)
+      .then(doc => {
+        const itemEl = itemEls[index];
+        const title = doc.titleAlt.md || doc.titleAlt.lg || doc.title;
+        const teaser = doc.synopsisAlt.md || doc.synopsisAlt.lg || doc.synopsis;
 
-        return console.error(err);
-      }
+        itemEl.appendChild(html`<h2>${title}</h2>`);
 
-      const itemEl = itemEls[index];
-      const title = item.titleAlt.md || item.titleAlt.lg || item.title;
-      const teaser = item.synopsisAlt.md || item.synopsisAlt.lg || item.synopsis;
+        if (doc._embedded.mediaThumbnail) {
+          itemEl.appendChild(Picture({ src: doc._embedded.mediaThumbnail.complete[0].url, ratios: PICTURE_RATIOS }));
+          invalidateClient();
+        }
 
-      itemEl.appendChild(html`<h2>${title}</h2>`);
+        if (JSON.stringify(doc.text).indexOf(teaser) === -1) {
+          itemEl.appendChild(html`<p>${teaser}</p>`);
+        }
 
-      if (item._embedded.mediaThumbnail) {
-        itemEl.appendChild(Picture({ src: item._embedded.mediaThumbnail.complete[0].url, ratios: PICTURE_RATIOS }));
-        invalidateClient();
-      }
+        itemEl.appendChild(html`<div>Read more →</div>`);
 
-      if (JSON.stringify(item.text).indexOf(teaser) === -1) {
-        itemEl.appendChild(html`<p>${teaser}</p>`);
-      }
-
-      itemEl.appendChild(html`<div>Read more →</div>`);
-
-      el.classList.add('has-children');
-    })
+        el.classList.add('has-children');
+      })
+      .catch(() => itemEls[index].classList.add('is-missing'))
   );
 
   styles.use();

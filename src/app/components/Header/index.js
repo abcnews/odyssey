@@ -188,17 +188,13 @@ function fetchInfoSourceLogo(meta, el, variant) {
     return;
   }
 
-  terminusFetch({ id: meta.infoSourceLogosHTMLFragmentId, type: 'htmlfragment' }, (err, item) => {
-    if (err) {
-      return;
-    }
+  terminusFetch({ id: meta.infoSourceLogosHTMLFragmentId, type: 'htmlfragment' }).then(htmlFragmentDoc => {
+    const logoDocsRefs = htmlFragmentDoc.contextSettings['meta.data.name'];
+    const logoDocRef = logoDocsRefs[`${meta.infoSource.name} (${variant})`] || logoDocsRefs[meta.infoSource.name];
 
-    const logoDocs = item.contextSettings['meta.data.name'];
-    const logoDoc = logoDocs[`${meta.infoSource.name} (${variant})`] || logoDocs[meta.infoSource.name];
-
-    if (logoDoc) {
-      terminusFetch({ id: logoDoc.id, type: logoDoc.docType.toLowerCase() }, (err, item) => {
-        const image = item.media.image.primary.complete[0];
+    if (logoDocRef) {
+      terminusFetch({ id: logoDocRef.id, type: logoDocRef.docType.toLowerCase() }).then(imageDoc => {
+        const image = imageDoc.media.image.primary.complete[0];
         const imageRatio = image.height / image.width;
 
         el.className = `${el.className} has-logo`;

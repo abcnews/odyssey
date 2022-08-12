@@ -30,27 +30,25 @@ const WhatNextItem = ({ id, teaser, url }) => {
 const WhatNext = ({ stories }) => {
   const itemEls = stories.map(WhatNextItem);
 
-  stories.forEach(({ id, teaser }, index) => {
-    if (!id) {
-      return;
-    }
+  stories
+    .filter(({ id }) => !!id)
+    .forEach(({ id, teaser }, index) =>
+      terminusFetch(id).then(doc => {
+        if (!doc._embedded.mediaThumbnail) {
+          return;
+        }
 
-    terminusFetch(id, (err, item) => {
-      if (err || !item._embedded.mediaThumbnail) {
-        return;
-      }
+        if (doc.docType === 'Teaser') {
+          const teasedItem = WhatNextItem({ id: doc.target.id, teaser, url: `/news/${doc.target.id}` });
 
-      if (item.docType === 'Teaser') {
-        const teasedItem = WhatNextItem({ id: item.target.id, teaser, url: `/news/${item.target.id}` });
+          substitute(itemEls[index], teasedItem);
+          itemEls[index] = teasedItem;
+        }
 
-        substitute(itemEls[index], teasedItem);
-        itemEls[index] = teasedItem;
-      }
-
-      prepend(itemEls[index], Picture({ src: item._embedded.mediaThumbnail.complete[0].url, ratios: PICTURE_RATIOS }));
-      invalidateClient();
-    });
-  });
+        prepend(itemEls[index], Picture({ src: doc._embedded.mediaThumbnail.complete[0].url, ratios: PICTURE_RATIOS }));
+        invalidateClient();
+      })
+    );
 
   styles.use();
 
