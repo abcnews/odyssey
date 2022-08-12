@@ -229,11 +229,7 @@ const VideoPlayer = ({
     jumpBy: time => jumpTo(videoEl.currentTime + time)
   };
 
-  getMetadata(videoId, (err, metadata) => {
-    if (err) {
-      return;
-    }
-
+  getMetadata(videoId).then(metadata => {
     const { alternativeText, posterURL } = metadata;
     let { sources } = metadata;
 

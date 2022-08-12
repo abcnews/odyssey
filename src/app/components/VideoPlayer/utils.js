@@ -21,35 +21,39 @@ function getSources(item) {
     }));
 }
 
-export const getMetadata = (videoId, done) => {
-  if (!videoId) {
-    return done(new Error(NO_CMID_ERROR));
-  }
+export const getMetadata = videoId =>
+  new Promise((resolve, reject) => {
+    if (!videoId) {
+      return reject(new Error(NO_CMID_ERROR));
+    }
 
-  terminusFetch({ id: videoId, type: 'video' })
-    .then(videoDocOrVideoProxyDoc => {
-      function parseMetadata(videoDoc) {
-        return done(null, {
+    terminusFetch({ id: videoId, type: 'video' })
+      .then(videoDocOrTeaserDoc => {
+        // Even if the first document teases another, keep this alternativeText
+        const alternativeText = videoDocOrTeaserDoc.title;
+
+        if (videoDocOrTeaserDoc.target) {
+          // We need to fetch & parse the (teased) target document
+          return terminusFetch({ id: videoDocOrTeaserDoc.target.id, type: 'video' })
+            .then(videoDoc =>
+              resolve({
+                alternativeText,
+                posterURL: getPosterURL(videoDoc),
+                sources: getSources(videoDoc)
+              })
+            )
+            .catch(err => reject(err));
+        }
+
+        // We can parse this document
+        return resolve({
           alternativeText,
-          posterURL: getPosterURL(videoDoc),
-          sources: getSources(videoDoc)
+          posterURL: getPosterURL(videoDocOrTeaserDoc),
+          sources: getSources(videoDocOrTeaserDoc)
         });
-      }
-
-      // Even if the first document proxies another, keep this alternativeText
-      const alternativeText = videoDocOrVideoProxyDoc.title;
-      const isVideoProxyDoc = !!videoDocOrVideoProxyDoc.target;
-
-      if (!isVideoProxyDoc) {
-        return parseMetadata(videoDocOrVideoProxyDoc);
-      }
-
-      terminusFetch({ id: videoDocOrVideoProxyDoc.target.id, type: 'video' })
-        .then(videoDoc => parseMetadata(videoDoc))
-        .catch(err => done(err));
-    })
-    .catch(err => done(err));
-};
+      })
+      .catch(err => reject(err));
+  });
 
 export const hasAudio = el => {
   return el.mozHasAudio || !!el.webkitAudioDecodedByteCount || !!(el.audioTracks && el.audioTracks.length);
