@@ -72,7 +72,7 @@ module.exports = {
 
 ## Authors
 
-- Josh Byrd ([Byrd.Joshua@abc.net.au](mailto:Byrd.Joshua@abc.net.au))
+- Joshua Byrd ([Byrd.Joshua@abc.net.au](mailto:Byrd.Joshua@abc.net.au))
 - Simon Elvery ([Elvery.Simon@abc.net.au](mailto:Elvery.Simon@abc.net.au))
 - Colin Gourlay ([Gourlay.Colin@abc.net.au](mailto:Gourlay.Colin@abc.net.au))
 - Nathan Hoad ([Hoad.Nathan@abc.net.au](mailto:Hoad.Nathan@abc.net.au))
