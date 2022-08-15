@@ -1,5 +1,6 @@
 import { url2cmid } from '@abcnews/url2cmid';
 import html from 'nanohtml';
+import { getMeta } from '../../meta';
 import { invalidateClient } from '../../scheduler';
 import { track } from '../../utils/behaviour';
 import { getOrFetchDocument } from '../../utils/content';
@@ -29,11 +30,12 @@ const WhatNextItem = ({ id, teaser, url }) => {
 
 const WhatNext = ({ stories }) => {
   const itemEls = stories.map(WhatNextItem);
+  const meta = getMeta();
 
   stories
     .filter(({ id }) => !!id)
     .forEach(({ id, teaser }, index) =>
-      getOrFetchDocument(id).then(doc => {
+      getOrFetchDocument(id, meta).then(doc => {
         if (!doc._embedded.mediaThumbnail) {
           return;
         }

@@ -1,4 +1,5 @@
 import html from 'nanohtml';
+import { getMeta } from '../../meta';
 import { invalidateClient } from '../../scheduler';
 import { track } from '../../utils/behaviour';
 import { getOrFetchDocument } from '../../utils/content';
@@ -16,14 +17,14 @@ const Recirculation = ({ ids, pull }) => {
   const itemEls = ids.map(
     id => html`<a class="Recirculation-item" href="/news/${id}" onclick="${() => track('recirculation-link', id)}"></a>`
   );
-
   const el = html`
     <aside class="Recirculation${pull ? ` u-pull-${pull}` : ''}" role="complementary">${itemEls}</aside>
   `;
+  const meta = getMeta();
 
   el.classList.add('has-children');
   ids.forEach((id, index) =>
-    getOrFetchDocument(id)
+    getOrFetchDocument(id, meta)
       .then(doc => {
         const itemEl = itemEls[index];
         const title = doc.titleAlt.md || doc.titleAlt.lg || doc.title;

@@ -1,12 +1,11 @@
 import { fetchOne } from '@abcnews/terminus-fetch';
-import { getMeta } from '../meta';
 
 const API_KEY = '***REMOVED***';
 
 const cache = {};
 
-export const fetchDocument = _options => {
-  const options = typeof _options === 'object' ? _options : { id: _options };
+export const fetchDocument = optionsOrId => {
+  const options = typeof optionsOrId === 'object' ? optionsOrId : { id: optionsOrId };
   const key = options.id;
 
   if (!cache[key]) {
@@ -16,11 +15,11 @@ export const fetchDocument = _options => {
   return cache[key];
 };
 
-export const getOrFetchDocument = _options => {
-  const { id } = typeof _options === 'object' ? _options : { id: _options };
-  const localDocument = getMeta().mediaById[id];
+export const getOrFetchDocument = (optionsOrId, meta) => {
+  const { id } = typeof optionsOrId === 'object' ? optionsOrId : { id: optionsOrId };
+  const localDocument = meta.mediaById[id];
 
-  return localDocument ? Promise.resolve(localDocument) : fetchDocument(_options);
+  return localDocument ? Promise.resolve(localDocument) : fetchDocument(optionsOrId);
 };
 
 function deepFreeze(object) {

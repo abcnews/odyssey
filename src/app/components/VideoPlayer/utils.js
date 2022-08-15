@@ -1,3 +1,4 @@
+import { getMeta } from '../../meta';
 import { getOrFetchDocument } from '../../utils/content';
 
 const NO_CMID_ERROR = 'No CMID available for video';
@@ -18,14 +19,16 @@ export const getMetadata = videoId =>
       return reject(new Error(NO_CMID_ERROR));
     }
 
-    getOrFetchDocument({ id: videoId, type: 'video' })
+    const meta = getMeta();
+
+    getOrFetchDocument({ id: videoId, type: 'video' }, meta)
       .then(videoDocOrTeaserDoc => {
         // Even if the first document teases another, keep this alternativeText
         const alternativeText = videoDocOrTeaserDoc.title;
 
         if (videoDocOrTeaserDoc.target) {
           // We need to fetch & parse the (teased) target document
-          return getOrFetchDocument({ id: videoDocOrTeaserDoc.target.id, type: 'video' })
+          return getOrFetchDocument({ id: videoDocOrTeaserDoc.target.id, type: 'video' }, meta)
             .then(videoDoc =>
               resolve({
                 alternativeText,
