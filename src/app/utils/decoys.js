@@ -7,9 +7,9 @@
 // the activation events for 'Decoy'-like nodes in its DOM tree, to honor
 // requests made by other interactive apps that are running in the same page.
 
-export const mockDecoyActivationsUnderEl = storyEl => {
+export const mockDecoyActivationsUnderEl = mainEl => {
   const currentlyInactiveDecoyEls = Array.from(
-    storyEl.querySelectorAll('[data-component="Decoy"]:not([data-clone="true"])')
+    mainEl.querySelectorAll('[data-component="Decoy"]:not([data-clone="true"])')
   );
   const decoyElsByKey = currentlyInactiveDecoyEls.reduce((memo, el) => {
     const key = el.getAttribute('data-key');

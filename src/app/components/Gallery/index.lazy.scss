@@ -1,0 +1,354 @@
+@import '../../constants';
+
+.Gallery {
+  overflow: hidden;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.Gallery-layout {
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: $layout-fluid-padding;
+  padding-right: $layout-fluid-padding;
+
+  @media #{$mq-lt-lg} {
+    .is-mosaic & {
+      padding-left: 0;
+      padding-right: 0;
+      width: 100%;
+    }
+  }
+
+  @media #{$mq-sm} {
+    width: calc(100% - #{$unit * 2.8125});
+  }
+
+  @media #{$mq-md} {
+    width: cells(10);
+  }
+
+  @media #{$mq-gt-md} {
+    padding-left: $layout-fixed-padding;
+    padding-right: $layout-fixed-padding;
+    width: $layout-fixed;
+  }
+
+  .is-mosaic.is-unconstrained & {
+    padding-left: 0;
+    padding-right: 0;
+    width: 100%;
+  }
+
+  .Gallery:not(.is-mosaic) & > .Caption {
+    padding-left: 0;
+    padding-right: 0;
+    background-color: transparent;
+  }
+
+  .is-mosaic & > .Caption {
+    @media #{$mq-gt-md} {
+      padding-top: 0;
+      padding-left: 0;
+      padding-right: 0;
+      background-color: transparent;
+    }
+  }
+}
+
+.Gallery-pane {
+  margin: 0 $unit * -0.46875;
+
+  .is-mosaic & {
+    margin: 0 $unit * -0.125;
+  }
+
+  @media #{$mq-md} {
+    margin: 0 $unit * -0.9375;
+
+    .is-mosaic & {
+      margin: 0 $unit * -0.25;
+    }
+  }
+
+  @media #{$mq-gt-md} {
+    margin: 0 $unit * -1.25;
+
+    .is-mosaic & {
+      margin: 0 $unit * -0.3125;
+    }
+  }
+}
+
+.Gallery-items {
+  display: flex;
+  position: relative;
+  transition: transform 0.125s ease-out;
+  will-change: transform, left;
+
+  @media #{$mq-gt-md} {
+    transition-duration: 0.25s;
+  }
+
+  .is-mosaic & {
+    flex-wrap: wrap;
+    transform: none !important;
+    transition-duration: 0s;
+  }
+
+  .is-moving {
+    transition-duration: 0s;
+  }
+}
+
+.Gallery-item {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 100%;
+  overflow: hidden;
+  position: relative;
+  padding: 0 $unit * 0.46875;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+
+  .is-mosaic & {
+    opacity: 1;
+    margin-bottom: $unit * 0.25;
+    padding: 0 $unit * 0.125;
+  }
+
+  .Gallery:not(.is-mosaic) & {
+    flex: 0 0 100% !important;
+    max-width: none !important;
+
+    &:focus {
+      outline: 0;
+    }
+  }
+
+  @media #{$mq-md} {
+    padding: 0 $unit * 0.9375;
+
+    .is-mosaic & {
+      margin-bottom: $unit * 0.5;
+      padding: 0 $unit * 0.25;
+    }
+  }
+
+  @media #{$mq-gt-md} {
+    padding: 0 $unit * 1.25;
+
+    .is-mosaic & {
+      margin-bottom: $unit * 0.625;
+      padding: 0 $unit * 0.3125;
+    }
+  }
+
+  // mediaEl
+  & > :not(.Caption) {
+    cursor: pointer;
+    cursor: grab;
+    transition: opacity 0.125s;
+    will-change: opacity;
+
+    @media #{$mq-gt-md} {
+      transition-duration: 0.25s;
+    }
+
+    .is-mosaic & {
+      display: none;
+    }
+
+    .is-moving & {
+      cursor: grabbing;
+      transition-duration: 0s;
+    }
+  }
+
+  // mosaicMediaEl
+  & > :not(.Caption) + :not(.Caption) {
+    display: none;
+    cursor: initial;
+
+    .is-mosaic & {
+      display: block;
+    }
+  }
+
+  .Caption {
+    opacity: 0;
+    margin-left: -$layout-fluid-padding;
+    margin-right: -$layout-fluid-padding;
+    background-color: transparent;
+    pointer-events: none;
+    transition: opacity 0.125s;
+    will-change: opacity;
+
+    @media #{$mq-gt-md} {
+      margin-left: -$layout-fixed-padding;
+      transition-duration: 0.25s;
+    }
+  }
+
+  &.is-active .Caption {
+    opacity: 1;
+    transition-delay: 0.125s;
+    pointer-events: all;
+
+    @media #{$mq-gt-md} {
+      transition-delay: 0.25s;
+    }
+  }
+
+  .is-moving & .Caption {
+    opacity: 0;
+    transition-delay: 0s;
+    transition-duration: 0.125s;
+  }
+
+  .is-mosaic & .Caption {
+    opacity: 0;
+    position: absolute;
+    bottom: 0;
+    margin-left: 0;
+    max-width: calc(100% - #{$unit * 0.25});
+    min-height: 0;
+    background-color: $color-black-transparent-60;
+    color: $color-lightBg;
+    pointer-events: none;
+    transition-delay: 0s;
+
+    @media #{$mq-sm} {
+      display: none;
+    }
+
+    @media #{$mq-md} {
+      max-width: calc(100% - #{$unit * 0.5});
+    }
+
+    @media #{$mq-gt-md} {
+      max-width: calc(100% - #{$unit * 0.625});
+    }
+  }
+
+  .is-mosaic &:hover .Caption,
+  .is-mosaic & :not(.Caption):focus + .Caption {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .is-mosaic & .Caption-attribution {
+    color: $color-grey-100;
+  }
+}
+
+.Gallery-richtextTile {
+  position: relative;
+}
+
+.Gallery-richtextTileContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  & > * {
+    margin: $unit * 0.5 $unit !important;
+    max-width: $unit * 49 !important; /* Roughly equivalent to body copy width, after padding is factored in */
+
+    .is-mosaic & {
+      padding: 0 !important;
+    }
+  }
+
+  @media #{$mq-sm} {
+    [data-row-length='2'] & > .Quote.is-pullquote p {
+      font-size: 1.125rem;
+    }
+
+    [data-row-length='3'] & > .Quote.is-pullquote p {
+      font-size: 0.875rem;
+    }
+  }
+}
+
+.Gallery-controls {
+  display: flex;
+  justify-content: space-between;
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  padding: 0 $layout-fluid-padding;
+  width: 100%;
+  pointer-events: none;
+
+  @media #{$mq-gt-md} {
+    padding: 0 $layout-fixed-padding;
+  }
+
+  .is-mosaic & {
+    display: none;
+  }
+}
+
+.Gallery-index {
+  padding: 0 $unit * 0.8125;
+  min-width: 3.5rem;
+  height: $size-control;
+  background-color: $color-black-transparent-60;
+  color: $color-white;
+  font-family: $font-sans;
+  font-size: 0.8125rem;
+  line-height: $size-control;
+  letter-spacing: 0.05em;
+  text-align: right;
+
+  .is-mosaic & {
+    display: none;
+  }
+}
+
+.Gallery-steps {
+  pointer-events: all;
+}
+
+[class*='Gallery-step-'] {
+  padding: 0;
+  border: none;
+  width: $size-control;
+  height: $size-control;
+  background-color: $color-black-transparent-60;
+  color: $color-white;
+  vertical-align: bottom;
+  transition: opacity 0.25s;
+  will-change: opacity;
+}
+
+.Gallery-step-next {
+  margin-left: $size-control-margin;
+}
+
+[class*='Gallery-step-'] svg {
+  width: 100%;
+  height: 100%;
+}
+
+.Gallery-step-next svg {
+  transform: scaleX(-1);
+}
+
+.is-at-start .Gallery-step-prev,
+.is-at-end .Gallery-step-next {
+  opacity: 0.2;
+  cursor: disabled;
+  pointer-events: none;
+}

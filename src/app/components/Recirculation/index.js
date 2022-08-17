@@ -1,9 +1,10 @@
-import html from 'bel';
+import html from 'nanohtml';
+import { getMeta } from '../../meta';
 import { invalidateClient } from '../../scheduler';
 import { track } from '../../utils/behaviour';
-import { terminusFetch } from '../../utils/content';
+import { getOrFetchDocument } from '../../utils/content';
 import Picture from '../Picture';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 const PICTURE_RATIOS = {
   sm: '16x9',
@@ -16,40 +17,38 @@ const Recirculation = ({ ids, pull }) => {
   const itemEls = ids.map(
     id => html`<a class="Recirculation-item" href="/news/${id}" onclick="${() => track('recirculation-link', id)}"></a>`
   );
-
   const el = html`
     <aside class="Recirculation${pull ? ` u-pull-${pull}` : ''}" role="complementary">${itemEls}</aside>
   `;
+  const meta = getMeta();
 
   el.classList.add('has-children');
   ids.forEach((id, index) =>
-    terminusFetch(id, (err, item) => {
-      if (err) {
-        itemEl.classList.add('is-missing');
+    getOrFetchDocument(id, meta)
+      .then(doc => {
+        const itemEl = itemEls[index];
+        const title = doc.titleAlt.md || doc.titleAlt.lg || doc.title;
+        const teaser = doc.synopsisAlt.md || doc.synopsisAlt.lg || doc.synopsis;
 
-        return console.error(err);
-      }
+        itemEl.appendChild(html`<h2>${title}</h2>`);
 
-      const itemEl = itemEls[index];
-      const title = item.titleAlt.md || item.titleAlt.lg || item.title;
-      const teaser = item.synopsisAlt.md || item.synopsisAlt.lg || item.synopsis;
+        if (doc._embedded.mediaThumbnail) {
+          itemEl.appendChild(Picture({ src: doc._embedded.mediaThumbnail.complete[0].url, ratios: PICTURE_RATIOS }));
+          invalidateClient();
+        }
 
-      itemEl.appendChild(html`<h2>${title}</h2>`);
+        if (JSON.stringify(doc.text).indexOf(teaser) === -1) {
+          itemEl.appendChild(html`<p>${teaser}</p>`);
+        }
 
-      if (item._embedded.mediaThumbnail) {
-        itemEl.appendChild(Picture({ src: item._embedded.mediaThumbnail.complete[0].url, ratios: PICTURE_RATIOS }));
-        invalidateClient();
-      }
+        itemEl.appendChild(html`<div>Read more →</div>`);
 
-      if (JSON.stringify(item.text).indexOf(teaser) === -1) {
-        itemEl.appendChild(html`<p>${teaser}</p>`);
-      }
-
-      itemEl.appendChild(html`<div>Read more →</div>`);
-
-      el.classList.add('has-children');
-    })
+        el.classList.add('has-children');
+      })
+      .catch(() => itemEls[index].classList.add('is-missing'))
   );
+
+  styles.use();
 
   return el;
 };

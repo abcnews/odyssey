@@ -1,7 +1,7 @@
-import html from 'bel';
+import html from 'nanohtml';
 import { setText } from '../../utils/dom';
 import { twoDigits, whenKeyIn } from '../../utils/misc';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 const STEP_SECONDS = 5;
 
@@ -140,6 +140,8 @@ const VideoControls = (player, hasAmbientParent) => {
       setText(timeRemainingEl, formattedNegativeTimeFromEnd);
     }
   };
+
+  styles.use();
 
   return videoControlsEl;
 };

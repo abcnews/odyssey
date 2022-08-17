@@ -1,9 +1,9 @@
-import html from 'bel';
+import html from 'nanohtml';
 import { track } from '../../utils/behaviour';
 import { proximityCheck } from '../../utils/misc';
 import { subscribe, unsubscribe } from '../../scheduler';
 import ShareLinks from '../ShareLinks';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 const DEFAULT_TYPE = 'story';
 const INVITATION_RANGE = 0;
@@ -13,6 +13,8 @@ const instances = [];
 
 const Share = ({ type, links }) => {
   const formattedType = (type.length ? type : DEFAULT_TYPE).replace(UPPERCASE_PATTERN, x => ' ' + x.toLowerCase());
+
+  styles.use();
 
   const el = html`
     <div class="Share">

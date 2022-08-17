@@ -1,15 +1,14 @@
-import html from 'bel';
-import { MQ, ONLY_RATIO_PATTERN, SMALLEST_IMAGE, UNIT } from '../../../constants';
-import { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } from '../../media';
+import html from 'nanohtml';
+import { MQ, ONLY_RATIO_PATTERN, PLACEHOLDER_IMAGE_CUSTOM_PROPERTY, SMALLEST_IMAGE, UNIT } from '../../constants';
 import { enqueue, invalidateClient, subscribe } from '../../scheduler';
 import { toggleAttribute, toggleBooleanAttributes } from '../../utils/dom';
-import { PLACEHOLDER_PROPERTY } from '../Picture';
 import { blurImage } from '../Picture/blur';
 import Sizer from '../Sizer';
 import VideoControls from '../VideoControls';
+import { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } from './players';
 import { trackProgress } from './stats';
 import { getMetadata, hasAudio } from './utils';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 const FUZZY_INCREMENT_FPS = 30;
 const FUZZY_INCREMENT_INTERVAL = 1000 / FUZZY_INCREMENT_FPS;
@@ -219,7 +218,7 @@ const VideoPlayer = ({
 
       videoEl.pause();
     },
-    togglePlayback: (event, wasScrollBased) => {
+    togglePlayback: (_event, wasScrollBased) => {
       if (!wasScrollBased && !player.isAmbient) {
         player.isUserInControl = true;
       }
@@ -230,13 +229,8 @@ const VideoPlayer = ({
     jumpBy: time => jumpTo(videoEl.currentTime + time)
   };
 
-  getMetadata(videoId, (err, metadata) => {
-    if (err) {
-      return;
-    }
-
-    const { alternativeText, posterURL } = metadata;
-    let { sources } = metadata;
+  getMetadata(videoId).then(metadata => {
+    const { alternativeText, posterURL, sources } = metadata;
 
     if (alternativeText) {
       player.alternativeText = alternativeText;
@@ -253,31 +247,27 @@ const VideoPlayer = ({
               return;
             }
 
-            placeholderEl.style.setProperty(PLACEHOLDER_PROPERTY, `url("${blurredImageURL}")`);
+            placeholderEl.style.setProperty(PLACEHOLDER_IMAGE_CUSTOM_PROPERTY, `url("${blurredImageURL}")`);
           });
         });
       }
     }
-
-    sources.sort((a, b) => a.size - b.size);
 
     const [portraitSources, landscapeSources] = sources.reduce(
       // 1x1 is considered portrait
       (memo, source) => (memo[+(source.width > source.height)].push(source), memo),
       [[], []]
     );
-
-    sources =
+    const candidateSources =
       isInitiallyPreferredPortraitContainer && portraitSources.length
         ? portraitSources
         : landscapeSources.length
         ? landscapeSources
         : sources;
-
-    const source = sources[isInitiallySmallViewport ? 0 : sources.length - 1];
+    const source = candidateSources[isInitiallySmallViewport ? 0 : candidateSources.length - 1];
 
     if (source) {
-      videoEl.src = source.src;
+      videoEl.src = source.url;
     }
 
     registerPlayer(player);
@@ -328,6 +318,8 @@ const VideoPlayer = ({
   `;
 
   videoPlayerEl.api = player;
+
+  styles.use();
 
   return videoPlayerEl;
 };

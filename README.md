@@ -8,7 +8,7 @@ Odyssey is quite tightly coupled to ABC News environments and as such is general
 
 You can make use of the API in your stories to initialise custom sections/markers, use internal utlities and create your own components.
 
-A reference to the API will exist on the global `window.__ODYSSEY__` property, after the article has been enhanced. Because your own code may run before the API exists, you should first check for its existence, and if it doesn't, you can listenen for an `'odyssey:api'`event on the `window` object, which will fire once after the API exists. For convenience, the event's `detail` property is also a reference to the API. Here's an example of how you could do your own `thing` with the API:
+A reference to the API will exist on the global `window.__ODYSSEY__` property, after the article has been enhanced. Because your own code may run before the API exists, you should first check for its existence, and if it doesn't, you can listen for an `'odyssey:api'`event on the `window` object, which will fire once after the API exists. For convenience, the event's `detail` property is also a reference to the API. Here's an example of how you could do your own `thing` with the API:
 
 ```js
 function thing(api) {
@@ -42,8 +42,6 @@ Subscribed functions (`.subscribe()`) will be called with the viewport's dimensi
 
 Place `#mount` tags in Core Media articles to define your own sections/markers, then correctly parse them (.`getSections()`|`getMarkers()`) for use with your own components/transforms.
 
-_Note: This is aliased to `api.utils.anchors._` for backwards compatibility.\*
-
 ### `api.utils.dom.*`
 
 Use the internal DOM inspection/manipulation functions as an alternative to other global libraries (such as jQuery)
@@ -74,7 +72,7 @@ module.exports = {
 
 ## Authors
 
-- Josh Byrd ([Byrd.Joshua@abc.net.au](mailto:Byrd.Joshua@abc.net.au))
+- Joshua Byrd ([Byrd.Joshua@abc.net.au](mailto:Byrd.Joshua@abc.net.au))
 - Simon Elvery ([Elvery.Simon@abc.net.au](mailto:Elvery.Simon@abc.net.au))
 - Colin Gourlay ([Gourlay.Colin@abc.net.au](mailto:Gourlay.Colin@abc.net.au))
 - Nathan Hoad ([Hoad.Nathan@abc.net.au](mailto:Hoad.Nathan@abc.net.au))

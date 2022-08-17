@@ -1,60 +1,53 @@
-import { terminusFetch } from '../../utils/content';
+import { getMeta } from '../../meta';
+import { getOrFetchDocument } from '../../utils/content';
 
 const NO_CMID_ERROR = 'No CMID available for video';
 
-function getPosterURL(item) {
+const getPosterURL = videoDoc => {
   try {
-    return item.media.image ? item.media.image.poster.images['16x9'] : null;
+    return videoDoc.media.image ? videoDoc.media.image.poster.images['16x9'] : null;
   } catch (e) {
     return null;
   }
-}
-
-function getSources(item) {
-  return item.media.video.renditions.files
-    .sort((a, b) => +b.bitRate - +a.bitRate)
-    .map(rendition => ({
-      src: rendition.src || rendition.url,
-      size: +rendition.size,
-      width: +rendition.width || 0,
-      height: +rendition.height || 0
-    }));
-}
-
-export const getMetadata = (videoId, done) => {
-  if (!videoId) {
-    return done(new Error(NO_CMID_ERROR));
-  }
-
-  terminusFetch({ id: videoId, type: 'video' }, (err, item) => {
-    if (err) {
-      return done(err);
-    }
-
-    // Even if the first document proxies another, keep this alternativeText
-    const alternativeText = item.title;
-
-    function parseMetadata(item) {
-      return done(null, {
-        alternativeText,
-        posterURL: getPosterURL(item),
-        sources: getSources(item)
-      });
-    }
-
-    if (!item.target) {
-      return parseMetadata(item);
-    }
-
-    terminusFetch({ id: item.target.id, type: 'video' }, (err, targetItem) => {
-      if (err) {
-        return done(err);
-      }
-
-      return parseMetadata(targetItem);
-    });
-  });
 };
+
+const getSources = videoDoc => [...videoDoc.media.video.renditions.files].sort((a, b) => a.size - b.size);
+
+export const getMetadata = videoId =>
+  new Promise((resolve, reject) => {
+    if (!videoId) {
+      return reject(new Error(NO_CMID_ERROR));
+    }
+
+    const meta = getMeta();
+
+    getOrFetchDocument({ id: videoId, type: 'video' }, meta)
+      .then(videoDocOrTeaserDoc => {
+        // Even if the first document teases another, keep this alternativeText
+        const alternativeText = videoDocOrTeaserDoc.title;
+
+        if (videoDocOrTeaserDoc.target) {
+          // We need to fetch & parse the (teased) target document
+          return getOrFetchDocument({ id: videoDocOrTeaserDoc.target.id, type: 'video' }, meta)
+            .then(videoDoc =>
+              resolve({
+                alternativeText,
+                posterURL: getPosterURL(videoDoc),
+                sources: getSources(videoDoc)
+              })
+            )
+            .catch(err => reject(err));
+        }
+
+        // We can parse this document
+        return resolve({
+          alternativeText,
+          posterURL: getPosterURL(videoDocOrTeaserDoc),
+          sources: getSources(videoDocOrTeaserDoc)
+        });
+      })
+      .catch(err => reject(err));
+  });
 
 export const hasAudio = el => {
   return el.mozHasAudio || !!el.webkitAudioDecodedByteCount || !!(el.audioTracks && el.audioTracks.length);

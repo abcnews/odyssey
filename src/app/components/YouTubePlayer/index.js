@@ -1,12 +1,12 @@
-import html from 'bel';
-import { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } from '../../media';
+import html from 'nanohtml';
+import { PLACEHOLDER_IMAGE_CUSTOM_PROPERTY } from '../../constants';
 import { enqueue, invalidateClient, subscribe } from '../../scheduler';
 import { toggleAttribute } from '../../utils/dom';
-import { PLACEHOLDER_PROPERTY } from '../Picture';
 import { blurImage } from '../Picture/blur';
 import Sizer from '../Sizer';
 import VideoControls from '../VideoControls';
-import './index.scss';
+import { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } from '../VideoPlayer/players';
+import styles from './index.lazy.scss';
 
 const DEFAULT_YOUTUBE_CONFIG = {
   controls: 0,
@@ -94,7 +94,7 @@ const YouTubePlayer = ({
           return;
         }
 
-        placeholderEl.style.setProperty(PLACEHOLDER_PROPERTY, `url("${blurredImageURL}")`);
+        placeholderEl.style.setProperty(PLACEHOLDER_IMAGE_CUSTOM_PROPERTY, `url("${blurredImageURL}")`);
       });
     });
   }
@@ -309,6 +309,8 @@ const YouTubePlayer = ({
       ${placeholderEl} ${videoEl} ${isAmbient ? null : videoControlsEl} ${posterEl}
     </div>
   `;
+
+  styles.use();
 
   return youTubePlayerEl;
 };

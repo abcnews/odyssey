@@ -1,21 +1,20 @@
 import { getMountValue, isMount } from '@abcnews/mount-utils';
 import cn from 'classnames';
-import html from 'bel';
-import { VIDEO_MARKER_PATTERN } from '../../../constants';
+import html from 'nanohtml';
+import { VIDEO_MARKER_PATTERN } from '../../constants';
 import { enqueue, subscribe } from '../../scheduler';
-import { terminusFetch } from '../../utils/content';
+import { fetchDocument } from '../../utils/content';
 import { $, detach, detectVideoId, getChildImage, isElement } from '../../utils/dom';
-import { clampNumber, formattedDate, getRatios, trim } from '../../utils/misc';
-import ScrollHint from '../ScrollHint';
+import { clampNumber, formattedDate, getRatios } from '../../utils/misc';
 import Picture from '../Picture';
+import ScrollHint from '../ScrollHint';
 import { activate as activateUParallax } from '../UParallax';
 import VideoPlayer from '../VideoPlayer';
 import YouTubePlayer from '../YouTubePlayer';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 const Header = ({
   imgEl,
-  interactiveEl,
   isAbreast,
   isDark,
   isFloating,
@@ -29,10 +28,10 @@ const Header = ({
   shouldVideoPlayOnce,
   videoId
 }) => {
-  isFloating = isFloating || (isLayered && !imgEl && !videoId && !interactiveEl);
+  isFloating = isFloating || (isLayered && !imgEl && !videoId);
   isLayered = isLayered || isFloating;
   isDark = isLayered || typeof isDark === 'boolean' ? isDark : meta.isDarkMode;
-  isAbreast = !isFloating && !isLayered && (imgEl || videoId || interactiveEl) && isAbreast;
+  isAbreast = !isFloating && !isLayered && (imgEl || videoId) && isAbreast;
 
   const className = cn(
     'Header',
@@ -55,13 +54,12 @@ const Header = ({
 
   let mediaEl;
 
-  if (interactiveEl) {
-    mediaEl = interactiveEl.cloneNode(true);
-  } else if (imgEl) {
+  if (imgEl) {
     mediaEl = Picture({
       src: imgEl.src,
       alt: imgEl.getAttribute('alt'),
-      ratios
+      ratios,
+      shouldLazyLoad: false
     });
   } else if (videoId) {
     mediaEl = isVideoYouTube
@@ -79,7 +77,7 @@ const Header = ({
         });
   }
 
-  if (mediaEl && !interactiveEl && !isLayered && !isAbreast) {
+  if (mediaEl && !isLayered && !isAbreast) {
     mediaEl.classList.add('u-parallax');
     activateUParallax(mediaEl);
   }
@@ -159,6 +157,8 @@ const Header = ({
     });
   }
 
+  styles.use();
+
   return headerEl;
 };
 
@@ -188,17 +188,13 @@ function fetchInfoSourceLogo(meta, el, variant) {
     return;
   }
 
-  terminusFetch({ id: meta.infoSourceLogosHTMLFragmentId, type: 'htmlfragment' }, (err, item) => {
-    if (err) {
-      return;
-    }
+  fetchDocument({ id: meta.infoSourceLogosHTMLFragmentId, type: 'htmlfragment' }).then(htmlFragmentDoc => {
+    const logoDocsRefs = htmlFragmentDoc.contextSettings['meta.data.name'];
+    const logoDocRef = logoDocsRefs[`${meta.infoSource.name} (${variant})`] || logoDocsRefs[meta.infoSource.name];
 
-    const logoDocs = item.contextSettings['meta.data.name'];
-    const logoDoc = logoDocs[`${meta.infoSource.name} (${variant})`] || logoDocs[meta.infoSource.name];
-
-    if (logoDoc) {
-      terminusFetch({ id: logoDoc.id, type: logoDoc.docType.toLowerCase() }, (err, item) => {
-        const image = item.media.image.primary.complete[0];
+    if (logoDocRef) {
+      fetchDocument({ id: logoDocRef.id, type: logoDocRef.docType.toLowerCase() }).then(imageDoc => {
+        const image = imageDoc.media.image.primary.complete[0];
         const imageRatio = image.height / image.width;
 
         el.className = `${el.className} has-logo`;
@@ -239,42 +235,15 @@ export const transformSection = (section, meta) => {
 
   const config = candidateNodes.reduce(
     (config, node) => {
-      const classList = node.className ? node.className.split(' ') : [];
-      const mountSC = isMount(node) ? getMountValue(node) : '';
+      const mountValue = isMount(node) ? getMountValue(node) : '';
+      const isVideoMarker = !!mountValue.match(VIDEO_MARKER_PATTERN);
       let videoId;
       let imgEl;
-      let interactiveEl;
 
-      // If we found an init-interactive then it takes over being the header media
-      if (!isNoMedia && !config.interactiveEl && isElement(node)) {
-        // special case for parallax mounts
-        const isParallax = mountSC.indexOf('parallax') === 0;
-
-        // normal init-interactives
-        const isInteractive =
-          classList.indexOf('init-interactive') > -1 ||
-          node.querySelector('[class^="init-interactive"]') ||
-          mountSC.indexOf('interactive') === 0;
-
-        if (isParallax || isInteractive) {
-          config.interactiveEl = interactiveEl = node;
-        }
-      }
-
-      if (!isNoMedia && !config.videoId && !config.imgEl && !config.interactiveEl && isElement(node)) {
-        const leadVideoEl = $('video', node); // Phase 1 (Mobile) renders lead videos (Media field) as <video> elements
-
-        if (leadVideoEl) {
-          let parentEl = leadVideoEl.parentElement;
-
-          while (parentEl.className.indexOf('media-wrapper-dl') === -1 && parentEl !== document.documentElement) {
-            parentEl = parentEl.parentElement;
-          }
-
-          config.videoId = videoId = ((parentEl.getAttribute('data-uri') || '').match(/\d+/) || [null])[0];
-        } else if (!!mountSC.match(VIDEO_MARKER_PATTERN)) {
-          config.isVideoYouTube = !!mountSC.split('youtube')[1];
-          config.videoId = videoId = mountSC.match(VIDEO_MARKER_PATTERN)[1];
+      if (!isNoMedia && !config.videoId && !config.imgEl && isElement(node)) {
+        if (isVideoMarker) {
+          config.isVideoYouTube = !!mountValue.split('youtube')[1];
+          config.videoId = videoId = mountValue.match(VIDEO_MARKER_PATTERN)[1];
         } else {
           videoId = detectVideoId(node);
 
@@ -290,7 +259,7 @@ export const transformSection = (section, meta) => {
         }
       }
 
-      if (!videoId && !imgEl && !interactiveEl && isElement(node) && (trim(node.textContent).length > 0 || !!mountSC)) {
+      if (!videoId && !imgEl && isElement(node) && ((node.textContent || '').trim().length > 0 || !!mountValue)) {
         config.miscContentEls.push(node);
       }
 

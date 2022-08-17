@@ -1,8 +1,7 @@
 import cn from 'classnames';
-import html from 'bel';
-import { $ } from '../../utils/dom';
+import html from 'nanohtml';
 import { enqueue, subscribe } from '../../scheduler';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 const Main = (childNodes, meta) => {
   const className = cn('Main', 'u-layout', {
@@ -14,23 +13,14 @@ const Main = (childNodes, meta) => {
   const el = html`<main class="${className}">${childNodes}</main>`;
 
   subscribe(function _updateMainOffsetTop() {
-    updateOffsetTop(el);
+    enqueue(function _updateMainOffsetTopCustomProp() {
+      el.style.setProperty('--Main-offsetTop', Math.round(el.offsetTop) + 'px');
+    });
   }, true);
+
+  styles.use();
 
   return el;
 };
 
 export default Main;
-
-function updateOffsetTop(mainEl) {
-  let previewContainerHeight = 0;
-  const previewContainerEl = $('.preview-container');
-
-  if (previewContainerEl) {
-    previewContainerHeight = previewContainerEl.getBoundingClientRect().height;
-  }
-
-  enqueue(function _updateMainOffsetTopCustomProp() {
-    mainEl.style.setProperty('--Main-offsetTop', Math.round(mainEl.offsetTop - previewContainerHeight) + 'px');
-  });
-}

@@ -1,8 +1,8 @@
-import { getGeneration, getTier, GENERATIONS, TIERS } from '@abcnews/env-utils';
+import { getTier, TIERS } from '@abcnews/env-utils';
 import { url2cmid } from '@abcnews/url2cmid';
-import { INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID, SELECTORS } from '../../constants';
+import { INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID, SELECTORS } from '../constants';
+import { fetchDocument } from '../utils/content';
 import { $, $$, detach } from '../utils/dom';
-import { trim } from '../utils/misc';
 
 const FACEBOOK = /facebook\.com/;
 const TWITTER = /twitter\.com/;
@@ -30,81 +30,74 @@ function getDataAttribute(name) {
 }
 
 function getBylineNodes() {
-  const infoSourceEl = $(SELECTORS.INFO_SOURCE);
   const bylineEl = $(SELECTORS.BYLINE);
 
   if (!bylineEl) {
     return [];
   }
 
-  const bylineSubEl = $('p', bylineEl);
+  const clonedBylineEl = bylineEl.cloneNode(true);
 
-  return Array.from((bylineSubEl || bylineEl).childNodes)
-    .filter(node => node !== infoSourceEl && trim(node.textContent).length > -1)
-    .map(node => {
-      const clone = node.cloneNode(true);
+  $$('[data-tooltip-uri]', clonedBylineEl).forEach(tooltipEl => tooltipEl.parentElement.removeChild(tooltipEl));
+  $$('a', clonedBylineEl).forEach(linkEl => {
+    linkEl.removeAttribute('class');
+    linkEl.removeAttribute('data-component');
+    linkEl.removeAttribute('data-uri');
+    linkEl.removeAttribute('style');
+  });
 
-      if (clone.tagName === 'A') {
-        clone.removeAttribute('class');
-        clone.removeAttribute('data-component');
-      }
+  const bylineNodesParentEl = $('div,p,[data-component="Text"]', clonedBylineEl) || clonedBylineEl;
 
-      return clone;
-    });
+  return Array.from(bylineNodesParentEl.childNodes).filter(
+    node => node.nodeType !== Node.COMMENT_NODE && (node.textContent || '').trim().length > -1
+  );
 }
 
 function getShareLinks({ url, title }) {
-  const links = navigator.share ? [{ id: 'native', url, title }] : [];
-
   return $$('a', $(SELECTORS.SHARE_TOOLS))
-    .reduce((links, linkEl) => {
-      const url = linkEl.href;
-      let link;
+    .reduce(
+      (links, linkEl) => {
+        const url = linkEl.href;
+        let link;
 
-      switch (url) {
-        case (url.match(FACEBOOK) || {}).input:
-          link = { id: 'facebook', url };
-          break;
-        case (url.match(TWITTER) || {}).input:
-          link = { id: 'twitter', url };
-          break;
-        case (url.match(EMAIL) || {}).input:
-          if (!navigator.share) {
-            link = { id: 'email', url };
-          }
-          break;
-        default:
-          break;
-      }
+        switch (url) {
+          case (url.match(FACEBOOK) || {}).input:
+            link = { id: 'facebook', url };
+            break;
+          case (url.match(TWITTER) || {}).input:
+            link = { id: 'twitter', url };
+            break;
+          case (url.match(EMAIL) || {}).input:
+            if (!navigator.share) {
+              link = { id: 'email', url };
+            }
+            break;
+          default:
+            break;
+        }
 
-      if (link && !links.find(({ id }) => id === link.id)) {
-        links.push(link);
-      }
+        if (link && !links.find(({ id }) => id === link.id)) {
+          links.push(link);
+        }
 
-      return links;
-    }, links)
+        return links;
+      },
+      navigator.share ? [{ id: 'native', url, title }] : []
+    )
     .sort((a, b) => SHARE_ORDERING.indexOf(a.id) - SHARE_ORDERING.indexOf(b.id));
 }
 
 function getRelatedStoriesIds() {
-  return $$(`
-    .attached-content > .inline-content.story > a,
-    .related > article > a,
-    [data-component="RelatedStories"] [data-component="RelatedStoriesCard"] a
-  `).map(el => url2cmid(el.href));
+  return $$('[data-component="RelatedStories"] [data-component="RelatedStoriesCard"] a').map(el => url2cmid(el.href));
 }
 
 function getRelatedMedia() {
-  const relatedMediaEl = $(`
-    .view-hero-media,
-    .content > article > header + figure,
-    .published + .inline-content.full.photo,
-    .published + .inline-content.full.video,
-    .attached-content > .inline-content.photo,
-    .attached-content > .inline-content.video,
-    [data-component="FeatureMedia"] [data-component="Figure"],
-    [data-component="FeatureMedia"] [data-component="WebContentWarning"]
-  `);
+  const relatedMediaEl = $(
+    [
+      '[data-component="FeatureMedia"] [data-component="Figure"]',
+      '[data-component="FeatureMedia"] [data-component="WebContentWarning"]'
+    ].join()
+  );
 
   if (!relatedMediaEl) {
     return null;
@@ -131,7 +124,6 @@ export const initMeta = terminusDocument => {
             description: metaDataName['replacement-description'] || description,
             theme: metaDataName.theme || null,
             hasCaptionAttributions: metaDataName['caption-attributions'] !== false,
-            hasCommentsEnabled: metaDataName['showLivefyreComments'] === true,
             isDarkMode: metaDataName['dark-mode'] === true
           }
         : null;
@@ -162,30 +154,37 @@ export const initMeta = terminusDocument => {
       relatedMedia: getRelatedMedia(),
       relatedStoriesIds: getRelatedStoriesIds()
     }),
-    // Create media lookups
+    // Create media lookups & pre-emptively fetch Teaser document targets we'll use later
     () =>
       (terminusDocument._embedded.mediaEmbedded || [])
         .concat(terminusDocument._embedded.mediaFeatured || [])
         .concat(terminusDocument._embedded.mediaRelated || [])
         .reduce(
-          (memo, item) => {
-            const { docType, id, media } = item;
+          (memo, doc) => {
+            const { docType, id, media, target } = doc;
 
-            if (docType === 'Image' || docType === 'ImageProxy') {
-              memo.images.push(item);
-              memo.imagesById[id] = item;
+            if (!memo.mediaById[id]) {
+              memo.media.push(doc);
+              memo.mediaById[id] = doc;
+            }
 
-              const { binaryKey, complete } = media.image.primary;
-
-              if (binaryKey) {
-                memo.imagesByBinaryKey[binaryKey] = item;
-              } else if (docType === 'ImageProxy' && complete) {
-                const proxiedId = url2cmid(complete[0].url);
-
-                if (proxiedId) {
-                  memo.imagesById[proxiedId] = item;
+            switch (docType) {
+              case 'Teaser':
+                if (target) {
+                  // Pre-empt a future fetch of the target document
+                  fetchDocument({ id: target.id, type: target.docType.toLowerCase() });
                 }
-              }
+                break;
+              case 'Image':
+              case 'ImageProxy':
+                if (!memo.imagesById[id]) {
+                  memo.images.push(doc);
+                  memo.imagesById[id] = doc;
+                  memo.imagesByBinaryKey[media.image.primary.binaryKey] = doc;
+                }
+                break;
+              default:
+                break;
             }
 
             return memo;
@@ -193,7 +192,9 @@ export const initMeta = terminusDocument => {
           {
             images: [],
             imagesByBinaryKey: {},
-            imagesById: {}
+            imagesById: {},
+            media: [],
+            mediaById: {}
           }
         )
   ];
@@ -215,7 +216,8 @@ export const initMeta = terminusDocument => {
           url: terminusDocument.sourceURL
         }
       : null,
-    isPL: getGeneration() === GENERATIONS.PL,
+    // keep isPL around until we can audit Odyssey plugins and ensure none depend on it
+    isPL: true,
     isPreview: getTier() === TIERS.PREVIEW
   });
 
@@ -231,12 +233,12 @@ export const getMeta = () => {
 };
 
 export const lookupImageByAssetURL = url => {
-  const { imagesByBinaryKey, imagesById } = getMeta();
+  const { imagesByBinaryKey } = getMeta();
   const [, binaryKey] = url.match(/\/([0-9a-f]{32})\b/) || [];
 
   if (binaryKey) {
     return imagesByBinaryKey[binaryKey];
   }
 
-  return imagesById[url2cmid(url)] || null;
+  return null;
 };

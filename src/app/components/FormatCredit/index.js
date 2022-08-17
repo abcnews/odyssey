@@ -1,11 +1,13 @@
-import html from 'bel';
+import html from 'nanohtml';
 import { track } from '../../utils/behaviour';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 const LINK_URL = '/news/interactives/';
 const LINK_TRACKER = () => track('format-credit-link', '*');
 
 const FormatCredit = () => {
+  styles.use();
+
   return html`
     <div class="FormatCredit">
       <p>

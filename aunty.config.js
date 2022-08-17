@@ -1,26 +1,29 @@
-const path = require('path');
-const DuplicatePackageCheckerPlugin = require('duplicate-package-checker-webpack-plugin');
-
 module.exports = {
-  type: 'react',
+  type: 'basic',
   build: {
     useCSSModules: false
   },
-  serve: {
-    hot: false
+  babel: config => {
+    // Compile nanohtml tagged template literals
+    config.plugins.push([
+      require.resolve('nanohtml'),
+      {
+        useImport: true
+      }
+    ]);
+
+    return config;
   },
   webpack: config => {
-    // Help us identify things we dan try to dedupe imports
-    config.plugins.push(new DuplicatePackageCheckerPlugin({ showHelp: false }));
+    // Enable lazy style injection (https://webpack.js.org/loaders/style-loader/#lazystyletag)
+    const lazyStyleTest = /\.lazy\.(css|scss)$/;
+    const stylesRule = config.module.rules.find(rule => rule.__hint__ === 'styles');
+    const lazyStylesRule = JSON.parse(JSON.stringify(stylesRule));
 
-    // Use resolve.alias to dedupe
-    config.resolve = config.resolve || {};
-    config.resolve.alias = {
-      ...(config.resolve.alias || {}),
-      react: path.resolve(__dirname, 'node_modules/react'),
-      'react-dom': path.resolve(__dirname, 'node_modules/react-dom'),
-      'react-is': path.resolve(__dirname, 'node_modules/downshift/node_modules/react-is')
-    };
+    stylesRule.exclude = lazyStyleTest;
+    lazyStylesRule.test = lazyStyleTest;
+    lazyStylesRule.use[0].options = { injectType: 'lazyStyleTag' };
+    config.module.rules.splice(config.module.rules.indexOf(stylesRule), 0, lazyStylesRule);
 
     // Stop `import()`-ed chunks from being split into `[name].js` and `vendors~[name].js`
     config.optimization = {
@@ -32,13 +35,10 @@ module.exports = {
       }
     };
 
-    // Allow larger entrypoint & assets sizes than the default (250000)
-    config.performance = {
-      ...(config.performance || {}),
-      maxAssetSize: 500000,
-      maxEntrypointSize: 500000
-    };
-
     return config;
+  },
+  serve: {
+    hasBundleAnalysis: true,
+    hot: false
   }
 };

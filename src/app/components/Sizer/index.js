@@ -1,5 +1,5 @@
 import { enqueue, subscribe } from '../../scheduler';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 const ALLOWED_RATIOS = ['1x2', '9x16', '2x3', '3x4', '1x1', '4x3', '3x2', '16x9', '2x1'];
 const DEFAULT_SIZE_RATIOS = {
@@ -23,12 +23,15 @@ const Sizer = sizeRatios => {
   }, 'Sizer');
 
   instances.push(el);
+
   setTimeout(() => {
     if (lastKnownNumInstances !== instances.length) {
       lastKnownNumInstances = instances.length;
       updateHeightSnapping();
     }
   });
+
+  styles.use();
 
   return el;
 };

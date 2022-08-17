@@ -1,14 +1,10 @@
-import './unveil';
-import './polyfills';
-import './fonts.scss';
-import './keyframes.scss';
-import './app/components/utilities/index.scss';
 import { proxy } from '@abcnews/dev-proxy';
 import { GENERATIONS, getGeneration, requestDOMPermit } from '@abcnews/env-utils';
 import { url2cmid } from '@abcnews/url2cmid';
-import app from './app';
-import { terminusFetch } from './app/utils/content';
-import { debug } from './app/utils/logging';
+import { fetchDocument } from './app/utils/content';
+import { debug, debugWhen } from './app/utils/logging';
+import './polyfills';
+import './unveil';
 
 // Provide a hint as early as possible that the Odyssey format will be driving
 // this story, so that other interactives can opt to wait for Odyssey to load
@@ -18,26 +14,30 @@ window.__IS_ODYSSEY_FORMAT__ = true;
 proxy('odyssey').then(() => {
   // Don't run on IE or old-Edge, which we no longer support
   if (/* IE <= 9 */ (document.all && !window.atob) || /* IE >= 10 */ window.navigator.msPointerEnabled) {
-    return;
+    return debug('Trident-based browsers are not supported');
   }
 
-  // When this runs as Associated JS, rather than init-interactive,
-  // we still need to let Phase 1 know (somehow) that we intend to
-  // takeover the article and implement our own audio/video players
-  if (getGeneration() === GENERATIONS.P1) {
-    const implementsEl = document.createElement('meta');
-
-    implementsEl.className = 'init-interactive';
-    implementsEl.setAttribute('data-implements', 'article,audio,image,video');
-    document.head.appendChild(implementsEl);
+  // Don't run on non-PL website generations
+  if (getGeneration() !== GENERATIONS.PL) {
+    return debug('Non-Presentation Layer ABC websites are not supported');
   }
 
   // Once we've got:
-  // 1. the article's terminus document, and
-  // 2. permission to modify the DOM
-  // ...we can run the run the app, using the terminus document to initialise the metadata that's used everywhere
-  Promise.all([terminusFetch(url2cmid(window.location.href)), requestDOMPermit('body')]).then(([terminusDocument]) => {
-    debug('Fetched Terminus article document and obtained DOM permit for "body"');
-    app(terminusDocument);
-  });
+
+  // 1. the dynamically imported app module, and
+  const importAppModuleTask = import(/* webpackChunkName: "app" */ './app');
+  debugWhen(importAppModuleTask, 'Imported app module');
+
+  // 2. the article's terminus document, and
+  const fetchArticleDocumentTask = fetchDocument(url2cmid(window.location.href));
+  debugWhen(fetchArticleDocumentTask, 'Fetched article document');
+
+  // 3. permission to modify the DOM
+  const obtainBodyDOMPermitTask = requestDOMPermit('body');
+  debugWhen(obtainBodyDOMPermitTask, 'Obtained "body" DOM permit');
+
+  // ...we can run the app, using the terminus document to initialise metadata
+  Promise.all([importAppModuleTask, fetchArticleDocumentTask, obtainBodyDOMPermitTask]).then(
+    ([appModule, terminusDocument]) => appModule.default(terminusDocument)
+  );
 });

@@ -31,7 +31,6 @@ export default {
   meta,
   scheduler,
   utils: {
-    anchors: mounts,
     behaviour,
     content,
     dom,

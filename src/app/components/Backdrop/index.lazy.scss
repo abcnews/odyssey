@@ -1,0 +1,15 @@
+@import '../../constants';
+
+.Backdrop {
+  padding-top: $unit * 2;
+  padding-bottom: $unit * 0.5;
+
+  @media #{$mq-gt-md} {
+    padding-top: $unit * 3;
+    padding-bottom: $unit * 0.75;
+  }
+}
+
+.Backdrop + .Backdrop {
+  margin-top: 0;
+}

@@ -1,13 +1,14 @@
-import html from 'bel';
 import { url2cmid } from '@abcnews/url2cmid';
+import html from 'nanohtml';
+import { MOCK_ELEMENT } from '../../constants';
 import { track } from '../../utils/behaviour';
-import { MOCK_ELEMENT } from '../../../constants';
 import { $, $$, getChildImage, substitute } from '../../utils/dom';
-import { trim } from '../../utils/misc';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 const StoryTeaserEmbed = ({ title, description, url, imageURL }) => {
   const id = url2cmid(url);
+
+  styles.use();
 
   return html`
     <aside class="StoryTeaserEmbed">
@@ -22,19 +23,7 @@ const StoryTeaserEmbed = ({ title, description, url, imageURL }) => {
 
 export default StoryTeaserEmbed;
 
-function isPLRelatedCard(el) {
-  return el.getAttribute('data-component') === 'RelatedCard';
-}
-
-export const doesElMatchConvention = el => {
-  // We only accept PL Related Cards or P1/2 WYSIWYG teasers that have
-  // a title, a _self-targeting link and an image, but don't bundle an
-  // interactive (such as the podcast player).
-  return (
-    isPLRelatedCard(el) ||
-    !!($('h2', el) && $$('a[target="_self"]', el).length === 3 && getChildImage(el) && !$('.init-interactive', el))
-  );
-};
+export const doesElMatchConvention = el => el.getAttribute('data-component') === 'RelatedCard';
 
 export const transformElement = el => {
   const title = $('h2,h3', el).textContent;
@@ -45,21 +34,18 @@ export const transformElement = el => {
     return;
   }
 
-  if (isPLRelatedCard(el)) {
-    const pullRightWrapperEl = html`<div class="u-pull-right"></div>`;
+  const pullRightWrapperEl = html`<div class="u-pull-right"></div>`;
 
-    substitute(el, pullRightWrapperEl);
-    pullRightWrapperEl.appendChild(el);
-    imageURL = imageURL.replace(/[“”]/g, '');
-    $$('noscript', el).forEach(noscriptEl => noscriptEl.parentElement.removeChild(noscriptEl));
-  }
+  substitute(el, pullRightWrapperEl);
+  pullRightWrapperEl.appendChild(el);
+  imageURL = imageURL.replace(/[“”]/g, '');
+  $$('noscript', el).forEach(noscriptEl => noscriptEl.parentElement.removeChild(noscriptEl));
 
-  const description = trim(
-    String(el.textContent)
-      .replace(title, '')
-      .replace('Read more', '')
-      .replace(/\.{1}(\S)/g, '. $1')
-  );
+  const description = (el.textContent || '')
+    .replace(title, '')
+    .replace('Read more', '')
+    .replace(/\.{1}(\S)/g, '. $1')
+    .trim();
 
   substitute(el, StoryTeaserEmbed({ title, url, imageURL, description }));
 };

@@ -1,0 +1,41 @@
+@import '../../constants';
+
+.ShareLink {
+  position: relative;
+  flex: 1 1 ($size-control - $size-control-margin);
+  margin: 0;
+  border: 0;
+  padding: 0;
+  width: $size-control - $size-control-margin;
+  background-color: $color-grey-300;
+
+  .Share & {
+    transition: filter 0.25s;
+
+    &:hover {
+      filter: brightness(0.95);
+    }
+  }
+
+  &[data-id='email'] {
+    @media #{$mq-sm} {
+      display: none;
+    }
+  }
+
+  & + & {
+    margin-left: $size-control-margin;
+  }
+}
+
+.ShareLinkIcon {
+  display: block;
+  margin: auto;
+  width: auto;
+  height: 100%;
+  fill: $color-black-transparent-75;
+
+  .u-richtext-invert & {
+    fill: $color-white-transparent-75;
+  }
+}

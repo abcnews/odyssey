@@ -1,13 +1,12 @@
-import html from 'bel';
 import { url2cmid } from '@abcnews/url2cmid';
-import { getMeta } from '../../meta';
+import html from 'nanohtml';
 import { enqueue, invalidateClient } from '../../scheduler';
 import { track } from '../../utils/behaviour';
-import { $, $$, getChildImage, prepend, substitute } from '../../utils/dom';
+import { $, $$, prepend } from '../../utils/dom';
 import { createFromTerminusDoc as createCaptionFromTerminusDoc } from '../Caption';
 import Gallery from '../Gallery';
 import Picture from '../Picture';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 const TAB_KEY = 9;
 
@@ -15,8 +14,8 @@ const items = [];
 let masterGalleryEl = null; // singleton
 let clickHandler = null;
 
-const MasterGallery = ({ isRefresh = false } = {}) => {
-  if (masterGalleryEl && !isRefresh) {
+const MasterGallery = () => {
+  if (masterGalleryEl) {
     return masterGalleryEl;
   }
 
@@ -125,6 +124,8 @@ const MasterGallery = ({ isRefresh = false } = {}) => {
     </div>
   `;
 
+  styles.use();
+
   return masterGalleryEl;
 };
 
@@ -154,17 +155,6 @@ function close() {
 function has(id) {
   return items.filter(item => item.id === id).length > 0;
 }
-
-export const refresh = () => {
-  if (!masterGalleryEl) {
-    return;
-  }
-
-  const prevMasterGalleryEl = masterGalleryEl;
-
-  MasterGallery({ isRefresh: true }); // Sets masterGalleryEl;
-  substitute(prevMasterGalleryEl, masterGalleryEl);
-};
 
 export const register = image => {
   const { id, media } = image;

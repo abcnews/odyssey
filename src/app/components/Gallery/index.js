@@ -1,8 +1,8 @@
 import { getMountValue, isPrefixedMount } from '@abcnews/mount-utils';
 import cn from 'classnames';
-import html from 'bel';
-import rawHTML from 'bel/raw';
-import { SELECTORS, SUPPORTS_PASSIVE, VIDEO_MARKER_PATTERN } from '../../../constants';
+import html from 'nanohtml';
+import rawHTML from 'nanohtml/raw';
+import { SELECTORS, SUPPORTS_PASSIVE, VIDEO_MARKER_PATTERN } from '../../constants';
 import { getMeta, lookupImageByAssetURL } from '../../meta';
 import { enqueue, invalidateClient, subscribe } from '../../scheduler';
 import { $, append, detach, detectVideoId, getChildImage, isElement, setText } from '../../utils/dom';
@@ -12,10 +12,10 @@ import Caption, {
   createFromTerminusDoc as createCaptionFromTerminusDoc
 } from '../Caption';
 import Picture from '../Picture';
-import Sizer from '../Sizer';
 import { createFromElement as createQuoteFromElement } from '../Quote';
+import Sizer from '../Sizer';
 import VideoPlayer from '../VideoPlayer';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 export const MOSAIC_ROW_LENGTHS_PATTERN = /mosaic[a-z]*(\d+)/;
 
@@ -458,6 +458,8 @@ const Gallery = ({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconst
     goToItem((currentIndex = 0));
   });
 
+  styles.use();
+
   return galleryEl;
 };
 
@@ -489,7 +491,6 @@ export const transformSection = section => {
         return config;
       }
 
-      const classList = node.className.split(' ');
       const isQuote = node.matches(SELECTORS.QUOTE);
       const imgEl = getChildImage(node);
       const videoId = isPrefixedMount(node, 'video')

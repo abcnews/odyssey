@@ -1,5 +1,5 @@
-import html from 'bel';
-import { EMBED_TAGNAMES } from '../../../constants';
+import html from 'nanohtml';
+import { EMBED_TAGNAMES } from '../../constants';
 import { isElement } from '../../utils/dom';
 
 const UPull = ({ meta = {}, type, nodes = [] }) => {

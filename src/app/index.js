@@ -1,15 +1,12 @@
-import { MOCK_ELEMENT, RICHTEXT_BLOCK_TAGNAMES, SELECTORS } from '../constants';
 import api from './api';
-import { PresentationLayerAsyncComponent } from './async-components/loader';
 import { transformSection as transformSectionIntoBackdrop } from './components/Backdrop';
 import { transformSection as transformSectionIntoBlock } from './components/Block';
-import Comments from './components/Comments';
 import FormatCredit from './components/FormatCredit';
 import { transformSection as transformSectionIntoGallery } from './components/Gallery';
-import { transformElement as transformElementIntoGalleryEmbed } from './components/GalleryEmbed';
 import { Lite as LiteHeader, transformSection as transformSectionIntoHeader } from './components/Header';
 import { transformMarker as transformMarkerIntoHR } from './components/HR';
 import { transformElement as transformElementIntoImageEmbed } from './components/ImageEmbed';
+import { transformElement as transformElementIntoInteractiveEmbed } from './components/InteractiveEmbed';
 import MasterGallery, { register as registerWithMasterGallery } from './components/MasterGallery';
 import Picture from './components/Picture';
 import { transformElement as transformElementIntoQuote } from './components/Quote';
@@ -23,35 +20,38 @@ import {
 } from './components/StoryTeaserEmbed';
 import { transformMarker as transformMarkerIntoUCTA } from './components/UCTA';
 import { conditionallyApply as conditionallyApplyUDropcap } from './components/UDropcap';
-import { conditionallyApply as conditionallyApplyUQuote } from './components/UQuote';
 import { activate as activateUParallax } from './components/UParallax';
 import { transformSection as transformSectionIntoUPull } from './components/UPull';
+import { conditionallyApply as conditionallyApplyUQuote } from './components/UQuote';
+import './components/utilities/index.scss';
 import {
   transformElement as transformElementIntoVideoEmbed,
   transformMarker as transformMarkerIntoVideoEmbed
 } from './components/VideoEmbed';
 import { transformMarker as transformMarkerIntoWhatNext } from './components/WhatNext';
-import { start, subscribe } from './scheduler';
+import { MOCK_ELEMENT, RICHTEXT_BLOCK_TAGNAMES, SELECTORS } from './constants';
+import './keyframes.scss';
 import { initMeta } from './meta';
 import { reset } from './reset';
+import { start } from './scheduler';
 import { mockDecoyActivationsUnderEl } from './utils/decoys';
-import { $, $$, after, append, before, detachAll, prepend, substitute } from './utils/dom';
+import { $, $$, append, detachAll, prepend, substitute } from './utils/dom';
 import { conditionalDebug, debug } from './utils/logging';
 import { getMarkers, getSections } from './utils/mounts';
 
 export default terminusDocument => {
   const meta = initMeta(terminusDocument);
-  let storyEl = $(meta.isPL ? SELECTORS.PL_STORY : SELECTORS.STORY);
+  const storyEl = $(SELECTORS.STORY);
 
   if (!storyEl) {
     debug('Story is empty. Nothing to do');
     return;
   }
 
-  storyEl = reset(storyEl, meta);
+  const mainEl = reset(storyEl, meta);
   debug('Performed page reset');
 
-  mockDecoyActivationsUnderEl(storyEl); // Mock PL's decoy activation events
+  mockDecoyActivationsUnderEl(mainEl); // Mock PL's decoy activation events
   start(); // scheduler loop
 
   // Register all embedded images with MasterGallery
@@ -108,7 +108,7 @@ export default terminusDocument => {
   debug(`Transformed sections (${Object.keys(transformedSections).length})`, transformedSections);
 
   if (!hasHeader) {
-    prepend(storyEl, LiteHeader(meta));
+    prepend(mainEl, LiteHeader(meta));
     debug('No #header/#endheader mount points found. Inserted lite header');
   }
 
@@ -151,8 +151,6 @@ export default terminusDocument => {
     'tease',
     'whatnext'
   ]).forEach(marker => {
-    let el;
-
     switch (marker.name) {
       case 'cta':
         transformMarkerIntoUCTA(marker);
@@ -194,41 +192,22 @@ export default terminusDocument => {
   conditionalDebug(parallaxes.length > 0, `Activated ${parallaxes.length} parallax effects`);
 
   // Transform video embeds
-  const videoEmbeds = $$('.inline-content.video, .view-inlineMediaPlayer.doctype-abcvideo', storyEl)
-    .concat($$('.embed-content', storyEl).filter(el => $('.type-video', el)))
-    .concat(
-      $$('[data-component="Figure"]', storyEl).filter(el =>
-        $('[data-component="PlayerButton"][aria-label*="Video"],[data-component="ExpiredMediaWarning"]', el)
-      )
-    );
+  const videoEmbeds = $$('[data-component="Figure"]', mainEl).filter(el =>
+    $('[data-component="PlayerButton"][aria-label*="Video"],[data-component="ExpiredMediaWarning"]', el)
+  );
   videoEmbeds.forEach(transformElementIntoVideoEmbed);
   conditionalDebug(videoEmbeds.length > 0, `Transformed ${videoEmbeds.length} video embeds`);
 
-  // Transform gallery embeds
-  const galleryEmbeds = $$('.inline-content.gallery', storyEl)
-    .concat($$('.embed-content', storyEl).filter(el => $('.type-gallery', el)))
-    .concat($$('[class^="comp-embedded-"]', storyEl).filter(el => $('[data-gallery-id]', el)));
-  galleryEmbeds.forEach(transformElementIntoGalleryEmbed);
-  conditionalDebug(galleryEmbeds.length > 0, `Transformed ${galleryEmbeds.length} gallery embeds`);
-
   // Transform image embeds
   const sidePulls = $$('.u-pull-left, .u-pull-right');
-  const imageEmbeds = $$('.inline-content.photo,[class*="view-image-embed"]', storyEl)
-    .concat($$('.embed-content', storyEl).filter(el => $('.type-photo', el)))
-    .concat(
-      $$('[data-component="Figure"]', storyEl).filter(
-        el => (el.getAttribute('data-uri') || '').indexOf('customimage') === -1 && $('img', el)
-      )
-    );
-  imageEmbeds.forEach(el => {
-    const isSidePulled = sidePulls.filter(pEl => pEl.contains(el)).length > 0;
-
-    transformElementIntoImageEmbed(el, isSidePulled);
-  });
+  const imageEmbeds = $$('[data-component="Figure"]', mainEl).filter(
+    el => (el.getAttribute('data-uri') || '').indexOf('customimage') === -1 && $('img', el)
+  );
+  imageEmbeds.forEach(el => transformElementIntoImageEmbed(el, sidePulls.filter(pEl => pEl.contains(el)).length > 0));
   conditionalDebug(imageEmbeds.length > 0, `Transformed ${imageEmbeds.length} image embeds`);
 
   // Transform quotes (native and embedded) that haven't already been transformed
-  const nativeQuotesAndQuoteEmbeds = $$(SELECTORS.QUOTE, storyEl).filter(el => el.closest('.Quote') === null);
+  const nativeQuotesAndQuoteEmbeds = $$(SELECTORS.QUOTE, mainEl);
   nativeQuotesAndQuoteEmbeds.forEach(transformElementIntoQuote);
   conditionalDebug(
     nativeQuotesAndQuoteEmbeds.length > 0,
@@ -241,14 +220,31 @@ export default terminusDocument => {
   conditionalDebug(nestedPulls.length > 0, `Nullified ${nativeQuotesAndQuoteEmbeds.length} nested pulls`);
 
   // Transform WYSIWYG story teasers (title+image+description convention)
-  const wysiwygEmbeds = $$(SELECTORS.WYSIWYG_EMBED, storyEl).filter(doesElMatchConventionOfStoryTeaserEmbed);
+  const wysiwygEmbeds = $$(SELECTORS.WYSIWYG_EMBED, mainEl).filter(doesElMatchConventionOfStoryTeaserEmbed);
   wysiwygEmbeds.forEach(transformElementIntoStoryTeaserEmbed);
   conditionalDebug(wysiwygEmbeds.length > 0, `Transformed ${wysiwygEmbeds.length} WYSIWYG embeds`);
+
+  // Transform interactive embeds (things like Tweets & Instagram posts)
+  const interactiveEmbeds = meta._articledetail.text.descriptor.children
+    .filter(({ type }) => type === 'interactive')
+    .reduce((memo, { props }) => {
+      const el = $(`[itemid="${props.embedURL}"]`);
+
+      if (el) {
+        el.setAttribute('data-provider', props.providerType);
+
+        return [...memo, el];
+      }
+
+      return memo;
+    }, []);
+  interactiveEmbeds.forEach(transformElementIntoInteractiveEmbed);
+  conditionalDebug(interactiveEmbeds > 0, `Transformed ${interactiveEmbeds.length} interactive embeds`);
 
   // In the News app, restore light mode override to PL Datawrapper embeds when on light backgrounds
   const datawrapperIframes = !meta.isNewsApp
     ? []
-    : $$(`[data-component="Iframe"] iframe[src*="datawrapper"]`, storyEl).filter(
+    : $$(`[data-component="Iframe"] iframe[src*="datawrapper"]`, mainEl).filter(
         el => (el.closest('[class*="u-richtext]') || MOCK_ELEMENT).className.indexOf('u-richtext-invert') === -1
       );
   datawrapperIframes.forEach(el => (el.src = `${el.src}&dark=false`));
@@ -257,7 +253,17 @@ export default terminusDocument => {
     `Restored light mode to ${datawrapperIframes.length} Datawrapper embeds`
   );
 
-  // Restore post-story Top Stories thumbnail images in PL
+  // Append format credit for non-DSI stories
+  if (meta.productionUnit !== 'EDL team' && (meta.infoSource || {}).name !== 'Digital Story Innovation Team') {
+    append(mainEl, FormatCredit());
+    debug('Appended Odyssey format credit');
+  }
+
+  // Append master gallery
+  append(mainEl, MasterGallery());
+  debug('Appended master gallery');
+
+  // Restore post-story Top Stories thumbnail images
   const postStoryThumbnails = $$('[data-component="TopStories"] [data-component="IntersectionObserver"]').filter(el => {
     const imgEl = $('img', el);
     return imgEl && imgEl.getAttribute('data-src');
@@ -281,149 +287,8 @@ export default terminusDocument => {
     `Restored ${postStoryThumbnails.length} post-story image thumbnails`
   );
 
-  // Append format credit for non-DSI stories
-  if (meta.productionUnit !== 'EDL team' && (meta.infoSource || {}).name !== 'Digital Story Innovation Team') {
-    append(storyEl, FormatCredit());
-    debug('Appended Odyssey format credit');
-  }
-
-  // Append comments, if enabled
-  if (meta.hasCommentsEnabled) {
-    append(storyEl, Comments());
-    debug('Appended comments');
-  }
-
-  // Append master gallery
-  append(storyEl, MasterGallery());
-  debug('Appended master gallery');
-
   // Expose API, then notify interested parties
   Object.defineProperty(window, '__ODYSSEY__', { value: api });
   window.dispatchEvent(new CustomEvent('odyssey:api', { detail: api }));
   debug('Dispatched `odyssey:api` event');
-
-  // Add Presentation Layer global nav if it doesn't already exist
-  setTimeout(() => {
-    if (!meta.isPL && !$('[data-component="Masthead"]')) {
-      before(storyEl, PresentationLayerAsyncComponent('Nav'));
-      debug('[async] Appended PL global nav to non-PL story');
-    }
-  }, 0);
-
-  // Try to resolve Presentation Layer Interactive document-based embeds
-  setTimeout(() => {
-    if (meta.isPL) {
-      let textDescriptor;
-
-      try {
-        textDescriptor = meta._articledetail.text.descriptor;
-      } catch (err) {
-        return console.error(err);
-      }
-
-      const interactives = textDescriptor.children.filter(({ type }) => type === 'interactive');
-      let numInteractivesResolved = 0;
-
-      interactives.forEach(({ props }) => {
-        const containerEl = $(`[itemid="${props.embedURL}"]`);
-
-        if (containerEl) {
-          containerEl.className = 'u-pull';
-          substitute(containerEl.firstElementChild, PresentationLayerAsyncComponent('Interactive', props));
-          numInteractivesResolved++;
-        }
-      });
-
-      conditionalDebug(
-        interactives.length > 0,
-        `[async] Resolved ${numInteractivesResolved}/${interactives.length} interactives`
-      );
-    }
-  }, 0);
-
-  // Fix Block classNames on non-updated scrollyteller instances.
-  // Stories which depend on this polyfill are tracked here:
-  // https://github.com/abcnews/odyssey/pull/64#issuecomment-444763314
-  setTimeout(() => {
-    const alignmentPattern = /\sis-(left|right)/;
-    const blockEls = $$('.Block.is-richtext');
-
-    blockEls.forEach(el => {
-      const [, alignment] = el.className.match(alignmentPattern) || [];
-
-      el.className = el.className.replace(' is-richtext', '');
-
-      if (alignment) {
-        el.className = `${el.className} has-${alignment}`;
-      }
-
-      $$('.Block-content', el).forEach(el => {
-        el.className = el.className.replace(' u-layout', '');
-
-        if (alignment && !el.className.match(alignmentPattern)) {
-          el.className = `${el.className} is-${alignment}`;
-        }
-      });
-    });
-
-    if (blockEls.length) {
-      debug(`[async] Fixed classNames of deprecated scrollyteller Blocks`);
-    }
-  }, 2000);
-
-  // Notify console of deprecated mounts
-  setTimeout(() => {
-    const deprecated = {};
-
-    getMarkers(['image', 'cover', 'gallerytiled']).forEach(marker => (deprecated[`#${marker.name}`] = true));
-
-    const keys = Object.keys(deprecated);
-
-    if (keys.length) {
-      debug(`[async] Deprecated mounts used: ${Object.keys(deprecated).join(', ')}`);
-    }
-  }, 5000);
-
-  // Fix CM5 preview tools's PL preview areas
-  // * Limit PL iframe heights to 100%
-  // * Enable/disable the desktop iframe scrolling when it is/isn't 100% in view
-  if (!meta.isPL && meta.isPreview) {
-    let desktopPreviewAreaEl;
-    let desktopPreviewIframeEl;
-    let isScrollable = false;
-
-    function updateScrollable() {
-      const { top } = desktopPreviewAreaEl.getBoundingClientRect();
-      const shouldBeScrollable = top <= 0;
-
-      if (isScrollable !== shouldBeScrollable) {
-        desktopPreviewIframeEl.setAttribute('scrolling', shouldBeScrollable ? 'yes' : 'no');
-
-        isScrollable = shouldBeScrollable;
-      }
-
-      if (shouldBeScrollable) {
-        window.scrollTo(window.scrollX, window.scrollY + top);
-      }
-    }
-
-    function fixIframes() {
-      const styleEl = document.createElement('style');
-
-      styleEl.appendChild(document.createTextNode(`#iframe-pl,#iframe-pl-desktop{height:100% !important;}`));
-      document.head.appendChild(styleEl);
-      desktopPreviewIframeEl = desktopPreviewAreaEl.querySelector('iframe');
-
-      document.getElementById('iframe-app').setAttribute('scrolling', 'yes');
-      document.getElementById('iframe-pl').setAttribute('scrolling', 'yes');
-      updateScrollable();
-      subscribe(updateScrollable);
-      $('button[data-preview-desktop]').addEventListener('click', updateScrollable);
-    }
-
-    (function fixIframesAfterPreviewToolsLoaded() {
-      desktopPreviewAreaEl = $('.section-desktop-preview-area');
-      desktopPreviewAreaEl ? fixIframes() : setTimeout(fixIframesAfterPreviewToolsLoaded, 9);
-    })();
-  }
 };

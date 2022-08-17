@@ -1,14 +1,13 @@
 import cn from 'classnames';
-import html from 'bel';
-import { url2cmid } from '@abcnews/url2cmid';
-import { ALIGNMENT_PATTERN } from '../../../constants';
+import html from 'nanohtml';
+import { ALIGNMENT_PATTERN } from '../../constants';
 import { lookupImageByAssetURL } from '../../meta';
 import { getChildImage, substitute } from '../../utils/dom';
 import { getRatios } from '../../utils/misc';
 import { grabPrecedingConfigString } from '../../utils/mounts';
 import { createFromTerminusDoc as createCaptionFromTerminusDoc } from '../Caption';
 import Picture from '../Picture';
-import './index.scss';
+import styles from './index.lazy.scss';
 
 const ImageEmbed = ({ pictureEl, captionEl, alignment, isFull, isCover, isAnon }) => {
   if (isCover) {
@@ -23,12 +22,14 @@ const ImageEmbed = ({ pictureEl, captionEl, alignment, isFull, isCover, isAnon }
     'is-cover': isCover
   });
 
+  styles.use();
+
   return html`<div class="${className}">${pictureEl} ${isAnon ? null : captionEl}</div>`;
 };
 
 export default ImageEmbed;
 
-export const transformElement = (el, preserveOriginalRatio) => {
+export const transformElement = el => {
   const imgEl = getChildImage(el);
 
   if (!imgEl) {
@@ -39,7 +40,8 @@ export const transformElement = (el, preserveOriginalRatio) => {
   const imageDoc = lookupImageByAssetURL(src);
 
   if (!imageDoc || imageDoc.media.image.primary.complete.length < 2) {
-    // Custom Images appear to be Images in Terminus V2. We should ignore them.
+    // Custom Images appear to be Images in Terminus V2. We should ignore them (for now).
+    // TODO: A custom image embed solution. Captionless with custom aspect ratio? #config for max-width?
     return;
   }
 

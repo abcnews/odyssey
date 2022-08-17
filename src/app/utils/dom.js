@@ -1,50 +1,9 @@
-import { url2cmid } from '@abcnews/url2cmid';
-
-const INLINE_TAG_NAMES = [
-  'b',
-  'big',
-  'br',
-  'i',
-  'small',
-  'tt',
-  'abbr',
-  'acronym',
-  'cite',
-  'code',
-  'dfn',
-  'em',
-  'kbd',
-  'strong',
-  'samp',
-  'time',
-  'var',
-  'a',
-  'bdo',
-  'img',
-  'map',
-  'object',
-  'q',
-  'script',
-  'span',
-  'sub',
-  'sup',
-  'button',
-  'input',
-  'label',
-  'select',
-  'textarea'
-];
-
 export const isText = node => {
   return node && node.nodeType === Node.TEXT_NODE;
 };
 
 export const isElement = node => {
   return node && node.nodeType === Node.ELEMENT_NODE;
-};
-
-export const isInlineElement = node => {
-  return isElement(node) && INLINE_TAG_NAMES.indexOf(node.tagName.toLowerCase()) > -1;
 };
 
 export const isDocument = node => {
@@ -130,18 +89,6 @@ export const toggleBooleanAttributes = (node, map) => {
   });
 };
 
-export const setOrAddMetaTag = (name, content) => {
-  let el = $(`meta[name="${name}"]`);
-
-  if (!el) {
-    el = document.createElement('meta');
-    el.setAttribute('name', name);
-    document.head.appendChild(el);
-  }
-
-  el.setAttribute('content', content);
-};
-
 export const getChildImage = el => {
   if (!isElement(el)) {
     return;
@@ -174,23 +121,9 @@ export const getChildImage = el => {
 };
 
 export const detectVideoId = node => {
-  const classList = node.className.split(' ');
-  const linkEl = $('a[href]', node);
   let videoId;
 
-  // P1 & P2
-  if (linkEl) {
-    videoId =
-      ((classList.indexOf('inline-content') > -1 && classList.indexOf('video') > -1) ||
-        (classList.indexOf('view-inlineMediaPlayer') > -1 && classList.indexOf('doctype-abcvideo') > -1) ||
-        (classList.indexOf('view-hero-media') > -1 && $('.view-inlineMediaPlayer.doctype-abcvideo', node)) ||
-        (classList.indexOf('embed-content') > -1 && $('.type-video', node))) &&
-      url2cmid(linkEl.getAttribute('href'));
-  }
-
-  // PL
   if (
-    !videoId &&
     node.getAttribute('data-component') === 'Figure' &&
     $('[data-component="PlayerButton"][aria-label*="Video"]', node)
   ) {

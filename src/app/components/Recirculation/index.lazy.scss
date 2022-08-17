@@ -1,0 +1,83 @@
+@import '../../constants';
+
+.Recirculation:not(.has-children) {
+  display: none;
+}
+
+.Recirculation-item {
+  display: block;
+  border: $unit * 0.0625 solid $color-grey-300-transparent-70;
+  padding: $unit $unit * 1.1875;
+  font-size: 0.875rem;
+  transition: opacity 0.5s;
+
+  &.is-missing {
+    display: none;
+  }
+
+  &:empty {
+    opacity: 0.25;
+    color: $color-grey-300-transparent-70 !important;
+
+    &::before,
+    &::after {
+      display: block;
+      letter-spacing: -1px;
+    }
+
+    &::before {
+      content: '▇▇▇▇▇ ▇▇▇ ▇▇▇▇';
+      padding-bottom: calc(56.25% + #{$unit * 1.25});
+      font-size: 1.125rem;
+    }
+
+    &::after {
+      content: '▇▇▇▇▇ ▇▇▇▇▇▇▇ ▇▇▇▇ ▇▇▇ ▇▇▇▇▇▇▇ ▇▇▇▇ ▇▇▇ ▇▇▇▇▇▇ ▇▇▇▇▇ ▇▇▇ ▇▇▇▇▇';
+      padding-bottom: $unit * 2;
+      font-size: 0.8125rem;
+    }
+  }
+
+  &:hover,
+  &:active {
+    text-decoration: none !important;
+  }
+
+  & > * {
+    margin: 0;
+    font-family: $font-sans;
+  }
+
+  & > :not(:first-child) {
+    margin-top: $unit * 0.75;
+  }
+
+  & > h2 {
+    font-size: 1.125rem;
+    line-height: 1.294117647;
+    text-transform: none;
+  }
+
+  & > img {
+    width: 100%;
+    vertical-align: bottom;
+  }
+
+  & > p {
+    color: $color-black !important;
+    font-size: 0.8125rem;
+    line-height: 1.555555556;
+  }
+
+  .u-richtext-invert > .Recirculation > & > p {
+    color: $color-white !important;
+  }
+}
+
+.Recirculation-item:not(.is-missing) ~ .Recirculation-item:not(.is-missing) {
+  margin-top: $unit * 1.5;
+
+  @media #{$mq-gt-md} {
+    margin-top: $unit * 2.25;
+  }
+}

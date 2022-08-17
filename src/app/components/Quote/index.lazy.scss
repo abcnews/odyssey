@@ -1,0 +1,123 @@
+@import '../../constants';
+
+.Quote {
+  blockquote {
+    overflow: visible;
+    margin: 0;
+    border-width: 0;
+    border-left: $unit * 0.625 solid $color-grey-300-transparent-70;
+    padding: 0 $unit * 2;
+    background-color: transparent;
+  }
+
+  p {
+    overflow: visible;
+    margin: 0 0 $unit 0;
+    color: $color-darkerPrimary;
+    font-size: 1.125rem;
+    line-height: 1.666666667;
+
+    .u-richtext-invert > & {
+      color: $color-lighterPrimary;
+    }
+  }
+
+  footer {
+    color: $color-grey-500;
+    font-family: $font-sans;
+    font-size: 0.9375rem;
+
+    .u-richtext-invert > & {
+      color: $color-grey-100;
+    }
+
+    &::before {
+      content: none;
+    }
+  }
+}
+
+.Quote:not(.is-pullquote) {
+  @media #{$mq-sm} {
+    .Main > [class*='u-pull'] > &,
+    &[class*='u-pull'] {
+      margin-left: -$layout-fluid-padding;
+      margin-right: -$layout-fluid-padding;
+    }
+
+    .Main > & {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+}
+
+.Quote.is-pullquote {
+  text-align: center;
+
+  @media #{$mq-gt-sm} {
+    .u-pull-left &,
+    .u-pull-right &,
+    &.u-pull-left,
+    &.u-pull-right {
+      text-align: left;
+    }
+
+    [class*='u-richtext'] > &:not([class*='u-pull']),
+    .u-pull-out > &:not([class*='u-pull']),
+    .u-pull > &:not([class*='u-pull']) {
+      padding-left: cells(1);
+      padding-right: cells(1);
+    }
+  }
+
+  blockquote {
+    border: none;
+    background-color: transparent;
+    padding: 0;
+  }
+
+  p {
+    font-size: 1.625rem;
+    line-height: 1.4;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    @media #{$mq-sm} {
+      position: relative;
+      z-index: 1;
+    }
+
+    @media #{$mq-md} {
+      font-size: 1.75rem;
+    }
+
+    @media #{$mq-gt-md} {
+      font-size: 1.875rem;
+    }
+  }
+
+  footer {
+    padding-top: $unit * 0.25;
+    font-size: 1rem;
+    color: $color-grey-300;
+
+    @media #{$mq-md} {
+      font-size: 1.125rem;
+    }
+
+    @media #{$mq-gt-md} {
+      font-size: 1.25rem;
+    }
+
+    .u-richtext-invert > & {
+      color: $color-grey-100;
+    }
+
+    &::before {
+      content: '\2014\00A0';
+    }
+  }
+}

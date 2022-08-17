@@ -1,5 +1,5 @@
 import debounce from 'debounce';
-import { IS_PROBABLY_RESISTING_FINGERPRINTING } from '../../constants';
+import { IS_PROBABLY_RESISTING_FINGERPRINTING } from '../constants';
 
 // Preferably use a "millisecond budget", falling back
 // to a "ticks budget" if we can reasonably assume that

@@ -1,0 +1,31 @@
+@import '../../constants';
+
+.ScrollHint {
+  position: fixed;
+  z-index: 3;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+  width: 100%;
+  height: $unit * 3;
+  transition: opacity 0.5s;
+  cursor: pointer;
+
+  &.leaving {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &::before {
+    content: '';
+    transform: translate(-50%, -50%);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: $unit * 1.75;
+    height: $unit * 1.5;
+    background-image: url(./arrow.svg);
+    background-repeat: no-repeat;
+    animation: bounce 1s linear alternate infinite;
+  }
+}

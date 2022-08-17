@@ -12,6 +12,8 @@ export const debug = (...args) => {
   }
 };
 
+export const debugWhen = (promise, ...args) => promise.then(() => debug(...args));
+
 export const conditionalDebug = (condition, trueMsg, falseMsg) => {
   if (condition && trueMsg) {
     debug(trueMsg);
