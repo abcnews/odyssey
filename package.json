@@ -27,7 +27,7 @@
 		"ric": "^1.3.0"
 	},
 	"devDependencies": {
-		"@abcnews/aunty": "^13.0.0"
+		"@abcnews/aunty": "^13.0.1"
 	},
 	"browserslist": [
 		"> 1% in AU",
