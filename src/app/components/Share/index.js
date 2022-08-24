@@ -12,6 +12,10 @@ const UPPERCASE_PATTERN = /[A-Z]/g;
 const instances = [];
 
 const Share = ({ type, links }) => {
+  if (links.length === 0) {
+    return html`<div data-error="No share links to render"></div>`;
+  }
+
   const formattedType = (type.length ? type : DEFAULT_TYPE).replace(UPPERCASE_PATTERN, x => ' ' + x.toLowerCase());
 
   styles.use();
@@ -35,7 +39,7 @@ const Share = ({ type, links }) => {
 export default Share;
 
 function _checkIfFirstShareInvitationShouldBeReported(client) {
-  instances.forEach((el, index) => {
+  instances.forEach(el => {
     if (proximityCheck(el.getBoundingClientRect(), client, INVITATION_RANGE)) {
       unsubscribe(_checkIfFirstShareInvitationShouldBeReported);
       track('share-invitation', '*');
