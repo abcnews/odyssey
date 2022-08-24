@@ -241,16 +241,25 @@ export default terminusDocument => {
   interactiveEmbeds.forEach(transformElementIntoInteractiveEmbed);
   conditionalDebug(interactiveEmbeds > 0, `Transformed ${interactiveEmbeds.length} interactive embeds`);
 
-  // In the News app, restore light mode override to PL Datawrapper embeds when on light backgrounds
-  const datawrapperIframes = !meta.isNewsApp
-    ? []
-    : $$(`[data-component="Iframe"] iframe[src*="datawrapper"]`, mainEl).filter(
-        el => (el.closest('[class*="u-richtext]') || MOCK_ELEMENT).className.indexOf('u-richtext-invert') === -1
-      );
-  datawrapperIframes.forEach(el => (el.src = `${el.src}&dark=false`));
+  // Set correct mode for Datawrapper embeds, based on current background
+  const datawrapperIframes = $$(`[data-component="Iframe"] iframe[src*="datawrapper"]`, mainEl).filter(el => {
+    const shouldBeDark =
+      (el.closest('[class*="u-richtext]') || MOCK_ELEMENT).className.indexOf('u-richtext-invert') === -1;
+    const desiredParam = `dark=${shouldBeDark}`;
+    const paramPattern = /dark=\w+/;
+    const desiredSrc = paramPattern.test(el.src)
+      ? el.src.replace(paramPattern, desiredParam)
+      : `${el.src}&${desiredParam}`;
+
+    if (el.src !== desiredSrc) {
+      el.src = desiredSrc;
+
+      return true;
+    }
+  });
   conditionalDebug(
     datawrapperIframes.length > 0,
-    `Restored light mode to ${datawrapperIframes.length} Datawrapper embeds`
+    `Set correct mode to ${datawrapperIframes.length} Datawrapper embeds`
   );
 
   // Append format credit for non-DSI stories
