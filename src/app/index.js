@@ -242,7 +242,8 @@ export default terminusDocument => {
   conditionalDebug(interactiveEmbeds > 0, `Transformed ${interactiveEmbeds.length} interactive embeds`);
 
   // Set correct mode for Datawrapper embeds, based on current background
-  const datawrapperIframes = $$(`[data-component="Iframe"] iframe[src*="datawrapper"]`, mainEl).filter(el => {
+  const datawrapperIframes = $$(`[data-component="Iframe"] iframe[src*="datawrapper"]`, mainEl);
+  datawrapperIframes.forEach(el => {
     const shouldBeDark =
       (el.closest('[class*="u-richtext]') || MOCK_ELEMENT).className.indexOf('u-richtext-invert') === -1;
     const desiredParam = `dark=${shouldBeDark}`;
@@ -251,10 +252,12 @@ export default terminusDocument => {
       ? el.src.replace(paramPattern, desiredParam)
       : `${el.src}&${desiredParam}`;
 
+    // Always remove the white background (set by PL's className)
+    el.style.setProperty('background-color', 'transparent');
+
+    // Change the URL, if needed
     if (el.src !== desiredSrc) {
       el.src = desiredSrc;
-
-      return true;
     }
   });
   conditionalDebug(
