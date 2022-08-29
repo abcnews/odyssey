@@ -21,6 +21,15 @@ const TEMPLATE_REMOVABLES = {
 
 const WHITESPACE_REMOVABLES = 'p';
 
+function addDescriptorHints(storyEl, meta) {
+  const storyElChildElements = [...storyEl.children];
+  const storyElChildDescriptors = meta._articledetail.text.descriptor.children;
+
+  storyElChildElements.forEach((childEl, index) => {
+    childEl._descriptor = storyElChildDescriptors[index];
+  });
+}
+
 function promoteToMain(storyEl, meta) {
   const existingMainEl = $(SELECTORS.MAIN);
   const mainEl = Main(Array.from(storyEl.childNodes), meta);
@@ -52,6 +61,10 @@ export const reset = (storyEl, meta) => {
     document.documentElement.classList.add('is-dark-mode');
   }
 
+  // Add descriptor hints (for things like embed alignment resolution)
+  addDescriptorHints(storyEl, meta);
+
+  // Promote story to main
   const mainEl = promoteToMain(storyEl, meta);
 
   // Remove elements we don't need

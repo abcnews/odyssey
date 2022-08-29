@@ -2,7 +2,7 @@ import { getMountValue, isMount } from '@abcnews/mount-utils';
 import { url2cmid } from '@abcnews/url2cmid';
 import cn from 'classnames';
 import html from 'nanohtml';
-import { ALIGNMENT_PATTERN, VIDEO_MARKER_PATTERN, SCROLLPLAY_PCT_PATTERN } from '../../constants';
+import { ALIGNMENT_PATTERN, EMBED_ALIGNMENT_MAP, VIDEO_MARKER_PATTERN, SCROLLPLAY_PCT_PATTERN } from '../../constants';
 import { $, substitute } from '../../utils/dom';
 import { getRatios } from '../../utils/misc';
 import { grabPrecedingConfigString } from '../../utils/mounts';
@@ -52,7 +52,8 @@ export const transformElement = el => {
   }
 
   const configString = grabPrecedingConfigString(el);
-  const [, alignment] = configString.match(ALIGNMENT_PATTERN) || [];
+  const descriptorAlignment = el._descriptor ? EMBED_ALIGNMENT_MAP[el._descriptor.props.align] : undefined;
+  const [, alignment] = configString.match(ALIGNMENT_PATTERN) || [, descriptorAlignment];
   const unlink = configString.indexOf('unlink') > -1;
 
   const isYouTube = isVideoMarker && mountValue.indexOf('youtube') === 0;

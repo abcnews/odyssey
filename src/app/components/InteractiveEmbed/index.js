@@ -1,7 +1,7 @@
 import { TIERS, getTier } from '@abcnews/env-utils';
 import cn from 'classnames';
 import html from 'nanohtml';
-import { ALIGNMENT_PATTERN } from '../../constants';
+import { ALIGNMENT_PATTERN, EMBED_ALIGNMENT_MAP } from '../../constants';
 import { substitute } from '../../utils/dom';
 import { grabPrecedingConfigString } from '../../utils/mounts';
 import styles from './index.lazy.scss';
@@ -100,7 +100,8 @@ export const transformElement = el => {
   const url = el.getAttribute('itemid');
   const providerType = el.getAttribute('data-provider');
   const configString = grabPrecedingConfigString(el);
-  const [, alignment] = configString.match(ALIGNMENT_PATTERN) || [];
+  const descriptorAlignment = el._descriptor ? EMBED_ALIGNMENT_MAP[el._descriptor.props.align] : undefined;
+  const [, alignment] = configString.match(ALIGNMENT_PATTERN) || [, descriptorAlignment];
 
   substitute(
     el,

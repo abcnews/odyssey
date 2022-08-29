@@ -119,3 +119,8 @@ export const IS_PROBABLY_RESISTING_FINGERPRINTING = (() => {
 })();
 
 export const PLACEHOLDER_IMAGE_CUSTOM_PROPERTY = '--placeholder-image';
+
+export const EMBED_ALIGNMENT_MAP = {
+  floatLeft: 'left',
+  floatRight: 'right'
+};

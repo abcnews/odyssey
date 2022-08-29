@@ -1,6 +1,6 @@
 import cn from 'classnames';
 import html from 'nanohtml';
-import { ALIGNMENT_PATTERN } from '../../constants';
+import { ALIGNMENT_PATTERN, EMBED_ALIGNMENT_MAP } from '../../constants';
 import { lookupImageByAssetURL } from '../../meta';
 import { getChildImage, substitute } from '../../utils/dom';
 import { getRatios } from '../../utils/misc';
@@ -46,7 +46,8 @@ export const transformElement = el => {
   }
 
   const configString = grabPrecedingConfigString(el);
-  const [, alignment] = configString.match(ALIGNMENT_PATTERN) || [];
+  const descriptorAlignment = el._descriptor ? EMBED_ALIGNMENT_MAP[el._descriptor.props.align] : undefined;
+  const [, alignment] = configString.match(ALIGNMENT_PATTERN) || [, descriptorAlignment];
   const ratios = getRatios(configString);
   const unlink = configString.indexOf('unlink') > -1;
   const alt = imgEl.getAttribute('alt');
