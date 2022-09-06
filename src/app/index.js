@@ -241,11 +241,35 @@ export default terminusDocument => {
   interactiveEmbeds.forEach(transformElementIntoInteractiveEmbed);
   conditionalDebug(interactiveEmbeds > 0, `Transformed ${interactiveEmbeds.length} interactive embeds`);
 
+  // Take-up dynamic height management of embedded external link iframes
+  const embeddedExternalLinkIframes = $$(`[data-component="Iframe"] iframe[src*="abcnewsembedheight"]`, mainEl);
+  embeddedExternalLinkIframes.forEach(el => {
+    window.addEventListener(
+      'message',
+      event => {
+        if (
+          el &&
+          el.contentWindow === event.source &&
+          event.data &&
+          event.data.type === 'embed-size' &&
+          typeof event.data.height === 'number'
+        ) {
+          el.setAttribute('height', event.data.height);
+        }
+      },
+      false
+    );
+  });
+  conditionalDebug(
+    embeddedExternalLinkIframes.length > 0,
+    `Took-up dynamic height management of ${embeddedExternalLinkIframes.length} embedded external links`
+  );
+
   // Set correct mode for Datawrapper embeds, based on current background
   const datawrapperIframes = $$(`[data-component="Iframe"] iframe[src*="datawrapper"]`, mainEl);
   datawrapperIframes.forEach(el => {
     const shouldBeDark =
-      (el.closest('[class*="u-richtext]') || MOCK_ELEMENT).className.indexOf('u-richtext-invert') === -1;
+      (el.closest('[class*="u-richtext]') || MOCK_ELEMENT).className.indexOf('u-richtext-invert') > -1;
     const desiredParam = `dark=${shouldBeDark}`;
     const paramPattern = /dark=\w+/;
     const desiredSrc = paramPattern.test(el.src)
