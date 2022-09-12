@@ -49,6 +49,7 @@ export const transformElement = el => {
   const descriptorAlignment = el._descriptor ? EMBED_ALIGNMENT_MAP[el._descriptor.props.align] : undefined;
   const [, alignment] = configString.match(ALIGNMENT_PATTERN) || [, descriptorAlignment];
   const ratios = getRatios(configString);
+  const isStatic = configString.indexOf('static') > -1;
   const unlink = configString.indexOf('unlink') > -1;
   const alt = imgEl.getAttribute('alt');
 
@@ -62,7 +63,8 @@ export const transformElement = el => {
         lg: ratios.lg,
         xl: ratios.xl
       },
-      linkUrl: `/news/${imageDoc.id}`
+      linkUrl: `/news/${imageDoc.id}`,
+      shouldLazyLoad: !isStatic
     }),
     captionEl: createCaptionFromTerminusDoc(imageDoc, unlink),
     alignment,
