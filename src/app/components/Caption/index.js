@@ -1,3 +1,4 @@
+import cn from 'classnames';
 import html from 'nanohtml';
 import { MOCK_ELEMENT, MOCK_TEXT } from '../../constants';
 import { $, isElement, isText } from '../../utils/dom';
@@ -8,10 +9,14 @@ const Caption = ({ url, text, attribution, unlink }) => {
     return null;
   }
 
+  const className = cn('Caption', {
+    'has-long-attribution': attribution && attribution.length > 50
+  });
+
   styles.use();
 
   return html`
-    <p class="Caption" title="${text}${attribution ? ` (${attribution})` : ''}">
+    <p class="${className}" title="${text}${attribution ? ` (${attribution})` : ''}">
       ${url && !unlink ? html`<a href="${url}">${text}</a>` : html`<span>${text}</span>`}
       ${attribution ? html`<em class="Caption-attribution">${attribution}</em> ` : null}
     </p>

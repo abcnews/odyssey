@@ -69,4 +69,8 @@
   .u-richtext-invert & {
     color: $color-grey-100;
   }
+
+  .has-long-attribution & {
+    white-space: normal;
+  }
 }
