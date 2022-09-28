@@ -45,6 +45,11 @@ function promoteToMain(storyEl, meta) {
 export const reset = (storyEl, meta) => {
   const { isDarkMode, theme } = meta;
 
+  // Apply minimum-scale=1 to viewport meta
+  document
+    .querySelector('meta[name="viewport"]')
+    .setAttribute('content', 'width=device-width, initial-scale=1, minimum-scale=1');
+
   // Apply theme, if defined
   if (typeof theme === 'string') {
     theme.split(';').forEach(definition => {
