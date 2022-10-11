@@ -2,7 +2,10 @@ import api from './api';
 import { transformSection as transformSectionIntoBackdrop } from './components/Backdrop';
 import { transformSection as transformSectionIntoBlock } from './components/Block';
 import FormatCredit from './components/FormatCredit';
-import { transformSection as transformSectionIntoGallery } from './components/Gallery';
+import {
+  transformBeforeAndAfterMarker as transformBeforeAndAfterMarkerIntoMosaic,
+  transformSection as transformSectionIntoGallery
+} from './components/Gallery';
 import { Lite as LiteHeader, transformSection as transformSectionIntoHeader } from './components/Header';
 import { transformMarker as transformMarkerIntoHR } from './components/HR';
 import { transformElement as transformElementIntoImageEmbed } from './components/ImageEmbed';
@@ -140,6 +143,7 @@ export default terminusDocument => {
   };
 
   getMarkers([
+    'beforeandafterstart',
     'cta',
     'hr',
     'scrollhint',
@@ -152,6 +156,9 @@ export default terminusDocument => {
     'whatnext'
   ]).forEach(marker => {
     switch (marker.name) {
+      case 'beforeandafterstart':
+        transformBeforeAndAfterMarkerIntoMosaic(marker);
+        break;
       case 'cta':
         transformMarkerIntoUCTA(marker);
         break;

@@ -56,6 +56,13 @@
       background-color: transparent;
     }
   }
+
+  .is-mosaic.is-unconstrained & > .Caption {
+    @media #{$mq-gt-md} {
+      padding-left: $layout-fixed-padding;
+      padding-right: $layout-fixed-padding;
+    }
+  }
 }
 
 .Gallery-pane {

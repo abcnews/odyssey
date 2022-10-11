@@ -5,7 +5,7 @@ import rawHTML from 'nanohtml/raw';
 import { SELECTORS, SUPPORTS_PASSIVE, VIDEO_MARKER_PATTERN } from '../../constants';
 import { getMeta, lookupImageByAssetURL } from '../../meta';
 import { enqueue, invalidateClient, subscribe } from '../../scheduler';
-import { $, append, detach, detectVideoId, getChildImage, isElement, setText } from '../../utils/dom';
+import { $, $$, append, detach, detectVideoId, getChildImage, isElement, setText } from '../../utils/dom';
 import { dePx, getRatios } from '../../utils/misc';
 import Caption, {
   createFromElement as createCaptionFromElement,
@@ -693,4 +693,49 @@ export const transformSection = section => {
   delete config.masterCaptionAttribution;
 
   section.substituteWith(Gallery(config), []);
+};
+
+export const transformBeforeAndAfterMarker = marker => {
+  const componentEl = marker.node.nextElementSibling;
+  const imgEls = $$('img', componentEl).reverse();
+  const captionText = $('figcaption', componentEl).textContent;
+  const config = {
+    items: imgEls.map(imgEl => {
+      const src = imgEl.src;
+      const imageDoc = lookupImageByAssetURL(src);
+      const alt = imgEl.getAttribute('alt');
+      const linkUrl = imageDoc ? `/news/${imageDoc.id}` : null;
+
+      return {
+        id: imageDoc ? imageDoc.id : src,
+        mediaEl: Picture({
+          src,
+          alt,
+          ratios: {
+            sm: '16x9',
+            md: '16x9',
+            lg: '16x9',
+            xl: '16x9'
+          },
+          shouldLazyLoad: false,
+          linkUrl
+        })
+      };
+    }),
+    isUnconstrained: true,
+    masterCaptionEl: Caption({
+      text: captionText
+    }),
+    mosaicRowLengths: [2]
+  };
+
+  const mosaic = Gallery(config);
+  const id = Math.floor(Math.random() * 1e8).toString(16);
+  const fullWidthTileHack = document.createElement('style');
+
+  fullWidthTileHack.innerHTML = `@media (max-width: 978px) { [data-before-and-after="${id}"] .Gallery-item { flex: 0 1 100% !important; max-width: 100% !important } }`;
+  mosaic.setAttribute('data-before-and-after', id);
+  append(mosaic, fullWidthTileHack);
+  marker.substituteWith(mosaic);
+  detach(componentEl);
 };
