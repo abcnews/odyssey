@@ -2,15 +2,16 @@ import api from './api';
 import { transformSection as transformSectionIntoBackdrop } from './components/Backdrop';
 import { transformSection as transformSectionIntoBlock } from './components/Block';
 import FormatCredit from './components/FormatCredit';
-import {
-  transformBeforeAndAfterMarker as transformBeforeAndAfterMarkerIntoMosaic,
-  transformSection as transformSectionIntoGallery
-} from './components/Gallery';
+import { transformSection as transformSectionIntoGallery } from './components/Gallery';
 import { Lite as LiteHeader, transformSection as transformSectionIntoHeader } from './components/Header';
 import { transformMarker as transformMarkerIntoHR } from './components/HR';
 import { transformElement as transformElementIntoImageEmbed } from './components/ImageEmbed';
 import { transformElement as transformElementIntoInteractiveEmbed } from './components/InteractiveEmbed';
 import MasterGallery, { register as registerWithMasterGallery } from './components/MasterGallery';
+import {
+  transformBeforeAndAfterMarker as transformBeforeAndAfterMarkerIntoMosaic,
+  transformSection as transformSectionIntoMosaic
+} from './components/Mosaic';
 import Picture from './components/Picture';
 import { transformElement as transformElementIntoQuote } from './components/Quote';
 import { transformMarker as transformMarkerIntoRecirculation } from './components/Recirculation';
@@ -96,8 +97,10 @@ export default terminusDocument => {
         transformSectionIntoBlock(section);
         break;
       case 'gallery':
-      case 'mosaic':
         transformSectionIntoGallery(section);
+        break;
+      case 'mosaic':
+        transformSectionIntoMosaic(section);
         break;
       case 'pull':
         transformSectionIntoUPull(section, meta);

@@ -14,14 +14,6 @@
   padding-left: $layout-fluid-padding;
   padding-right: $layout-fluid-padding;
 
-  @media #{$mq-lt-lg} {
-    .is-mosaic & {
-      padding-left: 0;
-      padding-right: 0;
-      width: 100%;
-    }
-  }
-
   @media #{$mq-sm} {
     width: calc(100% - #{$unit * 2.8125});
   }
@@ -36,56 +28,22 @@
     width: $layout-fixed;
   }
 
-  .is-mosaic.is-unconstrained & {
-    padding-left: 0;
-    padding-right: 0;
-    width: 100%;
-  }
-
-  .Gallery:not(.is-mosaic) & > .Caption {
+  & > .Caption {
     padding-left: 0;
     padding-right: 0;
     background-color: transparent;
-  }
-
-  .is-mosaic & > .Caption {
-    @media #{$mq-gt-md} {
-      padding-top: 0;
-      padding-left: 0;
-      padding-right: 0;
-      background-color: transparent;
-    }
-  }
-
-  .is-mosaic.is-unconstrained & > .Caption {
-    @media #{$mq-gt-md} {
-      padding-left: $layout-fixed-padding;
-      padding-right: $layout-fixed-padding;
-    }
   }
 }
 
 .Gallery-pane {
   margin: 0 $unit * -0.46875;
 
-  .is-mosaic & {
-    margin: 0 $unit * -0.125;
-  }
-
   @media #{$mq-md} {
     margin: 0 $unit * -0.9375;
-
-    .is-mosaic & {
-      margin: 0 $unit * -0.25;
-    }
   }
 
   @media #{$mq-gt-md} {
     margin: 0 $unit * -1.25;
-
-    .is-mosaic & {
-      margin: 0 $unit * -0.3125;
-    }
   }
 }
 
@@ -99,12 +57,6 @@
     transition-duration: 0.25s;
   }
 
-  .is-mosaic & {
-    flex-wrap: wrap;
-    transform: none !important;
-    transition-duration: 0s;
-  }
-
   .is-moving {
     transition-duration: 0s;
   }
@@ -113,45 +65,25 @@
 .Gallery-item {
   display: flex;
   flex-direction: column;
-  flex: 0 0 100%;
+  flex: 0 0 100% !important;
   overflow: hidden;
   position: relative;
   padding: 0 $unit * 0.46875;
+  max-width: none !important;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
 
-  .is-mosaic & {
-    opacity: 1;
-    margin-bottom: $unit * 0.25;
-    padding: 0 $unit * 0.125;
-  }
-
-  .Gallery:not(.is-mosaic) & {
-    flex: 0 0 100% !important;
-    max-width: none !important;
-
-    &:focus {
-      outline: 0;
-    }
-  }
-
   @media #{$mq-md} {
     padding: 0 $unit * 0.9375;
-
-    .is-mosaic & {
-      margin-bottom: $unit * 0.5;
-      padding: 0 $unit * 0.25;
-    }
   }
 
   @media #{$mq-gt-md} {
     padding: 0 $unit * 1.25;
+  }
 
-    .is-mosaic & {
-      margin-bottom: $unit * 0.625;
-      padding: 0 $unit * 0.3125;
-    }
+  &:focus {
+    outline: 0;
   }
 
   // mediaEl
@@ -165,23 +97,9 @@
       transition-duration: 0.25s;
     }
 
-    .is-mosaic & {
-      display: none;
-    }
-
     .is-moving & {
       cursor: grabbing;
       transition-duration: 0s;
-    }
-  }
-
-  // mosaicMediaEl
-  & > :not(.Caption) + :not(.Caption) {
-    display: none;
-    cursor: initial;
-
-    .is-mosaic & {
-      display: block;
     }
   }
 
@@ -215,76 +133,6 @@
     transition-delay: 0s;
     transition-duration: 0.125s;
   }
-
-  .is-mosaic & .Caption {
-    opacity: 0;
-    position: absolute;
-    bottom: 0;
-    margin-left: 0;
-    max-width: calc(100% - #{$unit * 0.25});
-    min-height: 0;
-    background-color: $color-black-transparent-60;
-    color: $color-lightBg;
-    pointer-events: none;
-    transition-delay: 0s;
-
-    @media #{$mq-sm} {
-      display: none;
-    }
-
-    @media #{$mq-md} {
-      max-width: calc(100% - #{$unit * 0.5});
-    }
-
-    @media #{$mq-gt-md} {
-      max-width: calc(100% - #{$unit * 0.625});
-    }
-  }
-
-  .is-mosaic &:hover .Caption,
-  .is-mosaic & :not(.Caption):focus + .Caption {
-    opacity: 1;
-    pointer-events: all;
-  }
-
-  .is-mosaic & .Caption-attribution {
-    color: $color-grey-100;
-  }
-}
-
-.Gallery-richtextTile {
-  position: relative;
-}
-
-.Gallery-richtextTileContent {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-
-  & > * {
-    margin: $unit * 0.5 $unit !important;
-    max-width: $unit * 49 !important; /* Roughly equivalent to body copy width, after padding is factored in */
-
-    .is-mosaic & {
-      padding: 0 !important;
-    }
-  }
-
-  @media #{$mq-sm} {
-    [data-row-length='2'] & > .Quote.is-pullquote p {
-      font-size: 1.125rem;
-    }
-
-    [data-row-length='3'] & > .Quote.is-pullquote p {
-      font-size: 0.875rem;
-    }
-  }
 }
 
 .Gallery-controls {
@@ -301,10 +149,6 @@
   @media #{$mq-gt-md} {
     padding: 0 $layout-fixed-padding;
   }
-
-  .is-mosaic & {
-    display: none;
-  }
 }
 
 .Gallery-index {
@@ -318,10 +162,6 @@
   line-height: $size-control;
   letter-spacing: 0.05em;
   text-align: right;
-
-  .is-mosaic & {
-    display: none;
-  }
 }
 
 .Gallery-steps {
