@@ -17,6 +17,7 @@ import VideoPlayer from '../VideoPlayer';
 import styles from './index.lazy.scss';
 
 const ROW_LENGTHS_PATTERN = /mosaic[a-z]*(\d+)/;
+const DEFAULT_FORMATTED_RATIO = '3x2';
 const DEFAULT_ROW_LENGTH_BASED_RATIOS = [
   {
     sm: '3x2',
@@ -95,6 +96,7 @@ export const transformSection = section => {
   const definedRowLengths = definedRowLengthsString.split('').map(rowLength => Math.min(3, +rowLength));
   const definedRatios = getRatios(section.configString);
   const isFull = section.configString.indexOf('full') > -1;
+  const shouldFormat = section.configString.indexOf('format') > -1;
   const shouldUnlink = section.configString.indexOf('unlink') > -1;
 
   // Define calculated variables
@@ -112,6 +114,8 @@ export const transformSection = section => {
       return;
     }
 
+    const formattedRatio =
+      node._descriptor && node._descriptor.props.ratio ? node._descriptor.props.ratio : DEFAULT_FORMATTED_RATIO;
     const videoId = isPrefixedMount(node, 'video')
       ? getMountValue(node).match(VIDEO_MARKER_PATTERN)[1]
       : detectVideoId(node);
@@ -124,6 +128,7 @@ export const transformSection = section => {
         componentProps: {
           videoId
         },
+        formattedRatio,
         captionEl: createCaptionFromElement(node, shouldUnlink)
       });
     } else if (imgEl) {
@@ -136,6 +141,7 @@ export const transformSection = section => {
           alt: imgEl.getAttribute('alt'),
           linkUrl: imageDoc ? `/news/${imageDoc.id}` : null
         },
+        formattedRatio,
         captionEl: imageDoc
           ? createCaptionFromTerminusDoc(imageDoc, shouldUnlink)
           : createCaptionFromElement(node, shouldUnlink)
@@ -147,7 +153,8 @@ export const transformSection = section => {
           el: createQuoteFromElement(node, {
             isPullquote: true
           })
-        }
+        },
+        formattedRatio
       });
     } else if (node.tagName === 'P') {
       if (!masterCaptionText) {
@@ -166,10 +173,12 @@ export const transformSection = section => {
   // 1) Group items into rows (adding extra 1-length rows, if needed), then
   // 2) assign `rowLength`, `flexBasisPct` and `componentProps.ratios` values to each item:
   //   - `rowLength` is the number in each grouping.
-  //   - `flexBasisPct` is an equal share of 100%
+  //   - `flexBasisPct` is an equal share of 100% if non-formatted, or a ratio-based proportion
+  //     which aims to maintain equal height of items in each row
   //   - `componentProps.ratios` is either:
-  //     a) marker-defined ratios for one or more screen sizes, or
-  //     b) defaults for each row length (defined above) that vary based on screen size.
+  //     a) the CM10 chosen aspect ratio across all screen sizes for formatted mosaics,
+  //     b) marker-defined ratios for one or more screen sizes, or
+  //     c) defaults for each row length (defined above) that vary based on screen size.
   items
     .reduce(
       (memo, item, index) => {
@@ -195,19 +204,39 @@ export const transformSection = section => {
     )
     .forEach(row => {
       const rowLength = row.length;
-      const defaultRatios = DEFAULT_ROW_LENGTH_BASED_RATIOS[rowLength - 1];
 
-      row.forEach(item => {
-        item.rowLength = rowLength;
-        item.flexBasisPct = 100 / rowLength;
-        item.componentProps.ratios = SIZES.reduce(
-          (ratios, size) => ({
-            ...ratios,
-            [size]: definedRatios[size] || defaultRatios[size]
-          }),
-          {}
-        );
-      });
+      if (shouldFormat) {
+        const itemsRatios = row.map(item => item.formattedRatio.split('x').map(value => parseInt(value, 10)));
+        const maxVertical = itemsRatios.reduce((max, [, vertical]) => Math.max(max, vertical), 0);
+        const scaledHorizontals = itemsRatios.map(([horizontal, vertical]) => horizontal / (vertical / maxVertical));
+        const totalHorizontal = scaledHorizontals.reduce((total, scaledHorizontal) => total + scaledHorizontal, 0);
+
+        row.forEach((item, itemIndex) => {
+          item.rowLength = rowLength;
+          item.flexBasisPct = (100 / totalHorizontal) * scaledHorizontals[itemIndex];
+          item.componentProps.ratios = SIZES.reduce(
+            (ratios, size) => ({
+              ...ratios,
+              [size]: item.formattedRatio
+            }),
+            {}
+          );
+        });
+      } else {
+        const defaultRatios = DEFAULT_ROW_LENGTH_BASED_RATIOS[rowLength - 1];
+
+        row.forEach(item => {
+          item.rowLength = rowLength;
+          item.flexBasisPct = 100 / rowLength;
+          item.componentProps.ratios = SIZES.reduce(
+            (ratios, size) => ({
+              ...ratios,
+              [size]: definedRatios[size] || defaultRatios[size]
+            }),
+            {}
+          );
+        });
+      }
     });
 
   // Create a master caption if we managed to parse text / attribution

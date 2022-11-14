@@ -32,6 +32,10 @@
   padding: 0 calc(var(--Mosaic-gap) * 0.5);
   position: relative;
 
+  & > :first-child {
+    height: 100%;
+  }
+
   .RichtextTile-content > * {
     padding: 0 !important;
   }
