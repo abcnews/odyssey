@@ -12,59 +12,33 @@ import Caption, {
 import Picture from '../Picture';
 import { createFromElement as createQuoteFromElement } from '../Quote';
 import RichtextTile from '../RichtextTile';
+import { SIZES } from '../Sizer';
 import VideoPlayer from '../VideoPlayer';
 import styles from './index.lazy.scss';
 
 const ROW_LENGTHS_PATTERN = /mosaic[a-z]*(\d+)/;
-
-const Mosaic = ({ items = [], masterCaptionEl, rowLengths = [], isFull = false }) => {
-  if (items.length === 0) {
-    return html`<div class="Mosaic is-empty"></div>`;
+const DEFAULT_ROW_LENGTH_BASED_RATIOS = [
+  {
+    sm: '3x2',
+    md: '16x9',
+    lg: '16x9',
+    xl: '16x9'
+  },
+  {
+    sm: '1x1',
+    md: '3x2',
+    lg: '3x2',
+    xl: '3x2'
+  },
+  {
+    sm: '3x4',
+    md: '4x3',
+    lg: '4x3',
+    xl: '4x3'
   }
+];
 
-  rowLengths = rowLengths.map(rowLength => Math.min(3, rowLength));
-
-  const rowLengthsClone = [].concat(rowLengths);
-  const rows = items.reduce(
-    (memo, item, index) => {
-      if (rowLengthsClone.length === 0) {
-        rowLengthsClone.push(1);
-      }
-
-      memo[memo.length - 1].push(item);
-
-      rowLengthsClone[0]--;
-
-      if (rowLengthsClone[0] === 0) {
-        rowLengthsClone.shift();
-
-        if (index + 1 < items.length) {
-          memo.push([]);
-        }
-      }
-
-      return memo;
-    },
-    [[]]
-  );
-
-  rows.forEach(items => {
-    items.forEach(item => {
-      item.rowLength = items.length;
-      item.flexBasisPct = 100 / item.rowLength;
-      item.candidateMediaEls.forEach((el, index) => {
-        if (index === item.rowLength - 1) {
-          item.mediaEl = el;
-        } else {
-          // Unused Picture instances should be forgotten
-          el.api && el.api.forget && el.api.forget();
-        }
-      });
-
-      delete item.candidateMediaEls;
-    });
-  });
-
+const Mosaic = ({ items = [], masterCaptionEl, isFull = false }) => {
   const mosaicEl = html`
     <div
       class="${cn('Mosaic', {
@@ -73,13 +47,13 @@ const Mosaic = ({ items = [], masterCaptionEl, rowLengths = [], isFull = false }
       })}"
     >
       <div class="Mosaic-items">
-        ${items.map(({ id, mediaEl, captionEl, flexBasisPct, rowLength }, index) => {
+        ${items.map(({ captionEl, component, componentProps, flexBasisPct, rowLength }) => {
+          const mediaEl = component(componentProps);
+
           const itemEl = html`
             <div
               class="Mosaic-item"
               style="flex: 0 1 ${flexBasisPct}%; max-width: ${flexBasisPct}%"
-              data-id="${id || 'n/a'}"
-              data-index="${index}"
               data-row-length="${rowLength}"
               tabindex="-1"
             >
@@ -93,6 +67,12 @@ const Mosaic = ({ items = [], masterCaptionEl, rowLengths = [], isFull = false }
             if (captionLinkEl) {
               captionLinkEl.setAttribute('tabindex', '-1');
             }
+          } else if (component === VideoPlayer) {
+            mediaEl.api.metadataHook = ({ alternativeText }) => {
+              if (alternativeText) {
+                append(itemEl, Caption({ text: alternativeText, attribution: 'ABC News' }));
+              }
+            };
           }
 
           return itemEl;
@@ -110,230 +90,177 @@ const Mosaic = ({ items = [], masterCaptionEl, rowLengths = [], isFull = false }
 export default Mosaic;
 
 export const transformSection = section => {
-  const [, rowLengthsString] = `${section.name}${section.configString}`.match(ROW_LENGTHS_PATTERN) || [null, ''];
-  const ratios = getRatios(section.configString);
+  // Parse options from config string
+  const [, definedRowLengthsString] = `${section.name}${section.configString}`.match(ROW_LENGTHS_PATTERN) || [null, ''];
+  const definedRowLengths = definedRowLengthsString.split('').map(rowLength => Math.min(3, +rowLength));
+  const definedRatios = getRatios(section.configString);
   const isFull = section.configString.indexOf('full') > -1;
-  const unlink = section.configString.indexOf('unlink') > -1;
+  const shouldUnlink = section.configString.indexOf('unlink') > -1;
 
-  const nodes = [].concat(section.betweenNodes);
+  // Define calculated variables
+  const items = [];
+  let masterCaptionText = null;
+  let masterCaptionAttribution = null;
 
-  const config = nodes.reduce(
-    (config, node) => {
-      detach(node);
+  // Assign each section node to either an item (image, video or quote) or a part of the master
+  // caption. Discard anything that can't be assigned. Each item will have some initial parsed
+  // props, which will be completed later.
+  [...section.betweenNodes].forEach(node => {
+    detach(node);
 
-      if (!isElement(node)) {
-        return config;
-      }
-
-      const isQuote = node.matches(SELECTORS.QUOTE);
-      const imgEl = getChildImage(node);
-      const videoId = isPrefixedMount(node, 'video')
-        ? getMountValue(node).match(VIDEO_MARKER_PATTERN)[1]
-        : detectVideoId(node);
-
-      if (videoId) {
-        const candidateVideoPlayerEls = [
-          VideoPlayer({
-            videoId,
-            ratios: {
-              sm: ratios.sm || '3x2',
-              md: ratios.md || '16x9',
-              lg: ratios.lg || '16x9',
-              xl: ratios.xl || '16x9'
-            },
-            isInvariablyAmbient: true
-          }),
-          VideoPlayer({
-            videoId,
-            ratios: {
-              sm: ratios.sm || '1x1',
-              md: ratios.md || '3x2',
-              lg: ratios.lg || '3x2',
-              xl: ratios.xl || '3x2'
-            },
-            isInvariablyAmbient: true
-          }),
-          VideoPlayer({
-            videoId,
-            ratios: {
-              sm: ratios.sm || '3x4',
-              md: ratios.md || '4x3',
-              lg: ratios.lg || '4x3',
-              xl: ratios.xl || '4x3'
-            },
-            isInvariablyAmbient: true
-          })
-        ];
-        const videoCaptionEl = createCaptionFromElement(node, unlink);
-
-        // Videos that don't have captions right now can append them them later using metadata
-        if (!videoCaptionEl) {
-          candidateVideoPlayerEls.forEach(
-            el =>
-              (el.api.metadataHook = ({ alternativeText }) => {
-                if (alternativeText) {
-                  append(videoPlayerEl.parentElement, Caption({ text: alternativeText, attribution: 'ABC News' }));
-                }
-              })
-          );
-        }
-
-        config.items.push({
-          id: videoId,
-          candidateMediaEls: candidateVideoPlayerEls,
-          captionEl: videoCaptionEl
-        });
-      } else if (imgEl) {
-        const src = imgEl.src;
-        const imageDoc = lookupImageByAssetURL(src);
-        const alt = imgEl.getAttribute('alt');
-        const linkUrl = imageDoc ? `/news/${imageDoc.id}` : null;
-
-        config.items.push({
-          id: imageDoc ? imageDoc.id : src,
-          candidateMediaEls: [
-            Picture({
-              src,
-              alt,
-              ratios: {
-                sm: ratios.sm || '3x2',
-                md: ratios.md || '16x9',
-                lg: ratios.lg || '16x9',
-                xl: ratios.xl || '16x9'
-              },
-              linkUrl
-            }),
-            Picture({
-              src,
-              alt,
-              ratios: {
-                sm: ratios.sm || '1x1',
-                md: ratios.md || '3x2',
-                lg: ratios.lg || '3x2',
-                xl: ratios.xl || '3x2'
-              },
-              linkUrl
-            }),
-            Picture({
-              src,
-              alt,
-              ratios: {
-                sm: ratios.sm || '3x4',
-                md: ratios.md || '4x3',
-                lg: ratios.lg || '4x3',
-                xl: ratios.xl || '4x3'
-              },
-              linkUrl
-            })
-          ],
-          captionEl: imageDoc ? createCaptionFromTerminusDoc(imageDoc, unlink) : createCaptionFromElement(node, unlink)
-        });
-      } else if (isQuote) {
-        config.items.push({
-          candidateMediaEls: [
-            RichtextTile({
-              el: createQuoteFromElement(node, {
-                isPullquote: true
-              }),
-              ratios: {
-                sm: ratios.sm || '3x2',
-                md: ratios.md || '16x9',
-                lg: ratios.lg || '16x9',
-                xl: ratios.xl || '16x9'
-              }
-            }),
-            RichtextTile({
-              el: createQuoteFromElement(node, {
-                isPullquote: true
-              }),
-              ratios: {
-                sm: ratios.sm || '1x1',
-                md: ratios.md || '3x2',
-                lg: ratios.lg || '3x2',
-                xl: ratios.xl || '3x2'
-              }
-            }),
-            RichtextTile({
-              el: createQuoteFromElement(node, {
-                isPullquote: true
-              }),
-              ratios: {
-                sm: ratios.sm || '3x4',
-                md: ratios.md || '4x3',
-                lg: ratios.lg || '4x3',
-                xl: ratios.xl || '4x3'
-              }
-            })
-          ]
-        });
-      } else if (node.tagName === 'P') {
-        if (!config.masterCaptionText) {
-          config.masterCaptionText = node.textContent;
-          config.masterCaptionEl = Caption({
-            text: config.masterCaptionText
-          });
-        } else if (!config.masterCaptionAttribution) {
-          config.masterCaptionAttribution = node.textContent;
-          config.masterCaptionEl = Caption({
-            text: config.masterCaptionText,
-            attribution: config.masterCaptionAttribution
-          });
-        }
-      }
-
-      return config;
-    },
-    {
-      items: [],
-      masterCaptionEl: null,
-      masterCaptionText: null,
-      masterCaptionAttribution: null,
-      rowLengths: rowLengthsString.split(''),
-      isFull
+    if (!isElement(node)) {
+      return;
     }
+
+    const videoId = isPrefixedMount(node, 'video')
+      ? getMountValue(node).match(VIDEO_MARKER_PATTERN)[1]
+      : detectVideoId(node);
+    const imgEl = getChildImage(node);
+    const isQuote = node.matches(SELECTORS.QUOTE);
+
+    if (videoId) {
+      items.push({
+        component: VideoPlayer,
+        componentProps: {
+          videoId
+        },
+        captionEl: createCaptionFromElement(node, shouldUnlink)
+      });
+    } else if (imgEl) {
+      const imageDoc = lookupImageByAssetURL(imgEl.src);
+
+      items.push({
+        component: Picture,
+        componentProps: {
+          src: imgEl.src,
+          alt: imgEl.getAttribute('alt'),
+          linkUrl: imageDoc ? `/news/${imageDoc.id}` : null
+        },
+        captionEl: imageDoc
+          ? createCaptionFromTerminusDoc(imageDoc, shouldUnlink)
+          : createCaptionFromElement(node, shouldUnlink)
+      });
+    } else if (isQuote) {
+      items.push({
+        component: RichtextTile,
+        componentProps: {
+          el: createQuoteFromElement(node, {
+            isPullquote: true
+          })
+        }
+      });
+    } else if (node.tagName === 'P') {
+      if (!masterCaptionText) {
+        masterCaptionText = node.textContent;
+      } else if (!masterCaptionAttribution) {
+        masterCaptionAttribution = node.textContent;
+      }
+    }
+  });
+
+  // If we ended up with no items, return an empty component instead of doing more needless work
+  if (items.length === 0) {
+    return section.substituteWith(html`<div class="Mosaic is-empty"></div>`, []);
+  }
+
+  // 1) Group items into rows (adding extra 1-length rows, if needed), then
+  // 2) assign `rowLength`, `flexBasisPct` and `componentProps.ratios` values to each item:
+  //   - `rowLength` is the number in each grouping.
+  //   - `flexBasisPct` is an equal share of 100%
+  //   - `componentProps.ratios` is either:
+  //     a) marker-defined ratios for one or more screen sizes, or
+  //     b) defaults for each row length (defined above) that vary based on screen size.
+  items
+    .reduce(
+      (memo, item, index) => {
+        if (definedRowLengths.length === 0) {
+          definedRowLengths.push(1);
+        }
+
+        memo[memo.length - 1].push(item);
+
+        definedRowLengths[0]--;
+
+        if (definedRowLengths[0] === 0) {
+          definedRowLengths.shift();
+
+          if (index + 1 < items.length) {
+            memo.push([]);
+          }
+        }
+
+        return memo;
+      },
+      [[]]
+    )
+    .forEach(row => {
+      const rowLength = row.length;
+      const defaultRatios = DEFAULT_ROW_LENGTH_BASED_RATIOS[rowLength - 1];
+
+      row.forEach(item => {
+        item.rowLength = rowLength;
+        item.flexBasisPct = 100 / rowLength;
+        item.componentProps.ratios = SIZES.reduce(
+          (ratios, size) => ({
+            ...ratios,
+            [size]: definedRatios[size] || defaultRatios[size]
+          }),
+          {}
+        );
+      });
+    });
+
+  // Create a master caption if we managed to parse text / attribution
+  const masterCaptionEl = masterCaptionText
+    ? Caption({
+        text: masterCaptionText,
+        attribution: masterCaptionAttribution
+      })
+    : null;
+
+  // Create the mosaic and replace the section with it
+  section.substituteWith(
+    Mosaic({
+      items,
+      masterCaptionEl,
+      isFull
+    }),
+    []
   );
-
-  delete config.masterCaptionText;
-  delete config.masterCaptionAttribution;
-
-  section.substituteWith(Mosaic(config), []);
 };
 
 export const transformBeforeAndAfterMarker = marker => {
   const componentEl = marker.node.nextElementSibling;
-  const imgEls = $$('img', componentEl).reverse();
-  const captionText = $('figcaption', componentEl).textContent;
-  const config = {
-    items: imgEls.map(imgEl => {
-      const src = imgEl.src;
-      const imageDoc = lookupImageByAssetURL(src);
-      const alt = imgEl.getAttribute('alt');
-      const linkUrl = imageDoc ? `/news/${imageDoc.id}` : null;
+  const mosaic = Mosaic({
+    items: $$('img', componentEl)
+      .reverse()
+      .map(imgEl => {
+        const imageDoc = lookupImageByAssetURL(imgEl.src);
 
-      return {
-        id: imageDoc ? imageDoc.id : src,
-        mediaEl: Picture({
-          src,
-          alt,
-          ratios: {
-            sm: '16x9',
-            md: '16x9',
-            lg: '16x9',
-            xl: '16x9'
+        return {
+          component: Picture,
+          componentProps: {
+            src: imgEl.src,
+            alt: imgEl.getAttribute('alt'),
+            linkUrl: imageDoc ? `/news/${imageDoc.id}` : null,
+            ratios: {
+              sm: '16x9',
+              md: '16x9',
+              lg: '16x9',
+              xl: '16x9'
+            },
+            shouldLazyLoad: false
           },
-          shouldLazyLoad: false,
-          linkUrl
-        })
-      };
-    }),
-    isFull: true,
+          captionEl: imageDoc ? createCaptionFromTerminusDoc(imageDoc, true) : createCaptionFromElement(node, true),
+          rowLength: 2,
+          flexBasisPct: 50
+        };
+      }),
     masterCaptionEl: Caption({
-      text: captionText
+      text: $('figcaption', componentEl).textContent
     }),
-    rowLengths: [2]
-  };
-
-  const mosaic = Mosaic(config);
+    isFull: true
+  });
   const id = Math.floor(Math.random() * 1e8).toString(16);
   const fullWidthTileHack = document.createElement('style');
 
