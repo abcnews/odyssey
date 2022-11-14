@@ -38,6 +38,10 @@ const DEFAULT_ROW_LENGTH_BASED_RATIOS = [
     md: '4x3',
     lg: '4x3',
     xl: '4x3'
+  },
+  {
+    lg: '1x1',
+    xl: '1x1'
   }
 ];
 
