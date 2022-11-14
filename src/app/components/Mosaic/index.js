@@ -16,7 +16,9 @@ import { SIZES } from '../Sizer';
 import VideoPlayer from '../VideoPlayer';
 import styles from './index.lazy.scss';
 
-const ROW_LENGTHS_PATTERN = /mosaic[a-z]*(\d+)/;
+const ROW_LENGTHS_PATTERN = /mosaic[a-z]*(\d+)(?:\:(\d+))?/;
+const MAX_ROW_ITEMS = 3;
+const MAX_LARGE_DISPLAY_ROW_ITEMS = 4;
 const DEFAULT_FORMATTED_RATIO = '3x2';
 const DEFAULT_ROW_LENGTH_BASED_RATIOS = [
   {
@@ -48,36 +50,49 @@ const Mosaic = ({ items = [], masterCaptionEl, isFull = false }) => {
       })}"
     >
       <div class="Mosaic-items">
-        ${items.map(({ captionEl, component, componentProps, flexBasisPct, rowLength }) => {
-          const mediaEl = component(componentProps);
+        ${items.map(
+          ({
+            captionEl,
+            component,
+            componentProps,
+            horizontalFraction,
+            largeDisplayHorizontalFraction,
+            largeDisplayRowLength,
+            rowLength
+          }) => {
+            const mediaEl = component(componentProps);
 
-          const itemEl = html`
-            <div
-              class="Mosaic-item"
-              style="flex: 0 1 ${flexBasisPct}%; max-width: ${flexBasisPct}%"
-              data-row-length="${rowLength}"
-              tabindex="-1"
-            >
-              ${mediaEl} ${captionEl}
-            </div>
-          `;
+            const itemEl = html`
+              <div
+                class="Mosaic-item"
+                style="--Mosaic-item-horizontal-pct: ${100 *
+                horizontalFraction}%; --Mosaic-item-gt-md-horizontal-pct: ${100 *
+                (largeDisplayHorizontalFraction || horizontalFraction)}%;"
+                data-row-length="${rowLength}"
+                data-gt-md-row-length="${largeDisplayRowLength || rowLength}"
+                tabindex="-1"
+              >
+                ${mediaEl} ${captionEl}
+              </div>
+            `;
 
-          if (captionEl) {
-            const captionLinkEl = $('a', captionEl);
+            if (captionEl) {
+              const captionLinkEl = $('a', captionEl);
 
-            if (captionLinkEl) {
-              captionLinkEl.setAttribute('tabindex', '-1');
-            }
-          } else if (component === VideoPlayer) {
-            mediaEl.api.metadataHook = ({ alternativeText }) => {
-              if (alternativeText) {
-                append(itemEl, Caption({ text: alternativeText, attribution: 'ABC News' }));
+              if (captionLinkEl) {
+                captionLinkEl.setAttribute('tabindex', '-1');
               }
-            };
-          }
+            } else if (component === VideoPlayer) {
+              mediaEl.api.metadataHook = ({ alternativeText }) => {
+                if (alternativeText) {
+                  append(itemEl, Caption({ text: alternativeText, attribution: 'ABC News' }));
+                }
+              };
+            }
 
-          return itemEl;
-        })}
+            return itemEl;
+          }
+        )}
       </div>
       ${masterCaptionEl}
     </div>
@@ -90,10 +105,53 @@ const Mosaic = ({ items = [], masterCaptionEl, isFull = false }) => {
 
 export default Mosaic;
 
+const getItemsAsRows = (items, definedRowLengths) =>
+  items.reduce(
+    (memo, item, index) => {
+      if (definedRowLengths.length === 0) {
+        definedRowLengths.push(1);
+      }
+
+      memo[memo.length - 1].push(item);
+
+      definedRowLengths[0]--;
+
+      if (definedRowLengths[0] === 0) {
+        definedRowLengths.shift();
+
+        if (index + 1 < items.length) {
+          memo.push([]);
+        }
+      }
+
+      return memo;
+    },
+    [[]]
+  );
+
+const getHorizontalFractionCalculationValues = (row, shouldFormat) => {
+  if (!shouldFormat) {
+    return [row.map(() => 1), row.length];
+  }
+
+  const itemsRatios = row.map(item => item.formattedRatio.split('x').map(value => parseInt(value, 10)));
+  const maxVertical = itemsRatios.reduce((max, [, vertical]) => Math.max(max, vertical), 0);
+  const horizontalPortions = itemsRatios.map(([horizontal, vertical]) => horizontal / (vertical / maxVertical));
+
+  return [horizontalPortions, horizontalPortions.reduce((total, share) => total + share, 0)];
+};
+
 export const transformSection = section => {
   // Parse options from config string
-  const [, definedRowLengthsString] = `${section.name}${section.configString}`.match(ROW_LENGTHS_PATTERN) || [null, ''];
-  const definedRowLengths = definedRowLengthsString.split('').map(rowLength => Math.min(3, +rowLength));
+  const [, definedRowLengthsString, definedLargeDisplayRowLengthsString] =
+    `${section.name}${section.configString}`.match(ROW_LENGTHS_PATTERN) || [null, '', null];
+  const definedRowLengths = definedRowLengthsString.split('').map(rowLength => Math.min(MAX_ROW_ITEMS, +rowLength));
+  const definedLargeDisplayRowLengths =
+    typeof definedLargeDisplayRowLengthsString === 'string'
+      ? definedLargeDisplayRowLengthsString
+          .split('')
+          .map(rowLength => Math.min(MAX_LARGE_DISPLAY_ROW_ITEMS, +rowLength))
+      : null;
   const definedRatios = getRatios(section.configString);
   const isFull = section.configString.indexOf('full') > -1;
   const shouldFormat = section.configString.indexOf('format') > -1;
@@ -171,73 +229,47 @@ export const transformSection = section => {
   }
 
   // 1) Group items into rows (adding extra 1-length rows, if needed), then
-  // 2) assign `rowLength`, `flexBasisPct` and `componentProps.ratios` values to each item:
+  // 2) assign `rowLength`, `horizontalFraction` and `componentProps.ratios` values to each item:
   //   - `rowLength` is the number in each grouping.
-  //   - `flexBasisPct` is an equal share of 100% if non-formatted, or a ratio-based proportion
+  //   - `horizontalFraction` is an equal share if non-formatted, or a ratio-based proportion
   //     which aims to maintain equal height of items in each row
   //   - `componentProps.ratios` is either:
   //     a) the CM10 chosen aspect ratio across all screen sizes for formatted mosaics,
   //     b) marker-defined ratios for one or more screen sizes, or
   //     c) defaults for each row length (defined above) that vary based on screen size.
-  items
-    .reduce(
-      (memo, item, index) => {
-        if (definedRowLengths.length === 0) {
-          definedRowLengths.push(1);
-        }
+  getItemsAsRows(items, [...definedRowLengths]).forEach(row => {
+    const rowLength = row.length;
+    const defaultRatios = DEFAULT_ROW_LENGTH_BASED_RATIOS[rowLength - 1];
+    const [horizontalPortions, totalHorizontal] = getHorizontalFractionCalculationValues(row, shouldFormat);
 
-        memo[memo.length - 1].push(item);
-
-        definedRowLengths[0]--;
-
-        if (definedRowLengths[0] === 0) {
-          definedRowLengths.shift();
-
-          if (index + 1 < items.length) {
-            memo.push([]);
-          }
-        }
-
-        return memo;
-      },
-      [[]]
-    )
-    .forEach(row => {
-      const rowLength = row.length;
-
-      if (shouldFormat) {
-        const itemsRatios = row.map(item => item.formattedRatio.split('x').map(value => parseInt(value, 10)));
-        const maxVertical = itemsRatios.reduce((max, [, vertical]) => Math.max(max, vertical), 0);
-        const scaledHorizontals = itemsRatios.map(([horizontal, vertical]) => horizontal / (vertical / maxVertical));
-        const totalHorizontal = scaledHorizontals.reduce((total, scaledHorizontal) => total + scaledHorizontal, 0);
-
-        row.forEach((item, itemIndex) => {
-          item.rowLength = rowLength;
-          item.flexBasisPct = (100 / totalHorizontal) * scaledHorizontals[itemIndex];
-          item.componentProps.ratios = SIZES.reduce(
-            (ratios, size) => ({
-              ...ratios,
-              [size]: item.formattedRatio
-            }),
-            {}
-          );
-        });
-      } else {
-        const defaultRatios = DEFAULT_ROW_LENGTH_BASED_RATIOS[rowLength - 1];
-
-        row.forEach(item => {
-          item.rowLength = rowLength;
-          item.flexBasisPct = 100 / rowLength;
-          item.componentProps.ratios = SIZES.reduce(
-            (ratios, size) => ({
-              ...ratios,
-              [size]: definedRatios[size] || defaultRatios[size]
-            }),
-            {}
-          );
-        });
-      }
+    row.forEach((item, itemIndex) => {
+      item.rowLength = rowLength;
+      item.horizontalFraction = (1 / totalHorizontal) * horizontalPortions[itemIndex];
+      item.componentProps.ratios = SIZES.reduce(
+        (ratios, size) => ({
+          ...ratios,
+          [size]: shouldFormat ? item.formattedRatio : definedRatios[size] || defaultRatios[size]
+        }),
+        {}
+      );
     });
+  });
+
+  // If large display row lengths are defined, repeat the last step to define large display-only props
+  if (definedLargeDisplayRowLengths !== null) {
+    getItemsAsRows(items, [...definedLargeDisplayRowLengths]).forEach(row => {
+      const rowLength = row.length;
+      const defaultRatios = DEFAULT_ROW_LENGTH_BASED_RATIOS[rowLength - 1];
+      const [horizontalPortions, totalHorizontal] = getHorizontalFractionCalculationValues(row, shouldFormat);
+
+      row.forEach((item, itemIndex) => {
+        item.largeDisplayRowLength = rowLength;
+        item.largeDisplayHorizontalFraction = (1 / totalHorizontal) * horizontalPortions[itemIndex];
+        item.componentProps.ratios.lg = shouldFormat ? item.formattedRatio : definedRatios.lg || defaultRatios.lg;
+        item.componentProps.ratios.xl = shouldFormat ? item.formattedRatio : definedRatios.xl || defaultRatios.xl;
+      });
+    });
+  }
 
   // Create a master caption if we managed to parse text / attribution
   const masterCaptionEl = masterCaptionText
@@ -282,7 +314,7 @@ export const transformBeforeAndAfterMarker = marker => {
           },
           captionEl: imageDoc ? createCaptionFromTerminusDoc(imageDoc, true) : createCaptionFromElement(node, true),
           rowLength: 2,
-          flexBasisPct: 50
+          horizontalFraction: 0.5
         };
       }),
     masterCaptionEl: Caption({
