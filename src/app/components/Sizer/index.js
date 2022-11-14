@@ -8,7 +8,7 @@ const DEFAULT_SIZE_RATIOS = {
   lg: '16x9',
   xl: '16x9'
 };
-const SIZES = Object.keys(DEFAULT_SIZE_RATIOS);
+export const SIZES = Object.keys(DEFAULT_SIZE_RATIOS);
 
 const instances = [];
 let lastKnownNumInstances;
