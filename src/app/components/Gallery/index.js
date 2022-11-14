@@ -467,17 +467,17 @@ export const transformSection = section => {
         });
       } else if (isQuote) {
         config.items.push({
-          mediaEl: RichtextTile(
-            createQuoteFromElement(node, {
+          mediaEl: RichtextTile({
+            el: createQuoteFromElement(node, {
               isPullquote: true
             }),
-            {
+            ratios: {
               sm: ratios.sm || '3x4',
               md: ratios.md || '16x9',
               lg: ratios.lg || '16x9',
               xl: ratios.xl || '16x9'
             }
-          )
+          })
         });
       } else if (node.tagName === 'P') {
         if (!config.masterCaptionText) {

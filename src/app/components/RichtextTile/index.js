@@ -3,7 +3,7 @@ import { getMeta } from '../../meta';
 import Sizer from '../Sizer';
 import styles from './index.lazy.scss';
 
-const RichtextTile = (el, ratios) => {
+const RichtextTile = ({ el, ratios }) => {
   const { isDarkMode } = getMeta();
 
   styles.use();

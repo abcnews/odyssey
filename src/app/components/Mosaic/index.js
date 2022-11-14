@@ -231,39 +231,39 @@ export const transformSection = section => {
       } else if (isQuote) {
         config.items.push({
           candidateMediaEls: [
-            RichtextTile(
-              createQuoteFromElement(node, {
+            RichtextTile({
+              el: createQuoteFromElement(node, {
                 isPullquote: true
               }),
-              {
+              ratios: {
                 sm: ratios.sm || '3x2',
                 md: ratios.md || '16x9',
                 lg: ratios.lg || '16x9',
                 xl: ratios.xl || '16x9'
               }
-            ),
-            RichtextTile(
-              createQuoteFromElement(node, {
+            }),
+            RichtextTile({
+              el: createQuoteFromElement(node, {
                 isPullquote: true
               }),
-              {
+              ratios: {
                 sm: ratios.sm || '1x1',
                 md: ratios.md || '3x2',
                 lg: ratios.lg || '3x2',
                 xl: ratios.xl || '3x2'
               }
-            ),
-            RichtextTile(
-              createQuoteFromElement(node, {
+            }),
+            RichtextTile({
+              el: createQuoteFromElement(node, {
                 isPullquote: true
               }),
-              {
+              ratios: {
                 sm: ratios.sm || '3x4',
                 md: ratios.md || '4x3',
                 lg: ratios.lg || '4x3',
                 xl: ratios.xl || '4x3'
               }
-            )
+            })
           ]
         });
       } else if (node.tagName === 'P') {
