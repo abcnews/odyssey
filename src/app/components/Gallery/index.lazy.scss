@@ -63,13 +63,10 @@
 }
 
 .Gallery-item {
-  display: flex;
-  flex-direction: column;
-  flex: 0 0 100% !important;
+  flex: 0 0 100%;
   overflow: hidden;
   position: relative;
   padding: 0 $unit * 0.46875;
-  max-width: none !important;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;

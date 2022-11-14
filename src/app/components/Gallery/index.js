@@ -266,7 +266,7 @@ const Gallery = ({ items = [], masterCaptionEl }) => {
 
   const className = cn('Gallery', 'u-full');
 
-  const itemEls = items.map(({ id, mediaEl, captionEl, flexBasisPct, rowLength }, index) => {
+  const itemEls = items.map(({ id, mediaEl, captionEl }, index) => {
     if (mediaEl.api && mediaEl.api.loaded) {
       // Because Picture instances have multiple possible aspect ratios,
       // they call `loadedHook` (if one exists) each time its <img> lazy-loads.
@@ -278,10 +278,8 @@ const Gallery = ({ items = [], masterCaptionEl }) => {
     const itemEl = html`
       <div
         class="Gallery-item"
-        style="flex: 0 1 ${flexBasisPct}%; max-width: ${flexBasisPct}%"
         data-id="${id || 'n/a'}"
         data-index="${index}"
-        data-row-length="${rowLength}"
         tabindex="-1"
         draggable="false"
         ondragstart=${() => false}
