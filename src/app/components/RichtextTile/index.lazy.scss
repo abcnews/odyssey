@@ -1,0 +1,22 @@
+@import '../../constants';
+
+.RichtextTile {
+  position: relative;
+}
+
+.RichtextTile-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  & > * {
+    margin: $unit * 0.5 $unit !important;
+    max-width: $unit * 49 !important; /* Roughly equivalent to body copy width, after padding is factored in */
+  }
+}

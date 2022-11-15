@@ -3,9 +3,9 @@ import cn from 'classnames';
 import html from 'nanohtml';
 import rawHTML from 'nanohtml/raw';
 import { SELECTORS, SUPPORTS_PASSIVE, VIDEO_MARKER_PATTERN } from '../../constants';
-import { getMeta, lookupImageByAssetURL } from '../../meta';
+import { lookupImageByAssetURL } from '../../meta';
 import { enqueue, invalidateClient, subscribe } from '../../scheduler';
-import { $, $$, append, detach, detectVideoId, getChildImage, isElement, setText } from '../../utils/dom';
+import { $, append, detach, detectVideoId, getChildImage, isElement, setText } from '../../utils/dom';
 import { dePx, getRatios } from '../../utils/misc';
 import Caption, {
   createFromElement as createCaptionFromElement,
@@ -13,11 +13,9 @@ import Caption, {
 } from '../Caption';
 import Picture from '../Picture';
 import { createFromElement as createQuoteFromElement } from '../Quote';
-import Sizer from '../Sizer';
+import RichtextTile from '../RichtextTile';
 import VideoPlayer from '../VideoPlayer';
 import styles from './index.lazy.scss';
-
-export const MOSAIC_ROW_LENGTHS_PATTERN = /mosaic[a-z]*(\d+)/;
 
 const PCT_PATTERN = /(-?[0-9\.]+)%/;
 const SWIPE_THRESHOLD = 25;
@@ -28,16 +26,7 @@ const CONTROL_ICON_MARKUP = `<svg role="presentation" viewBox="0 0 40 40">
   <polyline stroke="currentColor" stroke-width="2" fill="none" points="22.25 12.938 16 19.969 22.25 27" />
 </svg>`;
 
-const RichtextTile = (el, ratios) => {
-  return html`
-    <div class="Gallery-richtextTile">
-      ${Sizer(ratios)}
-      <div class="Gallery-richtextTileContent u-richtext${getMeta().isDarkMode ? '-invert' : ''}">${el}</div>
-    </div>
-  `;
-};
-
-const Gallery = ({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconstrained = false }) => {
+const Gallery = ({ items = [], masterCaptionEl }) => {
   let startItemsTransformXPct;
   let startX;
   let startY;
@@ -49,6 +38,7 @@ const Gallery = ({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconst
   let paneWidth;
   let itemHeight;
   let mediaEls;
+  let paneEl;
 
   function updateItemsAppearance(xPct, isImmediate) {
     let wasOnEndCalled = false;
@@ -125,7 +115,7 @@ const Gallery = ({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconst
   }
 
   function swipeBegin(event) {
-    if (isMosaic || startItemsTransformXPct != null) {
+    if (startItemsTransformXPct != null) {
       return;
     }
 
@@ -207,12 +197,10 @@ const Gallery = ({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconst
       // Ignore click events for a small period to stop
       // secondary actions on swipes that originated on
       // a link or something else with an event handler
-      if (galleryEl.className.indexOf('is-mosaic') === -1) {
-        shouldIgnoreClicks = true;
-        setTimeout(function () {
-          shouldIgnoreClicks = false;
-        }, 50);
-      }
+      shouldIgnoreClicks = true;
+      setTimeout(function () {
+        shouldIgnoreClicks = false;
+      }, 50);
 
       if (absDiffX > SWIPE_THRESHOLD) {
         // Update the item index we'll be navigating to
@@ -276,66 +264,9 @@ const Gallery = ({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconst
 
   subscribe(measureDimensions);
 
-  const isMosaic = mosaicRowLengths.length > 0;
+  const className = cn('Gallery', 'u-full');
 
-  const className = cn(
-    'Gallery',
-    {
-      'is-mosaic': isMosaic,
-      'is-unconstrained': isUnconstrained /* only mosaic should be full bleed */
-    },
-    'u-full'
-  );
-
-  mosaicRowLengths = mosaicRowLengths.map(rowLength => Math.min(3, rowLength));
-
-  const mosaicRowLengthsClone = [].concat(mosaicRowLengths);
-  const mosaicRows = items.reduce(
-    (memo, item, index) => {
-      if (mosaicRowLengthsClone.length === 0) {
-        mosaicRowLengthsClone.push(1);
-      }
-
-      memo[memo.length - 1].push(item);
-
-      mosaicRowLengthsClone[0]--;
-
-      if (mosaicRowLengthsClone[0] === 0) {
-        mosaicRowLengthsClone.shift();
-
-        if (index + 1 < items.length) {
-          memo.push([]);
-        }
-      }
-
-      return memo;
-    },
-    [[]]
-  );
-
-  mosaicRows.forEach(items => {
-    items.forEach(item => {
-      item.rowLength = items.length;
-      item.flexBasisPct = 100 / item.rowLength;
-
-      if (item.mosaicMediaEls) {
-        item.mosaicMediaEls.forEach((el, index) => {
-          if (index === item.rowLength - 1) {
-            item.mosaicMediaEl = el;
-          } else {
-            // Unused Picture instances should be forgotten
-            el.api && el.api.forget && el.api.forget();
-          }
-        });
-      } else {
-        item.mosaicMediaEl = item.mediaEl.cloneNode(true);
-      }
-
-      delete item.mosaicMediaEls;
-    });
-  });
-
-  const itemEls = items.map(({ id, mediaEl, mosaicMediaEl, captionEl, flexBasisPct, rowLength }, index) => {
+  const itemEls = items.map(({ id, mediaEl, captionEl }, index) => {
     if (mediaEl.api && mediaEl.api.loaded) {
       // Because Picture instances have multiple possible aspect ratios,
       // they call `loadedHook` (if one exists) each time its <img> lazy-loads.
@@ -347,17 +278,15 @@ const Gallery = ({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconst
     const itemEl = html`
       <div
         class="Gallery-item"
-        style="flex: 0 1 ${flexBasisPct}%; max-width: ${flexBasisPct}%"
         data-id="${id || 'n/a'}"
         data-index="${index}"
-        data-row-length="${rowLength}"
         tabindex="-1"
         draggable="false"
         ondragstart=${() => false}
         onmouseup=${swipeIntent}
         onclick=${stopIfIgnoringClicks}
       >
-        ${mediaEl} ${mosaicMediaEl} ${captionEl}
+        ${mediaEl} ${captionEl}
       </div>
     `;
 
@@ -377,17 +306,13 @@ const Gallery = ({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconst
       const captionLinkEl = $('a', captionEl);
 
       if (captionLinkEl) {
-        if (isMosaic) {
-          captionLinkEl.setAttribute('tabindex', '-1');
-        } else {
-          captionLinkEl.addEventListener(
-            'focus',
-            () => {
-              goToItem(index);
-            },
-            false
-          );
-        }
+        captionLinkEl.addEventListener(
+          'focus',
+          () => {
+            goToItem(index);
+          },
+          false
+        );
       }
     }
 
@@ -413,7 +338,7 @@ const Gallery = ({ items = [], masterCaptionEl, mosaicRowLengths = [], isUnconst
   itemsEl.addEventListener('touchend', swipeComplete, false);
   itemsEl.addEventListener('touchcancel', swipeComplete, false);
 
-  const paneEl = html`<div class="Gallery-pane">${itemsEl}</div>`;
+  paneEl = html`<div class="Gallery-pane">${itemsEl}</div>`;
 
   const indexEl = html`<div class="Gallery-index"></div>`;
 
@@ -473,16 +398,9 @@ function offsetBasedOpacity(itemIndex, itemsTransformXPct) {
 }
 
 export const transformSection = section => {
-  const [, mosaicRowLengthsString] = `${section.name}${section.configString}`.match(MOSAIC_ROW_LENGTHS_PATTERN) || [
-    null,
-    ''
-  ];
-  const isUnconstrained = mosaicRowLengthsString.length && section.configString.indexOf('full') > -1;
   const ratios = getRatios(section.configString);
   const unlink = section.configString.indexOf('unlink') > -1;
-
   const nodes = [].concat(section.betweenNodes);
-
   const config = nodes.reduce(
     (config, node) => {
       detach(node);
@@ -508,38 +426,6 @@ export const transformSection = section => {
           },
           isInvariablyAmbient: true
         });
-        const mosaicVideoPlayerEls = [
-          VideoPlayer({
-            videoId,
-            ratios: {
-              sm: ratios.sm || '3x2',
-              md: ratios.md || '16x9',
-              lg: ratios.lg || '16x9',
-              xl: ratios.xl || '16x9'
-            },
-            isInvariablyAmbient: true
-          }),
-          VideoPlayer({
-            videoId,
-            ratios: {
-              sm: ratios.sm || '1x1',
-              md: ratios.md || '3x2',
-              lg: ratios.lg || '3x2',
-              xl: ratios.xl || '3x2'
-            },
-            isInvariablyAmbient: true
-          }),
-          VideoPlayer({
-            videoId,
-            ratios: {
-              sm: ratios.sm || '3x4',
-              md: ratios.md || '4x3',
-              lg: ratios.lg || '4x3',
-              xl: ratios.xl || '4x3'
-            },
-            isInvariablyAmbient: true
-          })
-        ];
         const videoCaptionEl = createCaptionFromElement(node, unlink);
 
         // Videos that don't have captions right now can append them them later using metadata
@@ -554,7 +440,6 @@ export const transformSection = section => {
         config.items.push({
           id: videoId,
           mediaEl: videoPlayerEl,
-          mosaicMediaEls: mosaicVideoPlayerEls,
           captionEl: videoCaptionEl
         });
       } else if (imgEl) {
@@ -576,91 +461,21 @@ export const transformSection = section => {
             },
             linkUrl
           }),
-          mosaicMediaEls: [
-            Picture({
-              src,
-              alt,
-              ratios: {
-                sm: ratios.sm || '3x2',
-                md: ratios.md || '16x9',
-                lg: ratios.lg || '16x9',
-                xl: ratios.xl || '16x9'
-              },
-              linkUrl
-            }),
-            Picture({
-              src,
-              alt,
-              ratios: {
-                sm: ratios.sm || '1x1',
-                md: ratios.md || '3x2',
-                lg: ratios.lg || '3x2',
-                xl: ratios.xl || '3x2'
-              },
-              linkUrl
-            }),
-            Picture({
-              src,
-              alt,
-              ratios: {
-                sm: ratios.sm || '3x4',
-                md: ratios.md || '4x3',
-                lg: ratios.lg || '4x3',
-                xl: ratios.xl || '4x3'
-              },
-              linkUrl
-            })
-          ],
           captionEl: imageDoc ? createCaptionFromTerminusDoc(imageDoc, unlink) : createCaptionFromElement(node, unlink)
         });
       } else if (isQuote) {
         config.items.push({
-          mediaEl: RichtextTile(
-            createQuoteFromElement(node, {
+          mediaEl: RichtextTile({
+            el: createQuoteFromElement(node, {
               isPullquote: true
             }),
-            {
+            ratios: {
               sm: ratios.sm || '3x4',
               md: ratios.md || '16x9',
               lg: ratios.lg || '16x9',
               xl: ratios.xl || '16x9'
             }
-          ),
-          mosaicMediaEls: [
-            RichtextTile(
-              createQuoteFromElement(node, {
-                isPullquote: true
-              }),
-              {
-                sm: ratios.sm || '3x2',
-                md: ratios.md || '16x9',
-                lg: ratios.lg || '16x9',
-                xl: ratios.xl || '16x9'
-              }
-            ),
-            RichtextTile(
-              createQuoteFromElement(node, {
-                isPullquote: true
-              }),
-              {
-                sm: ratios.sm || '1x1',
-                md: ratios.md || '3x2',
-                lg: ratios.lg || '3x2',
-                xl: ratios.xl || '3x2'
-              }
-            ),
-            RichtextTile(
-              createQuoteFromElement(node, {
-                isPullquote: true
-              }),
-              {
-                sm: ratios.sm || '3x4',
-                md: ratios.md || '4x3',
-                lg: ratios.lg || '4x3',
-                xl: ratios.xl || '4x3'
-              }
-            )
-          ]
+          })
         });
       } else if (node.tagName === 'P') {
         if (!config.masterCaptionText) {
@@ -683,9 +498,7 @@ export const transformSection = section => {
       items: [],
       masterCaptionEl: null,
       masterCaptionText: null,
-      masterCaptionAttribution: null,
-      mosaicRowLengths: mosaicRowLengthsString.split(''),
-      isUnconstrained
+      masterCaptionAttribution: null
     }
   );
 
@@ -693,49 +506,4 @@ export const transformSection = section => {
   delete config.masterCaptionAttribution;
 
   section.substituteWith(Gallery(config), []);
-};
-
-export const transformBeforeAndAfterMarker = marker => {
-  const componentEl = marker.node.nextElementSibling;
-  const imgEls = $$('img', componentEl).reverse();
-  const captionText = $('figcaption', componentEl).textContent;
-  const config = {
-    items: imgEls.map(imgEl => {
-      const src = imgEl.src;
-      const imageDoc = lookupImageByAssetURL(src);
-      const alt = imgEl.getAttribute('alt');
-      const linkUrl = imageDoc ? `/news/${imageDoc.id}` : null;
-
-      return {
-        id: imageDoc ? imageDoc.id : src,
-        mediaEl: Picture({
-          src,
-          alt,
-          ratios: {
-            sm: '16x9',
-            md: '16x9',
-            lg: '16x9',
-            xl: '16x9'
-          },
-          shouldLazyLoad: false,
-          linkUrl
-        })
-      };
-    }),
-    isUnconstrained: true,
-    masterCaptionEl: Caption({
-      text: captionText
-    }),
-    mosaicRowLengths: [2]
-  };
-
-  const mosaic = Gallery(config);
-  const id = Math.floor(Math.random() * 1e8).toString(16);
-  const fullWidthTileHack = document.createElement('style');
-
-  fullWidthTileHack.innerHTML = `@media (max-width: 978px) { [data-before-and-after="${id}"] .Gallery-item { flex: 0 1 100% !important; max-width: 100% !important } }`;
-  mosaic.setAttribute('data-before-and-after', id);
-  append(mosaic, fullWidthTileHack);
-  marker.substituteWith(mosaic);
-  detach(componentEl);
 };
