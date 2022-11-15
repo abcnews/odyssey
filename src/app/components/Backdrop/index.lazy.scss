@@ -10,6 +10,7 @@
   }
 }
 
-.Backdrop + .Backdrop {
-  margin-top: 0;
+.Backdrop + .Backdrop,
+.Backdrop + [data-mount]:not([class]) + .Backdrop {
+  margin-top: calc(var(--u-full-vertical-margin) * -1);
 }

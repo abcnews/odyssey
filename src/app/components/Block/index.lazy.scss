@@ -21,5 +21,10 @@
   }
 }
 
+.Block + .Block,
+.Block + [data-mount]:not([class]) + .Block {
+  margin-top: calc(var(--u-full-vertical-margin) * -1);
+}
+
 @import './media';
 @import './content';

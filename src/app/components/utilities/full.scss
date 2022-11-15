@@ -1,40 +1,21 @@
 @import '../../constants';
 
-.u-layout > .u-full,
-[class*='u-richtext'] > .u-full {
-  margin-top: $unit * 2;
-  margin-bottom: $unit * 2;
-  margin-left: calc(-50vw + 50%) !important;
+.u-full.u-full {
+  --u-full-vertical-margin: #{$unit * 2};
+  margin-top: var(--u-full-vertical-margin);
+  margin-bottom: var(--u-full-vertical-margin);
   margin-left: calc(-50vw + (var(--scrollbar-width, 0px) / 2) + 50%) !important;
   padding-left: 0;
   padding-right: 0;
-  width: 100vw;
   width: calc(100vw - var(--scrollbar-width, 0px));
 
   @media #{$mq-gt-md} {
-    margin-top: $unit * 3;
-    margin-bottom: $unit * 3;
+    --u-full-vertical-margin: #{$unit * 3};
   }
 
+  // Cold-opens
   &:first-child,
-  a[id]:first-child + &,
-  a[name]:first-child + &,
   [data-mount]:first-child + & {
     margin-top: 0;
-  }
-}
-
-.u-layout > .u-full:not(.Gallery) + .u-full:not(.Gallery),
-.u-layout > .u-full:not(.Gallery) + a[id] + .u-full:not(.Gallery),
-.u-layout > .u-full:not(.Gallery) + a[name] + .u-full:not(.Gallery),
-.u-layout > .u-full:not(.Gallery) + [data-mount] + .u-full:not(.Gallery),
-[class*='u-richtext'] > .u-full:not(.Gallery) + .u-full:not(.Gallery),
-[class*='u-richtext'] > .u-full:not(.Gallery) + a[id] + .u-full:not(.Gallery),
-[class*='u-richtext'] > .u-full:not(.Gallery) + a[name] + .u-full:not(.Gallery),
-[class*='u-richtext'] > .u-full:not(.Gallery) + [data-mount] + .u-full:not(.Gallery) {
-  margin-top: $unit * -2;
-
-  @media #{$mq-gt-md} {
-    margin-top: $unit * -3;
   }
 }
