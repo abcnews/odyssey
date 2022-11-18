@@ -210,9 +210,11 @@ export default terminusDocument => {
 
   // Transform image embeds
   const sidePulls = $$('.u-pull-left, .u-pull-right');
-  const imageEmbeds = $$('[data-component="Figure"]', mainEl).filter(
-    el => (el.getAttribute('data-uri') || '').indexOf('customimage') === -1 && $('img', el)
-  );
+  const imageEmbeds = $$('[data-component="Figure"]', mainEl).filter(el => {
+    const dataURI = el.getAttribute('data-uri') || '';
+
+    return ['audio', 'customimage', 'video'].find(docType => dataURI.indexOf(docType) > -1) == null && $('img', el);
+  });
   imageEmbeds.forEach(el => transformElementIntoImageEmbed(el, sidePulls.filter(pEl => pEl.contains(el)).length > 0));
   conditionalDebug(imageEmbeds.length > 0, `Transformed ${imageEmbeds.length} image embeds`);
 
