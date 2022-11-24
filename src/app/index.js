@@ -158,9 +158,13 @@ export default terminusDocument => {
     'tease',
     'whatnext'
   ]).forEach(marker => {
+    let shouldTrackTransformedMarker = true;
+
     switch (marker.name) {
       case 'beforeandafterstart':
-        transformBeforeAndAfterMarkerIntoMosaic(marker);
+        if (transformBeforeAndAfterMarkerIntoMosaic(marker) === false) {
+          shouldTrackTransformedMarker = false;
+        }
         break;
       case 'cta':
         transformMarkerIntoUCTA(marker);
@@ -192,7 +196,9 @@ export default terminusDocument => {
         break;
     }
 
-    trackTransformedMarker(marker);
+    if (shouldTrackTransformedMarker) {
+      trackTransformedMarker(marker);
+    }
   });
   debug(`Transformed markers (${Object.keys(transformedMarkers).length})`, transformedMarkers);
 

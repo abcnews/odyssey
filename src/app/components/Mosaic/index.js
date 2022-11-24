@@ -295,32 +295,39 @@ export const transformSection = section => {
 };
 
 export const transformBeforeAndAfterMarker = marker => {
+  // This is a hack for two-image before/after components. If we don't find two images,
+  // or if we find a video, we should bail out, as it's probably a custom implementation.
   const componentEl = marker.node.nextElementSibling;
-  const mosaic = Mosaic({
-    items: $$('img', componentEl)
-      .reverse()
-      .map(imgEl => {
-        const imageDoc = lookupImageByAssetURL(imgEl.src);
+  const images = $$('img', componentEl);
+  const videos = $$('video', componentEl);
 
-        return {
-          component: Picture,
-          componentProps: {
-            src: imgEl.src,
-            alt: imgEl.getAttribute('alt'),
-            linkUrl: imageDoc ? `/news/${imageDoc.id}` : null,
-            ratios: {
-              sm: '16x9',
-              md: '16x9',
-              lg: '16x9',
-              xl: '16x9'
-            },
-            shouldLazyLoad: false
+  if (images.length < 2 || videos.length > 0) {
+    return false;
+  }
+
+  const mosaic = Mosaic({
+    items: images.reverse().map(imgEl => {
+      const imageDoc = lookupImageByAssetURL(imgEl.src);
+
+      return {
+        component: Picture,
+        componentProps: {
+          src: imgEl.src,
+          alt: imgEl.getAttribute('alt'),
+          linkUrl: imageDoc ? `/news/${imageDoc.id}` : null,
+          ratios: {
+            sm: '16x9',
+            md: '16x9',
+            lg: '16x9',
+            xl: '16x9'
           },
-          captionEl: imageDoc ? createCaptionFromTerminusDoc(imageDoc, true) : createCaptionFromElement(node, true),
-          rowLength: 2,
-          horizontalFraction: 0.5
-        };
-      }),
+          shouldLazyLoad: false
+        },
+        captionEl: imageDoc ? createCaptionFromTerminusDoc(imageDoc, true) : createCaptionFromElement(node, true),
+        rowLength: 2,
+        horizontalFraction: 0.5
+      };
+    }),
     masterCaptionEl: Caption({
       text: $('figcaption', componentEl).textContent
     }),
