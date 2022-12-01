@@ -106,6 +106,7 @@ export const reset = (storyEl, meta) => {
     [
       '[data-component="ContentLink"]',
       '[data-component="Heading"]',
+      '[data-component="Link"]',
       '[data-component="List"]',
       '[data-component="ListItem"]',
       'p'
