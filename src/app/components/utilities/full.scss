@@ -19,3 +19,13 @@
     margin-top: 0;
   }
 }
+
+// Collapse margin between subsequent Bakcdrop, Block and Header
+// components, even when separated by a mount point
+
+$isFlush: '.u-full:is(.Backdrop, .Block, .Header)';
+
+#{$isFlush} + #{$isFlush},
+#{$isFlush} + [data-mount]:not([class]) + #{$isFlush} {
+  margin-top: calc(var(--u-full-vertical-margin) * -1);
+}

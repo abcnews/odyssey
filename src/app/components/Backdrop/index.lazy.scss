@@ -9,8 +9,3 @@
     padding-bottom: $unit * 0.75;
   }
 }
-
-.Backdrop + .Backdrop,
-.Backdrop + [data-mount]:not([class]) + .Backdrop {
-  margin-top: calc(var(--u-full-vertical-margin) * -1);
-}
