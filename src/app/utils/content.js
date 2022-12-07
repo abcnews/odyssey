@@ -1,7 +1,5 @@
 import { fetchOne } from '@abcnews/terminus-fetch';
 
-const API_KEY = '***REMOVED***';
-
 const cache = {};
 
 export const fetchDocument = optionsOrId => {
@@ -9,7 +7,7 @@ export const fetchDocument = optionsOrId => {
   const key = options.id;
 
   if (!cache[key]) {
-    cache[key] = fetchOne({ apikey: API_KEY, ...options }).then(doc => deepFreeze(doc));
+    cache[key] = fetchOne({ ...options }).then(doc => deepFreeze(doc));
   }
 
   return cache[key];

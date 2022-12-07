@@ -70,6 +70,10 @@ module.exports = {
 };
 ```
 
+## Developing
+
+After checking out this repo, you'll need to copy `.env.example` to `.env` and populate it (ask one of the authors for values to use).
+
 ## Authors
 
 - Joshua Byrd ([Byrd.Joshua@abc.net.au](mailto:Byrd.Joshua@abc.net.au))
