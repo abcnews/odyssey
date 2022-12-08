@@ -1,7 +1,6 @@
 import { GENERATIONS, getGeneration } from '@abcnews/env-utils';
 import { fetchOne } from '@abcnews/terminus-fetch';
 
-const API_KEY = '***REMOVED***';
 const VERSION = getGeneration() !== GENERATIONS.PL ? 'v1' : 'v2';
 
 // The Terminus version we use depends on the environment, so that we can match
@@ -19,5 +18,5 @@ const VERSION = getGeneration() !== GENERATIONS.PL ? 'v1' : 'v2';
 export const terminusFetch = (_options, done) => {
   const options = typeof _options === 'object' ? _options : { id: _options };
 
-  return fetchOne({ apikey: API_KEY, version: VERSION, ...options }, done);
+  return fetchOne({ version: VERSION, ...options }, done);
 };
