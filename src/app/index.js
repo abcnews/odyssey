@@ -287,7 +287,7 @@ export default terminusDocument => {
   const datawrapperIframes = $$(`[data-component="Iframe"] iframe[src*="datawrapper"]`, mainEl);
   datawrapperIframes.forEach(el => {
     const shouldBeDark =
-      (el.closest('[class*="u-richtext]') || MOCK_ELEMENT).className.indexOf('u-richtext-invert') > -1;
+      (el.closest('[class*="u-richtext"]') || MOCK_ELEMENT).className.indexOf('u-richtext-invert') > -1;
     const desiredParam = `dark=${shouldBeDark}`;
     const paramPattern = /dark=\w+/;
     const desiredSrc = paramPattern.test(el.src)
