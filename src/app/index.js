@@ -296,6 +296,7 @@ export default terminusDocument => {
 
     // Always remove the white background (set by PL's className)
     el.style.setProperty('background-color', 'transparent');
+    el.style.setProperty('color-scheme', shouldBeDark ? 'dark' : 'light');
 
     // Change the URL, if needed
     if (el.src !== desiredSrc) {
