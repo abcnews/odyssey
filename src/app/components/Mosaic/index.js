@@ -188,7 +188,8 @@ export const transformSection = section => {
       items.push({
         component: VideoPlayer,
         componentProps: {
-          videoId
+          videoId,
+          isInvariablyAmbient: true
         },
         formattedRatio,
         captionEl: createCaptionFromElement(node, shouldUnlink)
