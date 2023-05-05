@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES2018",
+    "module": "ES6",
+    "moduleResolution": "Node",
+    "checkJs": false,
+    "jsx": "react",
+    "strictNullChecks": true,
+    "strictFunctionTypes": true
+  },
+  "exclude": [
+    ".aunty",
+    "node_modules",
+    "**/node_modules/*"
+  ]
+}
