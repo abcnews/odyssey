@@ -1,69 +1,88 @@
-import { track } from '../../utils/behaviour';
+// @ts-check
+import { dataLayer } from '@abcaustralia/analytics-datalayer';
+import { debug } from '../../utils/logging';
 
-const WT__CLIP_T = 'Odyssey_VideoPlayer';
-const WT__DL = '110';
-
+/**
+ * Analytics for video progress.
+ *
+ * @param {string} id The document ID of the video in CoreMedia
+ * @param {HTMLVideoElement} el The video player DOM element
+ */
 export const trackProgress = (id, el) => {
-  const sentEvents = {};
-  let eventTimes = {};
+  let eventTimes = [15, 30];
   let previousTime = 0;
+  let previousPercentage = 0;
+  let duration = el.duration;
+  let playRecorded = false;
+
+  const uri = `coremedia://video/${id}`;
 
   el.addEventListener('durationchange', () => {
-    const duration = el.duration;
+    duration = el.duration;
+    eventTimes = [15, 30];
+    for (let i = 1; i <= duration / 60; i++) {
+      eventTimes.push(i * 60);
+    }
+  });
 
-    eventTimes = {
-      V: 2, // Viewed event (2 seconds in)
-      25: 0.25 * duration, // 25% complete event
-      50: 0.5 * duration, // 50% complete event
-      75: 0.75 * duration, // 75% complete event
-      F: 0.98 * duration // Clip finished event
-    };
+  el.addEventListener('play', () => {
+    const event = playRecorded ? 'resume' : 'play';
+    debug(`${uri} ${event}`);
+    sendProgressEvents(event, {
+      uri,
+      elapsedSeconds: Math.floor(previousTime),
+      elapsedPercentage: Math.floor(previousPercentage)
+    });
+    playRecorded = true;
+  });
+
+  el.addEventListener('pause', () => {
+    debug(`${uri} paused`);
+    sendProgressEvents('pause', {
+      uri,
+      elapsedSeconds: Math.floor(previousTime),
+      elapsedPercentage: Math.floor(previousPercentage)
+    });
   });
 
   el.addEventListener('timeupdate', () => {
+    if (duration === 0) return;
+
     const currentTime = el.currentTime;
+    const currentPercentage = currentTime / duration;
 
-    // Go through each defined event time and log it if it matches.
-    for (let eventName in eventTimes) {
-      const isCurrentTimeBeyondEventTime = currentTime > eventTimes[eventName];
-
-      if (!sentEvents[eventName] && isCurrentTimeBeyondEventTime) {
-        // Mark this event as sent so we only send it once.
-        sentEvents[eventName] = true;
-
-        // If the diff between calls is more than 5 seconds, we've
-        // probably jumped elsewhere in the video. Skip any event
-        // times in this round since we haven't played through them.
-        if (currentTime - previousTime < 5) {
-          track('video-progress', `${id}_${eventName}`);
-          sendWebtrendsClipEvent(el, eventName);
-        }
-      } else if (sentEvents[eventName] && !isCurrentTimeBeyondEventTime) {
-        // Reset that event if we jump back before it.
-        sentEvents[eventName] = false;
+    // Progress percentages
+    [25, 50, 75, 95, 98].forEach(pct => {
+      if (Math.floor(previousPercentage * 100) < pct && Math.floor(currentPercentage * 100) >= pct) {
+        debug(`${uri} reached ${pct}%`);
+        sendProgressEvents('progressPercentage', {
+          uri,
+          elapsedSeconds: Math.floor(currentTime),
+          elapsedPercentage: pct
+        });
       }
-    }
+    });
+
+    // Progress time
+    eventTimes.forEach(time => {
+      if (Math.floor(previousTime) < time && Math.floor(currentTime) >= time) {
+        debug(`${uri} reached ${time} seconds`);
+        sendProgressEvents('progress', {
+          uri,
+          elapsedSeconds: time,
+          elapsedPercentage: Math.floor(currentPercentage)
+        });
+      }
+    });
 
     previousTime = currentTime;
+    previousPercentage = currentPercentage;
   });
 };
 
-function sendWebtrendsClipEvent(el, eventName) {
-  const args = {
-    'DCS.dcsuri': window.location.pathname + '/' + el.src.replace(/.*\//, ''),
-    'WT.clip_ev': eventName,
-    'WT.clip_n': el.getAttribute('aria-label') || document.title,
-    'WT.clip_t': WT__CLIP_T,
-    'WT.dl': WT__DL,
-    'WT.ti': document.title
-  };
-
-  if (window.Webtrends && window.Webtrends.multiTrack) {
-    Webtrends.multiTrack({ args });
-  } else if (window.dcsMultiTrack) {
-    dcsMultiTrack.apply(
-      null,
-      Object.keys(args).reduce((memo, key) => memo.concat([key, args[key]]), [])
-    );
-  }
-}
+/**
+ * @type {typeof import('@abcaustralia/analytics-datalayer').dataLayer.event}
+ */
+const sendProgressEvents = (eventName, data) => {
+  dataLayer.event(eventName, data);
+};
