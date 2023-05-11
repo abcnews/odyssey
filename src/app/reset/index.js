@@ -5,7 +5,7 @@ import './index.scss';
 
 const TEMPLATE_REMOVABLES = {
   // PL
-  web: [
+  all: [
     '[data-component="AppDetailLayout"]',
     '[data-component="DetailLayout"]',
     '[data-component="WebContentWarning"]',
@@ -73,11 +73,9 @@ export const reset = (storyEl, meta) => {
   const mainEl = promoteToMain(storyEl, meta);
 
   // Remove elements we don't need
-
+  detachAll($$(TEMPLATE_REMOVABLES.all));
   if (document.location.pathname.startsWith('/newsapp/')) {
     detachAll($$(TEMPLATE_REMOVABLES.app));
-  } else {
-    detachAll($$(TEMPLATE_REMOVABLES.web));
   }
 
   // Remove elements that don't contain any text
