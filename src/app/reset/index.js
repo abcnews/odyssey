@@ -5,7 +5,7 @@ import './index.scss';
 
 const TEMPLATE_REMOVABLES = {
   // PL
-  'link[data-chunk="main"],link[data-chunk^="page."]': [
+  web: [
     '[data-component="AppDetailLayout"]',
     '[data-component="DetailLayout"]',
     '[data-component="WebContentWarning"]',
@@ -16,7 +16,7 @@ const TEMPLATE_REMOVABLES = {
     ':not(aside)>[data-component="Sidebar"]'
   ].join(),
   // PL (App)
-  'link[data-chunk="page.App"]': 'main:not([class*="u-"])'
+  app: 'main:not([class*="u-"])'
 };
 
 const WHITESPACE_REMOVABLES = 'p';
@@ -73,11 +73,12 @@ export const reset = (storyEl, meta) => {
   const mainEl = promoteToMain(storyEl, meta);
 
   // Remove elements we don't need
-  Object.keys(TEMPLATE_REMOVABLES).forEach(templateBodySelector => {
-    if ($(templateBodySelector)) {
-      detachAll($$(TEMPLATE_REMOVABLES[templateBodySelector]));
-    }
-  });
+
+  if (document.location.pathname.startsWith('/newsapp/')) {
+    detachAll($$(TEMPLATE_REMOVABLES.app));
+  } else {
+    detachAll($$(TEMPLATE_REMOVABLES.web));
+  }
 
   // Remove elements that don't contain any text
   $$(WHITESPACE_REMOVABLES, mainEl).forEach(el => {
