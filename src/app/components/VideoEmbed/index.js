@@ -3,7 +3,7 @@ import { url2cmid } from '@abcnews/url2cmid';
 import cn from 'classnames';
 import html from 'nanohtml';
 import { ALIGNMENT_PATTERN, EMBED_ALIGNMENT_MAP, VIDEO_MARKER_PATTERN, SCROLLPLAY_PCT_PATTERN } from '../../constants';
-import { $, substitute } from '../../utils/dom';
+import { $, detectVideoId, substitute } from '../../utils/dom';
 import { getRatios } from '../../utils/misc';
 import { grabPrecedingConfigString } from '../../utils/mounts';
 import { createFromElement as createCaptionFromElement } from '../Caption';
@@ -35,12 +35,12 @@ export const transformElement = el => {
   const mountValue = isMount(el) ? getMountValue(el) : '';
   const isVideoMarker = !!mountValue.match(VIDEO_MARKER_PATTERN);
   const linkEl = $('a[href]', el);
-  const playerIdEl = $('[data-component="Player"] div[id]', el);
+  const playerIdEl = $('[data-component="VideoPlayer"]', el);
   const expiredMediaWarningEl = $('[data-component="ExpiredMediaWarning"]', el);
   const videoId = isVideoMarker
     ? mountValue.match(VIDEO_MARKER_PATTERN)[1]
-    : playerIdEl && playerIdEl.id
-    ? playerIdEl.id
+    : playerIdEl
+    ? detectVideoId(el)
     : expiredMediaWarningEl
     ? el.getAttribute('data-uri').match(/\d+/)
     : linkEl
