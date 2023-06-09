@@ -123,11 +123,10 @@ export const getChildImage = el => {
 export const detectVideoId = node => {
   let videoId;
 
-  if (
-    node.getAttribute('data-component') === 'Figure' &&
-    $('[data-component="PlayerButton"][aria-label*="Video"]', node)
-  ) {
-    videoId = ($('[data-component="Player"] div[id]', node) || {}).id;
+  const isFigure = node.getAttribute('data-component') === 'Figure';
+  const isVideo = $('[data-component="VideoPlayer"]', node);
+  if (isFigure && isVideo) {
+    videoId = node.getAttribute('data-uri').replace('coremedia://video/', '');
   }
 
   return videoId;
