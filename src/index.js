@@ -33,7 +33,12 @@ proxy('odyssey').then(() => {
   debugWhen(fetchArticleDocumentTask, 'Fetched article document');
 
   // 3. permission to modify the DOM
-  const obtainBodyDOMPermitTask = requestDOMPermit('body');
+  const obtainBodyDOMPermitTask = requestDOMPermit('body').catch(err => {
+    // Try again, once.
+    // It appears possible that sometimes this request is made before PL sets up the decoy request listener
+    // See: NEWSWEB-3258
+    return requestDOMPermit('body');
+  });
   debugWhen(obtainBodyDOMPermitTask, 'Obtained "body" DOM permit');
 
   // ...we can run the app, using the terminus document to initialise metadata
