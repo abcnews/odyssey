@@ -37,8 +37,10 @@ proxy('odyssey').then(() => {
     // Try again, once.
     // It appears possible that sometimes this request is made before PL sets up the decoy request listener
     // See: NEWSWEB-3258
+    debug('Attempting second request for "body" DOM permit');
     return requestDOMPermit('body');
   });
+  debug('Requested "body" DOM permit');
   debugWhen(obtainBodyDOMPermitTask, 'Obtained "body" DOM permit');
 
   // ...we can run the app, using the terminus document to initialise metadata
