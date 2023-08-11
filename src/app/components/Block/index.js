@@ -29,7 +29,7 @@ const TRANSITIONS = [
   * imgEl - an image document
   * videoId - a video document CMID or a Youtube video ID (when isVideoYouTube=true)
   * backgrounds - an array of acceptable values for imgEl/videoId
-  
+
   Media may be captioned/attributed, in which case captionEls (an array of Caption components) should be supplied
 */
 const Block = ({
@@ -395,9 +395,12 @@ export const transformSection = section => {
       .map(node => {
         const mountValue = isMount(node) ? getMountValue(node) : '';
         const isVideoMarker = !!mountValue.match(VIDEO_MARKER_PATTERN);
-        let imgEl = getChildImage(node);
+        const videoId = isVideoMarker ? mountValue.match(VIDEO_MARKER_PATTERN)[1] : detectVideoId(node);
+        const imgEl = getChildImage(node);
 
-        if (imgEl) {
+        // The video player DOM has an image element descentdent, so check it's not a video
+        // before assuming it's an image.
+        if (imgEl && !videoId) {
           // We found an image to use as one of the backgrounds
           config.backgrounds.push(imgEl);
           config.ratios = getRatios(section.configString);
@@ -423,15 +426,10 @@ export const transformSection = section => {
         }
 
         // See if we have a video we can use for a background
-        let videoMarker = {};
+        let videoMarker = { videoId };
 
         if (isVideoMarker) {
-          videoMarker = {
-            isVideoYouTube: !!mountValue.split('youtube')[1],
-            videoId: mountValue.match(VIDEO_MARKER_PATTERN)[1]
-          };
-        } else {
-          videoMarker.videoId = detectVideoId(node);
+          videoMarker.isVideoYouTube = !!mountValue.split('youtube')[1];
         }
 
         if (videoMarker.videoId) {
