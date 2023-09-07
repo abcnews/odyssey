@@ -15,6 +15,7 @@ const SUPPORTED_PROVIDER_TYPES = [
   'soundcloud',
   'vimeo',
   'youtube',
+  'tiktok',
   'youtubeplaylist'
 ];
 const LOADERS_ENDPOINT = `https://${
@@ -26,7 +27,7 @@ const InteractiveEmbed = ({ url, providerType, alignment, isFull }) => {
   const isSupportedProviderType = SUPPORTED_PROVIDER_TYPES.indexOf(providerType) > -1;
 
   if (!isSupportedProviderType) {
-    return '<div></div>';
+    return document.createElement('div');
   }
 
   const hasAspectRatio = providerType === 'vimeo' || providerType.indexOf('youtube') === 0;
@@ -100,7 +101,7 @@ export const transformElement = el => {
   const url = el.getAttribute('itemid');
   const providerType = el.getAttribute('data-provider');
   const configString = grabPrecedingConfigString(el);
-  const descriptorAlignment = el._descriptor ? EMBED_ALIGNMENT_MAP[el._descriptor.props.align] : undefined;
+  const descriptorAlignment = el._descriptor ? EMBED_ALIGNMENT_MAP[el._descriptor.props.alignment] : undefined;
   const [, alignment] = configString.match(ALIGNMENT_PATTERN) || [, descriptorAlignment];
 
   substitute(
