@@ -27,6 +27,21 @@
         -webkit-transform: translateZ(0);
       }
     }
+
+    // Position the TikTok frame so it's vertically centered, and floats left/right on larger screens
+    [data-provider="tiktok"] {
+      top: calc(50% - 361px);
+
+      @media #{$mq-gt-md} {
+        width: $unit * 33;
+        max-width: 42.5%;
+
+        &.u-pull-right {
+          right: 0;
+          left: unset;
+        }
+      }
+    }
   }
 
   .has-inset-media & > :not(.Block-mediaCaption) {

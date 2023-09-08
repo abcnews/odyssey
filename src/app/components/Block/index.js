@@ -26,7 +26,8 @@ const TRANSITIONS = [
 /*
   Block media can be one of:
 
-  * imgEl - an image document
+  * imgEl - an image element
+  * interactiveEl - an interactive element
   * videoId - a video document CMID or a Youtube video ID (when isVideoYouTube=true)
   * backgrounds - an array of acceptable values for imgEl/videoId
 
@@ -40,6 +41,7 @@ const Block = ({
   hasInsetMedia,
   hasHiddenCaptionTitles,
   imgEl,
+  interactiveEl,
   isContained,
   isDocked,
   isGrouped,
@@ -131,6 +133,8 @@ const Block = ({
 
       return backgroundEl;
     });
+  } else if (interactiveEl) {
+    mediaEl = interactiveEl;
   } else if (imgEl) {
     const src = imgEl.src;
     const alt = imgEl.getAttribute('alt');
@@ -510,6 +514,7 @@ export const transformSection = section => {
     config = section.betweenNodes.reduce((_config, node) => {
       let videoId;
       let imgEl;
+      let interactiveEl;
 
       if (!_config.videoId && !_config.imgEl && isElement(node)) {
         const mountValue = isMount(node) ? getMountValue(node) : '';
@@ -521,8 +526,16 @@ export const transformSection = section => {
           videoId = detectVideoId(node);
         }
 
+        // Only some interactive types are supported
+        const isTikTokInteractive = node.getAttribute('itemid')?.indexOf('tiktok.com/') > -1;
+
         if (videoId) {
           _config.videoId = videoId;
+        } else if (isTikTokInteractive) {
+          _config.interactiveEl = node;
+
+          // Remove this element from the flow
+          node.parentElement.removeChild(node);
         } else {
           imgEl = getChildImage(node);
 
@@ -540,7 +553,7 @@ export const transformSection = section => {
         }
       }
 
-      if (!videoId && !imgEl && isElement(node)) {
+      if (!videoId && !imgEl && !interactiveEl && isElement(node)) {
         _config.contentEls.push(node);
       }
 
