@@ -14,7 +14,7 @@ export const SELECTORS = {
   MAIN: 'main#content',
   STORY: [
     '[data-component="Decoy"][data-key="article"]>div>div:not([class])',
-    '[data-component="Decoy"][data-key="article"]>div>div[data-component="QuickReads"]',
+    '[data-component="Decoy"][data-key="article"]>div>div[data-component="QuickReads"]>div:not([class])',
     '[data-component="Decoy"][data-key="article"] [data-component="GridRow"] div:not([class])'
   ].join(','),
   SHARE_TOOLS: '[data-component="FixedHeader"] [data-component="Popover"]',
