@@ -28,7 +28,7 @@ export const trackProgress = (id, el) => {
   el.addEventListener('play', () => {
     const event = playRecorded ? 'resume' : 'play';
     debug(`${uri} ${event}`);
-    sendProgressEvents(event, {
+    dataLayer.event(event, {
       uri,
       elapsedSeconds: Math.floor(previousTime),
       elapsedPercentage: Math.floor(previousPercentage)
@@ -38,7 +38,7 @@ export const trackProgress = (id, el) => {
 
   el.addEventListener('pause', () => {
     debug(`${uri} paused`);
-    sendProgressEvents('pause', {
+    dataLayer.event('pause', {
       uri,
       elapsedSeconds: Math.floor(previousTime),
       elapsedPercentage: Math.floor(previousPercentage)
@@ -55,7 +55,7 @@ export const trackProgress = (id, el) => {
     [25, 50, 75, 95, 98].forEach(pct => {
       if (Math.floor(previousPercentage * 100) < pct && Math.floor(currentPercentage * 100) >= pct) {
         debug(`${uri} reached ${pct}%`);
-        sendProgressEvents('progressPercentage', {
+        dataLayer.event('progressPercentage', {
           uri,
           elapsedSeconds: Math.floor(currentTime),
           elapsedPercentage: pct
@@ -67,7 +67,7 @@ export const trackProgress = (id, el) => {
     eventTimes.forEach(time => {
       if (Math.floor(previousTime) < time && Math.floor(currentTime) >= time) {
         debug(`${uri} reached ${time} seconds`);
-        sendProgressEvents('progress', {
+        dataLayer.event('progress', {
           uri,
           elapsedSeconds: time,
           elapsedPercentage: Math.floor(currentPercentage)
@@ -78,11 +78,4 @@ export const trackProgress = (id, el) => {
     previousTime = currentTime;
     previousPercentage = currentPercentage;
   });
-};
-
-/**
- * @type {typeof import('@abcaustralia/analytics-datalayer').dataLayer.event}
- */
-const sendProgressEvents = (eventName, data) => {
-  dataLayer.event(eventName, data);
 };
