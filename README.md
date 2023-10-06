@@ -74,6 +74,8 @@ module.exports = {
 
 After checking out this repo, you'll need to copy `.env.example` to `.env` and populate it (ask one of the authors for values to use).
 
+Odyssey also uses some interanl ABC libraries, so you'll need to login following the [instructions](https://pl.abc-dev.net.au/docs/getting-started/aws/aws-login) in the PL documentation.
+
 ## Authors
 
 - Joshua Byrd ([Byrd.Joshua@abc.net.au](mailto:Byrd.Joshua@abc.net.au))
