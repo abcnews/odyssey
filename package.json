@@ -18,7 +18,7 @@
     "registry-rollback": "npm config set registry https://registry.npmjs.org"
   },
   "dependencies": {
-    "@abcaustralia/analytics-datalayer": "^17.0.0",
+    "@abcaustralia/analytics-datalayer": "^23.0.0",
     "@abcnews/dev-proxy": "^1.2.1",
     "@abcnews/env-utils": "^3.0.1",
     "@abcnews/mount-utils": "^1.0.0",
