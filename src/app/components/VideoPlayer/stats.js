@@ -11,7 +11,6 @@ import { debug } from '../../utils/logging';
  * @param {HTMLVideoElement} el The video player DOM element
  */
 export const initialiseVideoAnalytics = (id, el) => {
-  let eventTimes = [15, 30];
   let previousTime = 0;
   let previousPercentage = 0;
   let duration = el.duration;
@@ -45,10 +44,6 @@ export const initialiseVideoAnalytics = (id, el) => {
 
   el.addEventListener('durationchange', () => {
     duration = el.duration;
-    eventTimes = [15, 30];
-    for (let i = 1; i <= duration / 60; i++) {
-      eventTimes.push(i * 60);
-    }
   });
 
   el.addEventListener('play', async () => {
@@ -61,17 +56,18 @@ export const initialiseVideoAnalytics = (id, el) => {
     dataLayer.event(event, {
       uri,
       elapsedSeconds: Math.floor(previousTime),
-      elapsedPercentage: Math.floor(previousPercentage)
+      elapsedPercentage: Math.floor(previousPercentage * 100)
     });
     playRecorded = true;
   });
 
   el.addEventListener('pause', () => {
-    debug(`analytics: paused (${uri})`);
-    dataLayer.event('pause', {
+    const event = previousTime >= duration ? 'complete' : 'pause';
+    debug(`analytics: ${event} (${uri})`);
+    dataLayer.event(event, {
       uri,
       elapsedSeconds: Math.floor(previousTime),
-      elapsedPercentage: Math.floor(previousPercentage)
+      elapsedPercentage: Math.floor(previousPercentage * 100)
     });
   });
 
@@ -94,7 +90,7 @@ export const initialiseVideoAnalytics = (id, el) => {
     });
 
     // Progress time
-    eventTimes.forEach(time => {
+    [30].forEach(time => {
       if (Math.floor(previousTime) < time && Math.floor(currentTime) >= time) {
         debug(`analytics: reached ${time} seconds (${uri})`);
         dataLayer.event('progress', {
