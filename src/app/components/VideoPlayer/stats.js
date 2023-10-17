@@ -96,7 +96,7 @@ export const initialiseVideoAnalytics = (id, el) => {
         dataLayer.event('progress', {
           uri,
           elapsedSeconds: time,
-          elapsedPercentage: Math.floor(currentPercentage)
+          elapsedPercentage: Math.floor(currentPercentage * 100)
         });
       }
     });
