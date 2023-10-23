@@ -1,69 +1,107 @@
-import { track } from '../../utils/behaviour';
+// @ts-check
+import { dataLayer } from '@abcaustralia/analytics-datalayer';
+import { getOrFetchDocument } from '../../utils/content';
+import { getMeta } from '../../meta';
+import { debug } from '../../utils/logging';
 
-const WT__CLIP_T = 'Odyssey_VideoPlayer';
-const WT__DL = '110';
-
-export const trackProgress = (id, el) => {
-  const sentEvents = {};
-  let eventTimes = {};
+/**
+ * Analytics for video progress.
+ *
+ * @param {string} id The document ID of the video in CoreMedia
+ * @param {HTMLVideoElement} el The video player DOM element
+ */
+export const initialiseVideoAnalytics = (id, el) => {
   let previousTime = 0;
+  let previousPercentage = 0;
+  let duration = el.duration;
+  let playRecorded = false;
+
+  const contentSource = 'coremedia';
+  const contentType = 'video';
+  const uri = `${contentSource}://${contentType}/${id}`;
+
+  const pushEmbedMetadata = async () => {
+    const doc = await getOrFetchDocument(id, getMeta());
+    debug(`analytics: push embed metadata (${uri})`);
+    dataLayer.push({
+      document: {
+        embedded: {
+          [uri]: {
+            title: {
+              title: doc.title
+            },
+            id,
+            contentSource,
+            contentType,
+            uri,
+            streamType: 'ondemand',
+            mediaDuration: doc.duration
+          }
+        }
+      }
+    });
+  };
 
   el.addEventListener('durationchange', () => {
-    const duration = el.duration;
+    duration = el.duration;
+  });
 
-    eventTimes = {
-      V: 2, // Viewed event (2 seconds in)
-      25: 0.25 * duration, // 25% complete event
-      50: 0.5 * duration, // 50% complete event
-      75: 0.75 * duration, // 75% complete event
-      F: 0.98 * duration // Clip finished event
-    };
+  el.addEventListener('play', async () => {
+    if (!playRecorded) {
+      await pushEmbedMetadata();
+    }
+
+    const event = playRecorded ? 'resume' : 'play';
+    debug(`analytics: ${event} (${uri})`);
+    dataLayer.event(event, {
+      uri,
+      elapsedSeconds: Math.floor(previousTime),
+      elapsedPercentage: Math.floor(previousPercentage * 100)
+    });
+    playRecorded = true;
+  });
+
+  el.addEventListener('pause', () => {
+    const event = previousTime >= duration ? 'complete' : 'pause';
+    debug(`analytics: ${event} (${uri})`);
+    dataLayer.event(event, {
+      uri,
+      elapsedSeconds: Math.floor(previousTime),
+      elapsedPercentage: Math.floor(previousPercentage * 100)
+    });
   });
 
   el.addEventListener('timeupdate', () => {
+    if (duration === 0) return;
+
     const currentTime = el.currentTime;
+    const currentPercentage = currentTime / duration;
 
-    // Go through each defined event time and log it if it matches.
-    for (let eventName in eventTimes) {
-      const isCurrentTimeBeyondEventTime = currentTime > eventTimes[eventName];
-
-      if (!sentEvents[eventName] && isCurrentTimeBeyondEventTime) {
-        // Mark this event as sent so we only send it once.
-        sentEvents[eventName] = true;
-
-        // If the diff between calls is more than 5 seconds, we've
-        // probably jumped elsewhere in the video. Skip any event
-        // times in this round since we haven't played through them.
-        if (currentTime - previousTime < 5) {
-          track('video-progress', `${id}_${eventName}`);
-          sendWebtrendsClipEvent(el, eventName);
-        }
-      } else if (sentEvents[eventName] && !isCurrentTimeBeyondEventTime) {
-        // Reset that event if we jump back before it.
-        sentEvents[eventName] = false;
+    // Progress percentages
+    [25, 50, 75, 95, 98].forEach(pct => {
+      if (Math.floor(previousPercentage * 100) < pct && Math.floor(currentPercentage * 100) >= pct) {
+        debug(`analytics: reached ${pct}% (${uri})`);
+        dataLayer.event('progressPercentage', {
+          uri,
+          elapsedSeconds: Math.floor(currentTime),
+          elapsedPercentage: pct
+        });
       }
-    }
+    });
+
+    // Progress time
+    [30].forEach(time => {
+      if (Math.floor(previousTime) < time && Math.floor(currentTime) >= time) {
+        debug(`analytics: reached ${time} seconds (${uri})`);
+        dataLayer.event('progress', {
+          uri,
+          elapsedSeconds: time,
+          elapsedPercentage: Math.floor(currentPercentage * 100)
+        });
+      }
+    });
 
     previousTime = currentTime;
+    previousPercentage = currentPercentage;
   });
 };
-
-function sendWebtrendsClipEvent(el, eventName) {
-  const args = {
-    'DCS.dcsuri': window.location.pathname + '/' + el.src.replace(/.*\//, ''),
-    'WT.clip_ev': eventName,
-    'WT.clip_n': el.getAttribute('aria-label') || document.title,
-    'WT.clip_t': WT__CLIP_T,
-    'WT.dl': WT__DL,
-    'WT.ti': document.title
-  };
-
-  if (window.Webtrends && window.Webtrends.multiTrack) {
-    Webtrends.multiTrack({ args });
-  } else if (window.dcsMultiTrack) {
-    dcsMultiTrack.apply(
-      null,
-      Object.keys(args).reduce((memo, key) => memo.concat([key, args[key]]), [])
-    );
-  }
-}

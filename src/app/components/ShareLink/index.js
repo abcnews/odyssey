@@ -1,7 +1,8 @@
+import { dataLayer } from '@abcaustralia/analytics-datalayer';
 import cn from 'classnames';
 import html from 'nanohtml';
-import { track } from '../../utils/behaviour';
 import styles from './index.lazy.scss';
+import { getMeta } from '../../meta/index';
 
 const PATHS = {
   email:
@@ -13,8 +14,13 @@ const PATHS = {
     'M34 18.003c-.565.856-1.258 1.626-2.048 2.226v.546C31.952 26.46 27.84 33 20.29 33c-2.306 0-4.467-.72-6.29-1.935.323.052.66.07.984.07 1.92 0 3.693-.686 5.097-1.85-1.79-.034-3.306-1.267-3.838-2.98.258.053.516.087.774.087.37 0 .742-.052 1.08-.154-1.87-.394-3.29-2.123-3.29-4.212v-.05c.565.324 1.194.512 1.855.53-1.095-.77-1.82-2.072-1.82-3.56 0-.79.208-1.542.563-2.176 2.016 2.603 5.032 4.315 8.452 4.486-.08-.308-.113-.634-.113-.976 0-2.363 1.84-4.28 4.097-4.28 1.176 0 2.257.514 3 1.352.934-.205 1.805-.547 2.595-1.044-.306.993-.95 1.85-1.79 2.38.823-.103 1.613-.343 2.355-.685'
 };
 
+async function trackShare(socialNetwork) {
+  const { url } = await getMeta();
+  dataLayer.event('share', { socialNetwork, url });
+}
+
 function native({ id, url, title, description }) {
-  navigator.share({ text: description, title, url }).then(() => track('share-link', id));
+  navigator.share({ text: description, title, url }).then(() => trackShare(id));
 }
 
 const ShareLink = ({ link, shouldBlend }) => {
@@ -35,7 +41,7 @@ const ShareLink = ({ link, shouldBlend }) => {
       class="${className}"
       data-id=${link.id}
       href="${link.url}"
-      onclick="${() => track('share-link', link.id)}"
+      onclick="${() => trackShare(link.id)}"
       aria-label="Share this story via ${link.id}"
     >
       ${ShareLinkIcon(link.id)}
