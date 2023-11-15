@@ -15,10 +15,11 @@ let meta = null; // singleton
 function getArticledetail() {
   try {
     // The key is "document" in `newsweb`, and "app" in `newsapp` PL
-    const { document, app } = window.__API__;
+    const { document, app } = window.__NEXT_DATA__?.props?.pageProps;
 
     return (document || app).loaders.articledetail;
   } catch (err) {
+    debug('Error accessing article data from __NEXT_DATA__', err);
     return null;
   }
 }
