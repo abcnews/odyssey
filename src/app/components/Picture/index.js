@@ -52,11 +52,11 @@ const Picture = ({
     const { renditions } = getImages(imageDoc, WIDTHS);
 
     if (renditions && renditions.length) {
-      sources[MQ.SM] = pickRenditionURL(renditions, ratios.sm, 'sm');
-      sources[MQ.MD] = pickRenditionURL(renditions, ratios.md, 'md');
-      sources[MQ.LANDSCAPE_LT_LG] = pickRenditionURL(renditions, ratios.lg, 'md');
-      sources[MQ.LG] = pickRenditionURL(renditions, ratios.lg, 'lg');
-      sources[MQ.XL] = pickRenditionURL(renditions, ratios.xl, 'xl');
+      sources[MQ.SM] = srcsetFromRenditions(renditions, ratios.sm, 'sm');
+      sources[MQ.MD] = srcsetFromRenditions(renditions, ratios.md, 'md');
+      sources[MQ.LANDSCAPE_LT_LG] = srcsetFromRenditions(renditions, ratios.lg, 'md');
+      sources[MQ.LG] = srcsetFromRenditions(renditions, ratios.lg, 'lg');
+      sources[MQ.XL] = srcsetFromRenditions(renditions, ratios.xl, 'xl');
     }
 
     alt = imageDoc.alt;
@@ -66,7 +66,8 @@ const Picture = ({
 
   const pictureEl = html`<picture
     >${Object.entries(sources).map(
-      ([media, srcset]) => html`<source media=${media} srcset=${srcset}></source>`
+      // TODO: Ideally this would have a more nuanced sizes attribute
+      ([media, srcset]) => html`<source media=${media} srcset=${srcset} sizes="100vw"></source>`
     )}</picture
   >`;
 
@@ -96,17 +97,16 @@ const Picture = ({
 
 export default Picture;
 
-function pickRenditionURL(renditions, preferredRatio, preferredSize) {
-  if (!renditions || !renditions.length) {
+function srcsetFromRenditions(renditions, preferredRatio) {
+  if (!renditions) {
     return null;
   }
 
-  const renditionsSortedByWidth = [...renditions].sort((a, b) => b.width - a.width);
-  const preferredWidth = WIDTHS[RATIO_SIZE_WIDTH_INDICES[preferredRatio][preferredSize]];
+  // Filter renditions for preferredRatio
+  const preferredRatioRenditions = renditions.filter(r => r.ratio === preferredRatio);
+  if (preferredRatioRenditions.length === 0) {
+    return null;
+  }
 
-  return (
-    renditionsSortedByWidth.find(({ ratio, width }) => ratio === preferredRatio && width === preferredWidth) ||
-    renditionsSortedByWidth.find(({ ratio }) => ratio === preferredRatio) ||
-    renditionsSortedByWidth[0]
-  ).url;
+  return preferredRatioRenditions.map(r => `${r.url} ${r.width}w`).join(', ');
 }
