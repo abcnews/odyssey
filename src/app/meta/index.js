@@ -178,7 +178,10 @@ export const initMeta = terminusDocument => {
                 break;
               case 'Image':
               case 'ImageProxy':
-                if (!memo.imagesById[id]) {
+                // It's possible for the `media` key to be undefined if it's an ImageProxy
+                // pointing at a deleted image. The `!!media` condition will stop Odyssey
+                // falling over in that case.
+                if (!memo.imagesById[id] && !!media) {
                   memo.images.push(doc);
                   memo.imagesById[id] = doc;
                   memo.imagesByBinaryKey[media.image.primary.binaryKey] = doc;
