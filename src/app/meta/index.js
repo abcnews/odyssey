@@ -15,10 +15,11 @@ let meta = null; // singleton
 function getArticledetail() {
   try {
     // The key is "document" in `newsweb`, and "app" in `newsapp` PL
-    const { document, app } = window.__API__;
+    const { document, app } = window.__NEXT_DATA__?.props?.pageProps;
 
     return (document || app).loaders.articledetail;
   } catch (err) {
+    debug('Error accessing article data from __NEXT_DATA__', err);
     return null;
   }
 }
@@ -177,7 +178,10 @@ export const initMeta = terminusDocument => {
                 break;
               case 'Image':
               case 'ImageProxy':
-                if (!memo.imagesById[id]) {
+                // It's possible for the `media` key to be undefined if it's an ImageProxy
+                // pointing at a deleted image. The `!!media` condition will stop Odyssey
+                // falling over in that case.
+                if (!memo.imagesById[id] && !!media) {
                   memo.images.push(doc);
                   memo.imagesById[id] = doc;
                   memo.imagesByBinaryKey[media.image.primary.binaryKey] = doc;

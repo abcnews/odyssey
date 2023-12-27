@@ -14,8 +14,9 @@ export const SELECTORS = {
   MAIN: 'main#content',
   STORY: [
     '[data-component="Decoy"][data-key="article"]>div>div:not([class])',
+    '[data-component="Decoy"][data-key="article"]>div>div[data-component="QuickReads"]>div:not([class])',
     '[data-component="Decoy"][data-key="article"] [data-component="GridRow"] div:not([class])'
-  ].join(),
+  ].join(','),
   SHARE_TOOLS: '[data-component="FixedHeader"] [data-component="Popover"]',
   BYLINE: 'header [data-component="Heading"]~[data-component="Byline"]',
   WYSIWYG_EMBED: '[data-component="LegacyWysiwyg"],[data-component="RelatedCard"]',

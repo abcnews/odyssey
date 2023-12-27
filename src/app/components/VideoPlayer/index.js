@@ -6,7 +6,7 @@ import { blurImage } from '../Picture/blur';
 import Sizer from '../Sizer';
 import VideoControls from '../VideoControls';
 import { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } from './players';
-import { trackProgress } from './stats';
+import { initialiseVideoAnalytics } from './stats';
 import { getMetadata, hasAudio } from './utils';
 import styles from './index.lazy.scss';
 
@@ -308,7 +308,8 @@ const VideoPlayer = ({
 
     updateUI(player);
 
-    trackProgress(videoId, videoEl);
+    // Initialise analytics
+    initialiseVideoAnalytics(videoId, videoEl);
   }
 
   videoPlayerEl = html`
