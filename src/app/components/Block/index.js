@@ -345,8 +345,8 @@ export const transformSection = section => {
   const [, videoScrollplayPctString] = section.configString.match(SCROLLPLAY_PCT_PATTERN) || [, ''];
   const videoScrollplayPct =
     videoScrollplayPctString.length > 0 && Math.max(0, Math.min(100, +videoScrollplayPctString));
-  const [, blockBackgroundColourString] = section.configString.match(BLOCK_BACKGROUND_COLOUR_PATTERN) || [, '000000'];
-  const blockBackgroundColour = `#${blockBackgroundColourString}`;
+  const [, blockBackgroundColourString] = section.configString.match(BLOCK_BACKGROUND_COLOUR_PATTERN) || [, ''];
+  const blockBackgroundColour = blockBackgroundColourString ? `#${blockBackgroundColourString}` : '';
 
   let transition;
 
