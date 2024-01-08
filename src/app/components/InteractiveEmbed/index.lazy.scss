@@ -31,6 +31,15 @@
   padding: 0;
 }
 
+/* If TikTok embed doesn't load, at least show a 16x9 black box that resembles a phone.
+   If it does load, this element is deleted by Presentation Layer. */
+.InteractiveEmbed[data-provider='tiktok'] blockquote.tiktok-embed section {
+    background: black;
+    padding-top: 150%;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
 .InteractiveEmbed iframe {
   width: 100% !important;
 }
