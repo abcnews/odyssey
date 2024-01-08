@@ -1,7 +1,7 @@
 import { getMountValue, getTrailingMountValue, isMount, isPrefixedMount } from '@abcnews/mount-utils';
 import cn from 'classnames';
 import html from 'nanohtml';
-import { ALIGNMENT_PATTERN, SCROLLPLAY_PCT_PATTERN, VIDEO_MARKER_PATTERN } from '../../constants';
+import { ALIGNMENT_PATTERN, SCROLLPLAY_PCT_PATTERN, VIDEO_MARKER_PATTERN, BLOCK_BACKGROUND_COLOUR_PATTERN } from '../../constants';
 import { enqueue, subscribe } from '../../scheduler';
 import { detach, detectVideoId, getChildImage, isElement } from '../../utils/dom';
 import { getRatios } from '../../utils/misc';
@@ -51,6 +51,7 @@ const Block = ({
   ratios = {},
   shouldVideoPlayOnce,
   videoScrollplayPct,
+  blockBackgroundColour,
   transition,
   videoId
 }) => {
@@ -180,8 +181,14 @@ const Block = ({
     mediaContainerEl.appendChild(mediaCaptionContainerEl);
   }
 
+  // Allow custom override of block background when no transition
+  let backgroundColourStyle = '';
+  if (blockBackgroundColour && (!backgroundsEls || !backgroundsEls.length)) {
+    backgroundColourStyle = `background: ${blockBackgroundColour}`;
+  }
+
   const blockEl = html`
-    <div class="${className}">
+    <div class="${className}" style="${backgroundColourStyle}">
       ${mediaContainerEl}
       ${isPiecemeal
         ? contentEls.reduce((memo, contentEl) => {
@@ -315,7 +322,7 @@ const Block = ({
         });
       }
     });
-  }
+  } 
 
   styles.use();
 
@@ -338,6 +345,8 @@ export const transformSection = section => {
   const [, videoScrollplayPctString] = section.configString.match(SCROLLPLAY_PCT_PATTERN) || [, ''];
   const videoScrollplayPct =
     videoScrollplayPctString.length > 0 && Math.max(0, Math.min(100, +videoScrollplayPctString));
+  const [, blockBackgroundColourString] = section.configString.match(BLOCK_BACKGROUND_COLOUR_PATTERN) || [, '000000'];
+  const blockBackgroundColour = `#${blockBackgroundColourString}`;
 
   let transition;
 
@@ -380,7 +389,8 @@ export const transformSection = section => {
     isLight,
     isPiecemeal,
     shouldVideoPlayOnce,
-    videoScrollplayPct
+    videoScrollplayPct,
+    blockBackgroundColour
   };
 
   // if the 'transition' flag is set then assume its a slide show
@@ -514,7 +524,7 @@ export const transformSection = section => {
     config = section.betweenNodes.reduce((_config, node) => {
       let videoId;
       let imgEl;
-      let interactiveEl;
+      let isTikTokInteractive = false;
 
       if (!_config.videoId && !_config.imgEl && isElement(node)) {
         const mountValue = isMount(node) ? getMountValue(node) : '';
@@ -527,7 +537,7 @@ export const transformSection = section => {
         }
 
         // Only some interactive types are supported
-        const isTikTokInteractive = node.getAttribute('itemid')?.indexOf('tiktok.com/') > -1;
+        isTikTokInteractive = node.getAttribute('itemid')?.indexOf('tiktok.com/') > -1;
 
         if (videoId) {
           _config.videoId = videoId;
@@ -553,7 +563,7 @@ export const transformSection = section => {
         }
       }
 
-      if (!videoId && !imgEl && !interactiveEl && isElement(node)) {
+      if (!videoId && !imgEl && !isTikTokInteractive && isElement(node)) {
         _config.contentEls.push(node);
       }
 

@@ -9,6 +9,7 @@ export const LG_RATIO_PATTERN = /lg(\d+x\d+)/;
 export const XL_RATIO_PATTERN = /xl(\d+x\d+)/;
 export const VIDEO_MARKER_PATTERN = /(?:video|youtube)(\w+)/;
 export const SCROLLPLAY_PCT_PATTERN = /scrollplay(\d+)/;
+export const BLOCK_BACKGROUND_COLOUR_PATTERN = /background([0-9a-fA-F]{6})/;
 
 export const SELECTORS = {
   MAIN: 'main#content',
