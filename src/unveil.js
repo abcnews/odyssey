@@ -5,7 +5,6 @@ html[${ATTR}] {
   max-height: 100%;
 }
 html:not([${ATTR}]) > body {
-  will-change: opacity;
   transition: opacity cubic-bezier(.25, .46, .45, .94) 1s;
 }
 html[${ATTR}] > body {
