@@ -60,6 +60,33 @@ const InteractiveEmbed = ({ url, providerType, alignment, isFull }) => {
       const normalisedHTML = normaliseHTML(data.html, providerType);
       const documentFragment = document.createRange().createContextualFragment(normalisedHTML);
 
+      // For TikTok embeds inside a block, we want to show and hide the embed based on whether its inview or not.
+      //
+      // This will fix the autoplay behaviour (prevents it from finishing the video while off-screen)
+      if (providerType === 'tiktok' && embedContainerEl.parentNode.classList.contains('Block-media')) {
+        const blockContaining = embedContainerEl.parentNode;
+        let hasStarted = false;
+
+        const config = {
+          rootMargin: '0px -100px',
+          threshold: 0
+        }
+
+        const handler = (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) {
+              embedContainerEl.style = 'display: none';
+            } else {
+              embedContainerEl.style = 'display: block';
+            }
+          });
+        }
+
+        const observer = new IntersectionObserver(handler, config);
+        observer.observe(blockContaining);
+      }
+
+      // Insert the embed into the DOM
       embedContainerEl.innerHTML = '';
       embedContainerEl.appendChild(documentFragment);
 
