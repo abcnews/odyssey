@@ -47,6 +47,7 @@ const Block = ({
   isGrouped,
   isLight,
   isPiecemeal,
+  isPhoneFrame,
   isVideoYouTube,
   ratios = {},
   shouldVideoPlayOnce,
@@ -168,9 +169,25 @@ const Block = ({
     }
   }
 
+  // Wrap in extra div to pop it in a phone frame
+  if (isPhoneFrame) {
+    // if (backgroundsEls && backgroundsEls.length) {
+    //   backgroundsEls = html`<div class="phone-frame">${backgroundsEls}</div>`;
+    // } else {
+    mediaEl = html`<div class="phone-frame">${mediaEl}</div>`;
+    // }
+  }
+
+  console.log(backgroundsEls);
+
   let mediaContainerEl;
   if (backgroundsEls && backgroundsEls.length) {
-    mediaContainerEl = html`<div class="${mediaClassName}">${backgroundsEls}</div>`;
+    if (isPhoneFrame) {
+      mediaContainerEl = html`<div class="${mediaClassName}"><div class="phone-frame">${backgroundsEls}</div></div>`;
+    } else {
+      mediaContainerEl = html`<div class="${mediaClassName}">${backgroundsEls}</div>`;
+    }
+
   } else {
     mediaContainerEl = mediaEl ? html`<div class="${mediaClassName}">${mediaEl}</div>` : null;
   }
@@ -190,6 +207,7 @@ const Block = ({
   const blockEl = html`
     <div class="${className}" style="${backgroundColourStyle}">
       ${mediaContainerEl}
+
       ${isPiecemeal
         ? contentEls.reduce((memo, contentEl) => {
             const piecemeallAlignment = contentEl.getAttribute('data-alignment');
@@ -340,6 +358,7 @@ export const transformSection = section => {
   const isGrouped = section.configString.indexOf('grouped') > -1;
   const isLight = section.configString.indexOf('light') > -1;
   const isPiecemeal = section.configString.indexOf('piecemeal') > -1;
+  const isPhoneFrame = section.configString.indexOf('phoneframe') > -1;
   const shouldSupplant = section.configString.indexOf('supplant') > -1;
   const shouldVideoPlayOnce = section.configString.indexOf('once') > -1;
   const [, videoScrollplayPctString] = section.configString.match(SCROLLPLAY_PCT_PATTERN) || [, ''];
@@ -388,6 +407,7 @@ export const transformSection = section => {
     isGrouped,
     isLight,
     isPiecemeal,
+    isPhoneFrame,
     shouldVideoPlayOnce,
     videoScrollplayPct,
     blockBackgroundColour

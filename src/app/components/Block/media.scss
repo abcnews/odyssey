@@ -32,6 +32,11 @@
     [data-provider="tiktok"] {
       top: calc(50% - 361px);
 
+      // Ensure no scroll bar on iframe
+      iframe {
+          max-height: unset !important;
+      }
+
       @media #{$mq-gt-md} {
         width: $unit * 33;
         max-width: 42.5%;
@@ -41,6 +46,37 @@
           left: unset;
         }
       }
+    }
+  }
+
+  .phone-frame {
+    height: 100%;
+    max-height: 85vh;
+
+    filter: drop-shadow(2px 4px 6px gold);
+
+    @media #{$mq-gt-md} {
+      width: $unit * 33;
+      max-width: 42.5%;
+      left: 75px;
+    }
+
+    & > * {
+      position: fixed;
+      max-width: 395px !important;
+      max-height: 85vh;
+      background-color: transparent;
+      border: 0;
+      padding: 0;
+      margin: auto;
+
+      top: calc(50% - 361px);
+      height: 100%;
+      width: 100%;
+
+      // Horizontally center unless on large screen
+      left: 50%;
+      transform: translateX(-50%);
     }
   }
 
