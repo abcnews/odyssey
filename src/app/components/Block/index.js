@@ -180,37 +180,37 @@ const Block = ({
     <div class="${className}">
       ${mediaContainerEl}
       ${isPiecemeal
-        ? contentEls.reduce((memo, contentEl) => {
-            const piecemeallAlignment = contentEl.getAttribute('data-alignment');
-            const piecemealBackgroundIndex = contentEl.getAttribute('data-background-index');
-            const piecemealLightDark = contentEl.getAttribute('data-lightdark');
-            let piecemealContentClassName = contentClassName;
+      ? contentEls.reduce((memo, contentEl) => {
+        const piecemeallAlignment = contentEl.getAttribute('data-alignment');
+        const piecemealBackgroundIndex = contentEl.getAttribute('data-background-index');
+        const piecemealLightDark = contentEl.getAttribute('data-lightdark');
+        let piecemealContentClassName = contentClassName;
 
-            // Override the light/dark from the Block if a marker was given
-            if (piecemealLightDark) {
-              piecemealContentClassName = piecemealContentClassName.replace(
-                /\su-richtext(-invert)?/,
-                ` u-richtext${piecemealLightDark === 'light' ? '' : '-invert'}`
-              );
-            }
+        // Override the light/dark from the Block if a marker was given
+        if (piecemealLightDark) {
+          piecemealContentClassName = piecemealContentClassName.replace(
+            /\su-richtext(-invert)?/,
+            ` u-richtext${piecemealLightDark === 'light' ? '' : '-invert'}`
+          );
+        }
 
-            // Override the left/right from the Block if marker has it
-            if (piecemeallAlignment) {
-              piecemealContentClassName = piecemealContentClassName.replace(
-                /\sis-(left|right)/,
-                `${piecemeallAlignment === 'center' ? '' : ` is-${piecemeallAlignment}`}`
-              );
-            }
+        // Override the left/right from the Block if marker has it
+        if (piecemeallAlignment) {
+          piecemealContentClassName = piecemealContentClassName.replace(
+            /\sis-(left|right)/,
+            `${piecemeallAlignment === 'center' ? '' : ` is-${piecemeallAlignment}`}`
+          );
+        }
 
-            if (memo.length === 0 || !isGrouped || (piecemealBackgroundIndex && piecemealBackgroundIndex.length)) {
-              memo.push(html`<div class="${piecemealContentClassName}">${contentEl}</div>`);
-            } else {
-              memo[memo.length - 1].appendChild(contentEl);
-            }
+        if (memo.length === 0 || !isGrouped || (piecemealBackgroundIndex && piecemealBackgroundIndex.length)) {
+          memo.push(html`<div class="${piecemealContentClassName}">${contentEl}</div>`);
+        } else {
+          memo[memo.length - 1].appendChild(contentEl);
+        }
 
-            return memo;
-          }, [])
-        : contentEls.length > 0
+        return memo;
+      }, [])
+      : contentEls.length > 0
         ? html`<div class="${contentClassName}">${contentEls}</div>`
         : null}
     </div>
@@ -258,29 +258,57 @@ const Block = ({
       }
 
       // get the last marker that has a bottom above the fold
+      const FIXED_HEIGHT_RATIO = 0.8;
       const marker = markers.reduce((activeMarker, currentMarker) => {
-        const { top } = currentMarker.getBoundingClientRect();
-        if (top > client.fixedHeight * 0.8) return activeMarker;
+        const { top, bottom } = currentMarker.getBoundingClientRect();
+
+        // If the item has already gone off the screen, this is not our thing
+        if (bottom < 0 - client.fixedHeight * FIXED_HEIGHT_RATIO) return activeMarker;
+
+        // if the item is currently on the screen, this is our thing
+        if (!activeMarker && top - client.fixedHeight * FIXED_HEIGHT_RATIO < client.fixedHeight) {
+          return currentMarker;
+        }
+
+        // If the item hasn't appeart on screen yet, this is not our thing
+        if (top > client.fixedHeight * FIXED_HEIGHT_RATIO) return activeMarker;
+
 
         return currentMarker;
-      }, markers[0]);
+      }, null);
 
-      const newActiveIndex = parseInt(marker.getAttribute('data-background-index'), 10);
+      /** The index for the current item, or -1 if we're off the screen. */
+      const newActiveIndex = marker ? parseInt(marker.getAttribute('data-background-index'), 10) : -1;
 
       if (activeIndex !== newActiveIndex) {
         previousActiveIndex = activeIndex;
         activeIndex = newActiveIndex;
 
+        const CLASS_ACTIVE = 'play-active';
         enqueue(function _updateBackground() {
           backgroundsEls.forEach((backgroundEl, index) => {
-            // Only keep the previous 1 and next 1 in the context
+            // Add an active class to the currently displayed media.
+            // Used by odyssey-audio-visual plugin to tell what's playing.
+            if (activeIndex === index) {
+              backgroundEl.classList.add(CLASS_ACTIVE);
+            } else {
+              backgroundEl.classList.remove(CLASS_ACTIVE);
+            }
+
+            // completely remove content when we've scrolled out of this block
+            if (activeIndex === -1) {
+              backgroundEl.style.setProperty('display', 'none');
+              return;
+            }
+
+            // Keep the previous and next item in the context so we can fade between them
             if (index >= activeIndex - 1 && index <= activeIndex + 1) {
               backgroundEl.style.removeProperty('display');
             } else {
               backgroundEl.style.setProperty('display', 'none');
             }
 
-            // Transition between the images
+            // Transition between the images/videos
             if (index === activeIndex) {
               backgroundEl.style.removeProperty('visibility');
               backgroundEl.classList.add('transition-in');
