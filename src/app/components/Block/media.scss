@@ -53,7 +53,7 @@
     height: 100%;
     max-height: 85vh;
 
-    filter: drop-shadow(2px 4px 6px gold);
+    filter: drop-shadow(2px 4px 6px white);
 
     @media #{$mq-gt-md} {
       width: $unit * 33;
@@ -65,14 +65,15 @@
       position: fixed;
       max-width: 395px !important;
       max-height: 85vh;
-      background-color: transparent;
+      width: 100%;
+      aspect-ratio: 9 / 16;
+
+      top: calc(50% - 361px);
       border: 0;
       padding: 0;
       margin: auto;
 
-      top: calc(50% - 361px);
-      height: 100%;
-      width: 100%;
+      background-color: transparent;
 
       // Horizontally center unless on large screen
       left: 50%;
