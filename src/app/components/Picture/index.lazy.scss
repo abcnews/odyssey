@@ -6,7 +6,7 @@
   outline-offset: -3px;
   font-family: $font-sans;
 
-  .u-full > & {
+  .u-full>& {
     overflow: hidden;
     height: 100%;
   }
@@ -15,7 +15,7 @@
     visibility: hidden;
   }
 
-  & > .object-fit-polyfill {
+  &>.object-fit-polyfill {
     position: static !important;
   }
 
@@ -41,5 +41,6 @@
   &[loaded] img {
     opacity: 1;
     animation: fadeIn 0.5s;
+    will-change: unset;
   }
 }
