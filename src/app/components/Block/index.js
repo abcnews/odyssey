@@ -270,7 +270,7 @@ const Block = ({
           return currentMarker;
         }
 
-        // If the item hasn't appeart on screen yet, this is not our thing
+        // If the item hasn't appeared on screen yet, this is not our thing
         if (top > client.fixedHeight * FIXED_HEIGHT_RATIO) return activeMarker;
 
 
