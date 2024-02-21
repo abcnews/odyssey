@@ -257,27 +257,25 @@ const Block = ({
         return console.error('Expected to find an active marker during _checkIfBackgroundShouldChange');
       }
 
-      // get the last marker that has a bottom above the fold
-      const FIXED_HEIGHT_RATIO = 0.8;
-      const marker = markers.reduce((activeMarker, currentMarker) => {
-        const { top, bottom } = currentMarker.getBoundingClientRect();
+      let marker;
 
-        // If the item has already gone off the screen, this is not our thing
-        if (bottom < 0 - client.fixedHeight * FIXED_HEIGHT_RATIO) return activeMarker;
+      // If we're outside the block, don't load any background els.
+      const rect = blockEl.getBoundingClientRect();
+      const fixedHeight = client.fixedHeight;
+      const isScrolledAboveBlock = rect.y > fixedHeight;
+      const isScrolledBelowBlock = rect.bottom < 0;
 
-        // if the item is currently on the screen, this is our thing
-        if (!activeMarker && top - client.fixedHeight * FIXED_HEIGHT_RATIO < client.fixedHeight) {
+      if (!isScrolledAboveBlock && !isScrolledBelowBlock) {
+        // If we are inside the block, get the last marker that has a bottom above the fold
+        marker = markers.reduce((activeMarker, currentMarker) => {
+          const { top } = currentMarker.getBoundingClientRect();
+          if (top > fixedHeight * 0.8) return activeMarker;
+
           return currentMarker;
-        }
+        }, markers[0]);
+      }
 
-        // If the item hasn't appeared on screen yet, this is not our thing
-        if (top > client.fixedHeight * FIXED_HEIGHT_RATIO) return activeMarker;
-
-
-        return currentMarker;
-      }, null);
-
-      /** The index for the current item, or -1 if we're off the screen. */
+      /** The index for the current item, or -1 if we're outside the block. */
       const newActiveIndex = marker ? parseInt(marker.getAttribute('data-background-index'), 10) : -1;
 
       if (activeIndex !== newActiveIndex) {
