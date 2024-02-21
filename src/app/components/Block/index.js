@@ -178,8 +178,6 @@ const Block = ({
     // }
   }
 
-  console.log(backgroundsEls);
-
   let mediaContainerEl;
   if (backgroundsEls && backgroundsEls.length) {
     if (isPhoneFrame) {
@@ -513,7 +511,7 @@ export const transformSection = section => {
 
           // Add a non-caption, to keep the background:caption indices in sync
           if (hasAttributedMedia || hasCaptionedMedia) {
-            config.captionEls.push(null);
+            config.captionEls.push(createCaptionFromElement(node, true));
           }
 
           return null;
