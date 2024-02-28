@@ -45,6 +45,7 @@ const Block = ({
   isGrouped,
   isLight,
   isPiecemeal,
+  isPhoneFrame,
   isVideoYouTube,
   ratios = {},
   shouldVideoPlayOnce,
@@ -163,10 +164,21 @@ const Block = ({
     }
   }
 
+
   let mediaContainerEl;
   if (backgroundsEls && backgroundsEls.length) {
-    mediaContainerEl = html`<div class="${mediaClassName}">${backgroundsEls}</div>`;
+    if (isPhoneFrame) {
+      mediaContainerEl = html`<div class="${mediaClassName}"><div class="phone-frame">${backgroundsEls}</div></div>`;
+    } else {
+      mediaContainerEl = html`<div class="${mediaClassName}">${backgroundsEls}</div>`;
+    }
   } else {
+
+    // Wrap in extra div to pop it in a phone frame
+    if (isPhoneFrame) {
+      mediaEl = html`<div class="phone-frame">${mediaEl}</div>`;
+    }
+
     mediaContainerEl = mediaEl ? html`<div class="${mediaClassName}">${mediaEl}</div>` : null;
   }
 
@@ -329,6 +341,7 @@ export const transformSection = section => {
   const isGrouped = section.configString.indexOf('grouped') > -1;
   const isLight = section.configString.indexOf('light') > -1;
   const isPiecemeal = section.configString.indexOf('piecemeal') > -1;
+  const isPhoneFrame = section.configString.indexOf('phoneframe') > -1;
   const shouldSupplant = section.configString.indexOf('supplant') > -1;
   const shouldVideoPlayOnce = section.configString.indexOf('once') > -1;
   const [, videoScrollplayPctString] = section.configString.match(SCROLLPLAY_PCT_PATTERN) || [, ''];
@@ -375,6 +388,7 @@ export const transformSection = section => {
     isGrouped,
     isLight,
     isPiecemeal,
+    isPhoneFrame,
     shouldVideoPlayOnce,
     videoScrollplayPct
   };
@@ -451,7 +465,7 @@ export const transformSection = section => {
 
           // Add a non-caption, to keep the background:caption indices in sync
           if (hasAttributedMedia || hasCaptionedMedia) {
-            config.captionEls.push(null);
+            config.captionEls.push(createCaptionFromElement(node, true));
           }
 
           return null;

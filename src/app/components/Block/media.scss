@@ -29,6 +29,46 @@
     }
   }
 
+  .phone-frame {
+    height: 100%;
+    max-height: 85vh;
+
+    filter: drop-shadow(2px 4px 6px white);
+
+    @media #{$mq-gt-md} {
+      width: $unit * 33;
+      max-width: 42.5%;
+      left: 75px;
+    }
+
+    & > * {
+      position: fixed;
+
+      height: 85vh;
+      top: 12%;
+
+      @media #{$mq-lt-md} {
+        height: 95vh;
+        top: 25px;
+      }
+
+      max-height: 700px !important;
+
+      aspect-ratio: 9 / 16;
+
+      border: 0;
+      padding: 0;
+      margin: auto;
+
+      background-color: transparent;
+      border-radius: 7px;
+
+      // Horizontally center unless on large screen
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+
   .has-inset-media & > :not(.Block-mediaCaption) {
     @media #{$mq-gt-md} {
       position: fixed;
