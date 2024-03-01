@@ -1,5 +1,6 @@
 @import '../../constants';
 
+
 .Block-media {
   overflow: hidden;
   position: absolute;
@@ -30,43 +31,35 @@
   }
 
   .phone-frame {
-    height: 100%;
-    max-height: 85vh;
+    // Horizontally center
+    left: 50%;
+    transform: translateX(-50%);
 
-    filter: drop-shadow(2px 4px 6px white);
+    aspect-ratio: 9 / 16;
 
-    @media #{$mq-gt-md} {
-      width: $unit * 33;
-      max-width: 42.5%;
-      left: 75px;
+    width: unset !important;
+    max-width: 100vw;
+
+    max-height: 700px !important;
+    height: 85vh;
+    top: 12%;
+
+    @media #{$mq-lt-md} {
+      height: 95vh;
+      top: 25px;
     }
 
     & > * {
       position: fixed;
-
-      height: 85vh;
-      top: 12%;
-
-      @media #{$mq-lt-md} {
-        height: 95vh;
-        top: 25px;
-      }
-
-      max-height: 700px !important;
-
-      aspect-ratio: 9 / 16;
-
       border: 0;
       padding: 0;
       margin: auto;
 
       background-color: transparent;
-      border-radius: 7px;
-
-      // Horizontally center unless on large screen
-      left: 50%;
-      transform: translateX(-50%);
+      width: 100%;
+      height: 100%;
     }
+
   }
 
   .has-inset-media & > :not(.Block-mediaCaption) {
@@ -375,3 +368,17 @@
     }
   }
 }
+
+// Phone frame respects 'left' and 'right' option on blocks
+.has-right .Block-media .phone-frame {
+    @media #{$mq-gt-md} {
+      margin-left: calc(200px - 28vw);
+    }
+}
+
+.has-left .Block-media .phone-frame {
+    @media #{$mq-gt-md} {
+      margin-left: 20vw;
+    }
+}
+
