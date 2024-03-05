@@ -10,8 +10,9 @@ import './unveil';
 // this story, so that other interactives can opt to wait for Odyssey to load
 // before trying to touch the DOM (mounts, decoys, etc.)
 window.__IS_ODYSSEY_FORMAT__ = true;
+window.__ODYSSEY_EXEC__ = null;
 
-proxy('odyssey').then(() => {
+const go = async () => {
   // Don't run on IE or old-Edge, which we no longer support
   if (/* IE <= 9 */ (document.all && !window.atob) || /* IE >= 10 */ window.navigator.msPointerEnabled) {
     return debug('Trident-based browsers are not supported');
@@ -44,7 +45,31 @@ proxy('odyssey').then(() => {
   debugWhen(obtainBodyDOMPermitTask, 'Obtained "body" DOM permit');
 
   // ...we can run the app, using the terminus document to initialise metadata
-  Promise.all([importAppModuleTask, fetchArticleDocumentTask, obtainBodyDOMPermitTask]).then(
+  return Promise.all([importAppModuleTask, fetchArticleDocumentTask, obtainBodyDOMPermitTask]).then(
     ([appModule, terminusDocument]) => appModule.default(terminusDocument)
   );
+}
+
+proxy('odyssey').then(() => {
+  /**
+   * In order to fall back when an interactive isn't supported, we need to
+   * intercept Odysesy loading.
+   *
+   * Do this by adding `?defer` to the script src (or for local dev use `/index.js?a=/res/sites/news-projects/odyssey/?defer`)
+   *
+   * Inside your interactive, run your own compatibility checks then initialise
+   * Odyssey with:
+   *
+   * ```js
+   * const go = window.__ODYSSEY_EXEC__;
+   * go();
+   * ```
+   */
+  const shouldDeferUntilInteractiveReady = document.querySelector('script[src*="/res/sites/news-projects/odyssey/"]')?.src?.includes('?defer');
+
+  if (shouldDeferUntilInteractiveReady) {
+    window.__ODYSSEY_EXEC__ = go;
+  } else {
+    go();
+  }
 });
