@@ -66,7 +66,7 @@ proxy('odyssey').then(() => {
    * go();
    * ```
    */
-  const shouldDeferUntilInteractiveReady = document.querySelector('script[src*="/res/sites/news-projects/odyssey/"]')?.src?.includes('?defer');
+  const shouldDeferUntilInteractiveReady = document.querySelector('script[src*="/res/sites/news-projects/odyssey/"][src*="index.js"]')?.src?.includes('?defer');
 
   if (shouldDeferUntilInteractiveReady) {
     window.__ODYSSEY_EXEC__ = go;
