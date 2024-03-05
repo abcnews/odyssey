@@ -12,7 +12,7 @@ import './unveil';
 window.__IS_ODYSSEY_FORMAT__ = true;
 window.__ODYSSEY_EXEC__ = null;
 
-const go = async () => {
+const go = () => {
   // Don't run on IE or old-Edge, which we no longer support
   if (/* IE <= 9 */ (document.all && !window.atob) || /* IE >= 10 */ window.navigator.msPointerEnabled) {
     return debug('Trident-based browsers are not supported');
@@ -55,7 +55,8 @@ proxy('odyssey').then(() => {
    * In order to fall back when an interactive isn't supported, we need to
    * intercept Odysesy loading.
    *
-   * Do this by adding `?defer` to the script src (or for local dev use `/index.js?a=/res/sites/news-projects/odyssey/?defer`)
+   * Do this by adding `?defer` to the Odyssey script src (or for local dev
+   * use `/index.js?a=/res/sites/news-projects/odyssey/?defer`)
    *
    * Inside your interactive, run your own compatibility checks then initialise
    * Odyssey with:
