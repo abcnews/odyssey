@@ -24,6 +24,13 @@
   width: 100% !important;
 }
 
+.InteractiveEmbed[data-provider='tiktok'] blockquote.tiktok-embed {
+  max-width: 325px !important;
+  background-color: transparent;
+  border: 0;
+  padding: 0;
+}
+
 .InteractiveEmbed iframe {
   width: 100% !important;
 }
