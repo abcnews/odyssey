@@ -5,10 +5,10 @@ const SHOULD_ALWAYS_DEBUG = String(window.location.search).indexOf('debug=1') > 
 const logs = [];
 
 export const debug = (...args) => {
-  logs.push(['debug', ...args]);
+  logs.push(['debug', performance.now(), ...args]);
 
   if (getTier() === TIERS.PREVIEW || SHOULD_ALWAYS_DEBUG) {
-    console.debug.apply(null, ['[Odyssey]', ...args]);
+    console.debug.apply(null, [`[Odyssey] (${Math.round(performance.now()) / 1000}s)`, ...args]);
   }
 };
 
@@ -23,7 +23,7 @@ export const conditionalDebug = (condition, trueMsg, falseMsg) => {
 };
 
 export const replay = () => {
-  for (let [method, ...args] of logs) {
-    console[method].apply(null, ['[Odyssey] [replay]', ...args]);
+  for (let [method, timestamp, ...args] of logs) {
+    console[method].apply(null, ['[Odyssey] [replay] (' + Math.round(timestamp) / 1000 + 's)', ...args]);
   }
 };
