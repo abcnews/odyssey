@@ -50,7 +50,6 @@ const Picture = ({
 
   if (imageDoc) {
     const { renditions } = getImages(imageDoc, WIDTHS);
-
     if (renditions && renditions.length) {
       sources[MQ.SM] = srcsetFromRenditions(renditions, ratios.sm, 'sm');
       sources[MQ.MD] = srcsetFromRenditions(renditions, ratios.md, 'md');
@@ -64,8 +63,9 @@ const Picture = ({
 
   const sizerEl = Sizer(ratios);
 
+  const srcsets = Object.entries(sources).filter(([, srcset]) => !!srcset);
   const pictureEl = html`<picture
-    >${Object.entries(sources).map(
+    >${srcsets.map(
       // TODO: Ideally this would have a more nuanced sizes attribute
       ([media, srcset]) => html`<source media=${media} srcset=${srcset} sizes="100vw"></source>`
     )}</picture
