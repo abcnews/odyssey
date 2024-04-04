@@ -1,4 +1,4 @@
-import { getTrailingMountValue, isExactMount, isPrefixedMount, prefixedMountSelector } from '@abcnews/mount-utils';
+import { isMount, selectMounts, getMountValue } from '@abcnews/mount-utils';
 import { MOCK_ELEMENT } from '../constants';
 import { $$, detach, detachAll, substitute } from './dom';
 import { debug } from './logging';
@@ -7,13 +7,13 @@ import { debug } from './logging';
 export const grabPrecedingConfigString = el => {
   const prevEl = el.previousElementSibling || MOCK_ELEMENT;
 
-  if (!isPrefixedMount(prevEl, 'config')) {
+  if (!isMount(prevEl, 'config')) {
     return '';
   }
 
   detach(prevEl);
 
-  return getTrailingMountValue(prevEl, 'config');
+  return getMountValue(prevEl, 'config');
 };
 
 function _substituteSectionWith(el, remainingBetweenNodes) {
@@ -36,18 +36,18 @@ export const getSections = names => {
   names.forEach(name => {
     const endName = `end${name}`;
 
-    $$(prefixedMountSelector(name)).forEach(startNode => {
+    selectMounts(name).forEach(startNode => {
       let nextNode = startNode;
       let isMoreContent = true;
       let hasEncountredUnexpectedStartMount = false;
       const betweenNodes = [];
-      const configString = getTrailingMountValue(startNode, name);
+      const configString = getMountValue(startNode, name);
 
       while (isMoreContent && (nextNode = nextNode.nextSibling) !== null) {
-        if (isExactMount(nextNode, endName)) {
+        if (isMount(nextNode, endName, true)) {
           isMoreContent = false;
         } else {
-          if (isPrefixedMount(nextNode, name)) {
+          if (isMount(nextNode, name)) {
             hasEncountredUnexpectedStartMount = true;
           }
 
@@ -88,8 +88,8 @@ export const getMarkers = names => {
 
   return names.reduce((memo, name) => {
     return memo.concat(
-      $$(prefixedMountSelector(name)).map(node => {
-        const configString = getTrailingMountValue(node, name);
+      selectMounts(name).map(node => {
+        const configString = getMountValue(node, name);
 
         const marker = {
           name,

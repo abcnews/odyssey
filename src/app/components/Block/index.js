@@ -1,4 +1,4 @@
-import { getMountValue, getTrailingMountValue, isMount, isPrefixedMount } from '@abcnews/mount-utils';
+import { getMountValue, isMount } from '@abcnews/mount-utils';
 import cn from 'classnames';
 import html from 'nanohtml';
 import { ALIGNMENT_PATTERN, SCROLLPLAY_PCT_PATTERN, VIDEO_MARKER_PATTERN } from '../../constants';
@@ -164,7 +164,6 @@ const Block = ({
     }
   }
 
-
   let mediaContainerEl;
   if (backgroundsEls && backgroundsEls.length) {
     if (isPhoneFrame) {
@@ -173,7 +172,6 @@ const Block = ({
       mediaContainerEl = html`<div class="${mediaClassName}">${backgroundsEls}</div>`;
     }
   } else {
-
     // Wrap in extra div to pop it in a phone frame
     if (isPhoneFrame) {
       mediaEl = html`<div class="phone-frame">${mediaEl}</div>`;
@@ -471,8 +469,8 @@ export const transformSection = section => {
           return null;
         }
 
-        if (isPrefixedMount(node, 'mark')) {
-          const config = getTrailingMountValue(node, 'mark');
+        if (isMount(node, 'mark')) {
+          const config = getMountValue(node, 'mark');
 
           if (config.indexOf('light') > -1) {
             lightDarkConfig = 'light';
