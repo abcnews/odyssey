@@ -1,4 +1,4 @@
-import { getMountValue, isPrefixedMount } from '@abcnews/mount-utils';
+import { getMountValue } from '@abcnews/mount-utils';
 import cn from 'classnames';
 import html from 'nanohtml';
 import rawHTML from 'nanohtml/raw';
@@ -411,9 +411,7 @@ export const transformSection = section => {
 
       const isQuote = node.matches(SELECTORS.QUOTE);
       const imgEl = getChildImage(node);
-      const videoId = isPrefixedMount(node, 'video')
-        ? getMountValue(node).match(VIDEO_MARKER_PATTERN)[1]
-        : detectVideoId(node);
+      const videoId = isMount(node, 'video') ? getMountValue(node).match(VIDEO_MARKER_PATTERN)[1] : detectVideoId(node);
 
       if (videoId) {
         const videoPlayerEl = VideoPlayer({

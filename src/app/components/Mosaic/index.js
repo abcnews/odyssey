@@ -1,4 +1,4 @@
-import { getMountValue, isPrefixedMount } from '@abcnews/mount-utils';
+import { getMountValue, isMount } from '@abcnews/mount-utils';
 import cn from 'classnames';
 import html from 'nanohtml';
 import { SELECTORS, VIDEO_MARKER_PATTERN } from '../../constants';
@@ -178,9 +178,7 @@ export const transformSection = section => {
 
     const formattedRatio =
       node._descriptor && node._descriptor.props.ratio ? node._descriptor.props.ratio : DEFAULT_FORMATTED_RATIO;
-    const videoId = isPrefixedMount(node, 'video')
-      ? getMountValue(node).match(VIDEO_MARKER_PATTERN)[1]
-      : detectVideoId(node);
+    const videoId = isMount(node, 'video') ? getMountValue(node).match(VIDEO_MARKER_PATTERN)[1] : detectVideoId(node);
     const imgEl = getChildImage(node);
     const isQuote = node.matches(SELECTORS.QUOTE);
 
