@@ -1,4 +1,4 @@
-import { getMountValue } from '@abcnews/mount-utils';
+import { getMountValue, isMount } from '@abcnews/mount-utils';
 import cn from 'classnames';
 import html from 'nanohtml';
 import rawHTML from 'nanohtml/raw';
@@ -124,7 +124,7 @@ const Gallery = ({ items = [], masterCaptionEl }) => {
       (dePx(itemsEl.style.left || '0') / paneWidth) * 100
     ];
 
-    startItemsTransformXPct = parseInt(xPct, 10);
+    startItemsTransformXPct = parseInt(String(xPct), 10);
     startX = event.clientX;
     startY = event.clientY;
     diffX = 0;
