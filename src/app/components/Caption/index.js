@@ -5,13 +5,11 @@ import { $, isElement, isText } from '../../utils/dom';
 import styles from './index.lazy.scss';
 
 /**
- *
- * @param {object} obj
- * @param {string} [obj.url]
- * @param {string} [obj.text]
- * @param {string} [obj.attribution]
- * @param {boolean} [obj.unlink]
- * @returns
+ * @param {Object} config - Config for the caption
+ * @param {string} [config.url] - A URL the caption links to
+ * @param {string} [config.text] - The caption text
+ * @param {string} [config.attribution] - The attribution text
+ * @param {boolean} [config.unlink] - Don't use the URL as a link for the caption
  */
 const Caption = ({ url, text, attribution, unlink }) => {
   if (!text && !attribution) {

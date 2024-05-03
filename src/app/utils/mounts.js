@@ -1,9 +1,33 @@
+// @ts-check
 import { isMount, selectMounts, getMountValue } from '@abcnews/mount-utils';
 import { MOCK_ELEMENT } from '../constants';
-import { $$, detach, detachAll, substitute } from './dom';
+import { detach, detachAll, substitute } from './dom';
 import { debug } from './logging';
 
-// Grabs a #config mount point preceding `el` (if it exists) and returns its trailing value.
+/**
+ * @typedef {object} Section
+ * @prop {string} name
+ * @prop {string} configString,
+ * @prop {Node} startNode
+ * @prop {Node[]} betweenNodes,
+ * @prop {Node} endNode
+ * @prop {Node} [substitutionNode]
+ * @prop {typeof _substituteSectionWith} [substituteWith]
+ */
+
+/**
+ * @typedef {object} Marker
+ * @prop {string} name,
+ * @prop {string} configString,
+ * @prop {Element} node
+ * @prop {typeof substitute} [substituteWith]
+ */
+
+/**
+ * Grabs a #config mount point preceding `el` (if it exists) and returns its trailing value.
+ * @param {Element} el Element for which to get config, if it exists
+ * @returns {string} A config string
+ */
 export const grabPrecedingConfigString = el => {
   const prevEl = el.previousElementSibling || MOCK_ELEMENT;
 
@@ -16,6 +40,13 @@ export const grabPrecedingConfigString = el => {
   return getMountValue(prevEl, 'config');
 };
 
+/**
+ *
+ * @param {Element} el An element to replace the section with
+ * @param {Node[]} remainingBetweenNodes
+ * @this {Section}
+ * @returns
+ */
 function _substituteSectionWith(el, remainingBetweenNodes) {
   remainingBetweenNodes = Array.isArray(remainingBetweenNodes) ? remainingBetweenNodes : this.betweenNodes;
 
@@ -26,6 +57,11 @@ function _substituteSectionWith(el, remainingBetweenNodes) {
   return substitute(this.startNode, el);
 }
 
+/**
+ * Get the sections in the document
+ * @param {string|string[]} names
+ * @returns {Section[]}
+ */
 export const getSections = names => {
   if (typeof names === 'string') {
     names = [names];
@@ -37,6 +73,7 @@ export const getSections = names => {
     const endName = `end${name}`;
 
     selectMounts(name).forEach(startNode => {
+      /** @type {Node | null} */
       let nextNode = startNode;
       let isMoreContent = true;
       let hasEncountredUnexpectedStartMount = false;
@@ -55,6 +92,17 @@ export const getSections = names => {
         }
       }
 
+      if (nextNode === null) {
+        debug('No section closing mount found. Excluding section', {
+          name,
+          configString,
+          startNode,
+          betweenNodes
+        });
+        return;
+      }
+
+      /** @type {Section} */
       const section = {
         name,
         configString,
@@ -81,16 +129,25 @@ export const getSections = names => {
   return sections;
 };
 
+/**
+ *
+ * @param {string|string[]} names
+ * @returns
+ */
 export const getMarkers = names => {
   if (typeof names === 'string') {
     names = [names];
   }
+
+  /** @type {Marker[]} */
+  const initMarkersMemo = [];
 
   return names.reduce((memo, name) => {
     return memo.concat(
       selectMounts(name).map(node => {
         const configString = getMountValue(node, name);
 
+        /** @type {Marker} */
         const marker = {
           name,
           configString,
@@ -102,5 +159,5 @@ export const getMarkers = names => {
         return marker;
       })
     );
-  }, []);
+  }, initMarkersMemo);
 };
