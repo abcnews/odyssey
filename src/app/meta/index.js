@@ -6,25 +6,31 @@ import { fetchDocument } from '../utils/content';
 import { $, $$, detach, isAnchorElement, isElement } from '../utils/dom';
 import { debug } from '../utils/logging';
 
-let meta = null; // singleton
-
-/**
- * @typedef {{id: 'native'|'facebook'|'twitter'|'email'|'linkedin'|'copylink', url: string, title: string}} ShareLink
- */
-
 /**
  * @typedef {Object} MetaData;
  * @prop {Record<string, string | boolean>} _metaDataName
+ * @prop {any} _articledetail
  * @prop {string} url
  * @prop {string} title
  * @prop {string} description
  * @prop {boolean} isNewsApp
  * @prop {boolean} isFuture
+ * @prop {boolean} isDarkMode
+ * @prop {string | null} theme
  * @prop {ShareLink[]} shareLinks
  * @prop {Node[]} bylineNodes
  * @prop {any} infoSourceLogosHTMLFragmentId
  * @prop {any} relatedMedia
  * @prop {any} relatedStoriesIds
+ * @prop {Record<string, unknown>} imagesByBinaryKey
+ * @prop {Record<string, unknown>} mediaById
+ */
+
+/** @type {Partial<MetaData> | null} */
+let meta = null; // singleton
+
+/**
+ * @typedef {{id: 'native'|'facebook'|'twitter'|'email'|'linkedin'|'copylink', url: string, title: string}} ShareLink
  */
 
 function getArticledetail() {
@@ -90,7 +96,8 @@ function getBylineNodes(isFuture) {
 const FACEBOOK = /facebook\.com/;
 const TWITTER = /twitter\.com/;
 const EMAIL = /mailto:/;
-const LINK_QUERY_STRING = '?utm_campaign=abc_news_web&utm_content=link&utm_medium=content_shared&utm_source=abc_news_web';
+const LINK_QUERY_STRING =
+  '?utm_campaign=abc_news_web&utm_content=link&utm_medium=content_shared&utm_source=abc_news_web';
 
 const SHARE_ORDERING = ['facebook', 'linkedin', 'twitter', 'native', 'email', 'copylink'];
 
@@ -108,7 +115,7 @@ function getShareLinks({ url, title, isFuture }) {
   initLinks.push({
     id: 'copylink',
     title,
-    url: `${url}${LINK_QUERY_STRING}`,
+    url: `${url}${LINK_QUERY_STRING}`
   });
 
   return $$('a', $(isFuture ? SELECTORS.SHARE_UTILITY : SELECTORS.SHARE_TOOLS))
@@ -333,7 +340,7 @@ export const lookupImageByAssetURL = url => {
   const { imagesByBinaryKey } = getMeta();
   const [, binaryKey] = url.match(/\/([0-9a-f]{32})\b/) || [];
 
-  if (binaryKey) {
+  if (binaryKey && imagesByBinaryKey) {
     return imagesByBinaryKey[binaryKey];
   }
 

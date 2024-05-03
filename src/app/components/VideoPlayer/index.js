@@ -18,18 +18,17 @@ let hasSubscribed = false;
 
 /**
  *
- * @param {object} obj
- * @param {string} obj.videoId
- * @param {object} obj.ratios
- * @param {string} [obj.title]
- * @param {boolean} [obj.isAmbient]
- * @param {boolean} [obj.isContained]
- * @param {boolean} [obj.isInvariablyAmbient]
- * @param {boolean} [obj.isLoop]
- * @param {boolean} [obj.isMuted]
- * @param {HTMLElement} [obj.videoDuration]
- * @param {number} [obj.scrollplayPct]
- * @returns {HTMLElement}
+ * @param {object} config
+ * @param {string|number} config.videoId The ID of the video to display
+ * @param {object} [config.ratios] A ratios object
+ * @param {string} [config.title] The title of the video
+ * @param {boolean} [config.isAmbient] Should the video be displayed as an ambient video
+ * @param {boolean} [config.isContained] Should the video be contained
+ * @param {boolean} [config.isInvariablyAmbient]
+ * @param {boolean} [config.isLoop] Should the video loop?
+ * @param {boolean} [config.isMuted] Should the video be muted?
+ * @param {number} [config.scrollplayPct] What protion of the video should be visible for play on scroll
+ * @returns
  */
 const VideoPlayer = ({
   videoId,
