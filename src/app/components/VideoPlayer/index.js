@@ -168,6 +168,11 @@ const VideoPlayer = ({
     isAmbient,
     isScrollplay,
     scrollplayPct,
+    /**
+     * Set to `true` by the audio visual plugin to tighten the playback
+     * threshold so videos with audio are less likely to overlap
+     */
+    willPlayAudio: false,
     getTitle: () => title,
     getRect: () => {
       // Fixed players should use their parent's rect, as they're always in the viewport
@@ -218,7 +223,7 @@ const VideoPlayer = ({
 
       videoEl.pause();
     },
-    togglePlayback: (_event, wasScrollBased) => {
+    togglePlayback: (_event, wasScrollBased, newStatus) => {
       if (!wasScrollBased && !player.isAmbient) {
         player.isUserInControl = true;
       }
@@ -262,8 +267,8 @@ const VideoPlayer = ({
       isInitiallyPreferredPortraitContainer && portraitSources.length
         ? portraitSources
         : landscapeSources.length
-        ? landscapeSources
-        : sources;
+          ? landscapeSources
+          : sources;
     const source = candidateSources[isInitiallySmallViewport ? 0 : candidateSources.length - 1];
 
     if (source) {
