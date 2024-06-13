@@ -1,8 +1,10 @@
-import { getTier, TIERS } from '@abcnews/env-utils';
+// @ts-check
+import { getTier, TIERS, getApplication, APPLICATIONS } from '@abcnews/env-utils';
 import { url2cmid } from '@abcnews/url2cmid';
 import { INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID, SELECTORS } from '../constants';
 import { fetchDocument } from '../utils/content';
 import { $, $$, detach } from '../utils/dom';
+import { debug } from '../utils/logging';
 
 const FACEBOOK = /facebook\.com/;
 const TWITTER = /twitter\.com/;
@@ -222,7 +224,8 @@ export const initMeta = terminusDocument => {
       : null,
     // keep isPL around until we can audit Odyssey plugins and ensure none depend on it
     isPL: true,
-    isPreview: getTier() === TIERS.PREVIEW
+    isPreview: getTier() === TIERS.PREVIEW,
+    isFuture: getApplication() === APPLICATIONS.PLNF
   });
 
   return meta;

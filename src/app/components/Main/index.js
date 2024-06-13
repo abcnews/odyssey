@@ -7,7 +7,9 @@ const Main = (childNodes, meta) => {
   const className = cn('Main', 'u-layout', {
     'u-richtext': !meta.isDarkMode,
     'u-richtext-invert': meta.isDarkMode,
-    'has-caption-attributions': meta.hasCaptionAttributions
+    'has-caption-attributions': meta.hasCaptionAttributions,
+    'is-future': meta.isFuture,
+    'is-legacy': !meta.isFuture
   });
 
   const el = html`<main class="${className}">${childNodes}</main>`;
