@@ -3,7 +3,7 @@ import { getTier, TIERS, getApplication, APPLICATIONS } from '@abcnews/env-utils
 import { url2cmid } from '@abcnews/url2cmid';
 import { INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID, SELECTORS } from '../constants';
 import { fetchDocument } from '../utils/content';
-import { $, $$, detach } from '../utils/dom';
+import { $, $$, detach, isAnchorElement, isElement } from '../utils/dom';
 import { debug } from '../utils/logging';
 
 const FACEBOOK = /facebook\.com/;
@@ -13,6 +13,10 @@ const EMAIL = /mailto:/;
 const SHARE_ORDERING = ['facebook', 'twitter', 'native', 'email'];
 
 let meta = null; // singleton
+
+/**
+ * @typedef {{id: 'native'|'facebook'|'twitter'|'email', url: string, title: string}} ShareLink
+ */
 
 function getArticledetail() {
   try {
@@ -26,12 +30,21 @@ function getArticledetail() {
   }
 }
 
+/**
+ * Get the content of a named data attribute from the first element with that attribute
+ * @param {string} name
+ * @returns {string|null}
+ */
 function getDataAttribute(name) {
   const el = $(`[data-${name}]`);
 
   return el ? el.getAttribute(`data-${name}`) : null;
 }
 
+/**
+ * Get DOM elements that make up the byline
+ * @returns {ChildNode[]}
+ */
 function getBylineNodes() {
   const bylineEl = $(SELECTORS.BYLINE);
 
@@ -41,7 +54,11 @@ function getBylineNodes() {
 
   const clonedBylineEl = bylineEl.cloneNode(true);
 
-  $$('[data-tooltip-uri]', clonedBylineEl).forEach(tooltipEl => tooltipEl.parentElement.removeChild(tooltipEl));
+  if (!isElement(clonedBylineEl)) {
+    return [];
+  }
+
+  $$('[data-tooltip-uri]', clonedBylineEl).forEach(tooltipEl => tooltipEl.parentElement?.removeChild(tooltipEl));
   $$('a', clonedBylineEl).forEach(linkEl => {
     linkEl.removeAttribute('class');
     linkEl.removeAttribute('data-component');
@@ -56,42 +73,55 @@ function getBylineNodes() {
   );
 }
 
-function getShareLinks({ url, title }) {
-  return $$('a', $(SELECTORS.SHARE_TOOLS))
-    .reduce(
-      (links, linkEl) => {
-        const url = linkEl.href;
-        let link;
+/**
+ * Generate share links
+ * @param {{url: string; title: string, isFuture: boolean}} options The title and URL of the article to generate share links for
+ * @returns {ShareLink[]}
+ */
+function getShareLinks({ url, title, isFuture }) {
+  /** @type {ShareLink[]} */
+  const initLinks =
+    // @ts-ignore Types claim navigator.share always exists, but it doesn't.
+    navigator.share ? [{ id: 'native', url, title }] : [];
 
-        switch (url) {
-          case (url.match(FACEBOOK) || {}).input:
-            link = { id: 'facebook', url };
-            break;
-          case (url.match(TWITTER) || {}).input:
-            link = { id: 'twitter', url };
-            break;
-          case (url.match(EMAIL) || {}).input:
-            if (!navigator.share) {
-              link = { id: 'email', url };
-            }
-            break;
-          default:
-            break;
-        }
+  return $$('a', $(isFuture ? SELECTORS.SHARE_UTILITY : SELECTORS.SHARE_TOOLS))
+    .reduce((links, linkEl) => {
+      if (!isAnchorElement(linkEl)) return links;
 
-        if (link && !links.find(({ id }) => id === link.id)) {
-          links.push(link);
-        }
+      const url = linkEl.href;
 
-        return links;
-      },
-      navigator.share ? [{ id: 'native', url, title }] : []
-    )
+      /** @type {ShareLink|undefined} */
+      let link;
+
+      switch (url) {
+        case (url.match(FACEBOOK) || {}).input:
+          link = { id: 'facebook', url, title };
+          break;
+        case (url.match(TWITTER) || {}).input:
+          link = { id: 'twitter', url, title };
+          break;
+        case (url.match(EMAIL) || {}).input:
+          if (!navigator.share) {
+            link = { id: 'email', url, title };
+          }
+          break;
+        default:
+          break;
+      }
+
+      if (link && !links.find(({ id }) => id === link.id)) {
+        links.push(link);
+      }
+
+      return links;
+    }, initLinks)
     .sort((a, b) => SHARE_ORDERING.indexOf(a.id) - SHARE_ORDERING.indexOf(b.id));
 }
 
 function getRelatedStoriesIds() {
-  return $$('[data-component="RelatedStories"] [data-component="RelatedStoriesCard"] a').map(el => url2cmid(el.href));
+  return $$('[data-component="RelatedStories"] [data-component="RelatedStoriesCard"] a').map(
+    el => isAnchorElement(el) && url2cmid(el.href)
+  );
 }
 
 function getRelatedMedia() {
@@ -114,6 +144,20 @@ export const initMeta = terminusDocument => {
     throw new Error('Cannot create meta more than once.');
   }
 
+  /**
+   * @typedef {Object} MetaData;
+   * @prop {Record<string, string | boolean>} _metaDataName
+   * @prop {string} url
+   * @prop {string} title
+   * @prop {string} description
+   * @prop {boolean} isNewsApp
+   * @prop {boolean} isFuture
+   * @prop {ShareLink[]} shareLinks
+   */
+
+  /**
+   * @type {((meta: Partial<MetaData>) => Partial<MetaData> | null)[]}
+   */
   const mixins = [
     // Add or update props defined by the 'meta.data.name' context setting
     ({ url, title, description }) => {
@@ -147,8 +191,11 @@ export const initMeta = terminusDocument => {
       };
     },
     // Parse share links from the DOM, using url & title props
-    ({ url, title }) => ({
-      shareLinks: getShareLinks({ url, title })
+    ({ url, title, isFuture }) => ({
+      shareLinks:
+        typeof url !== 'undefined' && typeof title !== 'undefined' && typeof isFuture !== 'undefined'
+          ? getShareLinks({ url, title, isFuture })
+          : []
     }),
     // Parse remaining props from the DOM, sometimes using defaults
     () => ({

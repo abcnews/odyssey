@@ -18,6 +18,7 @@ export const SELECTORS = {
     '[data-component="Decoy"][data-key="article"] [data-component="GridRow"] div:not([class])'
   ].join(','),
   SHARE_TOOLS: '[data-component="FixedHeader"] [data-component="Popover"]',
+  SHARE_UTILITY: '[data-component=ShareUtility]', // Future News
   BYLINE: 'header [data-component="Heading"]~[data-component="Byline"]',
   WYSIWYG_EMBED: '[data-component="LegacyWysiwyg"],[data-component="RelatedCard"]',
   QUOTE: '[data-component="Blockquote"],[data-component="EmphasisedText"],[data-component="Pullquote"]'
