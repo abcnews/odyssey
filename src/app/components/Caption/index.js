@@ -4,6 +4,15 @@ import { MOCK_ELEMENT, MOCK_TEXT } from '../../constants';
 import { $, isElement, isText } from '../../utils/dom';
 import styles from './index.lazy.scss';
 
+/**
+ *
+ * @param {object} obj
+ * @param {string} [obj.url]
+ * @param {string} [obj.text]
+ * @param {string} [obj.attribution]
+ * @param {boolean} [obj.unlink]
+ * @returns
+ */
 const Caption = ({ url, text, attribution, unlink }) => {
   if (!text && !attribution) {
     return null;

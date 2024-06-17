@@ -16,6 +16,20 @@ const DEFAULT_RATIO = '16x9';
 
 let hasSubscribed = false;
 
+/**
+ *
+ * @param {object} obj
+ * @param {string} obj.videoId
+ * @param {object} obj.ratios
+ * @param {string} [obj.title]
+ * @param {boolean} [obj.isAmbient]
+ * @param {boolean} [obj.isContained]
+ * @param {boolean} [obj.isInvariablyAmbient]
+ * @param {boolean} [obj.isLoop]
+ * @param {boolean} [obj.isMuted]
+ * @param {number} [obj.scrollplayPct]
+ * @returns {HTMLElement}
+ */
 const VideoPlayer = ({
   videoId,
   ratios = {},
@@ -267,8 +281,8 @@ const VideoPlayer = ({
       isInitiallyPreferredPortraitContainer && portraitSources.length
         ? portraitSources
         : landscapeSources.length
-          ? landscapeSources
-          : sources;
+        ? landscapeSources
+        : sources;
     const source = candidateSources[isInitiallySmallViewport ? 0 : candidateSources.length - 1];
 
     if (source) {
