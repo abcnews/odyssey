@@ -9,6 +9,7 @@ $color-white-transparent-30: rgba(255, 255, 255, 0.3);
 $color-white-transparent-45: rgba(255, 255, 255, 0.45);
 $color-white-transparent-60: rgba(255, 255, 255, 0.6);
 $color-white-transparent-75: rgba(255, 255, 255, 0.75);
+$color-white-transparent-85: rgba(255, 255, 255, 0.85);
 $color-white-transparent-90: rgba(255, 255, 255, 0.9);
 
 $color-black: #000;
@@ -112,3 +113,8 @@ $mq-pl-lt-md: '(max-width: #{$bp-pl-md - 1px})';
 
 $size-control: $unit * 2.5;
 $size-control-margin: $unit * 0.1875;
+
+// Future News
+$color-surface-utility: #f1f2f3;
+$radius: calc($unit * 0.75);
+$radius-images: 0;

@@ -30,7 +30,7 @@ const Header = ({
 }) => {
   isFloating = isFloating || (isLayered && !imgEl && !videoId);
   isLayered = isLayered || isFloating;
-  isDark = isLayered || typeof isDark === 'boolean' ? isDark : meta.isDarkMode;
+  isDark = typeof isDark === 'boolean' ? isDark : meta.isDarkMode;
   isAbreast = !isFloating && !isLayered && (imgEl || videoId) && isAbreast;
 
   const className = cn(
@@ -211,7 +211,7 @@ export const transformSection = (section, meta) => {
   const isFloating = section.configString.indexOf('floating') > -1;
   const isLayered = isFloating || section.configString.indexOf('layered') > -1;
   const isDark =
-    isLayered || section.configString.indexOf('dark') > -1
+    (isLayered && !meta.isFuture) || section.configString.indexOf('dark') > -1
       ? true
       : section.configString.indexOf('light') > -1
       ? false

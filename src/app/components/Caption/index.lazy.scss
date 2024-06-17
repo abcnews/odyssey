@@ -74,3 +74,29 @@
     white-space: normal;
   }
 }
+
+.is-future {
+  .Caption {
+    margin-top: $unit / 2;
+    margin-bottom: $unit / 2;
+    margin-left: 0;
+    margin-right: 0;
+    padding: $unit * 0.75 $unit;
+    border-radius: $radius;
+    background-color: $color-surface-utility;
+
+    @media #{$mq-lt-lg} {
+      margin-left: $layout-fluid-padding;
+      margin-right: $layout-fluid-padding;
+    }
+  }
+}
+
+.is-dark-mode {
+  .is-future {
+    .Caption {
+      background-color: $color-darkBg;
+      background-color: var(--bg, #{$color-darkBg});
+    }
+  }
+}

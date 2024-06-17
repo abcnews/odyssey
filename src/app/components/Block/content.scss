@@ -61,6 +61,17 @@
     margin: 0 !important;
     padding: $unit * 0.75 $unit * 1.75;
 
+    .is-future & {
+      &:first-child {
+        border-start-start-radius: $radius;
+        border-start-end-radius: $radius;
+      }
+      &:last-child {
+        border-end-end-radius: $radius;
+        border-end-start-radius: $radius;
+      }
+    }
+
     @media #{$mq-gt-md} {
       padding: $unit * 1.125 $unit * 1.75;
     }
