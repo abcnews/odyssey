@@ -1,11 +1,17 @@
 @import '../../constants';
 
 [class*='u-richtext'] {
+
+  &.is-legacy {
+    > * {
+      font-family: $font-serif;
+    }
+  }
+
   > * {
     margin-top: 0;
     margin-bottom: $unit * 1.5;
     color: $color-grey-900;
-    font-family: $font-serif;
 
     @media #{$mq-md} {
       margin-bottom: $unit * 2;
