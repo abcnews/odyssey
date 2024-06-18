@@ -73,7 +73,6 @@
     align-items: center;
     cursor: pointer;
     background: var(--transparent-colour);
-    // background: var(--address-bar-fill, var(--tint-6));
     min-width: 0;
     border-radius: $radius * 2;
   }
@@ -96,7 +95,6 @@
     position: relative;
     button {
       display: flex;
-      // padding: 0.75rem 1.2rem 0.75rem 1.5rem;
       padding: var(--nw-spacing-3) var(--nw-spacing-5);
 
       min-width: max-content;

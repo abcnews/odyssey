@@ -2,6 +2,20 @@
 
 .isFuture {
 
+  @media (max-width: 33.9375em) {
+    .SharePopover {
+      position: fixed !important;
+      transform: none !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      overflow-y: scroll;
+      overflow-x: hidden;
+      border-radius: 0 !important;
+    }
+  }
+
   .SharePopover {
     position: absolute;
     width: 25em;
@@ -76,16 +90,17 @@
       a:hover {
         background-color: #fff;
       }
-      a:visited {
-        color: #000;
-      }
       a {
         font-weight: 700;
         font-size: 1rem;
         line-height: 1.5rem;
 
         background-color: var(--bar-primary-colour);
+
         color: #000;
+        span {
+          color: #000 !important;
+        }
 
         padding: var(--nw-spacing-3) var(--nw-spacing-4);
         border-radius: var(--nw-spacing-6);
