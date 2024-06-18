@@ -12,7 +12,6 @@
     padding: $unit * 0.5 $unit * 2;
     max-width: calc(100% - #{$unit});
     background-color: $color-black-transparent-30;
-    color: $color-white !important;
     font-family: $font-sans;
     font-size: 1.375rem;
     font-weight: bold;
@@ -22,14 +21,48 @@
     transition: filter 0.25s;
     will-change: opacity; // create stacking context
 
+    .is-legacy & {
+      color: $color-white !important;
+    }
+
+    .is-future & {
+      text-transform: none;
+      background-color: var(--nw-colour-button-primary);
+      color: var(--nw-colour-text-inverse);
+      border-radius: var(--nw-pill-radius, var(--nw-radius-full));
+      font-size: $unit;
+      font-weight: 700;
+      border: 1px solid transparent;
+      padding: var(--nw-pill-padding-top, var(--nw-spacing-3)) var(--nw-pill-padding-right, var(--nw-spacing-8))
+        var(--nw-pill-padding-bottom, var(--nw-spacing-3)) var(--nw-pill-padding-left, var(--nw-spacing-8));
+
+      &:visited {
+        color: var(--nw-colour-text-inverse);
+      }
+
+      &:hover {
+        filter: none;
+        text-decoration: none;
+        background-color: var(--nw-colour-button-primary-hover);
+        color: var(--nw-colour-text-on-colour-inverse);
+      }
+
+      &:focus {
+        outline: none;
+        text-decoration: none;
+        box-shadow: rgb(255, 255, 255) 0px 0px 0px 2px, rgb(0, 88, 204) 0px 0px 0px 4px;
+      }
+    }
+
     .u-richtext-invert & {
       background-color: $color-white-transparent-30;
     }
 
-    &:visited {
-      color: $color-white !important;
+    .is-legacy & {
+      &:visited {
+        color: $color-white !important;
+      }
     }
-
     &:hover,
     &:focus {
       text-decoration: none;
