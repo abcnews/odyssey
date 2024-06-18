@@ -87,13 +87,12 @@
         margin-right: 1rem;
       }
 
-      a:hover {
-        background-color: #fff;
-      }
-      a {
+
+      a, button {
         font-weight: 700;
         font-size: 1rem;
         line-height: 1.5rem;
+        box-shadow: none;
 
         background-color: var(--bar-primary-colour);
 
@@ -114,6 +113,7 @@
         touch-action: manipulation;
 
         svg {
+          color: inherit;
           font-size: 1.5rem;
           width: 1.5rem;
           height: 1.5rem;
@@ -126,6 +126,14 @@
           letter-spacing: .09375rem;
         }
       }
+
+      button:focus {
+        text-decoration: underline;
+      }
+      a:hover, button:hover {
+        background-color: #fff;
+      }
+
     }
   }
 

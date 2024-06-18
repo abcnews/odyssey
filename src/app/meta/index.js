@@ -6,16 +6,10 @@ import { fetchDocument } from '../utils/content';
 import { $, $$, detach, isAnchorElement, isElement } from '../utils/dom';
 import { debug } from '../utils/logging';
 
-const FACEBOOK = /facebook\.com/;
-const TWITTER = /twitter\.com/;
-const EMAIL = /mailto:/;
-
-const SHARE_ORDERING = ['facebook', 'twitter', 'native', 'email'];
-
 let meta = null; // singleton
 
 /**
- * @typedef {{id: 'native'|'facebook'|'twitter'|'email', url: string, title: string}} ShareLink
+ * @typedef {{id: 'native'|'facebook'|'twitter'|'email'|'linkedin'|'copylink', url: string, title: string}} ShareLink
  */
 
 function getArticledetail() {
@@ -73,6 +67,13 @@ function getBylineNodes() {
   );
 }
 
+const FACEBOOK = /facebook\.com/;
+const TWITTER = /twitter\.com/;
+const EMAIL = /mailto:/;
+const LINK_QUERY_STRING = '?utm_campaign=abc_news_web&utm_content=link&utm_medium=content_shared&utm_source=abc_news_web';
+
+const SHARE_ORDERING = ['facebook', 'linkedin', 'twitter', 'native', 'email', 'copylink'];
+
 /**
  * Generate share links
  * @param {{url: string; title: string, isFuture: boolean}} options The title and URL of the article to generate share links for
@@ -83,6 +84,12 @@ function getShareLinks({ url, title, isFuture }) {
   const initLinks =
     // @ts-ignore Types claim navigator.share always exists, but it doesn't.
     navigator.share ? [{ id: 'native', url, title }] : [];
+
+  initLinks.push({
+    id: 'copylink',
+    title,
+    url: `${url}${LINK_QUERY_STRING}`,
+  });
 
   return $$('a', $(isFuture ? SELECTORS.SHARE_UTILITY : SELECTORS.SHARE_TOOLS))
     .reduce((links, linkEl) => {
