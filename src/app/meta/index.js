@@ -12,6 +12,21 @@ let meta = null; // singleton
  * @typedef {{id: 'native'|'facebook'|'twitter'|'email'|'linkedin'|'copylink', url: string, title: string}} ShareLink
  */
 
+/**
+ * @typedef {Object} MetaData;
+ * @prop {Record<string, string | boolean>} _metaDataName
+ * @prop {string} url
+ * @prop {string} title
+ * @prop {string} description
+ * @prop {boolean} isNewsApp
+ * @prop {boolean} isFuture
+ * @prop {ShareLink[]} shareLinks
+ * @prop {Node[]} bylineNodes
+ * @prop {any} infoSourceLogosHTMLFragmentId
+ * @prop {any} relatedMedia
+ * @prop {any} relatedStoriesIds
+ */
+
 function getArticledetail() {
   try {
     // The key is "document" in `newsweb`, and "app" in `newsapp` PL
@@ -37,9 +52,10 @@ function getDataAttribute(name) {
 
 /**
  * Get DOM elements that make up the byline
+ * @param {boolean} isFuture
  * @returns {ChildNode[]}
  */
-function getBylineNodes() {
+function getBylineNodes(isFuture) {
   const bylineEl = $(SELECTORS.BYLINE);
 
   if (!bylineEl) {
@@ -50,6 +66,10 @@ function getBylineNodes() {
 
   if (!isElement(clonedBylineEl)) {
     return [];
+  }
+
+  if (isFuture) {
+    return [clonedBylineEl];
   }
 
   $$('[data-tooltip-uri]', clonedBylineEl).forEach(tooltipEl => tooltipEl.parentElement?.removeChild(tooltipEl));
@@ -135,7 +155,8 @@ function getRelatedMedia() {
   const relatedMediaEl = $(
     [
       '[data-component="FeatureMedia"] [data-component="Figure"]',
-      '[data-component="FeatureMedia"] [data-component="WebContentWarning"]'
+      '[data-component="FeatureMedia"] [data-component="WebContentWarning"]',
+      '[data-component="ArticleHeadline"] [data-component="Figure"]' // Future News
     ].join()
   );
 
@@ -146,21 +167,35 @@ function getRelatedMedia() {
   return detach(relatedMediaEl);
 }
 
+/**
+ * Grab the metadata nodes (published time, etc).
+ * Only relevant to Future News
+ * @param {boolean} isFuture
+ */
+function getMetadataNodes(isFuture) {
+  if (!isFuture) {
+    return [];
+  }
+
+  const metadataEl = $('header [data-component="ArticleHeadline"] [class^="ArticleHeadlineTitle_meta"]');
+  console.log('metadataEl :>> ', metadataEl);
+  if (!metadataEl) {
+    return [];
+  }
+
+  const clonedMetadataEl = metadataEl.cloneNode(true);
+
+  if (!isElement(clonedMetadataEl)) {
+    return [];
+  }
+
+  return [clonedMetadataEl];
+}
+
 export const initMeta = terminusDocument => {
   if (meta) {
     throw new Error('Cannot create meta more than once.');
   }
-
-  /**
-   * @typedef {Object} MetaData;
-   * @prop {Record<string, string | boolean>} _metaDataName
-   * @prop {string} url
-   * @prop {string} title
-   * @prop {string} description
-   * @prop {boolean} isNewsApp
-   * @prop {boolean} isFuture
-   * @prop {ShareLink[]} shareLinks
-   */
 
   /**
    * @type {((meta: Partial<MetaData>) => Partial<MetaData> | null)[]}
@@ -205,8 +240,9 @@ export const initMeta = terminusDocument => {
           : []
     }),
     // Parse remaining props from the DOM, sometimes using defaults
-    () => ({
-      bylineNodes: getBylineNodes(),
+    meta => ({
+      bylineNodes: getBylineNodes(meta.isFuture || false),
+      metadataNodes: getMetadataNodes(meta.isFuture || false),
       infoSourceLogosHTMLFragmentId: getDataAttribute('info-source-logos') || INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID,
       relatedMedia: getRelatedMedia(),
       relatedStoriesIds: getRelatedStoriesIds()
