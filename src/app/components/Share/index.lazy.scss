@@ -15,3 +15,118 @@
     color: $color-white-transparent-75;
   }
 }
+
+
+.is-future {
+
+  .ShareBar {
+    --transparent-colour: #a0beeb4d;
+
+    --bar-colour: #a0beeb4d;
+    --bar-primary-colour: var(--nw-colour-theme-primary);
+    --bar-button-secondary: var(--nw-colour-theme-secondary);
+
+    display: flex;
+    gap: .5rem;
+
+    button {
+      background: var(--bar-primary-colour);
+      font-family: var(--dls-font-stack-sans);
+
+      font-size: .875rem;
+      font-weight: 700;
+
+      padding: 0.75rem 1.1rem 0.45rem;
+      margin: 0;
+      text-align: center;
+      vertical-align: middle;
+      cursor: pointer;
+      border: none;
+      transition: var(--dls-link-transition);
+
+      touch-action: manipulation;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+
+      border-radius: $radius * 2;
+      box-shadow: none;
+    }
+
+    button:hover {
+      background: #000;
+      color: #fff;
+    }
+  }
+
+  .ShareBarLinkButton {
+    background-color: var(--nw-colour-button-primary);
+    color: #000;
+
+    svg {
+      font-size: 1.4rem;
+    }
+  }
+
+  .ShareBarUrl {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background: var(--transparent-colour);
+    min-width: 0;
+    border-radius: $radius * 2;
+  }
+
+  .ShareBarText {
+    padding: .5rem 1rem;
+    font-weight: 700;
+    font-size: .9rem;
+
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+
+
+  .ShareBannerButton {
+    position: relative;
+    button {
+      display: flex;
+      padding: var(--nw-spacing-3) var(--nw-spacing-5);
+
+      min-width: max-content;
+
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+
+      box-shadow: 
+          0 1px 4px var(--black-10-opacity),
+          0 1px 2px var(--black-05-opacity);
+
+      svg {
+        font-size: 1.4rem;
+        vertical-align: middle;
+      }
+    }
+
+    .ShareButtonTextLong {
+      display: none;
+    }
+
+    @media (min-width: 48em) {
+      .ShareButtonTextShort {
+        display: none;
+      }
+      .ShareButtonTextLong {
+        display: initial;
+      }
+    }
+  }
+
+}
