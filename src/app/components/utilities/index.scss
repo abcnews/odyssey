@@ -1,3 +1,6 @@
+@layer odyssey {
+  @layer legacy, future;
+}
 @import './blend-luminosity';
 @import './cta';
 @import './dropcap';

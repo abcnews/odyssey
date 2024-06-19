@@ -117,15 +117,18 @@ const Header = ({
       : null
   );
 
+  console.log('meta.clonedMetadataEl :>> ', meta.clonedMetadataEl);
+
   const contentEls = [titleEl]
     .concat(clonedMiscContentEls)
     .concat([
       clonedBylineNodes ? html`<p class="Header-byline">${clonedBylineNodes}</p>` : null,
       infoSourceEl,
-      updated
+      meta.isFuture ? meta.metadataNodes : null,
+      updated && !meta.isFuture
         ? html`<div class="Header-updated">Updated <time datetime="${updated.datetime}">${updated.text}</time></div>`
         : null,
-      published
+      published && !meta.isFuture
         ? html`
             <div class="Header-published">
               Published <time datetime="${published.datetime}">${published.text}</time>

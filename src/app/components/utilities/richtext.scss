@@ -1,13 +1,13 @@
 @import '../../constants';
 
 [class*='u-richtext'] {
-
-  &.is-legacy {
-    > * {
-      font-family: $font-serif;
+  @layer odyssey.legacy {
+    &.is-legacy {
+      > * {
+        font-family: $font-serif;
+      }
     }
   }
-
   > * {
     margin-top: 0;
     margin-bottom: $unit * 1.5;

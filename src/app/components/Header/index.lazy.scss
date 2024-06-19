@@ -125,55 +125,100 @@ $abreastChildSpacing: $unit * 2.5;
 
 .Header-content {
   position: relative;
-  margin-left: $layout-fluid-padding;
-  margin-right: $layout-fluid-padding;
-  padding: $unit * 1.25 0;
 
-  .is-legacy & {
-    text-align: center;
+  @layer odyssey.legacy {
+    .is-legacy & {
+      margin-left: $layout-fluid-padding;
+      margin-right: $layout-fluid-padding;
+      padding: $unit * 1.25 0;
+      text-align: center;
+    }
+  }
+  @layer odyssey.future {
+    .is-future & {
+      margin: $unit;
+      @media #{$mq-md} {
+        margin: $unit 0;
+      }
+      @media #{$mq-gt-md} {
+        margin: $unit auto;
+        width: calc($layout-fixed * 0.666);
+        padding: $layout-fixed-padding;
+      }
+    }
   }
 
   @media #{$mq-md} {
-    margin-left: calc(#{cells(1)} + #{$layout-fluid-padding});
-    margin-right: calc(#{cells(1)} + #{$layout-fluid-padding});
-  }
-
-  @media #{$mq-gt-md} {
-    margin-left: auto;
-    margin-right: auto;
-    width: $layout-fixed - $layout-fixed-gutter;
-  }
-
-  @media #{$mq-gt-md} {
-    .is-abreast > & {
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      align-self: flex-end;
-      flex-grow: 0;
-      width: $unit * 25;
-
-      & > * {
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        width: 100%;
+    @layer odyssey.future {
+      .is-future & {
+        margin-left: calc(#{cells(1)} + #{$layout-fluid-padding});
+        margin-right: calc(#{cells(1)} + #{$layout-fluid-padding});
       }
+    }
+  }
 
-      & > h1 {
-        text-align: left;
+  @media #{$mq-gt-md} {
+    @layer odyssey.future {
+      margin-left: auto;
+      margin-right: auto;
+      width: $layout-fixed - $layout-fixed-gutter;
+
+      .is-abreast > & {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        align-self: flex-end;
+        flex-grow: 0;
+        width: $unit * 25;
+
+        & > * {
+          padding-left: 0 !important;
+          padding-right: 0 !important;
+          width: 100%;
+        }
+
+        & > h1 {
+          text-align: left;
+        }
       }
     }
   }
 
   .is-layered > & {
-    background-image: $gradient-black-vertical-0-45-100-75;
-    .is-future & {
-      border-radius: $radius $radius 0 0;
-      @media #{$mq-gt-md} {
-        border-radius: calc($radius * 2) calc($radius * 2) 0 0;
+    @layer odyssey.legacy {
+      .is-legacy & {
+        background-image: $gradient-black-vertical-0-45-100-75;
       }
-      background-image: none;
-      background-color: $color-white-transparent-85;
+    }
+
+    @layer odyssey.future {
+      .is-future & {
+        margin-bottom: 0;
+        padding: $unit * 1.5;
+
+        :first-child {
+          margin-top: 0;
+        }
+        border-radius: $radius $radius 0 0;
+        background-color: $color-white-transparent-85;
+
+        @media #{$mq-md} {
+          margin-top: 0;
+          margin-bottom: 0;
+          margin-left: auto;
+          margin-right: auto;
+          width: calc(cells(10) + #{$layout-fluid-padding});
+        }
+
+        @media #{$mq-gt-md} {
+          margin-top: 0;
+          margin-bottom: 0;
+          margin-left: auto;
+          margin-right: auto;
+          border-radius: calc($radius * 2) calc($radius * 2) 0 0;
+          width: calc(#{$layout-fixed} * 0.666 - $layout-fixed-padding * 2 + $unit * 3);
+        }
+      }
     }
   }
 
@@ -181,7 +226,6 @@ $abreastChildSpacing: $unit * 2.5;
     .is-future & {
       background-color: $color-black-transparent-75;
     }
-
   }
 
   .is-floating > & {
@@ -190,34 +234,33 @@ $abreastChildSpacing: $unit * 2.5;
 }
 
 .Header-content > * {
-  padding-left: cells(1);
-  padding-right: cells(1);
+  @layer odyssey.legacy {
+    .is-legacy & {
+      padding-left: cells(1);
+      padding-right: cells(1);
 
-  .is-future & {
-    padding-left: $layout-fluid-padding;
-    padding-right: $layout-fluid-padding;
-  }
+      @media #{$mq-md} {
+        padding-left: cells(1, 10);
+        padding-right: cells(1, 10);
+      }
 
-  @media #{$mq-md} {
-    padding-left: cells(1, 10);
-    padding-right: cells(1, 10);
-  }
-
-  @media #{$mq-gt-md} {
-    padding-left: calc(#{cells(1)} + #{$layout-fixed-padding});
-    padding-right: calc(#{cells(1)} + #{$layout-fixed-padding});
+      @media #{$mq-gt-md} {
+        padding-left: calc(#{cells(1)} + #{$layout-fixed-padding});
+        padding-right: calc(#{cells(1)} + #{$layout-fixed-padding});
+      }
+    }
   }
 }
 
 .Header-content > h1 {
-
-  .is-legacy {
-    @media #{$mq-sm} {
-      margin-left: -$layout-fluid-padding;
-      margin-right: -$layout-fluid-padding;
+  @layer odyssey.legacy {
+    .is-legacy {
+      @media #{$mq-sm} {
+        margin-left: -$layout-fluid-padding;
+        margin-right: -$layout-fluid-padding;
+      }
     }
   }
-
   > small {
     display: block;
     color: #80999d;
@@ -234,18 +277,20 @@ $abreastChildSpacing: $unit * 2.5;
     }
   }
 
-  .is-legacy & {
-    &::after {
-      content: '';
-      transform: translate(0, 100%);
-      display: block;
-      margin: $unit * 1.125 auto;
-      width: $unit * 9;
-      height: $unit * 0.125;
-      background-color: $color-grey-300-transparent-70;
+  @layer odyssey.legacy {
+    .is-legacy & {
+      &::after {
+        content: '';
+        transform: translate(0, 100%);
+        display: block;
+        margin: $unit * 1.125 auto;
+        width: $unit * 9;
+        height: $unit * 0.125;
+        background-color: $color-grey-300-transparent-70;
 
-      @media #{$mq-gt-sm} {
-        width: $unit * 18;
+        @media #{$mq-gt-sm} {
+          width: $unit * 18;
+        }
       }
     }
   }
@@ -259,6 +304,27 @@ $abreastChildSpacing: $unit * 2.5;
 
 .Header-content > h2 {
   max-width: none;
+}
+
+.Header-miscEl {
+  @layer odyssey.future {
+    .is-future & {
+      font-size: 1.25 * $unit;
+    }
+  }
+}
+
+@layer odyssey.future {
+  .is-future {
+    .Header-byline {
+      a {
+        color: rgb(17, 17, 17) !important;
+        &:hover {
+          color: rgb(255, 255, 255) !important;
+        }
+      }
+    }
+  }
 }
 
 .Header-miscEl,
