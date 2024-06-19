@@ -80,7 +80,8 @@ export const transformElement = el => {
     isAmbient: configString.indexOf('ambient') > -1 ? true : undefined,
     isLoop: configString.indexOf('loop') > -1 ? true : configString.indexOf('once') > -1 ? false : undefined,
     isMuted: configString.indexOf('muted') > -1 ? true : undefined,
-    scrollplayPct
+    scrollplayPct,
+    videoDuration: $('time', el),
   };
 
   substitute(
