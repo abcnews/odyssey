@@ -27,6 +27,7 @@ let hasSubscribed = false;
  * @param {boolean} [obj.isInvariablyAmbient]
  * @param {boolean} [obj.isLoop]
  * @param {boolean} [obj.isMuted]
+ * @param {HTMLElement} [obj.videoDuration]
  * @param {number} [obj.scrollplayPct]
  * @returns {HTMLElement}
  */
@@ -39,6 +40,7 @@ const VideoPlayer = ({
   isInvariablyAmbient,
   isLoop,
   isMuted,
+  videoDuration,
   scrollplayPct
 }) => {
   let videoPlayerEl;
@@ -303,7 +305,7 @@ const VideoPlayer = ({
     }
   });
 
-  videoControlsEl = VideoControls(player, isAmbient);
+  videoControlsEl = VideoControls(player, isAmbient, videoDuration);
 
   function jumpTo(time) {
     if (isNaN(videoEl.duration) || videoEl.duration === videoEl.currentTime) {

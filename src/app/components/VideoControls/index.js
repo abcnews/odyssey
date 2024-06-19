@@ -1,11 +1,12 @@
 import html from 'nanohtml';
 import { setText } from '../../utils/dom';
 import { twoDigits, whenKeyIn } from '../../utils/misc';
+import { getMeta } from '../../meta';
 import styles from './index.lazy.scss';
 
 const STEP_SECONDS = 5;
 
-const VideoControls = (player, hasAmbientParent) => {
+const VideoControls = (player, hasAmbientParent, videoDuration) => {
   let steppingKeysHeldDown = [];
   let wasPlayingBeforeStepping;
   let isScrubbing;
@@ -75,6 +76,14 @@ const VideoControls = (player, hasAmbientParent) => {
     isScrubbing = false;
   }
 
+  const { isFuture } = getMeta();
+
+  const preplayButton = html`
+    <div class="VideoPlayStart">
+      <div class="PlayIcon"></div>
+      <span>Watch ${videoDuration}</span>
+    </div>
+  `;
   const playbackEl = html`
     <button
       class="VideoControls-playback"
@@ -82,7 +91,7 @@ const VideoControls = (player, hasAmbientParent) => {
       onkeydown=${hasAmbientParent ? null : whenKeyIn([37, 38, 39, 40], steppingKeyDown)}
       onkeyup=${hasAmbientParent ? null : whenKeyIn([37, 38, 39, 40], steppingKeyUp)}
       onclick=${player.togglePlayback}
-    ></button>
+    >${isFuture ? preplayButton : ''}</button>
   `;
   const muteEl = hasAmbientParent
     ? null
