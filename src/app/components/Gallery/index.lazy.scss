@@ -102,6 +102,8 @@
 
   .Caption {
     opacity: 0;
+    margin-left: -$layout-fluid-padding;
+    margin-right: -$layout-fluid-padding;
     pointer-events: none;
     transition: opacity 0.125s;
     will-change: opacity;
@@ -182,7 +184,6 @@
 
 @layer odyssey.legacy {
   .is-legacy {
-
     .Gallery-index,
     [class*='Gallery-step-'] {
       background-color: $color-black-transparent-60;
@@ -191,8 +192,8 @@
     }
 
     [class*='Gallery-step-'] {
-        width: $size-control;
-        padding: 0;
+      width: $size-control;
+      padding: 0;
     }
 
     .Gallery-item .Caption {
@@ -212,7 +213,6 @@
 
 @layer odyssey.future {
   .is-future {
-
     .Gallery-index,
     [class*='Gallery-step-'] {
       color: $color-black;
@@ -242,4 +242,3 @@
     }
   }
 }
-
