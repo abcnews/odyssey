@@ -314,19 +314,6 @@ $abreastChildSpacing: $unit * 2.5;
   }
 }
 
-@layer odyssey.future {
-  .is-future {
-    .Header-byline {
-      a {
-        color: rgb(17, 17, 17) !important;
-        &:hover {
-          color: rgb(255, 255, 255) !important;
-        }
-      }
-    }
-  }
-}
-
 .Header-miscEl,
 .Header-byline {
   .Header > .Header-content > & {
