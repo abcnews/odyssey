@@ -4,7 +4,7 @@ import cn from 'classnames';
 import html from 'nanohtml';
 import rawHTML from 'nanohtml/raw';
 import { SELECTORS, SUPPORTS_PASSIVE, VIDEO_MARKER_PATTERN } from '../../constants';
-import { lookupImageByAssetURL } from '../../meta';
+import { lookupImageByAssetURL, getMeta } from '../../meta';
 import { enqueue, invalidateClient, subscribe } from '../../scheduler';
 import { $, append, detach, detectVideoId, getChildImage, isElement, setText } from '../../utils/dom';
 import { dePx, getRatios } from '../../utils/misc';
@@ -40,6 +40,8 @@ const Gallery = ({ items = [], masterCaptionEl }) => {
   let itemHeight;
   let mediaEls;
   let paneEl;
+
+  const { isFuture } = getMeta();
 
   function updateItemsAppearance(xPct, isImmediate) {
     let wasOnEndCalled = false;
@@ -89,7 +91,11 @@ const Gallery = ({ items = [], masterCaptionEl }) => {
     galleryEl.classList[index === 0 ? 'add' : 'remove']('is-at-start');
     galleryEl.classList[index === items.length - 1 ? 'add' : 'remove']('is-at-end');
     itemEls[currentIndex].classList.add('is-active');
-    setText(indexEl, `${currentIndex + 1} / ${items.length}`);
+    if (isFuture) {
+      setText(indexEl, `${currentIndex + 1} of ${items.length}`);
+    } else {
+      setText(indexEl, `${currentIndex + 1} / ${items.length}`);
+    }
 
     updateItemsAppearance(-currentIndex * 100, isImmediate);
     setTimeout(invalidateClient, 1000);

@@ -73,19 +73,47 @@ html.is-master-gallery-open {
   overflow: auto;
 }
 
+
 .MasterGallery-close {
   position: absolute;
   z-index: 1;
   top: 0;
   right: 0;
-  padding: 0;
   border: none;
   width: $size-control;
   height: $size-control;
-  background-color: $color-black-transparent-60;
-  background-image: url(./close.svg);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 100%;
-  vertical-align: bottom;
+}
+
+@layer odyssey.legacy {
+  .is-legacy {
+    .MasterGallery-close {
+      padding: 0;
+      background-color: $color-black-transparent-60;
+      background-image: url(./close.svg);
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: 100%;
+      vertical-align: bottom;
+    }
+  }
+}
+
+@layer odyssey.future {
+  .is-future {
+    .MasterGallery-close {
+      color: $color-black;
+      background-color: $color-surface-utility;
+      opacity: 0.85;
+
+      font-size: 0.925rem;
+      border-radius: $radius !important;
+      margin: $unit * 0.75;
+      padding: $unit * 0.5;
+
+      svg {
+        height: 100%;
+        width: 100%;
+      }
+    }
+  }
 }
