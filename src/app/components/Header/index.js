@@ -33,6 +33,9 @@ const Header = ({
   isDark = typeof isDark === 'boolean' ? isDark : meta.isDarkMode;
   isAbreast = !isFloating && !isLayered && (imgEl || videoId) && isAbreast;
 
+  const scheme = isDark ? 'dark' : 'light';
+  const theme = 'light-blue'; // TODO: should we re-use the value from <body>?
+
   const className = cn(
     'Header',
     {
@@ -123,8 +126,8 @@ const Header = ({
     .concat(clonedMiscContentEls)
     .concat([
       clonedBylineNodes ? html`<p class="Header-byline">${clonedBylineNodes}</p>` : null,
-      infoSourceEl,
-      meta.isFuture ? meta.metadataNodes : null,
+      !meta.isFuture ? infoSourceEl : null,
+      meta.isFuture ? html`<div class="Header-meta">${meta.metadataNodes}</div>` : null,
       updated && !meta.isFuture
         ? html`<div class="Header-updated">Updated <time datetime="${updated.datetime}">${updated.text}</time></div>`
         : null,
@@ -140,7 +143,7 @@ const Header = ({
   const headerContentEl = html`<div class="Header-content u-richtext${isDark ? '-invert' : ''}">${contentEls}</div>`;
 
   const headerEl = html`
-    <div class="${className}">
+    <div class="${className}" data-scheme="${scheme}" data-theme="${theme}">
       ${mediaEl
         ? html`
             <div class="Header-media${isLayered && !isAbreast && mediaEl.tagName !== 'DIV' ? ' u-parallax' : ''}">
