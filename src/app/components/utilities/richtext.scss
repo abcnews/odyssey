@@ -1,17 +1,11 @@
 @import '../../constants';
 
+// Attribute selectors are used for `u-richtext` so those styles also apply to
+// `u-richtext-invert`.
 [class*='u-richtext'] {
-  @layer odyssey.legacy {
-    &.is-legacy {
-      > * {
-        font-family: $font-serif;
-      }
-    }
-  }
   > * {
     margin-top: 0;
     margin-bottom: $unit * 1.5;
-    color: $color-grey-900;
 
     @media #{$mq-md} {
       margin-bottom: $unit * 2;
@@ -25,8 +19,6 @@
   > h1,
   > h2,
   > h3 {
-    color: $color-black;
-    font-family: $font-serif;
     font-weight: bold;
     line-height: 1.294117647;
     text-transform: none;
@@ -51,7 +43,6 @@
     margin-right: auto;
     max-width: $unit * 32;
     font-size: 1.875rem;
-    text-align: center;
 
     @media #{$mq-gt-sm} {
       font-size: 2.25rem;
@@ -147,7 +138,6 @@
   > table {
     border-collapse: separate;
     border-spacing: 0;
-    font-family: $font-sans;
     font-size: 1rem;
 
     td,
@@ -160,20 +150,6 @@
     tr > * {
       border-bottom: $unit * 0.0625 solid $color-grey-300-transparent-70;
     }
-
-    th {
-      background-color: $color-grey-300-transparent-15;
-    }
-  }
-
-  a,
-  a > * {
-    color: $color-darkPrimary;
-  }
-
-  a:visited,
-  a:visited > * {
-    color: $color-darkSecondary;
   }
 
   > a[id],
@@ -192,34 +168,6 @@
     padding-bottom: $unit * 0.5;
   }
 
-  > h2,
-  > hr {
-    &::before {
-      content: '';
-      display: block;
-      margin: $unit * 3 auto $unit;
-      width: $unit * 7.5;
-      height: $unit * 0.125;
-      background-color: $color-grey-300-transparent-70;
-
-      @media #{$mq-md} {
-        margin: $unit * 4 auto $unit * 1.5;
-      }
-
-      @media #{$mq-gt-md} {
-        margin: $unit * 5 auto $unit * 1.5;
-      }
-    }
-
-    @media #{$mq-md} {
-      padding-bottom: $unit * 0.5;
-    }
-
-    @media #{$mq-gt-md} {
-      padding-bottom: $unit;
-    }
-  }
-
   &::after {
     content: '';
     display: table;
@@ -230,8 +178,6 @@
 [class*='u-richtext'] > [class*='u-richtext'],
 [class*='u-pull'] > [class*='u-richtext'] {
   margin-top: $unit * 0.375;
-  border-top: $unit * 0.125 solid $color-grey-300-transparent-70;
-  border-bottom: $unit * 0.125 solid $color-grey-300-transparent-70;
   padding-top: $unit * 2;
   padding-bottom: $unit * 0.75;
 
@@ -306,35 +252,148 @@
 }
 
 .u-richtext-invert {
-  > h1,
-  > h2,
-  > h3,
-  > h4 {
-    color: $color-white;
-  }
-
-  > h4,
-  > p,
-  > ul li,
-  > ol li,
-  > blockquote,
-  > table {
-    color: $color-lightBg;
-  }
-
   > ul > li,
   > ul ul > li,
   > ol ul > li {
     background-image: url(./bullet-inverted.svg);
   }
+}
 
-  a,
-  a > * {
-    color: $color-lightPrimary;
+// Styles related to Future News are below enclosed in an odyssey.future layer
+// and .is-future class.
+
+// TODO: check all the colours!
+@layer odyssey.future {
+  .is-future {
+    [class*='u-richtext'] {
+      > * {
+        color: var(--nw-colour-text-primary);
+      }
+
+      a:any-link,
+      a:any-link > * {
+        color: var(--nw-colour-theme-text-link);
+      }
+
+      > h2,
+      > hr {
+        //TODO
+      }
+    }
+    [class*='u-richtext'] > [class*='u-richtext'],
+    [class*='u-pull'] > [class*='u-richtext'] {
+      border-style: solid;
+      border-color: var(--nw-colour-theme-text-link);
+      border-width: $unit * 0.125 0;
+    }
   }
+}
 
-  a:visited,
-  a:visited > * {
-    color: $color-lightSecondary;
+// There are also some legacy styles that are moved from the defaults above
+// because we want them to *only* apply in the legacy environment. This is usually
+// where we want to let styles from PL apply where we didn't before (e.g. body font).
+@layer odyssey.legacy {
+  .is-legacy {
+    [class*='u-richtext'] {
+      > * {
+        font-family: $font-serif;
+        color: $color-grey-900;
+      }
+
+      > h1,
+      > h2,
+      > h3 {
+        font-family: $font-serif;
+        color: $color-black;
+      }
+
+      > h2 {
+        text-align: center;
+      }
+
+      > table {
+        font-family: $font-sans;
+
+        th {
+          background-color: $color-grey-300-transparent-15;
+        }
+      }
+
+      a,
+      a > * {
+        color: $color-darkPrimary;
+      }
+
+      a:visited,
+      a:visited > * {
+        color: $color-darkSecondary;
+      }
+
+      > h2,
+      > hr {
+        &::before {
+          content: '';
+          display: block;
+          margin: $unit * 3 auto $unit;
+          width: $unit * 7.5;
+          height: $unit * 0.125;
+          background-color: $color-grey-300-transparent-70;
+
+          @media #{$mq-md} {
+            margin: $unit * 4 auto $unit * 1.5;
+          }
+
+          @media #{$mq-gt-md} {
+            margin: $unit * 5 auto $unit * 1.5;
+          }
+        }
+
+        @media #{$mq-md} {
+          padding-bottom: $unit * 0.5;
+        }
+
+        @media #{$mq-gt-md} {
+          padding-bottom: $unit;
+        }
+      }
+    }
+
+    [class*='u-richtext'] > [class*='u-richtext'],
+    [class*='u-pull'] > [class*='u-richtext'] {
+      border-top: $unit * 0.125 solid $color-grey-300-transparent-70;
+      border-bottom: $unit * 0.125 solid $color-grey-300-transparent-70;
+    }
+
+    .u-richtext-invert {
+      > h1,
+      > h2,
+      > h3,
+      > h4 {
+        color: $color-white;
+      }
+
+      > h4,
+      > p,
+      > ul li,
+      > ol li,
+      > blockquote,
+      > table {
+        color: $color-lightBg;
+      }
+      a,
+      a > * {
+        color: var(--nw-colour-theme-text-link);
+        @layer odyssey.legacy {
+          .is-legacy & {
+            color: $color-lightPrimary;
+          }
+        }
+      }
+
+      a:visited,
+      a:visited > * {
+        color: $color-lightSecondary;
+      }
+    }
   }
 }
