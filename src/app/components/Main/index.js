@@ -7,12 +7,16 @@ const Main = (childNodes, meta) => {
   const className = cn('Main', 'u-layout', {
     'u-richtext': !meta.isDarkMode,
     'u-richtext-invert': meta.isDarkMode,
-    'has-caption-attributions': meta.hasCaptionAttributions,
-    'is-future': meta.isFuture,
-    'is-legacy': !meta.isFuture
+    'has-caption-attributions': meta.hasCaptionAttributions
   });
 
-  const el = html`<main class="${className}">${childNodes}</main>`;
+  const el = html`<main
+    class="${className}"
+    data-scheme="${meta.isDarkMode ? 'dark' : 'light'}"
+    data-theme="light-blue"
+  >
+    ${childNodes}
+  </main>`;
 
   subscribe(function _updateMainOffsetTop() {
     enqueue(function _updateMainOffsetTopCustomProp() {

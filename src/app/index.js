@@ -53,6 +53,7 @@ export default terminusDocument => {
   }
 
   const mainEl = reset(storyEl, meta);
+  mainEl.parentElement.classList.add(meta.isFuture ? 'is-future' : 'is-legacy');
   debug('Performed page reset');
 
   mockDecoyActivationsUnderEl(mainEl); // Mock PL's decoy activation events

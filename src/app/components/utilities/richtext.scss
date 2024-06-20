@@ -24,41 +24,10 @@
     text-transform: none;
   }
 
-  > h1 {
-    font-size: 2rem;
-    letter-spacing: normal;
-
-    @media #{$mq-md} {
-      font-size: 2.25rem;
-    }
-
-    @media #{$mq-gt-md} {
-      font-size: 3rem;
-    }
-  }
-
   > h2 {
     clear: both;
     margin-left: auto;
     margin-right: auto;
-    max-width: $unit * 32;
-    font-size: 1.875rem;
-
-    @media #{$mq-gt-sm} {
-      font-size: 2.25rem;
-    }
-  }
-
-  > h3,
-  > h4,
-  > h5,
-  > h6 {
-    font-family: $font-sans;
-    font-weight: bold;
-  }
-
-  > h3 {
-    font-size: 1.375rem;
   }
 
   > h4,
@@ -259,36 +228,6 @@
   }
 }
 
-// Styles related to Future News are below enclosed in an odyssey.future layer
-// and .is-future class.
-
-// TODO: check all the colours!
-@layer odyssey.future {
-  .is-future {
-    [class*='u-richtext'] {
-      > * {
-        color: var(--nw-colour-text-primary);
-      }
-
-      a:any-link,
-      a:any-link > * {
-        color: var(--nw-colour-theme-text-link);
-      }
-
-      > h2,
-      > hr {
-        //TODO
-      }
-    }
-    [class*='u-richtext'] > [class*='u-richtext'],
-    [class*='u-pull'] > [class*='u-richtext'] {
-      border-style: solid;
-      border-color: var(--nw-colour-theme-text-link);
-      border-width: $unit * 0.125 0;
-    }
-  }
-}
-
 // There are also some legacy styles that are moved from the defaults above
 // because we want them to *only* apply in the legacy environment. This is usually
 // where we want to let styles from PL apply where we didn't before (e.g. body font).
@@ -300,6 +239,19 @@
         color: $color-grey-900;
       }
 
+      > h1 {
+        font-size: 2rem;
+        letter-spacing: normal;
+
+        @media #{$mq-md} {
+          font-size: 2.25rem;
+        }
+
+        @media #{$mq-gt-md} {
+          font-size: 3rem;
+        }
+      }
+
       > h1,
       > h2,
       > h3 {
@@ -307,8 +259,26 @@
         color: $color-black;
       }
 
+      > h3,
+      > h4,
+      > h5,
+      > h6 {
+        font-family: $font-sans;
+        font-weight: bold;
+      }
+
+      > h3 {
+        font-size: 1.375rem;
+      }
+
       > h2 {
         text-align: center;
+        max-width: $unit * 32;
+        font-size: 1.875rem;
+
+        @media #{$mq-gt-sm} {
+          font-size: 2.25rem;
+        }
       }
 
       > table {
@@ -394,6 +364,60 @@
       a:visited > * {
         color: $color-lightSecondary;
       }
+    }
+  }
+}
+
+// Styles related to Future News are below enclosed in an odyssey.future layer
+// and .is-future class.
+
+// TODO: check all the colours!
+@layer odyssey.future {
+  .is-future {
+    [class*='u-richtext'] {
+      > * {
+        color: var(--nw-colour-text-primary);
+      }
+
+      a:any-link,
+      a:any-link > * {
+        color: var(--nw-colour-theme-text-link);
+      }
+
+      > h2,
+      > hr {
+        &::before {
+          content: '';
+          display: block;
+          margin: $unit * 3 auto $unit 0;
+          width: 10em;
+          height: $unit * 0.25;
+          opacity: 0.4;
+          background-color: var(--nw-colour-surface-accent);
+
+          @media #{$mq-md} {
+            margin: $unit * 4 auto $unit * 1.5 0;
+          }
+
+          @media #{$mq-gt-md} {
+            margin: $unit * 5 auto $unit * 1.5 0;
+          }
+        }
+
+        @media #{$mq-md} {
+          padding-bottom: $unit * 0.5;
+        }
+
+        @media #{$mq-gt-md} {
+          padding-bottom: $unit;
+        }
+      }
+    }
+    [class*='u-richtext'] > [class*='u-richtext'],
+    [class*='u-pull'] > [class*='u-richtext'] {
+      border-style: solid;
+      border-color: $color-black-transparent-10;
+      border-width: 1px 0;
     }
   }
 }
