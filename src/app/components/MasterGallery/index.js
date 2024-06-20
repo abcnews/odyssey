@@ -3,9 +3,11 @@ import html from 'nanohtml';
 import { enqueue, invalidateClient } from '../../scheduler';
 import { track } from '../../utils/behaviour';
 import { $, $$, prepend } from '../../utils/dom';
+import { getMeta } from '../../meta';
 import { createFromTerminusDoc as createCaptionFromTerminusDoc } from '../Caption';
 import Gallery from '../Gallery';
 import Picture from '../Picture';
+import Icon from '../Icon';
 import styles from './index.lazy.scss';
 
 const TAB_KEY = 9;
@@ -26,6 +28,7 @@ const MasterGallery = () => {
   }
 
   const galleryEl = Gallery({ items });
+  const { isFuture } = getMeta();
 
   galleryEl.classList.remove('u-full');
 
@@ -103,7 +106,9 @@ const MasterGallery = () => {
         }
       }}"
       onclick="${close}"
-    ></button>
+    >
+      ${isFuture ? Icon('cross') : ''}
+    </button>
   `;
 
   prepend($('.Gallery-layout', galleryEl), closeEl);
@@ -120,7 +125,7 @@ const MasterGallery = () => {
         }
       }}"
     >
-      <div class="MasterGallery-container u-richtext-invert">${galleryEl}</div>
+      <div class="MasterGallery-container ${isFuture ? '' : 'u-richtext-invert'}">${galleryEl}</div>
     </div>
   `;
 

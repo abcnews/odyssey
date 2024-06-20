@@ -104,7 +104,6 @@
     opacity: 0;
     margin-left: -$layout-fluid-padding;
     margin-right: -$layout-fluid-padding;
-    background-color: transparent;
     pointer-events: none;
     transition: opacity 0.125s;
     will-change: opacity;
@@ -151,11 +150,8 @@
 .Gallery-index {
   padding: 0 $unit * 0.8125;
   min-width: 3.5rem;
-  height: $size-control;
-  background-color: $color-black-transparent-60;
-  color: $color-white;
   font-family: $font-sans;
-  font-size: 0.8125rem;
+  height: $size-control;
   line-height: $size-control;
   letter-spacing: 0.05em;
   text-align: right;
@@ -166,12 +162,8 @@
 }
 
 [class*='Gallery-step-'] {
-  padding: 0;
   border: none;
-  width: $size-control;
   height: $size-control;
-  background-color: $color-black-transparent-60;
-  color: $color-white;
   vertical-align: bottom;
   transition: opacity 0.25s;
   will-change: opacity;
@@ -190,9 +182,59 @@
   transform: scaleX(-1);
 }
 
-.is-at-start .Gallery-step-prev,
-.is-at-end .Gallery-step-next {
-  opacity: 0.2;
-  cursor: disabled;
-  pointer-events: none;
+@layer odyssey.legacy {
+  .is-legacy {
+
+    .Gallery-index,
+    [class*='Gallery-step-'] {
+      background-color: $color-black-transparent-60;
+      color: $color-white;
+      font-size: 0.8125rem;
+    }
+
+    [class*='Gallery-step-'] {
+        width: $size-control;
+        padding: 0;
+    }
+
+    .Gallery-item .Caption {
+      background-color: transparent;
+    }
+
+    .is-at-start .Gallery-step-prev,
+    .is-at-end .Gallery-step-next {
+      opacity: 0.2;
+      cursor: disabled;
+      pointer-events: none;
+    }
+  }
 }
+
+@layer odyssey.future {
+  .is-future {
+
+    .Gallery-index,
+    [class*='Gallery-step-'] {
+      color: $color-black;
+      background-color: $color-surface-utility;
+      opacity: 0.85;
+
+      font-size: 0.925rem;
+      border-radius: $radius;
+      margin: $unit * 0.75;
+    }
+
+    [class*='Gallery-step-'] {
+      width: 56px;
+      border-radius: $radius * 2 !important;
+    }
+
+    .is-at-start .Gallery-step-prev,
+    .is-at-end .Gallery-step-next {
+      opacity: 0.5;
+      cursor: disabled;
+      pointer-events: none;
+    }
+  }
+}
+
