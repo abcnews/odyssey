@@ -102,8 +102,6 @@
 
   .Caption {
     opacity: 0;
-    margin-left: -$layout-fluid-padding;
-    margin-right: -$layout-fluid-padding;
     pointer-events: none;
     transition: opacity 0.125s;
     will-change: opacity;
@@ -199,6 +197,8 @@
 
     .Gallery-item .Caption {
       background-color: transparent;
+      margin-left: -$layout-fluid-padding;
+      margin-right: -$layout-fluid-padding;
     }
 
     .is-at-start .Gallery-step-prev,
@@ -227,6 +227,11 @@
     [class*='Gallery-step-'] {
       width: 56px;
       border-radius: $radius * 2 !important;
+    }
+
+    .Gallery-item .Caption {
+      margin-left: 0;
+      margin-right: 0;
     }
 
     .is-at-start .Gallery-step-prev,

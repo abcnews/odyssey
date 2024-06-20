@@ -1,13 +1,11 @@
 @import '../../constants';
 
 .Caption {
-  margin-top: 0;
-  margin-right: 0;
-  margin-bottom: 0;
-  margin-left: 0;
-  padding-top: $unit * 0.4375;
-  padding-bottom: $unit * 0.375;
-  font-family: $font-sans;
+
+  * > & {
+    font-size: 0.8125rem !important;
+    line-height: 1.555555556;
+  }
 
   @media #{$mq-lt-lg} {
     padding-left: $layout-fluid-padding;
@@ -41,20 +39,12 @@
     }
   }
 
-  * > & {
-    font-size: 0.8125rem !important;
-    line-height: 1.555555556;
-  }
-
-  :first-child {
-    margin-right: $unit * 0.25;
-  }
-
   a,
   a:visited {
     color: currentColor;
   }
 }
+
 
 .Caption-attribution {
   display: none;
@@ -75,28 +65,43 @@
   }
 }
 
-.is-future {
+@layer odyssey.legacy {
   .Caption {
-    margin-top: $unit / 2;
-    margin-bottom: $unit / 2;
-    margin-left: 0;
-    margin-right: 0;
-    padding: $unit * 0.75 $unit;
-    border-radius: $radius;
-    background-color: $color-surface-utility;
+    font-family: $font-sans;
 
-    @media #{$mq-lt-lg} {
-      margin-left: $layout-fluid-padding;
-      margin-right: $layout-fluid-padding;
+    margin: 0;
+
+    padding-top: $unit * 0.4375;
+    padding-bottom: $unit * 0.375;
+
+    :first-child {
+      margin-right: $unit * 0.25;
     }
   }
 }
 
-.is-dark-mode {
+@layer odyssey.future {
   .is-future {
     .Caption {
-      background-color: $color-darkBg;
-      background-color: var(--bg, #{$color-darkBg});
+      margin: $unit * 0.5;
+      padding: $unit * 0.75 $unit;
+
+      border-radius: $radius;
+      background-color: $color-surface-utility;
+
+      @media #{$mq-lt-lg} {
+        margin-left: $layout-fluid-padding;
+        margin-right: $layout-fluid-padding;
+      }
+    }
+  }
+
+  .is-dark-mode {
+    .is-future {
+      .Caption {
+        background-color: $color-darkBg;
+        background-color: var(--bg, #{$color-darkBg});
+      }
     }
   }
 }

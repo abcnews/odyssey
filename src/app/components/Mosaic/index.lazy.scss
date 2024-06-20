@@ -20,7 +20,7 @@
 }
 
 .Mosaic-items {
-  margin: 0 calc(var(--Mosaic-gap) * -0.5);
+  margin: calc(var(--Mosaic-gap) * -1) calc(var(--Mosaic-gap) * -0.5);
   position: relative;
   display: flex;
   flex-wrap: wrap;
@@ -77,8 +77,6 @@
     padding-left: var(--Mosaic-gap);
     max-width: calc(100% - var(--Mosaic-gap));
     min-height: 0;
-    background-color: $color-black-transparent-60;
-    color: $color-lightBg;
     pointer-events: none;
     transition: opacity 0.125s;
 
@@ -93,7 +91,28 @@
     pointer-events: all;
   }
 
-  .Caption-attribution {
-    color: $color-grey-100;
+}
+
+@layer odyssey.future {
+  .is-future {
+    .Mosaic-item .Caption {
+      background-color: $color-surface-utility;
+      color: $color-black;
+    }
+  }
+}
+
+@layer odyssey.legacy {
+  .is-legacy {
+    .Mosaic-item {
+      .Caption {
+        background-color: $color-black-transparent-60;
+        color: $color-lightBg;
+      }
+
+      .Caption-attribution {
+        color: $color-grey-100;
+      }
+    }
   }
 }
