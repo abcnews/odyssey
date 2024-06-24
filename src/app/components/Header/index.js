@@ -1,7 +1,7 @@
 import { getMountValue, isMount } from '@abcnews/mount-utils';
 import cn from 'classnames';
 import html from 'nanohtml';
-import { VIDEO_MARKER_PATTERN } from '../../constants';
+import { THEME, VIDEO_MARKER_PATTERN } from '../../constants';
 import { enqueue, subscribe } from '../../scheduler';
 import { fetchDocument } from '../../utils/content';
 import { $, detach, detectVideoId, getChildImage, isElement } from '../../utils/dom';
@@ -34,7 +34,6 @@ const Header = ({
   isAbreast = !isFloating && !isLayered && (imgEl || videoId) && isAbreast;
 
   const scheme = isDark ? 'dark' : 'light';
-  const theme = 'light-blue'; // TODO: should we re-use the value from <body>?
 
   const className = cn(
     'Header',
@@ -120,8 +119,6 @@ const Header = ({
       : null
   );
 
-  console.log('meta.clonedMetadataEl :>> ', meta.clonedMetadataEl);
-
   const contentEls = [titleEl]
     .concat(clonedMiscContentEls)
     .concat([
@@ -143,7 +140,7 @@ const Header = ({
   const headerContentEl = html`<div class="Header-content u-richtext${isDark ? '-invert' : ''}">${contentEls}</div>`;
 
   const headerEl = html`
-    <div class="${className}" data-scheme="${scheme}" data-theme="${theme}">
+    <div class="${className}" data-scheme="${scheme}" data-theme="${THEME}">
       ${mediaEl
         ? html`
             <div class="Header-media${isLayered && !isAbreast && mediaEl.tagName !== 'DIV' ? ' u-parallax' : ''}">
