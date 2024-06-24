@@ -1,7 +1,7 @@
 // @ts-check
 import Main from '../components/Main';
-import { SELECTORS } from '../constants';
-import { $, $$, append, before, detach, detachAll } from '../utils/dom';
+import { SELECTORS, THEME } from '../constants';
+import { $, $$, append, before, detach, detachAll, isHTMLElement } from '../utils/dom';
 import { debug } from '../utils/logging';
 import './index.scss';
 
@@ -120,6 +120,10 @@ export const reset = (storyEl, meta) => {
   // Treat WYSIWYG teaser embeds as nested richtext content
   $$(SELECTORS.WYSIWYG_EMBED, mainEl).forEach(el => {
     el.className = `u-richtext${isDarkMode ? '-invert' : ''}`;
+    if (isHTMLElement(el)) {
+      el.dataset.theme = THEME;
+      el.dataset.scheme = isDarkMode ? 'dark' : 'light';
+    }
   });
 
   // Clean up Presentation Layer components

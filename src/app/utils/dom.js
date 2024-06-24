@@ -20,6 +20,15 @@ export const isElement = node => {
   return !!node && node.nodeType === Node.ELEMENT_NODE;
 };
 
+/**
+ * Type guard for HTML elements
+ * @param {any} node
+ * @returns {node is HTMLElement}
+ */
+export const isHTMLElement = node => {
+  return isElement(Node) && node instanceof HTMLElement;
+};
+
 export const isDocument = node => {
   return node && node.nodeType === Node.DOCUMENT_NODE;
 };
