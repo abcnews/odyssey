@@ -9,6 +9,7 @@ import Gallery from '../Gallery';
 import Picture from '../Picture';
 import Icon from '../Icon';
 import styles from './index.lazy.scss';
+import { THEME } from '../../../app/constants';
 
 const TAB_KEY = 9;
 
@@ -119,6 +120,8 @@ const MasterGallery = () => {
       role="dialog"
       aria-label="Gallery of all photos in this story"
       tabindex="-1"
+      data-scheme="dark"
+      data-theme="${THEME}"
       onclick="${function (event) {
         if (this === event.target) {
           close();
