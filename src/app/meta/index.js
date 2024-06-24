@@ -13,12 +13,16 @@ import { debug } from '../utils/logging';
  * @prop {string} url
  * @prop {string} title
  * @prop {string} description
+ * @prop {Date} published
+ * @prop {Date} updated
  * @prop {boolean} isNewsApp
  * @prop {boolean} isFuture
  * @prop {boolean} isDarkMode
  * @prop {string | null} theme
  * @prop {ShareLink[]} shareLinks
  * @prop {Node[]} bylineNodes
+ * @prop {Node[]} metadataNodes
+ * @prop {{name: string; url: string}} infoSource
  * @prop {any} infoSourceLogosHTMLFragmentId
  * @prop {any} relatedMedia
  * @prop {any} relatedStoriesIds
@@ -311,14 +315,14 @@ export const initMeta = terminusDocument => {
     title: terminusDocument.title,
     description: terminusDocument.synopsis,
     published: new Date(terminusDocument.dates.displayPublished),
-    updated: terminusDocument.dates.displayUpdated ? new Date(terminusDocument.dates.displayUpdated) : null,
+    updated: terminusDocument.dates.displayUpdated ? new Date(terminusDocument.dates.displayUpdated) : undefined,
     productionUnit: terminusDocument.productionUnit,
     infoSource: terminusDocument.source
       ? {
           name: terminusDocument.source,
           url: terminusDocument.sourceURL
         }
-      : null,
+      : undefined,
     // keep isPL around until we can audit Odyssey plugins and ensure none depend on it
     isPL: true,
     isPreview: getTier() === TIERS.PREVIEW,

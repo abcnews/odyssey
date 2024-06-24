@@ -27,7 +27,7 @@ const RATIO_SIZE_WIDTH_INDICES = {
  *
  * @param {object} obj
  * @param {string} [obj.src]
- * @param {string} [obj.alt]
+ * @param {string|null} [obj.alt]
  * @param {object} [obj.ratios]
  * @param {string} [obj.linkUrl]
  * @param {boolean} [obj.isContained]
