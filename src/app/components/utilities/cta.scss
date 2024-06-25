@@ -9,26 +9,67 @@
   a {
     flex: 0 1 auto;
     margin: $unit * 0.5;
-    padding: $unit * 0.5 $unit * 2;
     max-width: calc(100% - #{$unit});
-    background-color: $color-black-transparent-30;
     font-family: $font-sans;
-    font-size: 1.375rem;
-    font-weight: bold;
     line-height: 1.333333333;
     text-align: center;
     text-transform: uppercase;
-    transition: filter 0.25s;
     will-change: opacity; // create stacking context
 
-    .is-legacy & {
+    &:any-link {
+      text-decoration: none;
+    }
+  }
+}
+
+@layer odyssey.legacy {
+  .is-legacy .u-cta {
+    a {
       color: $color-white !important;
+      font-size: 1.375rem;
+      font-weight: bold;
+      background-color: $color-black-transparent-30;
+      padding: $unit * 0.5 $unit * 2;
+      transition: filter 0.25s;
+
+      &:visited {
+        color: $color-white !important;
+      }
+
+      &:hover,
+      &:focus {
+        filter: brightness(1.2);
+      }
     }
 
-    .is-future & {
+    .u-richtext-invert & {
+      background-color: $color-white-transparent-30;
+    }
+  }
+}
+
+@layer odyssey.future {
+  [data-scheme='light'] {
+    --od-colour-theme-cta-background: var(--nw-colour-theme-button-primary, rgb(16, 49, 106));
+    --od-colour-theme-cta-text: var(--nw-colour-theme-text-inverse, rgb(255, 255, 255));
+    --od-colour-theme-cta-background-hover: var(--nw-colour-theme-button-primary-hover, rgb(231, 234, 240));
+    --od-colour-theme-cta-text-hover: var(--nw-colour-text-accent, rgb(16, 49, 106));
+    --od-colour-theme-cta-background-active: var(--nw-colour-theme-button-primary-active, rgb(231, 234, 240));
+    --od-colour-theme-cta-text-active: var(--nw-colour-text-accent, rgb(16, 49, 106));
+  }
+
+  [data-scheme='dark'] {
+    --od-colour-theme-cta-background: var(--nw-colour-theme-button-primary, #8fbfff);
+    --od-colour-theme-cta-text: var(--nw-colour-theme-text-inverse, #000000);
+    --od-colour-theme-cta-background-hover: var(--nw-colour-theme-button-primary-hover, rgb(55, 63, 76));
+    --od-colour-theme-cta-text-hover: var(--nw-colour-text-accent, rgb(235, 235, 235));
+    --od-colour-theme-cta-background-active: var(--nw-colour-theme-button-primary-active, rgb(55, 63, 76));
+    --od-colour-theme-cta-text-active: var(--nw-colour-text-accent, rgb(235, 235, 235));
+  }
+
+  .is-future .u-cta {
+    a {
       text-transform: none;
-      background-color: var(--nw-colour-button-primary);
-      color: var(--nw-colour-text-inverse);
       border-radius: var(--nw-pill-radius, var(--nw-radius-full));
       font-size: $unit;
       font-weight: 700;
@@ -36,15 +77,22 @@
       padding: var(--nw-pill-padding-top, var(--nw-spacing-3)) var(--nw-pill-padding-right, var(--nw-spacing-8))
         var(--nw-pill-padding-bottom, var(--nw-spacing-3)) var(--nw-pill-padding-left, var(--nw-spacing-8));
 
-      &:visited {
-        color: var(--nw-colour-text-inverse);
+      &:any-link,
+      &:any-link > * {
+        background-color: var(--od-colour-theme-cta-background);
+        color: var(--od-colour-theme-cta-text);
+      }
+      &:hover,
+      &:hover > * {
+        background-color: var(--od-colour-theme-cta-background-hover);
+        color: var(--od-colour-theme-cta-text-hover);
+        text-decoration: none;
       }
 
-      &:hover {
-        filter: none;
-        text-decoration: none;
-        background-color: var(--nw-colour-button-primary-hover);
-        color: var(--nw-colour-text-on-colour-inverse);
+      &:active,
+      &:active > * {
+        background-color: var(--nw-colour-theme-button-primary-active);
+        color: var(--nw-colour-text-inverse);
       }
 
       &:focus {
@@ -52,21 +100,6 @@
         text-decoration: none;
         box-shadow: rgb(255, 255, 255) 0px 0px 0px 2px, rgb(0, 88, 204) 0px 0px 0px 4px;
       }
-    }
-
-    .u-richtext-invert & {
-      background-color: $color-white-transparent-30;
-    }
-
-    .is-legacy & {
-      &:visited {
-        color: $color-white !important;
-      }
-    }
-    &:hover,
-    &:focus {
-      text-decoration: none;
-      filter: brightness(1.2);
     }
   }
 }
