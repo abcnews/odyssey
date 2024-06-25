@@ -1,0 +1,11 @@
+// TODO: define the colours in a way that means components don't need to worry about schemes and themes
+// Right now, everything in Odyssey uses the 'light-blue' theme, but both light and dark schemes are supported.
+// User preferences for light/dark mode are not supported.
+
+[data-scheme='light'] {
+  --od-colour-surface-utility: var(--nw-colour-surface-utility, rgb(241, 242, 243));
+}
+
+[data-scheme='dark'] {
+  --od-colour-surface-utility: var(--nw-colour-surface-utility, rgb(48, 50, 54));
+}
