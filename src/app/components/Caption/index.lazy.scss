@@ -1,7 +1,6 @@
 @import '../../constants';
 
 .Caption {
-
   * > & {
     font-size: 0.8125rem !important;
     line-height: 1.555555556;
@@ -45,7 +44,6 @@
   }
 }
 
-
 .Caption-attribution {
   display: none;
   white-space: nowrap;
@@ -85,9 +83,8 @@
     .Caption {
       margin: $unit * 0.5;
       padding: $unit * 0.75 $unit;
-
       border-radius: $radius;
-      background-color: $color-surface-utility;
+      background-color: var(--od-colour-surface-utility);
 
       @media #{$mq-lt-lg} {
         margin-left: $layout-fluid-padding;
