@@ -61,7 +61,7 @@
     margin: 0 !important;
     padding: $unit * 0.75 $unit * 1.75;
 
-    .is-future & {
+    :where(.is-future) & {
       &:first-child {
         border-start-start-radius: $radius;
         border-start-end-radius: $radius;
@@ -163,12 +163,21 @@
     & > ul li,
     & > ol li,
     & > blockquote {
+      :where(.is-future) & {
+        font-size: var(--od-font-size);
+      }
       @media #{$mq-md} {
         font-size: 1.25rem;
+        :where(.is-future) & {
+          font-size: var(--od-font-size);
+        }
       }
 
       @media #{$mq-gt-md} {
         font-size: 1.375rem;
+        :where(.is-future) & {
+          font-size: var(--od-font-size);
+        }
       }
     }
   }

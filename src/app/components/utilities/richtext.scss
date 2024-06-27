@@ -35,7 +35,7 @@
   > ul li,
   > ol li,
   > blockquote {
-    font-size: 1.125rem;
+    font-size: var(--od-font-size);
     line-height: 1.555555556;
 
     @media #{$mq-gt-sm} {
