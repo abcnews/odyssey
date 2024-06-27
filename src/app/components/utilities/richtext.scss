@@ -170,7 +170,6 @@
   > h2 {
     max-width: none;
     font-size: 1.375rem;
-    font-family: $font-sans;
     text-align: left;
   }
 
@@ -332,6 +331,9 @@
     [class*='u-pull'] > [class*='u-richtext'] {
       border-top: $unit * 0.125 solid $color-grey-300-transparent-70;
       border-bottom: $unit * 0.125 solid $color-grey-300-transparent-70;
+      > h2 {
+        font-family: $font-sans;
+      }
     }
 
     .u-richtext-invert {
@@ -376,12 +378,16 @@
   .is-future {
     [class*='u-richtext'] {
       > * {
-        color: var(--nw-colour-text-primary);
+        color: var(--od-colour-text-primary);
       }
 
       a:any-link,
       a:any-link > * {
         color: var(--nw-colour-theme-text-link);
+      }
+
+      > h2 {
+        font-family: $font-serif;
       }
 
       > h2,

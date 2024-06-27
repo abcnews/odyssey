@@ -2,10 +2,26 @@
 // Right now, everything in Odyssey uses the 'light-blue' theme, but both light and dark schemes are supported.
 // User preferences for light/dark mode are not supported.
 
+// We inherit from PL/DLS variables where possible, should only directly use variables we define ourselves.
+// That way we can define sensible fallbacks to cover the possibility that PL/DLS variable names will change
+// or go away.
+
 [data-scheme='light'] {
+  // Surfaces
   --od-colour-surface-utility: var(--nw-colour-surface-utility, rgb(241, 242, 243));
+
+  // Text
+  --od-colour-text-primary: var(--nw-colour-text-primary, rgb(0, 0, 0));
+  --od-colour-text-secondary: var(--nw-colour-text-secondary, rgb(72, 75, 81));
+  --od-colour-theme-text-accent: var(--nw-colour-theme-text-accent, #10316a);
 }
 
 [data-scheme='dark'] {
+  // Surfaces
   --od-colour-surface-utility: var(--nw-colour-surface-utility, rgb(48, 50, 54));
+
+  // Text
+  --od-colour-text-primary: var(--nw-colour-text-primary, rgb(235, 235, 235));
+  --od-colour-text-secondary: var(--nw-colour-text-secondary, rgb(201, 203, 207));
+  --od-colour-theme-text-accent: var(--nw-colour-theme-text-accent, rgb(209, 224, 245));
 }
