@@ -95,7 +95,7 @@ export default terminusDocument => {
         transformSectionIntoHeader(section, meta);
         break;
       case 'block':
-        transformSectionIntoBlock(section);
+        transformSectionIntoBlock(section, meta);
         break;
       case 'gallery':
         transformSectionIntoGallery(section);

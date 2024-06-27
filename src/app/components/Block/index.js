@@ -43,7 +43,7 @@ const Block = ({
   isContained,
   isDocked,
   isGrouped,
-  isLight,
+  isDark,
   isPiecemeal,
   isPhoneFrame,
   isVideoYouTube,
@@ -53,7 +53,7 @@ const Block = ({
   transition,
   videoId
 }) => {
-  const scheme = isLight ? 'light' : 'dark';
+  const scheme = isDark ? 'dark' : 'light';
 
   if (contentEls.length === 1) {
     isPiecemeal = true;
@@ -70,8 +70,8 @@ const Block = ({
       'has-hidden-caption-titles': hasHiddenCaptionTitles,
       'has-inset-media': hasInsetMedia,
       [`has-${alignment}`]: alignment,
-      'has-dark': !isLight,
-      'has-light': isLight,
+      'has-dark': isDark,
+      'has-light': !isDark,
       'is-not-piecemeal': !isPiecemeal,
       'is-piecemeal': isPiecemeal
     },
@@ -81,7 +81,7 @@ const Block = ({
     'is-fixed': !isDocked
   });
   const mediaCaptionClassName = 'Block-mediaCaption';
-  const contentClassName = `Block-content${alignment ? ` is-${alignment}` : ''} u-richtext${isLight ? '' : '-invert'}`;
+  const contentClassName = `Block-content${alignment ? ` is-${alignment}` : ''} u-richtext${isDark ? '' : '-invert'}`;
 
   ratios = {
     sm: ratios.sm || '3x4',
@@ -260,7 +260,7 @@ const Block = ({
 
     // keep a list of light/dark for each marker, so captions have the correct theme
     const lightDarkForMarkerIndex = markers.map(
-      element => element.getAttribute('data-lightdark') || (isLight ? 'light' : 'dark')
+      element => element.getAttribute('data-lightdark') || (isDark ? 'dark' : 'light')
     );
 
     subscribe(function _checkIfBackgroundShouldChange(client) {
@@ -332,14 +332,14 @@ const Block = ({
 
 export default Block;
 
-export const transformSection = section => {
+export const transformSection = (section, meta) => {
   const hasAttributedMedia = section.configString.indexOf('attributed') > -1;
   const hasCaptionedMedia = section.configString.indexOf('captioned') > -1;
   const hasInsetMedia = section.configString.indexOf('inset') > -1;
   const isContained = section.configString.indexOf('contain') > -1;
   const isDocked = section.configString.indexOf('docked') > -1;
   const isGrouped = section.configString.indexOf('grouped') > -1;
-  const isLight = section.configString.indexOf('light') > -1;
+  const isDark = section.configString.indexOf('dark') > -1 || meta.isDark || meta.isDarkMode;
   const isPiecemeal = section.configString.indexOf('piecemeal') > -1;
   const isPhoneFrame = section.configString.indexOf('phoneframe') > -1;
   const shouldSupplant = section.configString.indexOf('supplant') > -1;
@@ -386,7 +386,7 @@ export const transformSection = section => {
     isContained,
     isDocked,
     isGrouped,
-    isLight,
+    isDark,
     isPiecemeal,
     isPhoneFrame,
     shouldVideoPlayOnce,
