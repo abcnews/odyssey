@@ -1,138 +1,247 @@
 @import '../../constants';
 
 .Series {
-  display: flex;
-  clear: both;
-  flex-wrap: wrap;
-  margin-left: $unit * -0.5;
-  margin-right: $unit * -0.5;
-  font-family: $font-sans;
-
-  .u-richtext-invert & {
+  :where(.is-legacy) & {
+    display: flex;
+    clear: both;
+    flex-wrap: wrap;
+    margin-left: $unit * -0.5;
+    margin-right: $unit * -0.5;
+    font-family: $font-sans;
+  }
+  .u-richtext-invert & :where(.is-legacy) & {
     color: $color-white;
   }
 }
 
 .Series > *,
 .Series::after {
-  flex: 1 0 $unit * 17.5;
-  margin: 0 $unit * 0.5;
-  max-width: calc(100% - #{$unit});
+  :where(.is-legacy) & {
+    flex: 1 0 $unit * 17.5;
+    margin: 0 $unit * 0.5;
+    max-width: calc(100% - #{$unit});
+  }
 }
 
 .Series > * {
-  border: $unit * 0.0625 solid transparent;
-  padding: $unit * 0.5625;
-  font-size: 0.875rem;
-  line-height: 1.5;
+  :where(.is-legacy) & {
+    border: $unit * 0.0625 solid transparent;
+    padding: $unit * 0.5625;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
 
   &[aria-current]:hover {
-    text-decoration: none;
+    :where(.is-legacy) & {
+      text-decoration: none;
+    }
   }
 
-  & > img {
-    float: left;
-    margin-right: $unit * 0.75;
+  :where(.is-legacy) & {
+    & > img {
+      float: left;
+      margin-right: $unit * 0.75;
 
-    width: $unit * 7.9375; // 127px wide, 3:2
-    height: $unit * 5.2916666667;
-    object-fit: cover;
-  }
+      width: $unit * 7.9375; // 127px wide, 3:2
+      height: $unit * 5.2916666667;
+      object-fit: cover;
+    }
 
-  & > label,
-  & > span {
-    transform: translate(0, -1px);
+    & > label,
+    & > span {
+      transform: translate(0, -1px);
+    }
   }
 
   label {
-    display: block;
-    font-size: 0.8125rem;
-    text-transform: uppercase;
-    cursor: inherit;
-
-    .u-richtext > & {
+    :where(.is-legacy) & {
+      display: block;
+      font-size: 0.8125rem;
+      text-transform: uppercase;
+      cursor: inherit;
+    }
+    .u-richtext > & :where(.is-legacy) & {
       color: $color-grey-500;
     }
   }
 
-  span {
+  span :where(.is-legacy) & {
     display: block;
   }
 
   &[href][aria-current='false'] {
+    .u-richtext & {
+      :where(.is-legacy) & {
+        color: white;
+      }
+    }
     .u-richtext > & label,
     .u-richtext > &:visited label {
-      color: $color-grey-500;
+      :where(.is-legacy) & {
+        color: $color-grey-500;
+      }
     }
 
     .u-richtext-invert > & label,
     .u-richtext-invert > &:visited label,
     .u-richtext-invert > & span,
     .u-richtext-invert > &:visited span {
-      color: $color-white;
+      :where(.is-legacy) & {
+        color: $color-white;
+      }
     }
 
     &:hover span {
-      text-decoration: underline;
+      :where(.is-legacy) & {
+        text-decoration: underline;
+      }
     }
   }
 
   &:not([href])[aria-current='false'] {
-    opacity: 0.5;
+    :where(.is-legacy) & {
+      opacity: 0.5;
+    }
   }
 
   &[aria-current='page'] {
-    position: relative;
-    border-color: $color-grey-300-transparent-70;
+    :where(.is-legacy) & {
+      position: relative;
+      border-color: $color-grey-300-transparent-70;
 
-    &::after,
-    & span > i {
-      font-size: 0.75rem;
-      font-weight: bold;
-      line-height: 0.9;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-
-    &::after {
-      content: 'now reading';
-      position: absolute;
-      right: 0;
-      bottom: 0;
-      padding: $unit * 0.125 $unit * 0.125 $unit * 0.0625 $unit * 0.25;
-      background-color: $color-grey-300-transparent-70;
-      color: $color-black;
-
-      .u-richtext-invert & {
-        color: var(--bg, #{$color-black});
+      &::after,
+      & span > i {
+        font-size: 0.75rem;
+        font-weight: bold;
+        line-height: 0.9;
+        text-transform: uppercase;
+        white-space: nowrap;
       }
     }
 
-    & span > i {
-      float: right;
-      visibility: hidden;
-      width: 5.25em;
-      height: $unit * 0.5;
+    &::after {
+      :where(.is-legacy) & {
+        content: 'now reading';
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        padding: $unit * 0.125 $unit * 0.125 $unit * 0.0625 $unit * 0.25;
+        background-color: $color-grey-300-transparent-70;
+        color: $color-black;
+      }
+
+      .u-richtext-invert & {
+        :where(.is-legacy) & {
+          color: var(--bg, #{$color-black});
+        }
+      }
+    }
+
+    :where(.is-legacy) & {
+      & span > i {
+        float: right;
+        visibility: hidden;
+        width: 5.25em;
+        height: $unit * 0.5;
+      }
     }
   }
 }
 
-.Series.has-m2r1::after {
+:where(.is-legacy) .Series.has-m2r1::after {
   content: '';
 }
 
 @media (min-width: 902px) {
-  .u-pull {
-    .Series.has-m2r1::after {
-      content: none;
+  :where(.is-legacy) {
+    .u-pull {
+      .Series.has-m2r1::after {
+        content: none;
+      }
+
+      .Series[class*='has-m3r']::after {
+        content: '';
+      }
+
+      .Series.has-m3r1::after {
+        flex: 2 0 $unit * 36;
+      }
+    }
+  }
+}
+
+:where(.is-future) {
+  :has(> .Series) {
+    container-type: inline-size;
+    > h1,
+    > h2,
+    > h3,
+    > h4 {
+      font-family: $font-serif;
+      font-size: $unit * 1.25;
+      color: var(--od-colour-theme-text-accent);
+    }
+  }
+
+  .Series {
+    display: grid;
+    gap: $unit; // TODO make this a variable
+    grid-template-columns: 1fr;
+    font-family: $font-serif;
+    @container (min-width: 30em) {
+      // TODO: figure out the right min-width
+      grid-template-columns: 1fr 1fr;
     }
 
-    .Series[class*='has-m3r']::after {
-      content: '';
+    > a:any-link,
+    > div {
+      display: grid;
+      gap: $unit / 3 $unit;
+      grid-template-columns: auto 1fr;
+      grid-template-rows: auto auto;
+      align-items: center;
+
+      > label {
+        grid-row: 1/2;
+        grid-column: 1/3;
+        font-family: $font-sans;
+        font-weight: 700;
+        font-size: $unit * 0.875;
+        color: var(--od-colour-text-secondary);
+        text-transform: uppercase;
+      }
+
+      > img {
+        width: $unit * 7.9375; // 127px wide, 3:2
+        height: $unit * 5.2916666667;
+        border-radius: 6px;
+        object-fit: cover;
+        align-self: start;
+      }
     }
 
-    .Series.has-m3r1::after {
-      flex: 2 0 $unit * 36;
+    > a:any-link,
+    > a:any-link > *,
+    > div,
+    > div > * {
+      color: var(--od-colour-text-primary);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    > a:any-link,
+    > a:any-link > * {
+      cursor: pointer;
+    }
+
+    > a:hover > span {
+      text-decoration: underline;
+    }
+
+    > [aria-current='page'] {
+      span {
+        border-bottom: 4px solid #10316a66;
+      }
     }
   }
 }

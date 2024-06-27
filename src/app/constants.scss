@@ -119,3 +119,20 @@ $size-control-margin: $unit * 0.1875;
 $color-surface-utility: #f1f2f3;
 $radius: calc($unit * 0.75);
 $radius-images: 0;
+
+.Main {
+  --od-font-stack-condensed: var(
+    --dls-font-stack-condensed,
+    '"abcsans condensed",-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Helvetica Neue",Arial,sans-serif'
+  );
+  --od-font-stack-rounded: var(
+    --dls-font-stack-rounded,
+    '"abcsans rounded",-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Helvetica Neue",Arial,sans-serif'
+  );
+  --od-font-stack-sans: var(
+    --dls-font-stack-sans,
+    '"abcsans",-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Helvetica Neue",Arial,sans-serif'
+  );
+  --od-font-stack-serif: var(--dls-font-stack-serif, '"abcserif","Book Anitqua","Palatino Linotype",Palatino,serif');
+  --od-font-stack-monospace: var(--dls-font-stack-monospace, '"abcsans tabbed",monospace');
+}
