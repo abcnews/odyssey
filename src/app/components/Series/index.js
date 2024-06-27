@@ -1,12 +1,34 @@
+// @ts-check
 import { url2cmid } from '@abcnews/url2cmid';
 import cn from 'classnames';
 import html from 'nanohtml';
 import { track } from '../../utils/behaviour';
-import { $, $$, detach, getChildImage, substitute } from '../../utils/dom';
+import { $, $$, detach, getChildImage, isAnchorElement, isImageElement, substitute } from '../../utils/dom';
 import styles from './index.lazy.scss';
+
+/**
+ * @typedef {Object} SeriesOptions
+ * @prop {boolean} isRest
+ */
+
+/**
+ * @typedef {Object} SeriesStory
+ * @prop {boolean} isCurrent
+ * @prop {string} kicker
+ * @prop {Node | null} thumbnail
+ * @prop {string} title
+ * @prop {string} url
+ */
 
 const CURRENT_STORY_ID = url2cmid(window.location.href);
 
+/**
+ * Create a series component
+ * @param {Object} SeriesConfig
+ * @param {SeriesStory[]} SeriesConfig.stories
+ * @param {Partial<SeriesOptions>} SeriesConfig.options
+ * @returns
+ */
 const Series = ({ stories, options = {} }) => {
   const className = cn('Series', {
     'has-m2r1': stories.length % 2 === 1,
@@ -23,7 +45,7 @@ const Series = ({ stories, options = {} }) => {
         .map(({ isCurrent, kicker, thumbnail, title, url }) =>
           url && !isCurrent
             ? html`
-                <a href="${url}" onclick="${() => track('series-link', url2cmid(url))}" aria-current="false">
+                <a href="${url}" onclick="${() => track('series-link', url2cmid(url) || '')}" aria-current="false">
                   ${thumbnail} ${kicker ? html`<label>${kicker}</label>` : null} <span>${title}</span>
                 </a>
               `
@@ -40,8 +62,18 @@ const Series = ({ stories, options = {} }) => {
 
 export default Series;
 
+/**
+ * Parse the DOM and setup a Series component
+ * @param {import('src/app/utils/mounts').Marker} marker
+ * @returns {void}
+ */
 export const transformMarker = marker => {
   const nextEl = marker.node.nextElementSibling;
+
+  if (!nextEl) {
+    return;
+  }
+
   const listEl = nextEl.tagName === 'OL' || nextEl.tagName === 'UL' ? nextEl : $('ol, ul', nextEl);
 
   if (!listEl) {
@@ -54,19 +86,26 @@ export const transformMarker = marker => {
     return;
   }
 
-  const stories = listItemEls.map(listItemEl => {
+  const stories = listItemEls.flatMap(listItemEl => {
     const linkEl = $('a', listItemEl);
-    const isCurrent = linkEl && url2cmid(linkEl.href) === CURRENT_STORY_ID;
-    const [title, kicker] = (linkEl || listItemEl).textContent.split(': ').reverse();
-    const thumbnailImageEl = getChildImage(listItemEl);
 
-    return {
-      isCurrent,
-      kicker,
-      thumbnail: thumbnailImageEl ? thumbnailImageEl.cloneNode(true) : null,
-      title,
-      url: linkEl ? linkEl.href : ''
-    };
+    const isCurrent = isAnchorElement(linkEl) && url2cmid(linkEl.href) === CURRENT_STORY_ID;
+    const [title, kicker] = ((linkEl || listItemEl).textContent || '').split(': ').reverse();
+    const thumbnailImageEl = getChildImage(listItemEl)?.cloneNode(true);
+
+    if (isImageElement(thumbnailImageEl)) {
+      thumbnailImageEl.className = '';
+    }
+
+    return [
+      {
+        isCurrent,
+        kicker,
+        thumbnail: thumbnailImageEl || null,
+        title,
+        url: isAnchorElement(linkEl) ? linkEl.href : ''
+      }
+    ];
   });
 
   const options = {
