@@ -7,7 +7,7 @@
     flex-wrap: wrap;
     margin-left: $unit * -0.5;
     margin-right: $unit * -0.5;
-    font-family: $font-sans;
+    font-family: var(--od-font-stack-sans);
   }
   .u-richtext-invert & :where(.is-legacy) & {
     color: $color-white;
@@ -177,7 +177,7 @@
     > h2,
     > h3,
     > h4 {
-      font-family: $font-serif;
+      font-family: var(--od-font-stack-serif);
       font-size: $unit * 1.25;
       color: var(--od-colour-theme-text-accent);
     }
@@ -187,7 +187,7 @@
     display: grid;
     gap: $unit; // TODO make this a variable
     grid-template-columns: 1fr;
-    font-family: $font-serif;
+    font-family: var(--od-font-stack-serif);
     @container (min-width: 30em) {
       // TODO: figure out the right min-width
       grid-template-columns: 1fr 1fr;
@@ -204,7 +204,7 @@
       > label {
         grid-row: 1/2;
         grid-column: 1/3;
-        font-family: $font-sans;
+        font-family: var(--od-font-stack-sans);
         font-weight: 700;
         font-size: $unit * 0.875;
         color: var(--od-colour-text-secondary);

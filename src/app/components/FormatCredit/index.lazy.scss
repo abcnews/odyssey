@@ -2,7 +2,7 @@
 
 .FormatCredit {
   color: $color-black-transparent-75;
-  font-family: $font-sans;
+  font-family: var(--od-font-stack-sans);
   font-size: 1rem;
   font-weight: bold;
   line-height: 1.555555556;

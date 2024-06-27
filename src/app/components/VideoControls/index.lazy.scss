@@ -43,7 +43,7 @@
 }
 
 .is-future {
-  .VideoControls-playback[aria-label^="Play video,"] {
+  .VideoControls-playback[aria-label^='Play video,'] {
     position: relative;
 
     .VideoPlayStart {
@@ -109,7 +109,6 @@
     border-radius: $radius * 2;
   }
 }
-
 
 .VideoControls-playback {
   position: absolute;
@@ -251,7 +250,7 @@
   height: $unit * 2;
   background-color: $color-black-transparent-60;
   color: $color-white;
-  font-family: $font-sans;
+  font-family: var(--od-font-stack-sans);
   font-size: 0.875rem;
   line-height: 1.75;
   text-align: center;

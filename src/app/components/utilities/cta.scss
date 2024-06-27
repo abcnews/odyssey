@@ -4,13 +4,13 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  font-family: $font-sans;
+  font-family: var(--od-font-stack-sans);
 
   a {
     flex: 0 1 auto;
     margin: $unit * 0.5;
     max-width: calc(100% - #{$unit});
-    font-family: $font-sans;
+    font-family: var(--od-font-stack-sans);
     line-height: 1.333333333;
     text-align: center;
     text-transform: uppercase;

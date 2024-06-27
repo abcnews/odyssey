@@ -4,9 +4,9 @@
   display: block;
   position: relative;
   outline-offset: -3px;
-  font-family: $font-sans;
+  font-family: var(--od-font-stack-sans);
 
-  .u-full>& {
+  .u-full > & {
     overflow: hidden;
     height: 100%;
   }
@@ -15,7 +15,7 @@
     visibility: hidden;
   }
 
-  &>.object-fit-polyfill {
+  & > .object-fit-polyfill {
     position: static !important;
   }
 
@@ -48,8 +48,8 @@
 .is-future {
   :not(.u-full) .Picture {
     @media #{$mq-gt-md} {
-        overflow: hidden;
-        border-radius: $radius-images;
+      overflow: hidden;
+      border-radius: $radius-images;
     }
   }
 }

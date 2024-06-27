@@ -24,7 +24,7 @@
 
   footer {
     color: $color-grey-500;
-    font-family: $font-sans;
+    font-family: var(--od-font-stack-sans);
     font-size: 0.9375rem;
 
     .u-richtext-invert > & {

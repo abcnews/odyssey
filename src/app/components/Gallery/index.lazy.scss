@@ -150,7 +150,7 @@
 .Gallery-index {
   padding: 0 $unit * 0.8125;
   min-width: 3.5rem;
-  font-family: $font-sans;
+  font-family: var(--od-font-stack-sans);
   height: $size-control;
   line-height: $size-control;
   letter-spacing: 0.05em;

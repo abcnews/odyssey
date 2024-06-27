@@ -6,7 +6,7 @@
 .Share-title {
   margin-bottom: $unit * 0.375;
   color: $color-black-transparent-75;
-  font-family: $font-sans;
+  font-family: var(--od-font-stack-sans);
   font-size: 0.8125rem;
   font-weight: bold;
   text-transform: uppercase;
@@ -16,9 +16,7 @@
   }
 }
 
-
 .is-future {
-
   .ShareBar {
     --transparent-colour: #a0beeb4d;
 
@@ -27,13 +25,13 @@
     --bar-button-secondary: var(--nw-colour-theme-secondary);
 
     display: flex;
-    gap: .5rem;
+    gap: 0.5rem;
 
     button {
       background: var(--bar-primary-colour);
       font-family: var(--dls-font-stack-sans);
 
-      font-size: .875rem;
+      font-size: 0.875rem;
       font-weight: 700;
 
       padding: 0.75rem 1.1rem 0.45rem;
@@ -78,9 +76,9 @@
   }
 
   .ShareBarText {
-    padding: .5rem 1rem;
+    padding: 0.5rem 1rem;
     font-weight: 700;
-    font-size: .9rem;
+    font-size: 0.9rem;
 
     text-overflow: ellipsis;
     overflow: hidden;
@@ -89,7 +87,6 @@
     -moz-user-select: none;
     user-select: none;
   }
-
 
   .ShareBannerButton {
     position: relative;
@@ -105,9 +102,7 @@
       justify-content: center;
       gap: 0.5rem;
 
-      box-shadow: 
-          0 1px 4px var(--black-10-opacity),
-          0 1px 2px var(--black-05-opacity);
+      box-shadow: 0 1px 4px var(--black-10-opacity), 0 1px 2px var(--black-05-opacity);
 
       svg {
         font-size: 1.4rem;
@@ -128,5 +123,4 @@
       }
     }
   }
-
 }

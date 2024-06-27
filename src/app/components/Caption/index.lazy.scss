@@ -65,7 +65,7 @@
 
 @layer odyssey.legacy {
   .Caption {
-    font-family: $font-sans;
+    font-family: var(--od-font-stack-sans);
 
     margin: 0;
 
