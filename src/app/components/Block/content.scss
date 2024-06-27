@@ -189,3 +189,13 @@
     width: 100% !important;
   }
 }
+
+:where(.is-future) {
+  .is-not-piecemeal,
+  .is-piecemeal {
+    .Block-content[class*='u-richtext'] > * {
+      backdrop-filter: blur(5px);
+      background-color: var(--od-colour-theme-surface-over-image);
+    }
+  }
+}

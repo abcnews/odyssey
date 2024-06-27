@@ -14,11 +14,13 @@
   --od-colour-text-primary: var(--nw-colour-text-primary, rgb(0, 0, 0));
   --od-colour-text-secondary: var(--nw-colour-text-secondary, rgb(72, 75, 81));
   --od-colour-theme-text-accent: var(--nw-colour-theme-text-accent, #10316a);
+  --od-colour-theme-surface-over-image: rgba(255, 255, 255, 0.85);
 }
 
 [data-scheme='dark'] {
   // Surfaces
   --od-colour-surface-utility: var(--nw-colour-surface-utility, rgb(48, 50, 54));
+  --od-colour-theme-surface-over-image: rgba(15, 15, 15, 0.75);
 
   // Text
   --od-colour-text-primary: var(--nw-colour-text-primary, rgb(235, 235, 235));

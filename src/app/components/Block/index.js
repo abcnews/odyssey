@@ -223,7 +223,7 @@ const Block = ({
             return memo;
           }, [])
         : contentEls.length > 0
-        ? html`<div class="${contentClassName}">${contentEls}</div>`
+        ? html`<div class="${contentClassName}"><div>${contentEls}</div></div>`
         : null}
     </div>
   `;
