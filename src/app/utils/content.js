@@ -1,7 +1,7 @@
 // @ts-check
 import { fetchOne } from '@abcnews/terminus-fetch';
 
-/** @type {Record<string, Promise<object>>} */
+/** @type {Record<string, Promise<TerminusArticle>>} */
 const cache = {};
 
 /**

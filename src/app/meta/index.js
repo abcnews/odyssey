@@ -8,8 +8,10 @@ import { debug } from '../utils/logging';
 
 /**
  * @typedef {Object} MetaData;
- * @prop {Record<string, string | boolean>} _metaDataName
+ * @prop {MetaDataName} _metaDataName
  * @prop {any} _articledetail
+ * @prop {TerminusArticle} _terminusDocument
+ * @prop {string} id
  * @prop {string} url
  * @prop {string} title
  * @prop {string} description
@@ -23,11 +25,15 @@ import { debug } from '../utils/logging';
  * @prop {Node[]} bylineNodes
  * @prop {Node[]} metadataNodes
  * @prop {{name: string; url: string}} infoSource
+ * @prop {string} productionUnit
  * @prop {any} infoSourceLogosHTMLFragmentId
  * @prop {any} relatedMedia
  * @prop {any} relatedStoriesIds
  * @prop {Record<string, unknown>} imagesByBinaryKey
  * @prop {Record<string, unknown>} mediaById
+ * @prop {boolean} isPL
+ * @prop {boolean} isPreview
+ * @prop {boolean} isFuture
  */
 
 /** @type {Partial<MetaData> | null} */
@@ -203,6 +209,12 @@ function getMetadataNodes(isFuture) {
   return [clonedMetadataEl];
 }
 
+/**
+ * Initialise the metadata for use everywhere else.
+ *
+ * @param {TerminusArticle} terminusDocument
+ * @returns {Partial<MetaData>}
+ */
 export const initMeta = terminusDocument => {
   if (meta) {
     throw new Error('Cannot create meta more than once.');
@@ -259,55 +271,63 @@ export const initMeta = terminusDocument => {
       relatedStoriesIds: getRelatedStoriesIds()
     }),
     // Create media lookups & pre-emptively fetch Teaser document targets we'll use later
-    () =>
-      (terminusDocument._embedded.mediaEmbedded || [])
+    () => {
+      /**
+       * @typedef {object} Media
+       * @prop {MediaEmbedded[]} images
+       * @prop {Record<string, MediaEmbedded>} imagesByBinaryKey
+       * @prop {Record<string, MediaEmbedded>} imagesById
+       * @prop {MediaEmbedded[]} media
+       * @prop {Record<string, MediaEmbedded>} mediaById
+       */
+      /** @type Media */
+      const init = {
+        images: [],
+        imagesByBinaryKey: {},
+        imagesById: {},
+        media: [],
+        mediaById: {}
+      };
+      return (terminusDocument._embedded.mediaEmbedded || [])
         .concat(terminusDocument._embedded.mediaFeatured || [])
         .concat(terminusDocument._embedded.mediaRelated || [])
-        .reduce(
-          (memo, doc) => {
-            const { docType, id, media, target } = doc;
+        .reduce((memo, doc) => {
+          const { docType, id, media, target } = doc;
 
-            if (!memo.mediaById[id]) {
-              memo.media.push(doc);
-              memo.mediaById[id] = doc;
-            }
-
-            switch (docType) {
-              case 'Teaser':
-                if (target) {
-                  // Pre-empt a future fetch of the target document
-                  fetchDocument({ id: target.id, type: target.docType.toLowerCase() });
-                }
-                break;
-              case 'Image':
-              case 'ImageProxy':
-                // It's possible for the `media` key to be undefined if it's an ImageProxy
-                // pointing at a deleted image. The `!!media` condition will stop Odyssey
-                // falling over in that case.
-                if (!memo.imagesById[id] && !!media) {
-                  memo.images.push(doc);
-                  memo.imagesById[id] = doc;
-                  memo.imagesByBinaryKey[media.image.primary.binaryKey] = doc;
-                }
-                break;
-              default:
-                break;
-            }
-
-            return memo;
-          },
-          {
-            images: [],
-            imagesByBinaryKey: {},
-            imagesById: {},
-            media: [],
-            mediaById: {}
+          if (!memo.mediaById[id]) {
+            memo.media.push(doc);
+            memo.mediaById[id] = doc;
           }
-        )
+
+          switch (docType) {
+            case 'Teaser':
+              if (target) {
+                // Pre-empt a future fetch of the target document
+                fetchDocument({ id: target.id, type: target.docType.toLowerCase() });
+              }
+              break;
+            case 'Image':
+            case 'ImageProxy':
+              // It's possible for the `media` key to be undefined if it's an ImageProxy
+              // pointing at a deleted image. The `!!media` condition will stop Odyssey
+              // falling over in that case.
+              if (!memo.imagesById[id] && !!media) {
+                memo.images.push(doc);
+                memo.imagesById[id] = doc;
+                memo.imagesByBinaryKey[media.image.primary.binaryKey] = doc;
+              }
+              break;
+            default:
+              break;
+          }
+
+          return memo;
+        }, init);
+    }
   ];
 
-  // Feed terminus document-based props through the above mixins
-  meta = mixins.reduce((meta, step) => ({ ...meta, ...(step(meta) || {}) }), {
+  /** @type {Partial<MetaData>} */
+  const initMeta = {
     _articledetail: getArticledetail(),
     _terminusDocument: terminusDocument,
     id: terminusDocument.id,
@@ -317,17 +337,21 @@ export const initMeta = terminusDocument => {
     published: new Date(terminusDocument.dates.displayPublished),
     updated: terminusDocument.dates.displayUpdated ? new Date(terminusDocument.dates.displayUpdated) : undefined,
     productionUnit: terminusDocument.productionUnit,
-    infoSource: terminusDocument.source
-      ? {
-          name: terminusDocument.source,
-          url: terminusDocument.sourceURL
-        }
-      : undefined,
+    infoSource:
+      terminusDocument.source && terminusDocument.sourceURL
+        ? {
+            name: terminusDocument.source,
+            url: terminusDocument.sourceURL
+          }
+        : undefined,
     // keep isPL around until we can audit Odyssey plugins and ensure none depend on it
     isPL: true,
     isPreview: getTier() === TIERS.PREVIEW,
     isFuture: getApplication() === APPLICATIONS.PLNF
-  });
+  };
+
+  // Feed terminus document-based props through the above mixins
+  meta = mixins.reduce((meta, step) => ({ ...meta, ...(step(meta) || {}) }), initMeta);
 
   return meta;
 };
@@ -340,6 +364,11 @@ export const getMeta = () => {
   return meta;
 };
 
+/**
+ * Get an image document from the CDN url
+ * @param {string} url An image URL
+ * @returns {}
+ */
 export const lookupImageByAssetURL = url => {
   const { imagesByBinaryKey } = getMeta();
   const [, binaryKey] = url.match(/\/([0-9a-f]{32})\b/) || [];
