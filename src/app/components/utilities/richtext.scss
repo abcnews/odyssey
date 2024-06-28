@@ -22,6 +22,7 @@
     font-weight: bold;
     line-height: 1.294117647;
     text-transform: none;
+    font-family: var(--od-font-stack-serif);
   }
 
   > h2 {
@@ -383,7 +384,7 @@
 
       a:any-link,
       a:any-link > * {
-        color: var(--nw-colour-theme-text-link);
+        color: var(--od-colour-theme-text-link);
       }
 
       > h2 {

@@ -14,6 +14,10 @@
   // Surfaces themed
   --od-colour-theme-surface-over-image: rgba(255, 255, 255, 0.85);
 
+  // Tags themed
+  --od-colour-theme-tag: #c3cfdf99;
+  --od-colour-theme-text-tag: var(--nw-colour-text-accent, #10316a);
+
   // Buttons
   --od-button-secondary: var(--nw-colour-theme-button-secondary, #e7eaf0);
   --od-button-secondary-hover: var(--nw-colour-theme-button-secondary-hover, #10316a);
@@ -30,6 +34,7 @@
 
   // Text themed
   --od-colour-theme-text-accent: var(--nw-colour-theme-text-accent, #10316a);
+  --od-colour-theme-text-link: #004fb8;
 
   // Icons
   --od-colour-icon-neutral: var(--nw-colour-icon-neutral, #fff);
@@ -40,6 +45,10 @@
   --od-colour-surface-utility: #30323699;
   --od-colour-surface-utility-bolder: #18191bbf;
   --od-colour-theme-surface-over-image: rgba(15, 15, 15, 0.75);
+
+  // Tags themed
+  --od-colour-theme-tag: #47516299;
+  --od-colour-theme-text-tag: var(--nw-colour-text-accent, #d1e0f5);
 
   // Buttons
   --od-button-secondary: var(--nw-colour-theme-button-secondary, #373f4c);
@@ -57,6 +66,7 @@
 
   // Text themed
   --od-colour-theme-text-accent: var(--nw-colour-theme-text-accent, rgb(209, 224, 245));
+  --od-colour-theme-text-link: #b2d3ff;
 
   // Icons
   --od-colour-icon-neutral: var(--nw-colour-icon-neutral, #000);

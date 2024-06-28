@@ -316,6 +316,25 @@ $abreastChildSpacing: $unit * 2.5;
 
 .Header-miscEl,
 .Header-byline {
+  :where(.is-future) & {
+    margin-bottom: $unit;
+    ul {
+      margin-top: $unit;
+      a:any-link {
+        color: var(--od-colour-theme-text-accent);
+        background-color: var(--od-colour-theme-tag);
+      }
+      a:hover {
+        color: var(--od-colour-text-inverse);
+        background-color: var(--od-button-secondary-hover);
+      }
+      a:active {
+        color: var(--od-colour-text-inverse);
+        background-color: var(--od-button-secondary-active);
+      }
+    }
+  }
+
   .Header > .Header-content > & {
     font-size: 1.125rem;
 
@@ -342,6 +361,9 @@ ul.Header-miscEl > li {
 .Header-infoSource,
 .Header-infoSource + * {
   margin-top: $unit * -0.5;
+  :where(.is-future) & {
+    margin-top: 0;
+  }
 }
 
 .Header .Header-content .Header-byline,
