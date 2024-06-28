@@ -234,6 +234,7 @@
     background-color: var(--od-button-secondary);
     color: var(--od-colour-text-primary);
     border-radius: $radius * 2 !important;
+    margin-left: 0;
 
     &:hover {
       background-color: var(--od-button-secondary-hover);
