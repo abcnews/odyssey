@@ -76,7 +76,12 @@ const Gallery = ({ items = [], masterCaptionEl }) => {
     });
   }
 
-  function goToItem(index, isImmediate) {
+  /**
+   *
+   * @param {number} index Index of the item to display
+   * @param {boolean} [isImmediate] Will jump rather than animate if true
+   */
+  function goToItem(index, isImmediate = false) {
     // Reset scroll position in case it was changed by browser focus() side-effect
     galleryEl.scrollLeft = 0;
 
@@ -87,6 +92,18 @@ const Gallery = ({ items = [], masterCaptionEl }) => {
     itemEls[currentIndex].classList.remove('is-active');
 
     currentIndex = index;
+
+    if (currentIndex === 0) {
+      prevEl.setAttribute('disabled', 'disabled');
+    } else {
+      prevEl.removeAttribute('disabled');
+    }
+
+    if (currentIndex === items.length - 1) {
+      nextEl.setAttribute('disabled', 'disabled');
+    } else {
+      nextEl.removeAttribute('disabled');
+    }
 
     galleryEl.classList[index === 0 ? 'add' : 'remove']('is-at-start');
     galleryEl.classList[index === items.length - 1 ? 'add' : 'remove']('is-at-end');

@@ -9,21 +9,55 @@
 [data-scheme='light'] {
   // Surfaces
   --od-colour-surface-utility: #75808a26;
+  --od-colour-surface-utility-bolder: #f9fafacf;
+
+  // Surfaces themed
+  --od-colour-theme-surface-over-image: rgba(255, 255, 255, 0.85);
+
+  // Buttons
+  --od-button-secondary: var(--nw-colour-theme-button-secondary, #e7eaf0);
+  --od-button-secondary-hover: var(--nw-colour-theme-button-secondary-hover, #10316a);
+  --od-button-secondary-active: var(--nw-colour-theme-button-secondary-active, #60769c);
+  --od-button-secondary-disabled: var(--nw-colour-theme-button-secondary-disabled, #0000000d);
 
   // Text
   --od-colour-text-primary: var(--nw-colour-text-primary, rgb(0, 0, 0));
   --od-colour-text-secondary: var(--nw-colour-text-secondary, rgb(72, 75, 81));
+  --od-colour-text-inverse: var(--nw-colour-text-inverse, #ffffff);
+  --od-colour-text-disabled: var(--nw-colour-text-disabled, #93979f);
+  --od-colour-text-on-colour: var(--nw-colour-text-on-colour, #fff);
+  --od-colour-text-on-colour-inverse: var(--nw-colour-text-on-colour-inverse, #000);
+
+  // Text themed
   --od-colour-theme-text-accent: var(--nw-colour-theme-text-accent, #10316a);
-  --od-colour-theme-surface-over-image: rgba(255, 255, 255, 0.85);
+
+  // Icons
+  --od-colour-icon-neutral: var(--nw-colour-icon-neutral, #fff);
 }
 
 [data-scheme='dark'] {
   // Surfaces
   --od-colour-surface-utility: #30323699;
+  --od-colour-surface-utility-bolder: #18191bbf;
   --od-colour-theme-surface-over-image: rgba(15, 15, 15, 0.75);
+
+  // Buttons
+  --od-button-secondary: var(--nw-colour-theme-button-secondary, #373f4c);
+  --od-button-secondary-hover: var(--nw-colour-theme-button-secondary-hover, #a0beeb);
+  --od-button-secondary-active: var(--nw-colour-theme-button-secondary-active, #60769c);
+  --od-button-secondary-disabled: var(--nw-colour-theme-button-secondary-disabled, #ffffff33);
 
   // Text
   --od-colour-text-primary: var(--nw-colour-text-primary, rgb(235, 235, 235));
   --od-colour-text-secondary: var(--nw-colour-text-secondary, rgb(201, 203, 207));
+  --od-colour-text-inverse: var(--nw-colour-text-inverse, #000000);
+  --od-colour-text-disabled: var(--nw-colour-text-disabled, #60646c);
+  --od-colour-text-on-colour: var(--nw-colour-text-on-colour, #fff);
+  --od-colour-text-on-colour-inverse: var(--nw-colour-text-on-colour-inverse, #000);
+
+  // Text themed
   --od-colour-theme-text-accent: var(--nw-colour-theme-text-accent, rgb(209, 224, 245));
+
+  // Icons
+  --od-colour-icon-neutral: var(--nw-colour-icon-neutral, #000);
 }
