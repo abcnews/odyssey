@@ -66,7 +66,7 @@
   flex: 0 0 100%;
   overflow: hidden;
   position: relative;
-  padding: 0 $unit * 0.46875;
+  padding: 0 $unit * 0.4687;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
@@ -211,34 +211,39 @@
   }
 }
 
-@layer odyssey.future {
-  .is-future {
-    .Gallery-index,
-    [class*='Gallery-step-'] {
-      color: $color-black;
-      background-color: $color-surface-utility;
-      opacity: 0.85;
+:where(.is-future) {
+  .Gallery-index,
+  [class*='Gallery-step-'] {
+    color: $color-black;
+    background-color: $color-surface-utility;
+    opacity: 0.85;
 
-      font-size: 0.925rem;
-      border-radius: $radius;
-      margin: $unit * 0.75;
-    }
+    font-size: 0.925rem;
+    border-radius: $radius;
+    margin: $unit * 0.75;
+  }
 
-    [class*='Gallery-step-'] {
-      width: 56px;
-      border-radius: $radius * 2 !important;
-    }
+  [class*='Gallery-step-'] {
+    width: 56px;
+    border-radius: $radius * 2 !important;
+  }
 
-    .Gallery-item .Caption {
+  .Gallery-item {
+    padding: 0 $unit * 0.25;
+  }
+
+  .Gallery-item .Caption {
+    margin-left: 0;
+    margin-right: 0;
+    @media #{$mq-gt-md} {
       margin-left: 0;
-      margin-right: 0;
     }
+  }
 
-    .is-at-start .Gallery-step-prev,
-    .is-at-end .Gallery-step-next {
-      opacity: 0.5;
-      cursor: disabled;
-      pointer-events: none;
-    }
+  .is-at-start .Gallery-step-prev,
+  .is-at-end .Gallery-step-next {
+    opacity: 0.5;
+    cursor: disabled;
+    pointer-events: none;
   }
 }

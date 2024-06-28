@@ -8,7 +8,7 @@
 
 [data-scheme='light'] {
   // Surfaces
-  --od-colour-surface-utility: var(--nw-colour-surface-utility, rgb(241, 242, 243));
+  --od-colour-surface-utility: #75808a26;
 
   // Text
   --od-colour-text-primary: var(--nw-colour-text-primary, rgb(0, 0, 0));
@@ -19,7 +19,7 @@
 
 [data-scheme='dark'] {
   // Surfaces
-  --od-colour-surface-utility: var(--nw-colour-surface-utility, rgb(48, 50, 54));
+  --od-colour-surface-utility: #30323699;
   --od-colour-theme-surface-over-image: rgba(15, 15, 15, 0.75);
 
   // Text

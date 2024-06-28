@@ -21,8 +21,10 @@
   .u-richtext-invert & {
     padding-left: $layout-fluid-padding;
     padding-right: $layout-fluid-padding;
-    background-color: $color-black-transparent-60;
-    color: $color-white;
+    :where(.is-legacy) & {
+      background-color: $color-black-transparent-60;
+      color: $color-white;
+    }
 
     @media #{$mq-gt-md} {
       padding-left: $layout-fluid-padding;
@@ -63,7 +65,7 @@
   }
 }
 
-@layer odyssey.legacy {
+:where(.is-legacy) {
   .Caption {
     font-family: var(--od-font-stack-sans);
 
@@ -78,27 +80,22 @@
   }
 }
 
-@layer odyssey.future {
-  .is-future {
-    .Caption {
-      margin: $unit * 0.5;
-      padding: $unit * 0.75 $unit;
-      border-radius: $radius;
-      background-color: var(--od-colour-surface-utility);
-
-      @media #{$mq-lt-lg} {
-        margin-left: $layout-fluid-padding;
-        margin-right: $layout-fluid-padding;
-      }
+:where(.is-future) {
+  .Caption {
+    margin: $unit * 0.5;
+    padding: $unit * 0.75 $unit;
+    border-radius: $radius;
+    background-color: var(--od-colour-surface-utility);
+    @media #{$mq-md} {
+      margin-left: auto;
+      margin-right: auto;
+      width: calc(cells(10) - $layout-fluid-padding * 2);
     }
-  }
 
-  .is-dark-mode {
-    .is-future {
-      .Caption {
-        background-color: $color-darkBg;
-        background-color: var(--bg, #{$color-darkBg});
-      }
+    @media #{$mq-gt-md} {
+      margin-left: 0;
+      margin-right: 0;
+      width: 100%;
     }
   }
 }
