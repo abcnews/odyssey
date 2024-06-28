@@ -114,4 +114,14 @@ html.is-master-gallery-open {
       width: 100%;
     }
   }
+  .MasterGallery {
+    .Gallery-pane {
+      margin: 0 $unit/4;
+    }
+
+    .Caption {
+      margin: $unit;
+      max-width: calc(100% - $unit * 2);
+    }
+  }
 }
