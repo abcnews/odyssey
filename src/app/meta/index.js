@@ -69,38 +69,37 @@ function getDataAttribute(name) {
 /**
  * Get DOM elements that make up the byline
  * @param {boolean} isFuture
- * @returns {ChildNode[]}
+ * @returns {Element[]}
  */
 function getBylineNodes(isFuture) {
   const bylineEl = $(SELECTORS.BYLINE);
+  const tagsEl = $(SELECTORS.HEADER_TAGS);
 
-  if (!bylineEl) {
-    return [];
+  const clonedBylineEl = bylineEl?.cloneNode(true);
+  const clonedTagsEl = tagsEl?.cloneNode(true);
+
+  // Tidy up some elements
+  if (isElement(clonedBylineEl)) {
+    $$('[data-tooltip-uri]', clonedBylineEl).forEach(tooltipEl => tooltipEl.parentElement?.removeChild(tooltipEl));
+    $$('a', clonedBylineEl).forEach(linkEl => {
+      linkEl.removeAttribute('class');
+      linkEl.removeAttribute('data-component');
+      linkEl.removeAttribute('data-uri');
+      linkEl.removeAttribute('style');
+    });
   }
 
-  const clonedBylineEl = bylineEl.cloneNode(true);
+  const bylineNodesParentEl = isElement(clonedBylineEl)
+    ? $('div,p,[data-component="Text"]', clonedBylineEl) || clonedBylineEl
+    : undefined;
 
-  if (!isElement(clonedBylineEl)) {
-    return [];
-  }
+  const bylineEls = isElement(bylineNodesParentEl)
+    ? Array.from(bylineNodesParentEl.childNodes).filter(
+        node => node.nodeType !== Node.COMMENT_NODE && (node.textContent || '').trim().length > -1
+      )
+    : [];
 
-  if (isFuture) {
-    return [clonedBylineEl];
-  }
-
-  $$('[data-tooltip-uri]', clonedBylineEl).forEach(tooltipEl => tooltipEl.parentElement?.removeChild(tooltipEl));
-  $$('a', clonedBylineEl).forEach(linkEl => {
-    linkEl.removeAttribute('class');
-    linkEl.removeAttribute('data-component');
-    linkEl.removeAttribute('data-uri');
-    linkEl.removeAttribute('style');
-  });
-
-  const bylineNodesParentEl = $('div,p,[data-component="Text"]', clonedBylineEl) || clonedBylineEl;
-
-  return Array.from(bylineNodesParentEl.childNodes).filter(
-    node => node.nodeType !== Node.COMMENT_NODE && (node.textContent || '').trim().length > -1
-  );
+  return [...bylineEls, clonedTagsEl].filter(isElement);
 }
 
 const FACEBOOK = /facebook\.com/;

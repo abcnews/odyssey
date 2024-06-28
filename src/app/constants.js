@@ -21,8 +21,9 @@ export const SELECTORS = {
   SHARE_UTILITY: '[data-component=ShareUtility]', // Future News
   BYLINE: [
     'header [data-component="Heading"]~[data-component="Byline"]',
-    'header [data-component="ArticleHeadline"] [class^="CardTagList"]' // Future News
+    'header [data-component="ArticleHeadline"] [class^="ArticleHeadlineTitleByline"]' // Future News
   ].join(','),
+  HEADER_TAGS: 'header [data-component="ArticleHeadline"] [class^="CardTagList"]', // Future News
   WYSIWYG_EMBED: '[data-component="LegacyWysiwyg"],[data-component="RelatedCard"]',
   QUOTE: '[data-component="Blockquote"],[data-component="EmphasisedText"],[data-component="Pullquote"]'
 };
