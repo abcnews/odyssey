@@ -73,7 +73,6 @@ html.is-master-gallery-open {
   overflow: auto;
 }
 
-
 .MasterGallery-close {
   position: absolute;
   z-index: 1;
@@ -84,36 +83,35 @@ html.is-master-gallery-open {
   height: $size-control;
 }
 
-@layer odyssey.legacy {
-  .is-legacy {
-    .MasterGallery-close {
-      padding: 0;
-      background-color: $color-black-transparent-60;
-      background-image: url(./close.svg);
-      background-position: center;
-      background-repeat: no-repeat;
-      background-size: 100%;
-      vertical-align: bottom;
-    }
+:where(.is-legacy) {
+  .MasterGallery-close {
+    padding: 0;
+    background-color: $color-black-transparent-60;
+    background-image: url(./close.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    vertical-align: bottom;
   }
 }
 
-@layer odyssey.future {
-  .is-future {
-    .MasterGallery-close {
-      color: $color-black;
-      background-color: $color-surface-utility;
-      opacity: 0.85;
+:where(.is-future) {
+  .MasterGallery-close {
+    background-color: var(--od-button-secondary);
+    color: var(--od-colour-text-primary);
+    border-radius: $radius * 2 !important;
+    font-size: 0.925rem;
+    margin: $unit * 0.75;
+    padding: $unit * 0.5;
 
-      font-size: 0.925rem;
-      border-radius: $radius !important;
-      margin: $unit * 0.75;
-      padding: $unit * 0.5;
+    &:hover {
+      background-color: var(--od-button-secondary-hover);
+      color: var(--od-colour-text-inverse);
+    }
 
-      svg {
-        height: 100%;
-        width: 100%;
-      }
+    svg {
+      height: 100%;
+      width: 100%;
     }
   }
 }
