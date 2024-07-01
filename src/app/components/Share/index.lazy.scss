@@ -17,20 +17,12 @@
 
 .is-future {
   .ShareBar {
-    --transparent-colour: #a0beeb4d;
-
-    --bar-colour: #a0beeb4d;
-    --bar-primary-colour: var(--nw-colour-theme-primary);
-    --bar-button-secondary: var(--nw-colour-theme-secondary);
-
     display: flex;
     gap: 0.5rem;
 
+    // Styles that are shared by both buttons in the share
     button {
-      background: var(--od-colour-theme-tag);
-      color: var(--odcolour-theme-tag-text);
-      font-family: var(--dls-font-stack-sans);
-
+      font-family: var(--od-font-stack-sans);
       font-size: 0.875rem;
       font-weight: 700;
 
@@ -50,22 +42,6 @@
       border-radius: $radius * 2;
       box-shadow: none;
 
-      &:hover {
-        color: var(--od-colour-text-inverse);
-        background-color: var(--od-button-secondary-hover);
-      }
-
-      &:active {
-        color: var(--od-colour-text-inverse);
-        background-color: var(--od-button-secondary-active);
-      }
-      &:focus {
-        color: var(--od-colour-text-inverse);
-        background-color: var(--od-button-secondary-hover);
-        span {
-          color: var(--od-colour-text-inverse);
-        }
-      }
       &:focus-visible {
         outline-width: var(--tab-outline-width);
         outline-style: var(--tab-outline-style);
@@ -92,13 +68,6 @@
     &:focus {
       color: var(--od-colour-text-primary);
       background-color: var(--od-button-primary-hover);
-    }
-
-    &:focus-visible {
-      outline-width: var(--tab-outline-width);
-      outline-style: var(--tab-outline-style);
-      outline-color: var(--tab-outline-colour, var(--colour-assistant));
-      outline-offset: var(--tab-offset);
     }
 
     svg {
@@ -133,7 +102,26 @@
     button {
       display: flex;
       padding: var(--nw-spacing-3) var(--nw-spacing-5);
+
       color: var(--od-colour-theme-text-accent);
+      background: var(--od-colour-theme-tag);
+
+      &:hover {
+        color: var(--od-colour-text-inverse);
+        background-color: var(--od-button-secondary-hover);
+      }
+
+      &:active {
+        color: var(--od-colour-text-inverse);
+        background-color: var(--od-button-secondary-active);
+      }
+      &:focus {
+        color: var(--od-colour-text-inverse);
+        background-color: var(--od-button-secondary-hover);
+        span {
+          color: var(--od-colour-text-inverse);
+        }
+      }
 
       min-width: max-content;
 
