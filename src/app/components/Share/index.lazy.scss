@@ -1,7 +1,6 @@
+// Share components are all new for Future News so no flags required here. For legacy
+// component see the ../legacy folder.
 @import '../../constants';
-
-.Share {
-}
 
 .Share-title {
   margin-bottom: $unit * 0.375;
@@ -28,13 +27,14 @@
     gap: 0.5rem;
 
     button {
-      background: var(--bar-primary-colour);
+      background: var(--od-colour-theme-tag);
+      color: var(--odcolour-theme-tag-text);
       font-family: var(--dls-font-stack-sans);
 
       font-size: 0.875rem;
       font-weight: 700;
 
-      padding: 0.75rem 1.1rem 0.45rem;
+      padding: 0.825rem 1.1rem 0.525rem;
       margin: 0;
       text-align: center;
       vertical-align: middle;
@@ -49,17 +49,57 @@
 
       border-radius: $radius * 2;
       box-shadow: none;
-    }
 
-    button:hover {
-      background: #000;
-      color: #fff;
+      &:hover {
+        color: var(--od-colour-text-inverse);
+        background-color: var(--od-button-secondary-hover);
+      }
+
+      &:active {
+        color: var(--od-colour-text-inverse);
+        background-color: var(--od-button-secondary-active);
+      }
+      &:focus {
+        color: var(--od-colour-text-inverse);
+        background-color: var(--od-button-secondary-hover);
+        span {
+          color: var(--od-colour-text-inverse);
+        }
+      }
+      &:focus-visible {
+        outline-width: var(--tab-outline-width);
+        outline-style: var(--tab-outline-style);
+        outline-color: var(--tab-outline-colour, var(--colour-assistant));
+        outline-offset: var(--tab-offset);
+      }
     }
   }
 
-  .ShareBarLinkButton {
-    background-color: var(--nw-colour-button-primary);
-    color: #000;
+  button.ShareBarLinkButton {
+    color: var(--od-colour-icon-inverse);
+    background: var(--od-button-primary);
+
+    &:hover {
+      color: var(--od-colour-text-primary);
+      background-color: var(--od-button-primary-hover);
+    }
+
+    &:active {
+      color: var(--od-colour-text-primary);
+      background-color: var(--od-button-primary-active);
+    }
+
+    &:focus {
+      color: var(--od-colour-text-primary);
+      background-color: var(--od-button-primary-hover);
+    }
+
+    &:focus-visible {
+      outline-width: var(--tab-outline-width);
+      outline-style: var(--tab-outline-style);
+      outline-color: var(--tab-outline-colour, var(--colour-assistant));
+      outline-offset: var(--tab-offset);
+    }
 
     svg {
       font-size: 1.4rem;
@@ -70,7 +110,7 @@
     display: flex;
     align-items: center;
     cursor: pointer;
-    background: var(--transparent-colour);
+    background: var(--od-colour-theme-tag);
     min-width: 0;
     border-radius: $radius * 2;
   }
@@ -93,6 +133,7 @@
     button {
       display: flex;
       padding: var(--nw-spacing-3) var(--nw-spacing-5);
+      color: var(--od-colour-theme-text-accent);
 
       min-width: max-content;
 
@@ -101,8 +142,6 @@
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
-
-      box-shadow: 0 1px 4px var(--black-10-opacity), 0 1px 2px var(--black-05-opacity);
 
       svg {
         font-size: 1.4rem;
