@@ -20,7 +20,7 @@ import { debug } from './logging';
  * @prop {string} name,
  * @prop {string} configString,
  * @prop {Element} node
- * @prop {typeof substitute} [substituteWith]
+ * @prop {(replacementNode: Node) => Node | undefined} [substituteWith]
  */
 
 /**

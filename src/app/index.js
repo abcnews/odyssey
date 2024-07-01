@@ -127,7 +127,7 @@ export default terminusDocument => {
       nextEl = nextEl.nextElementSibling;
     }
 
-    conditionallyApplyUDropcap(nextEl);
+    conditionallyApplyUDropcap(nextEl, meta.isFuture);
   });
 
   // Enable outdented quotes on direct descendants of richtext elements
@@ -171,7 +171,7 @@ export default terminusDocument => {
         transformMarkerIntoUCTA(marker);
         break;
       case 'hr':
-        transformMarkerIntoHR(marker);
+        transformMarkerIntoHR(marker, meta);
         break;
       case 'scrollhint':
         transformMarkerIntoScrollHint(marker);
