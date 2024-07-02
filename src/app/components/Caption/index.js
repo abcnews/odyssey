@@ -35,7 +35,7 @@ export default Caption;
 export const createFromTerminusDoc = (doc, unlink) =>
   Caption({
     url: `/news/${doc.id}`,
-    text: doc.caption || doc.title,
+    text: doc.caption,
     attribution: doc.byLine && !doc.byLine.type ? doc.byLine.plain : doc.attribution || null,
     unlink
   });
