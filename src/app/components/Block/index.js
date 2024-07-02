@@ -81,7 +81,7 @@ const Block = ({
     'is-fixed': !isDocked
   });
   const mediaCaptionClassName = 'Block-mediaCaption';
-  const contentClassName = `Block-content${alignment ? ` is-${alignment}` : ''} u-richtext${isDark ? '' : '-invert'}`;
+  const contentClassName = `Block-content${alignment ? ` is-${alignment}` : ''} u-richtext${isDark ? '-invert' : ''}`;
 
   ratios = {
     sm: ratios.sm || '3x4',
@@ -339,7 +339,9 @@ export const transformSection = (section, meta) => {
   const isContained = section.configString.indexOf('contain') > -1;
   const isDocked = section.configString.indexOf('docked') > -1;
   const isGrouped = section.configString.indexOf('grouped') > -1;
-  const isDark = section.configString.indexOf('dark') > -1 || meta.isDark || meta.isDarkMode;
+  const isDark = meta.isFuture
+    ? section.configString.indexOf('dark') > -1 || meta.isDark || meta.isDarkMode
+    : section.configString.indexOf('light') === -1;
   const isPiecemeal = section.configString.indexOf('piecemeal') > -1;
   const isPhoneFrame = section.configString.indexOf('phoneframe') > -1;
   const shouldSupplant = section.configString.indexOf('supplant') > -1;
