@@ -127,7 +127,7 @@ export default terminusDocument => {
       nextEl = nextEl.nextElementSibling;
     }
 
-    conditionallyApplyUDropcap(nextEl, meta.isFuture);
+    conditionallyApplyUDropcap(nextEl);
   });
 
   // Enable outdented quotes on direct descendants of richtext elements

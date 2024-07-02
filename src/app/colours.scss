@@ -8,8 +8,11 @@
 
 [data-scheme='light'] {
   // Surfaces
+  --od-colour-surface-neutral: var(--bg, var(--nw-colour-surface-neutral, rgb(255, 255, 255)));
   --od-colour-surface-utility: #75808a26;
+  --od-colour-surface-utility-opaque: var(--nw-colour-surface-utility, #75808a);
   --od-colour-surface-utility-bolder: #f9fafacf;
+  --od-colour-border-opacity-low: var(--nw-colour-border-opacity-low, #0000001a);
 
   // Surfaces themed
   --od-colour-theme-surface-over-image: rgba(255, 255, 255, 0.85);
@@ -20,6 +23,11 @@
   --od-colour-theme-text-tag-opacity-40: #10316a66;
 
   // Buttons
+  --od-button-primary: var(--nw-colour-theme-button-primary, #10316a);
+  --od-button-primary-hover: var(--nw-colour-theme-button-primary-hover, #e7eaf0);
+  --od-button-primary-active: var(--nw-colour-theme-button-primary-active, #afbacd);
+  --od-button-primary-disabled: var(--nw-colour-theme-button-primary-disabled, #0000000d);
+
   --od-button-secondary: var(--nw-colour-theme-button-secondary, #e7eaf0);
   --od-button-secondary-hover: var(--nw-colour-theme-button-secondary-hover, #10316a);
   --od-button-secondary-active: var(--nw-colour-theme-button-secondary-active, #60769c);
@@ -39,12 +47,19 @@
 
   // Icons
   --od-colour-icon-neutral: var(--nw-colour-icon-neutral, #fff);
+  --od-colour-icon-inverse: var(--nw--colour-icon-inverse, #ffffff);
 }
 
 [data-scheme='dark'] {
   // Surfaces
+  --od-colour-surface-neutral: var(--bg, var(--nw-colour-surface-neutral, rgb(15, 15, 15)));
   --od-colour-surface-utility: #30323699;
+  --od-colour-surface-utility-opaque: var(--nw-colour-surface-utility, #303236);
   --od-colour-surface-utility-bolder: #18191bbf;
+  --od-colour-border-low-transparency: rgba(255, 255, 255, 0.2);
+  --od-colour-border-opacity-low: var(--od-colour-surface-utility-opaque, #303236);
+
+  // Surfaces themed
   --od-colour-theme-surface-over-image: rgba(15, 15, 15, 0.75);
 
   // Tags themed
@@ -53,6 +68,11 @@
   --od-colour-theme-text-tag-opacity-40: #d1e0f566;
 
   // Buttons
+  --od-button-primary: var(--nw-colour-theme-button-primary, #a0beeb);
+  --od-button-primary-hover: var(--nw-colour-theme-button-primary-hover, #10316a);
+  --od-button-primary-active: var(--nw-colour-theme-button-primary-active, #60769c);
+  --od-button-primary-disabled: var(--nw-colour-theme-button-primary-disabled, #0000000d);
+
   --od-button-secondary: var(--nw-colour-theme-button-secondary, #373f4c);
   --od-button-secondary-hover: var(--nw-colour-theme-button-secondary-hover, #a0beeb);
   --od-button-secondary-active: var(--nw-colour-theme-button-secondary-active, #60769c);
@@ -72,4 +92,5 @@
 
   // Icons
   --od-colour-icon-neutral: var(--nw-colour-icon-neutral, #000);
+  --od-colour-icon-inverse: var(--nw--colour-icon-inverse, #000);
 }
