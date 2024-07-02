@@ -10,6 +10,7 @@
   // Surfaces
   --od-colour-surface-utility: #75808a26;
   --od-colour-surface-utility-bolder: #f9fafacf;
+  --od-colour-border-low-transparency: rgba(0, 0, 0, 0.1);
 
   // Surfaces themed
   --od-colour-theme-surface-over-image: rgba(255, 255, 255, 0.85);
@@ -44,6 +45,9 @@
   // Surfaces
   --od-colour-surface-utility: #30323699;
   --od-colour-surface-utility-bolder: #18191bbf;
+  --od-colour-border-low-transparency: rgba(255, 255, 255, 0.2);
+
+  // Surfaces themed
   --od-colour-theme-surface-over-image: rgba(15, 15, 15, 0.75);
 
   // Tags themed

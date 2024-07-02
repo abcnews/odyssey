@@ -415,10 +415,11 @@
     }
   }
 
+  // Styles for embedded wysiwyg teasers
   [class*='u-richtext'] > [class*='u-richtext'],
   [class*='u-pull'] > [class*='u-richtext'] {
     border-style: solid;
-    border-color: $color-black-transparent-10;
+    border-color: var(--od-colour-border-low-transparency);
     border-width: 1px 0;
   }
 }
