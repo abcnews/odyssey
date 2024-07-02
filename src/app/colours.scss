@@ -55,6 +55,7 @@
   --od-colour-surface-utility: #30323699;
   --od-colour-surface-utility-opaque: var(--nw-colour-surface-utility, #303236);
   --od-colour-surface-utility-bolder: #18191bbf;
+  --od-colour-border-low-transparency: rgba(255, 255, 255, 0.2);
   --od-colour-border-opacity-low: var(--od-colour-surface-utility-opaque, #303236);
 
   // Surfaces themed
