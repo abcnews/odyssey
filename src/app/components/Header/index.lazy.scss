@@ -126,34 +126,39 @@ $abreastChildSpacing: $unit * 2.5;
 .Header-content {
   position: relative;
 
-  :where(.is-legacy) & {
-    margin-left: $layout-fluid-padding;
-    margin-right: $layout-fluid-padding;
-    padding: $unit * 1.25 0;
-    text-align: center;
-  }
-
-  :where(.is-future) & {
-    margin: $unit * 2 $unit $unit $unit;
-    @media #{$mq-md} {
-      margin: $unit * 2 0 $unit;
+  @layer odyssey.legacy {
+    .is-legacy & {
+      margin-left: $layout-fluid-padding;
+      margin-right: $layout-fluid-padding;
+      padding: $unit * 1.25 0;
+      text-align: center;
     }
-    @media #{$mq-gt-md} {
-      margin: $unit * 2 auto $unit;
-      width: calc($layout-fixed * 0.666);
-      padding: $layout-fixed-padding;
+  }
+  @layer odyssey.future {
+    .is-future & {
+      margin: $unit;
+      @media #{$mq-md} {
+        margin: $unit 0;
+      }
+      @media #{$mq-gt-md} {
+        margin: $unit auto;
+        width: calc($layout-fixed * 0.666);
+        padding: $layout-fixed-padding;
+      }
     }
   }
 
   @media #{$mq-md} {
-    :where(.is-future) & {
-      margin-left: calc(#{cells(1)} + #{$layout-fluid-padding});
-      margin-right: calc(#{cells(1)} + #{$layout-fluid-padding});
+    @layer odyssey.future {
+      .is-future & {
+        margin-left: calc(#{cells(1)} + #{$layout-fluid-padding});
+        margin-right: calc(#{cells(1)} + #{$layout-fluid-padding});
+      }
     }
   }
 
   @media #{$mq-gt-md} {
-    :where(.is-future) & {
+    @layer odyssey.future {
       margin-left: auto;
       margin-right: auto;
       width: $layout-fixed - $layout-fixed-gutter;
@@ -180,41 +185,45 @@ $abreastChildSpacing: $unit * 2.5;
   }
 
   .is-layered > & {
-    :where(.is-legacy) & {
-      background-image: $gradient-black-vertical-0-45-100-75;
+    @layer odyssey.legacy {
+      .is-legacy & {
+        background-image: $gradient-black-vertical-0-45-100-75;
+      }
     }
 
-    :where(.is-future) & {
-      margin-bottom: 0;
-      padding: $unit * 1.5;
-
-      :first-child {
-        margin-top: 0;
-      }
-      border-radius: $radius $radius 0 0;
-      background-color: $color-white-transparent-85;
-
-      @media #{$mq-md} {
-        margin-top: 0;
+    @layer odyssey.future {
+      .is-future & {
         margin-bottom: 0;
-        margin-left: auto;
-        margin-right: auto;
-        width: calc(cells(10) + #{$layout-fluid-padding});
-      }
+        padding: $unit * 1.5;
 
-      @media #{$mq-gt-md} {
-        margin-top: 0;
-        margin-bottom: 0;
-        margin-left: auto;
-        margin-right: auto;
-        border-radius: calc($radius * 2) calc($radius * 2) 0 0;
-        width: calc(#{$layout-fixed} * 0.666 - $layout-fixed-padding * 2 + $unit * 3);
+        :first-child {
+          margin-top: 0;
+        }
+        border-radius: $radius $radius 0 0;
+        background-color: $color-white-transparent-85;
+
+        @media #{$mq-md} {
+          margin-top: 0;
+          margin-bottom: 0;
+          margin-left: auto;
+          margin-right: auto;
+          width: calc(cells(10) + #{$layout-fluid-padding});
+        }
+
+        @media #{$mq-gt-md} {
+          margin-top: 0;
+          margin-bottom: 0;
+          margin-left: auto;
+          margin-right: auto;
+          border-radius: calc($radius * 2) calc($radius * 2) 0 0;
+          width: calc(#{$layout-fixed} * 0.666 - $layout-fixed-padding * 2 + $unit * 3);
+        }
       }
     }
   }
 
   .is-layered.is-dark > & {
-    :where(.is-future) & {
+    .is-future & {
       background-color: $color-black-transparent-75;
     }
   }
@@ -225,30 +234,33 @@ $abreastChildSpacing: $unit * 2.5;
 }
 
 .Header-content > * {
-  :where(.is-legacy) & {
-    padding-left: cells(1);
-    padding-right: cells(1);
+  @layer odyssey.legacy {
+    .is-legacy & {
+      padding-left: cells(1);
+      padding-right: cells(1);
 
-    @media #{$mq-md} {
-      padding-left: cells(1, 10);
-      padding-right: cells(1, 10);
-    }
+      @media #{$mq-md} {
+        padding-left: cells(1, 10);
+        padding-right: cells(1, 10);
+      }
 
-    @media #{$mq-gt-md} {
-      padding-left: calc(#{cells(1)} + #{$layout-fixed-padding});
-      padding-right: calc(#{cells(1)} + #{$layout-fixed-padding});
+      @media #{$mq-gt-md} {
+        padding-left: calc(#{cells(1)} + #{$layout-fixed-padding});
+        padding-right: calc(#{cells(1)} + #{$layout-fixed-padding});
+      }
     }
   }
 }
 
 .Header-content > h1 {
-  :where(.is-legacy) {
-    @media #{$mq-sm} {
-      margin-left: -$layout-fluid-padding;
-      margin-right: -$layout-fluid-padding;
+  @layer odyssey.legacy {
+    .is-legacy {
+      @media #{$mq-sm} {
+        margin-left: -$layout-fluid-padding;
+        margin-right: -$layout-fluid-padding;
+      }
     }
   }
-
   > small {
     display: block;
     color: #80999d;
@@ -265,18 +277,20 @@ $abreastChildSpacing: $unit * 2.5;
     }
   }
 
-  :where(.is-legacy) & {
-    &::after {
-      content: '';
-      transform: translate(0, 100%);
-      display: block;
-      margin: $unit * 1.125 auto;
-      width: $unit * 9;
-      height: $unit * 0.125;
-      background-color: $color-grey-300-transparent-70;
+  @layer odyssey.legacy {
+    .is-legacy & {
+      &::after {
+        content: '';
+        transform: translate(0, 100%);
+        display: block;
+        margin: $unit * 1.125 auto;
+        width: $unit * 9;
+        height: $unit * 0.125;
+        background-color: $color-grey-300-transparent-70;
 
-      @media #{$mq-gt-sm} {
-        width: $unit * 18;
+        @media #{$mq-gt-sm} {
+          width: $unit * 18;
+        }
       }
     }
   }
@@ -293,8 +307,10 @@ $abreastChildSpacing: $unit * 2.5;
 }
 
 .Header-miscEl {
-  :where(.is-future) & {
-    font-size: 1.25 * $unit;
+  @layer odyssey.future {
+    .is-future & {
+      font-size: 1.25 * $unit;
+    }
   }
 }
 

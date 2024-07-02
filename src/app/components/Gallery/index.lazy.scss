@@ -182,30 +182,32 @@
   transform: scaleX(-1);
 }
 
-:where(.is-legacy) {
-  .Gallery-index,
-  [class*='Gallery-step-'] {
-    background-color: $color-black-transparent-60;
-    color: $color-white;
-    font-size: 0.8125rem;
-  }
+@layer odyssey.legacy {
+  .is-legacy {
+    .Gallery-index,
+    [class*='Gallery-step-'] {
+      background-color: $color-black-transparent-60;
+      color: $color-white;
+      font-size: 0.8125rem;
+    }
 
-  [class*='Gallery-step-'] {
-    width: $size-control;
-    padding: 0;
-  }
+    [class*='Gallery-step-'] {
+      width: $size-control;
+      padding: 0;
+    }
 
-  .Gallery-item .Caption {
-    background-color: transparent;
-    margin-left: -$layout-fluid-padding;
-    margin-right: -$layout-fluid-padding;
-  }
+    .Gallery-item .Caption {
+      background-color: transparent;
+      margin-left: -$layout-fluid-padding;
+      margin-right: -$layout-fluid-padding;
+    }
 
-  .is-at-start .Gallery-step-prev,
-  .is-at-end .Gallery-step-next {
-    opacity: 0.2;
-    cursor: disabled;
-    pointer-events: none;
+    .is-at-start .Gallery-step-prev,
+    .is-at-end .Gallery-step-next {
+      opacity: 0.2;
+      cursor: disabled;
+      pointer-events: none;
+    }
   }
 }
 

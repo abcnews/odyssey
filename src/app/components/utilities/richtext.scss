@@ -3,6 +3,7 @@
 // Attribute selectors are used for `u-richtext` so those styles also apply to
 // `u-richtext-invert`.
 [class*='u-richtext'] {
+
   > h1,
   > h2,
   > h3 {
@@ -207,6 +208,8 @@
   }
 }
 
+
+
 // There are also some legacy styles that are moved from the defaults above
 // because we want them to *only* apply in the legacy environment. This is usually
 // where we want to let styles from PL apply where we didn't before (e.g. body font).
@@ -232,7 +235,7 @@
     > ul li,
     > ol li,
     > blockquote {
-      @media #{$mq-gt-sm} {
+     @media #{$mq-gt-sm} {
         line-height: 1.666666667;
       }
     }
@@ -354,9 +357,10 @@
     a,
     a > * {
       color: var(--nw-colour-theme-text-link);
-
-      :where(.is-legacy) & {
-        color: $color-lightPrimary;
+      @layer odyssey.legacy {
+        .is-legacy & {
+          color: $color-lightPrimary;
+        }
       }
     }
 
@@ -372,6 +376,7 @@
 
 // TODO: check all the colours!
 :where(.is-future) {
+
   [class*='u-richtext'] {
     > * {
       color: var(--od-colour-text-primary);
