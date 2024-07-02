@@ -1,3 +1,4 @@
+// @ts-check
 import html from 'nanohtml';
 import { PLACEHOLDER_IMAGE_CUSTOM_PROPERTY } from '../../constants';
 import { enqueue, invalidateClient, subscribe } from '../../scheduler';
@@ -7,6 +8,19 @@ import Sizer from '../Sizer';
 import VideoControls from '../VideoControls';
 import { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } from '../VideoPlayer/players';
 import styles from './index.lazy.scss';
+
+/**
+ * @typedef {object} YouTubePlayerConfig
+ * @prop {string|number} videoId
+ * @prop {import('src/app/utils/misc').Ratios} ratios
+ * @prop {string} title
+ * @prop {boolean} isAmbient
+ * @prop {boolean} isContained
+ * @prop {boolean} isInvariablyAmbient
+ * @prop {boolean} isLoop
+ * @prop {boolean} isMuted
+ * @prop {number} scrollplayPct
+ */
 
 const DEFAULT_YOUTUBE_CONFIG = {
   controls: 0,
@@ -25,6 +39,11 @@ const DEFAULT_RATIO = '16x9';
 const players = [];
 let nextId = 0;
 
+/**
+ * Create a YouTubePlayer component
+ * @param {Partial<YouTubePlayerConfig} config
+ * @returns {HTMLElement}
+ */
 const YouTubePlayer = ({
   videoId,
   ratios = {},
@@ -154,7 +173,7 @@ const YouTubePlayer = ({
               player.isUserInControl = true;
               videoEl.setAttribute('ended', '');
               videoEl.setAttribute('paused', '');
-              toggleAttribute(videoEl, 'muted', isMuted);
+              toggleAttribute(videoEl, 'muted', !!isMuted);
 
               if (videoControlsEl) {
                 videoControlsEl.api.setPlaybackLabel('Replay');
@@ -321,6 +340,9 @@ function _resizePlayers() {
   players.forEach(player => player.resize());
 }
 
+/**
+ * @param {(api: any) => void} cb;
+ */
 function loadYouTubeAPI(cb) {
   if (window.YT && window.YT.Player && window.YT.Player instanceof Function) {
     requestAnimationFrame(() => cb(window.YT));

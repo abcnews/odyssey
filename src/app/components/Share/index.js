@@ -1,8 +1,12 @@
 import html from 'nanohtml';
 import { track } from '../../utils/behaviour';
 import { proximityCheck } from '../../utils/misc';
+import { $ } from '../../utils/dom';
+import { getMeta } from '../../meta';
 import { subscribe, unsubscribe } from '../../scheduler';
-import ShareLinks from '../ShareLinks';
+import ShareLinksLegacy from '../legacy/ShareLinks';
+import SharePopover, { trackShare } from '../SharePopover';
+import Icon from '../Icon';
 import styles from './index.lazy.scss';
 
 const DEFAULT_TYPE = 'story';
@@ -15,15 +19,51 @@ const Share = ({ type, links }) => {
   if (links.length === 0) {
     return html`<div data-error="No share links to render"></div>`;
   }
-
-  const formattedType = (type.length ? type : DEFAULT_TYPE).replace(UPPERCASE_PATTERN, x => ' ' + x.toLowerCase());
-
   styles.use();
 
+  const { isFuture, url } = getMeta();
+
+  let hdl;
+  const copyToClipboard = async (url) => {
+     try {
+      const copyLink = links.find(l => l.id === 'copylink');
+      await navigator.clipboard.writeText(copyLink.url);
+      trackShare(copyLink.id);
+
+      $('.ShareBar .ShareBarLinkButton svg')?.replaceWith(Icon('tick'));
+      clearTimeout(hdl);
+      hdl = setTimeout(() => {
+        $('.ShareBar .ShareBarLinkButton svg')?.replaceWith(Icon('link'));
+      }, 1500);
+    } catch (err) {
+    }
+  };
+
+  if (isFuture) {
+    return html`
+      <div class="ShareBar">
+        <div class="ShareBarUrl" onclick="${() => copyToClipboard(url)}">
+          <div class="ShareBarText">
+            ${url.replace('https://www.', '').replace(/\d\d\d\d-\d\d-\d\d\//, '')}
+          </div>
+          <button class="ShareBarLinkButton">
+            ${Icon('link')}
+          </button>
+        </div>
+
+        ${ShareButton({ links })}
+      </div>
+    `;
+  }
+
+  //
+  // Legacy version
+  //
+  const formattedType = (type.length ? type : DEFAULT_TYPE).replace(UPPERCASE_PATTERN, x => ' ' + x.toLowerCase());
   const el = html`
     <div class="Share">
       <div class="Share-title">Share this ${formattedType}</div>
-      ${ShareLinks({ links, shouldBlend: true })}
+      ${ShareLinksLegacy({ links, shouldBlend: true })}
     </div>
   `;
 
@@ -34,6 +74,40 @@ const Share = ({ type, links }) => {
   }
 
   return el;
+};
+
+
+const ShareButton = ({ links }) => {
+  const onClickUrl = (url) => {
+    // Avoid double open
+    if (!$('.ShareBar .SharePopover')) {
+      $('.ShareBar .ShareBannerButton')?.append(popoverEl);
+    }
+  };
+
+  const onClose = () => {
+    $('.ShareBar .SharePopover')?.remove();
+  }
+
+  // Create the popover element at the start, so we can add and remove it from the DOM
+  let popoverEl = SharePopover({ links, onClose });
+
+  // A click anywhere outside the popover element will close it
+  document.addEventListener('mouseup', function(e) {
+    if (!$('.SharePopover')?.contains(e.target)) {
+      onClose();
+    }
+  });
+
+  return html`
+    <div class="ShareBannerButton">
+      <button class="ArticleShareButton" onclick="${() => onClickUrl()}" aria-label="Share this article" data-component="Button" type="button">
+        <span class="ShareButtonTextShort">Share</span>
+        <span class="ShareButtonTextLong">Share article</span>
+        ${Icon('share')}
+      </button>
+    </div>
+  `;
 };
 
 export default Share;

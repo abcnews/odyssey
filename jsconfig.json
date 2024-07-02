@@ -1,16 +1,14 @@
 {
+  "extends": ["./node_modules/@abcnews/aunty/ts/config.json"],
   "compilerOptions": {
+    "allowJs": true,
+    "baseUrl": ".",
     "target": "ES2018",
-    "module": "ES2020",
-    "moduleResolution": "node16",
-    "checkJs": false,
-    "jsx": "react",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "checkJs": false, // TODO: checking turned on in individual files for now to avoid overwhelm.
     "strictNullChecks": true,
     "strictFunctionTypes": true
   },
-  "exclude": [
-    ".aunty",
-    "node_modules",
-    "**/node_modules/*"
-  ]
+  "exclude": [".aunty", "node_modules", "**/node_modules/*"]
 }

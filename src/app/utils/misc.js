@@ -22,6 +22,13 @@ export const flatten = lists => {
   }, []);
 };
 
+/** @typedef {{sm?: string, md?: string, lg?: string, xl?: string}} Ratios */
+
+/**
+ * Extract ratios from a config string.
+ * @param {string} str A config string
+ * @returns {Ratios}
+ */
 export const getRatios = str => {
   const [, sm] = str.match(SM_RATIO_PATTERN) || [];
   const [, md] = str.match(MD_RATIO_PATTERN) || [];
@@ -69,4 +76,8 @@ export const whenKeyIn = (keys, fn) => {
 
 export const clampNumber = (value, min, max) => {
   return Math.max(min, Math.min(value, max));
+};
+
+export const isDefined = val => {
+  return typeof val !== 'undefined' && val !== null;
 };

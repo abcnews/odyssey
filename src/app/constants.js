@@ -18,7 +18,12 @@ export const SELECTORS = {
     '[data-component="Decoy"][data-key="article"] [data-component="GridRow"] div:not([class])'
   ].join(','),
   SHARE_TOOLS: '[data-component="FixedHeader"] [data-component="Popover"]',
-  BYLINE: 'header [data-component="Heading"]~[data-component="Byline"]',
+  SHARE_UTILITY: '[data-component=ShareUtility]', // Future News
+  BYLINE: [
+    'header [data-component="Heading"]~[data-component="Byline"]',
+    'header [data-component="ArticleHeadline"] [class^="ArticleHeadlineTitleByline"]' // Future News
+  ].join(','),
+  HEADER_TAGS: 'header [data-component="ArticleHeadline"] [class^="CardTagList"]', // Future News
   WYSIWYG_EMBED: '[data-component="LegacyWysiwyg"],[data-component="RelatedCard"]',
   QUOTE: '[data-component="Blockquote"],[data-component="EmphasisedText"],[data-component="Pullquote"]'
 };
@@ -125,3 +130,12 @@ export const EMBED_ALIGNMENT_MAP = {
   floatLeft: 'left',
   floatRight: 'right'
 };
+
+/**
+ * This is the default news PL theme. Don't be fooled by the 'light' in 'light-blue' – there is
+ * a dark variant of this theme. The light/dark is controlled by a 'scheme' variable in PL.
+ *
+ * TODO: This is hard coded in Odyssey for now, but we may want to adopt the PL themes which can
+ * be found on the `data-scheme` attribute on `<body>`
+ */
+export const THEME = 'light-blue';

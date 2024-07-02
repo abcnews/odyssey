@@ -3,10 +3,13 @@ import html from 'nanohtml';
 import { enqueue, invalidateClient } from '../../scheduler';
 import { track } from '../../utils/behaviour';
 import { $, $$, prepend } from '../../utils/dom';
+import { getMeta } from '../../meta';
 import { createFromTerminusDoc as createCaptionFromTerminusDoc } from '../Caption';
 import Gallery from '../Gallery';
 import Picture from '../Picture';
+import Icon from '../Icon';
 import styles from './index.lazy.scss';
+import { THEME } from '../../../app/constants';
 
 const TAB_KEY = 9;
 
@@ -26,6 +29,7 @@ const MasterGallery = () => {
   }
 
   const galleryEl = Gallery({ items });
+  const { isFuture } = getMeta();
 
   galleryEl.classList.remove('u-full');
 
@@ -103,7 +107,9 @@ const MasterGallery = () => {
         }
       }}"
       onclick="${close}"
-    ></button>
+    >
+      ${isFuture ? Icon('cross') : ''}
+    </button>
   `;
 
   prepend($('.Gallery-layout', galleryEl), closeEl);
@@ -114,13 +120,15 @@ const MasterGallery = () => {
       role="dialog"
       aria-label="Gallery of all photos in this story"
       tabindex="-1"
+      data-scheme="dark"
+      data-theme="${THEME}"
       onclick="${function (event) {
         if (this === event.target) {
           close();
         }
       }}"
     >
-      <div class="MasterGallery-container u-richtext-invert">${galleryEl}</div>
+      <div class="MasterGallery-container ${isFuture ? '' : 'u-richtext-invert'}">${galleryEl}</div>
     </div>
   `;
 

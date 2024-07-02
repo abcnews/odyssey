@@ -51,22 +51,31 @@
   background-color: transparent;
   -webkit-tap-highlight-color: $color-black-transparent;
 
+  // Hide once video has been started
+  .VideoPlayStart {
+    display: none;
+  }
+
   &::before {
     content: '';
     position: absolute;
+    background-image: url(./play.svg);
+    transition: opacity 0.25s, transform 0.25s;
+    will-change: opacity, transform;
+
     top: 50%;
     left: 50%;
     margin-top: $size-control * -0.75;
     margin-left: $size-control * -0.75;
     width: $size-control * 1.5;
     height: $size-control * 1.5;
-    background-color: $color-black-transparent-60;
-    background-image: url(./play.svg);
+
     background-position: center;
     background-repeat: no-repeat;
     background-size: 100%;
-    transition: opacity 0.25s, transform 0.25s;
-    will-change: opacity, transform;
+    background-color: $color-white-transparent-60;
+    color: $color-white;
+    filter: invert(1);
 
     @media #{$mq-md} {
       .u-pull &,
@@ -168,14 +177,85 @@
 
 .VideoControls-timeRemaining {
   margin-left: $size-control-margin;
+  margin-right: $size-control-margin;
   padding: $unit * 0.25;
   min-width: $unit * 3.75;
   height: $unit * 2;
   background-color: $color-black-transparent-60;
   color: $color-white;
-  font-family: $font-sans;
+  font-family: var(--od-font-stack-sans);
   font-size: 0.875rem;
   line-height: 1.75;
   text-align: center;
   letter-spacing: 0.05em;
+}
+
+:where(.is-future) {
+  .VideoControls {
+    padding: $unit;
+  }
+
+  .VideoControls-playback[aria-label^='Play video,'] {
+    .VideoPlayStart {
+      .PlayIcon {
+        background-image: url(./play.svg);
+        height: 40px;
+        width: 40px;
+        transform: scale(0.7);
+      }
+
+      abbr {
+        text-decoration: none;
+      }
+
+      display: flex;
+      align-items: center;
+
+      position: absolute;
+      bottom: var(--nw-spacing-3);
+      left: var(--nw-spacing-3);
+      border-radius: $radius * 2;
+      padding: var(--nw-spacing-1) var(--nw-spacing-5) var(--nw-spacing-1) var(--nw-spacing-3);
+
+      background-color: $color-white;
+      color: $color-black;
+
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    &::before {
+      display: none;
+    }
+  }
+
+  .VideoControls-progress {
+    margin: 0;
+  }
+
+  .VideoControls-timeRemaining {
+    margin: 0 0 0 $unit;
+  }
+
+  .VideoControls-mute {
+    margin: var(--nw-spacing-2);
+  }
+
+  .VideoControls-playback::before {
+    border-radius: $radius;
+  }
+
+  .VideoControls-mute,
+  .VideoControls-timeRemaining,
+  .VideoControls-progressBar,
+  .VideoControls-progress {
+    border-radius: $radius !important;
+  }
+
+  .VideoControls-progressBar::-webkit-progress-bar,
+  .VideoControls-progressBar::-webkit-progress-value,
+  .VideoControls-progressBar::-moz-progress-bar {
+    border-radius: $radius;
+  }
 }

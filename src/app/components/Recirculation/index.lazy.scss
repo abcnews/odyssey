@@ -45,7 +45,7 @@
 
   & > * {
     margin: 0;
-    font-family: $font-sans;
+    font-family: var(--od-font-stack-sans);
   }
 
   & > :not(:first-child) {

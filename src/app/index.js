@@ -53,6 +53,7 @@ export default terminusDocument => {
   }
 
   const mainEl = reset(storyEl, meta);
+  mainEl.parentElement.classList.add(meta.isFuture ? 'is-future' : 'is-legacy');
   debug('Performed page reset');
 
   mockDecoyActivationsUnderEl(mainEl); // Mock PL's decoy activation events
@@ -94,7 +95,7 @@ export default terminusDocument => {
         transformSectionIntoHeader(section, meta);
         break;
       case 'block':
-        transformSectionIntoBlock(section);
+        transformSectionIntoBlock(section, meta);
         break;
       case 'gallery':
         transformSectionIntoGallery(section);
@@ -170,7 +171,7 @@ export default terminusDocument => {
         transformMarkerIntoUCTA(marker);
         break;
       case 'hr':
-        transformMarkerIntoHR(marker);
+        transformMarkerIntoHR(marker, meta);
         break;
       case 'scrollhint':
         transformMarkerIntoScrollHint(marker);

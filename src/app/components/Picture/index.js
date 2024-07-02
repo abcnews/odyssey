@@ -23,6 +23,17 @@ const RATIO_SIZE_WIDTH_INDICES = {
   '3x4': { sm: 0, md: 1, lg: 1, xl: 1 }
 };
 
+/**
+ *
+ * @param {object} obj
+ * @param {string} [obj.src]
+ * @param {string|null} [obj.alt]
+ * @param {object} [obj.ratios]
+ * @param {string} [obj.linkUrl]
+ * @param {boolean} [obj.isContained]
+ * @param {boolean} [obj.shouldLazyLoad]
+ * @returns {HTMLElement}
+ */
 const Picture = ({
   src = SMALLEST_IMAGE,
   alt = '',

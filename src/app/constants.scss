@@ -1,18 +1,17 @@
 @use 'sass:math';
 
-$font-sans: 'ABCSans', Helvetica, Arial, sans-serif;
-$font-serif: 'ABCSerif', 'Book Antiqua', 'Palatino Linotype', Palatino, serif;
-
 $color-white: #fff;
 $color-white-transparent: rgba(255, 255, 255, 0);
 $color-white-transparent-30: rgba(255, 255, 255, 0.3);
 $color-white-transparent-45: rgba(255, 255, 255, 0.45);
 $color-white-transparent-60: rgba(255, 255, 255, 0.6);
 $color-white-transparent-75: rgba(255, 255, 255, 0.75);
+$color-white-transparent-85: rgba(255, 255, 255, 0.85);
 $color-white-transparent-90: rgba(255, 255, 255, 0.9);
 
 $color-black: #000;
 $color-black-transparent: rgba(0, 0, 0, 0);
+$color-black-transparent-10: rgba(0, 0, 0, 0.3);
 $color-black-transparent-30: rgba(0, 0, 0, 0.3);
 $color-black-transparent-45: rgba(0, 0, 0, 0.45);
 $color-black-transparent-60: rgba(0, 0, 0, 0.6);
@@ -112,3 +111,26 @@ $mq-pl-lt-md: '(max-width: #{$bp-pl-md - 1px})';
 
 $size-control: $unit * 2.5;
 $size-control-margin: $unit * 0.1875;
+
+// Future News
+$color-surface-utility: #f1f2f3;
+$radius: calc($unit * 0.75);
+$radius-images: 0;
+
+.Main {
+  --od-font-stack-condensed: var(
+    --dls-font-stack-condensed,
+    '"abcsans condensed",-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Helvetica Neue",Arial,sans-serif'
+  );
+  --od-font-stack-rounded: var(
+    --dls-font-stack-rounded,
+    '"abcsans rounded",-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Helvetica Neue",Arial,sans-serif'
+  );
+  --od-font-stack-sans: var(
+    --dls-font-stack-sans,
+    '"abcsans",-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Helvetica Neue",Arial,sans-serif'
+  );
+  --od-font-stack-serif: var(--dls-font-stack-serif, '"abcserif","Book Anitqua","Palatino Linotype",Palatino,serif');
+  --od-font-stack-monospace: var(--dls-font-stack-monospace, '"abcsans tabbed",monospace');
+  --od-font-size: 1.125rem;
+}

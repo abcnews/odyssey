@@ -1,9 +1,10 @@
+// @ts-check
 import { getMountValue, isMount } from '@abcnews/mount-utils';
 import cn from 'classnames';
 import html from 'nanohtml';
 import rawHTML from 'nanohtml/raw';
 import { SELECTORS, SUPPORTS_PASSIVE, VIDEO_MARKER_PATTERN } from '../../constants';
-import { lookupImageByAssetURL } from '../../meta';
+import { lookupImageByAssetURL, getMeta } from '../../meta';
 import { enqueue, invalidateClient, subscribe } from '../../scheduler';
 import { $, append, detach, detectVideoId, getChildImage, isElement, setText } from '../../utils/dom';
 import { dePx, getRatios } from '../../utils/misc';
@@ -40,6 +41,8 @@ const Gallery = ({ items = [], masterCaptionEl }) => {
   let mediaEls;
   let paneEl;
 
+  const { isFuture } = getMeta();
+
   function updateItemsAppearance(xPct, isImmediate) {
     let wasOnEndCalled = false;
 
@@ -73,7 +76,12 @@ const Gallery = ({ items = [], masterCaptionEl }) => {
     });
   }
 
-  function goToItem(index, isImmediate) {
+  /**
+   *
+   * @param {number} index Index of the item to display
+   * @param {boolean} [isImmediate] Will jump rather than animate if true
+   */
+  function goToItem(index, isImmediate = false) {
     // Reset scroll position in case it was changed by browser focus() side-effect
     galleryEl.scrollLeft = 0;
 
@@ -85,16 +93,35 @@ const Gallery = ({ items = [], masterCaptionEl }) => {
 
     currentIndex = index;
 
+    if (currentIndex === 0) {
+      prevEl.setAttribute('disabled', 'disabled');
+    } else {
+      prevEl.removeAttribute('disabled');
+    }
+
+    if (currentIndex === items.length - 1) {
+      nextEl.setAttribute('disabled', 'disabled');
+    } else {
+      nextEl.removeAttribute('disabled');
+    }
+
     galleryEl.classList[index === 0 ? 'add' : 'remove']('is-at-start');
     galleryEl.classList[index === items.length - 1 ? 'add' : 'remove']('is-at-end');
     itemEls[currentIndex].classList.add('is-active');
-    setText(indexEl, `${currentIndex + 1} / ${items.length}`);
+    if (isFuture) {
+      setText(indexEl, `${currentIndex + 1} of ${items.length}`);
+    } else {
+      setText(indexEl, `${currentIndex + 1} / ${items.length}`);
+    }
 
     updateItemsAppearance(-currentIndex * 100, isImmediate);
     setTimeout(invalidateClient, 1000);
   }
 
   function pointerHandler(fn) {
+    /**
+     * @this {HTMLElement}
+     */
     return function handler(event) {
       const _event = {
         type: event.type,
@@ -160,12 +187,17 @@ const Gallery = ({ items = [], masterCaptionEl }) => {
     }
   }
 
+  /**
+   * @this {HTMLElement}
+   * @param {PointerEvent} event
+   * @returns
+   */
   function swipeIntent(event) {
     if (swipeAxis != null) {
       return;
     }
 
-    const index = +this.getAttribute('data-index');
+    const index = +(this.getAttribute('data-index') || '0');
 
     if (index > currentIndex) {
       diffX = -(SWIPE_THRESHOLD + 1);
@@ -377,6 +409,7 @@ const Gallery = ({ items = [], masterCaptionEl }) => {
     </div>
   `;
 
+  // @ts-ignore element api props are currently not typed
   galleryEl.api = { goToItem, measureDimensions };
 
   requestAnimationFrame(() => {
@@ -411,7 +444,9 @@ export const transformSection = section => {
 
       const isQuote = node.matches(SELECTORS.QUOTE);
       const imgEl = getChildImage(node);
-      const videoId = isMount(node, 'video') ? getMountValue(node).match(VIDEO_MARKER_PATTERN)[1] : detectVideoId(node);
+      const videoId = isMount(node, 'video')
+        ? getMountValue(node).match(VIDEO_MARKER_PATTERN)?.[1]
+        : detectVideoId(node);
 
       if (videoId) {
         const videoPlayerEl = VideoPlayer({
@@ -428,9 +463,13 @@ export const transformSection = section => {
 
         // Videos that don't have captions right now can append them them later using metadata
         if (!videoCaptionEl) {
+          // @ts-ignore element api props are currently not typed
           videoPlayerEl.api.metadataHook = ({ alternativeText }) => {
-            if (alternativeText) {
-              append(videoPlayerEl.parentElement, Caption({ text: alternativeText, attribution: 'ABC News' }));
+            if (alternativeText && isElement(videoPlayerEl.parentElement)) {
+              const cap = Caption({ text: alternativeText, attribution: 'ABC News' });
+              if (cap) {
+                append(videoPlayerEl.parentElement, cap);
+              }
             }
           };
         }
@@ -443,8 +482,8 @@ export const transformSection = section => {
       } else if (imgEl) {
         const src = imgEl.src;
         const imageDoc = lookupImageByAssetURL(src);
-        const alt = imgEl.getAttribute('alt');
-        const linkUrl = imageDoc ? `/news/${imageDoc.id}` : null;
+        const alt = imgEl.getAttribute('alt') || undefined;
+        const linkUrl = imageDoc ? `/news/${imageDoc.id}` : undefined;
 
         config.items.push({
           id: imageDoc ? imageDoc.id : src,

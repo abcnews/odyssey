@@ -1,7 +1,14 @@
+// @ts-check
 import { fetchOne } from '@abcnews/terminus-fetch';
 
+/** @type {Record<string, Promise<TerminusArticle>>} */
 const cache = {};
 
+/**
+ *
+ * @param {{id:string; type: string}|string} optionsOrId
+ * @returns {Promise<object>}
+ */
 export const fetchDocument = optionsOrId => {
   const options = typeof optionsOrId === 'object' ? optionsOrId : { id: optionsOrId };
   const key = options.id;
@@ -13,6 +20,12 @@ export const fetchDocument = optionsOrId => {
   return cache[key];
 };
 
+/**
+ *
+ * @param {{id: string, type:string} | string} optionsOrId
+ * @param {import('../meta').MetaData} meta
+ * @returns
+ */
 export const getOrFetchDocument = (optionsOrId, meta) => {
   const { id } = typeof optionsOrId === 'object' ? optionsOrId : { id: optionsOrId };
   const localDocument = meta.mediaById[id];
@@ -20,6 +33,11 @@ export const getOrFetchDocument = (optionsOrId, meta) => {
   return localDocument ? Promise.resolve(localDocument) : fetchDocument(optionsOrId);
 };
 
+/**
+ *
+ * @param {object} object
+ * @returns {object}
+ */
 function deepFreeze(object) {
   const propNames = Object.getOwnPropertyNames(object);
 

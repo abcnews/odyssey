@@ -1,3 +1,4 @@
+//@ts-check
 import cn from 'classnames';
 import html from 'nanohtml';
 import styles from './index.lazy.scss';

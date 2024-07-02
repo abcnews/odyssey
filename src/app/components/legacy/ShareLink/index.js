@@ -2,7 +2,7 @@ import { dataLayer } from '@abcaustralia/analytics-datalayer';
 import cn from 'classnames';
 import html from 'nanohtml';
 import styles from './index.lazy.scss';
-import { getMeta } from '../../meta/index';
+import { getMeta } from '../../../meta/index';
 
 const PATHS = {
   email:

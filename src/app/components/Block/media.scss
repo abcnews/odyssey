@@ -1,6 +1,5 @@
 @import '../../constants';
 
-
 .Block-media {
   overflow: hidden;
   position: absolute;
@@ -9,6 +8,13 @@
   width: 100%;
   height: 100%;
   max-height: 100vh;
+
+  .is-future & {
+    .Video,
+    .Picture {
+      border-radius: 0;
+    }
+  }
 
   &.is-fixed {
     clip-path: inset(-0.5px 0); // claiming vertical 0.5px closes sub-pixel gaps between adjacent Blocks
@@ -59,7 +65,6 @@
       width: 100%;
       height: 100%;
     }
-
   }
 
   .has-inset-media & > :not(.Block-mediaCaption) {
@@ -145,6 +150,19 @@
     height: 100%;
   }
 
+  .is-legacy & {
+    > *::after {
+      .is-not-piecemeal.has-dark & {
+        background-color: $color-black-transparent-30;
+        background-image: $gradient-black-vertical-50-0-100-60;
+      }
+      .is-not-piecemeal.has-light & {
+        background-color: $color-white-transparent-30;
+        background-image: $gradient-white-vertical-50-0-100-60;
+      }
+    }
+  }
+
   > *::after {
     .is-not-piecemeal & {
       content: '';
@@ -153,16 +171,6 @@
       left: 0;
       width: 100%;
       height: 100%;
-    }
-
-    .is-not-piecemeal.has-dark & {
-      background-color: $color-black-transparent-30;
-      background-image: $gradient-black-vertical-50-0-100-60;
-    }
-
-    .is-not-piecemeal.has-light & {
-      background-color: $color-white-transparent-30;
-      background-image: $gradient-white-vertical-50-0-100-60;
     }
 
     @media #{$mq-gt-md} {
@@ -371,14 +379,13 @@
 
 // Phone frame respects 'left' and 'right' option on blocks
 .has-right .Block-media .phone-frame {
-    @media #{$mq-gt-md} {
-      margin-left: calc(200px - 28vw);
-    }
+  @media #{$mq-gt-md} {
+    margin-left: calc(200px - 28vw);
+  }
 }
 
 .has-left .Block-media .phone-frame {
-    @media #{$mq-gt-md} {
-      margin-left: 20vw;
-    }
+  @media #{$mq-gt-md} {
+    margin-left: 20vw;
+  }
 }
-

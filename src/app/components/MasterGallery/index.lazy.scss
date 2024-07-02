@@ -78,14 +78,50 @@ html.is-master-gallery-open {
   z-index: 1;
   top: 0;
   right: 0;
-  padding: 0;
   border: none;
   width: $size-control;
   height: $size-control;
-  background-color: $color-black-transparent-60;
-  background-image: url(./close.svg);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 100%;
-  vertical-align: bottom;
+}
+
+:where(.is-legacy) {
+  .MasterGallery-close {
+    padding: 0;
+    background-color: $color-black-transparent-60;
+    background-image: url(./close.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    vertical-align: bottom;
+  }
+}
+
+:where(.is-future) {
+  .MasterGallery-close {
+    background-color: var(--od-button-secondary);
+    color: var(--od-colour-text-primary);
+    border-radius: $radius * 2 !important;
+    font-size: 0.925rem;
+    margin: $unit * 0.75;
+    padding: $unit * 0.5;
+
+    &:hover {
+      background-color: var(--od-button-secondary-hover);
+      color: var(--od-colour-text-inverse);
+    }
+
+    svg {
+      height: 100%;
+      width: 100%;
+    }
+  }
+  .MasterGallery {
+    .Gallery-pane {
+      margin: 0 $unit/4;
+    }
+
+    .Caption {
+      margin: $unit;
+      max-width: calc(100% - $unit * 2);
+    }
+  }
 }
