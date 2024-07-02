@@ -308,8 +308,17 @@ $abreastChildSpacing: $unit * 2.5;
 
 .Header-miscEl {
   @layer odyssey.future {
-    .is-future & {
+    :where(.is-future) & {
       font-size: 1.25 * $unit;
+    }
+    margin-bottom: $unit * 2;
+  }
+}
+
+.Header-byline {
+  @layer odyssey.future {
+    :where(.is-future) & {
+      margin-bottom: $unit;
     }
   }
 }
@@ -317,20 +326,28 @@ $abreastChildSpacing: $unit * 2.5;
 .Header-miscEl,
 .Header-byline {
   :where(.is-future) & {
-    margin-bottom: $unit;
-    ul {
+    ul[class^='CardTagList'] {
       margin-top: $unit;
       a:any-link {
         color: var(--od-colour-theme-text-accent);
         background-color: var(--od-colour-theme-tag);
+        & > * {
+          color: var(--od-colour-theme-text-accent);
+        }
       }
       a:hover {
         color: var(--od-colour-text-inverse);
         background-color: var(--od-button-secondary-hover);
+        & > * {
+          color: var(--od-colour-text-inverse);
+        }
       }
       a:active {
         color: var(--od-colour-text-inverse);
         background-color: var(--od-button-secondary-active);
+        & > * {
+          color: var(--od-colour-text-inverse);
+        }
       }
     }
   }
