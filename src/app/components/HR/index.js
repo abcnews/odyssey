@@ -18,5 +18,5 @@ export const transformMarker = (marker, meta) => {
   const el = HR();
 
   marker.substituteWith && marker.substituteWith(el);
-  conditionallyApplyUDropcap(el.nextElementSibling, meta.isFuture);
+  conditionallyApplyUDropcap(el.nextElementSibling);
 };

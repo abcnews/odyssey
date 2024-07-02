@@ -419,7 +419,7 @@
   [class*='u-richtext'] > [class*='u-richtext'],
   [class*='u-pull'] > [class*='u-richtext'] {
     border-style: solid;
-    border-color: var(--od-colour-border-low-transparency);
+    border-color: var(--od-colour-border-opacity-low);
     border-width: 1px 0;
   }
 }
