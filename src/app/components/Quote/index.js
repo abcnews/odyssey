@@ -2,11 +2,13 @@ import cn from 'classnames';
 import html from 'nanohtml';
 import { ALIGNMENT_PATTERN, MOCK_NODE } from '../../constants';
 import { $, $$, isElement, substitute } from '../../utils/dom';
+import { getMeta } from '../../meta';
 import { grabPrecedingConfigString } from '../../utils/mounts';
 import { conditionallyApply as conditionallyApplyUQuote } from '../UQuote';
 import styles from './index.lazy.scss';
 
 const Quote = ({ isPullquote = false, alignment, parEls = [], attributionNodes = [] }) => {
+  const { isFuture } = getMeta();
   const className = cn('Quote', {
     'is-pullquote': isPullquote,
     [`u-pull-${alignment}`]: alignment
@@ -30,7 +32,7 @@ const Quote = ({ isPullquote = false, alignment, parEls = [], attributionNodes =
 
   return html`
     <div class="${className}">
-      <blockquote>${parEls.concat(attributionEl)}</blockquote>
+      <blockquote class="${isFuture ? 'u-richtext' : ''}">${parEls.concat(attributionEl)}</blockquote>
     </div>
   `;
 };
