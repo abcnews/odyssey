@@ -431,5 +431,21 @@
     border-style: solid;
     border-color: var(--od-colour-border-opacity-low);
     border-width: 1px 0;
+    margin-top: var(--od-space-component-margin);
+    margin-bottom: var(--od-space-component-margin);
+    padding-top: var(--od-space-md);
+    padding-bottom: var(--od-space-md);
+
+    @media #{$mq-gt-sm} {
+      padding-top: var(--od-space-lg);
+      padding-bottom: var(--od-space-lg);
+    }
+
+    :first-child {
+      margin-top: 0;
+    }
+    :last-child {
+      margin-bottom: 0;
+    }
   }
 }

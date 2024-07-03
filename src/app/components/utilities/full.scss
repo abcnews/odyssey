@@ -32,9 +32,6 @@ $isFlush: '.u-full:is(.Backdrop, .Block, .Header)';
 
 :where(.is-future) {
   .u-full.u-full {
-    --u-full-vertical-margin: var(--od-space-xl);
-    @media #{$mq-gt-sm} {
-      --u-full-vertical-margin: var(--od-space-2xl);
-    }
+    --u-full-vertical-margin: var(--od-space-component-margin);
   }
 }

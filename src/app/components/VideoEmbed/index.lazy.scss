@@ -11,7 +11,9 @@
   }
 
   &:not(.u-pull):not(.u-full) {
-    margin-bottom: $unit * 1.5;
+    :where(.is-legacy) {
+      margin-bottom: $unit * 1.5;
+    }
   }
 
   @media #{$mq-sm} {
@@ -33,5 +35,12 @@
       padding-right: 0;
       width: 100%;
     }
+  }
+}
+
+:where(.is-future) {
+  .VideoEmbed {
+    margin-top: var(--od-space-component-margin);
+    margin-bottom: var(--od-space-component-margin);
   }
 }

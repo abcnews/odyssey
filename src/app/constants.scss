@@ -134,11 +134,15 @@ $radius-images: 0;
   --od-font-stack-serif: var(--dls-font-stack-serif, '"abcserif","Book Anitqua","Palatino Linotype",Palatino,serif');
   --od-font-stack-monospace: var(--dls-font-stack-monospace, '"abcsans tabbed",monospace');
 
+  --od-font-size-sm: 0.875rem; // 14px
   --od-font-size: 1.125rem; // 18px
   --od-font-size-lg: 1.25rem; // 20px
-  --od-font-size-heading-lg: 1.75rem; // 28px
-  --od-font-size-heading-md: 1.5rem; // 24px
-  --od-font-size-heading-sm: 1.25rem; // 20px
+  --od-font-size-xl: 1.5rem; // 24px
+  --od-font-size-2xl: 1.75rem; // 28px
+
+  --od-font-size-heading-lg: var(--od-font-size-2xl); // 28px
+  --od-font-size-heading-md: var(--od-font-size-xl);
+  --od-font-size-heading-sm: var(--od-font-size-lg); // 20px
   --od-line-height: 1.5;
 
   @media #{$mq-gt-sm} {

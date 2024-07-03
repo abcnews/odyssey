@@ -325,9 +325,10 @@ $abreastChildSpacing: $unit * 2.5;
   }
 }
 
-.Header-content > .Header-byline {
+.Header .Header-content > .Header-byline {
   :where(.is-future) & {
     margin-bottom: var(--od-space-md);
+    font-size: var(--od-font-size-sm);
   }
 }
 
@@ -394,7 +395,9 @@ ul.Header-miscEl > li {
 
 .Header .Header-content .Header-byline,
 .Header .Header-content .Header-infoSource {
-  font-size: 0.9375rem;
+  :where(.is-legacy) & {
+    font-size: 0.9375rem;
+  }
 }
 
 .Header-byline > span {
@@ -452,6 +455,10 @@ ul.Header-miscEl > li {
 :where(.is-future) {
   .Header.u-full .Header-meta {
     margin-bottom: 0;
+  }
+
+  .Header .Header-content .Header-byline {
+    font-size: var(--od-font-size-sm);
   }
 
   [data-scheme='dark'] > .Header[data-scheme='light'],

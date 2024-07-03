@@ -188,6 +188,7 @@
     gap: $unit; // TODO make this a variable
     grid-template-columns: 1fr;
     font-family: var(--od-font-stack-serif);
+    margin-bottom: 0 !important;
     @container (min-width: 30em) {
       // TODO: figure out the right min-width
       grid-template-columns: 1fr 1fr;
