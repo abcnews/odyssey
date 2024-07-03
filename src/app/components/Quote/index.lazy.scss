@@ -39,7 +39,6 @@
 }
 
 .Quote.is-pullquote {
-
   blockquote {
     border: none;
     background-color: transparent;
@@ -81,7 +80,6 @@
 }
 
 :where(.is-legacy) {
-
   .Quote blockquote {
     border-left: $unit * 0.625 solid $color-grey-300-transparent-70;
     padding: 0 $unit * 2;
@@ -97,7 +95,6 @@
         color: $color-lighterPrimary;
       }
     }
-
   }
 
   .Quote.is-pullquote {
@@ -134,11 +131,25 @@
   }
 }
 
-
 :where(.is-future) {
+  .Quote {
+    margin-top: var(--od-space-component-margin);
+    margin-bottom: var(--od-space-component-margin);
+
+    &.u-pull-left,
+    &.u-pull-right {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+  }
+
   .Quote blockquote {
     border-left: $unit / 4 solid var(--od-colour-theme-text-tag-opacity-40);
     padding: 0 $unit;
+    margin: 0;
+    :first-child {
+      margin-top: 0;
+    }
   }
 
   .Quote:not(.is-pullquote) blockquote {
@@ -151,6 +162,10 @@
     padding-top: $unit * 2;
     padding-bottom: $unit * 1;
 
+    blockquote {
+      margin: 0;
+    }
+
     @media #{$mq-sm} {
       padding-left: $unit * 3;
       padding-right: $unit * 3;
@@ -159,8 +174,8 @@
     p {
       color: var(--od-colour-theme-text-tag);
       font-family: var(--od-font-stack-serif);
-      font-size: 1.5rem;
-      line-height: 1.33;
+      font-size: var(--od-font-size-xl);
+      line-height: 1.25;
     }
 
     &::after {
@@ -172,7 +187,5 @@
       opacity: 0.4;
       background-color: var(--od-colour-theme-text-tag);
     }
-
   }
 }
-

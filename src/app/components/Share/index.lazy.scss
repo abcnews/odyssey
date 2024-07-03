@@ -19,6 +19,8 @@
   .ShareBar {
     display: flex;
     gap: 0.5rem;
+    margin-top: var(--od-space-component-margin);
+    margin-bottom: var(--od-space-component-margin);
 
     // Styles that are shared by both buttons in the share
     button {

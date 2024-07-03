@@ -212,6 +212,11 @@
 }
 
 :where(.is-future) {
+  .Gallery {
+    margin-top: var(--od-space-component-margin);
+    margin-bottom: var(--od-space-component-margin);
+  }
+
   .Gallery-controls {
     @media #{$mq-gt-sm} {
       padding: 0;
