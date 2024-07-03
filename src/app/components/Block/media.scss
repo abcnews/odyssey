@@ -150,13 +150,15 @@
     height: 100%;
   }
 
-  .is-legacy & {
-    > *::after {
-      .is-not-piecemeal.has-dark & {
+  > *::after {
+    .is-not-piecemeal.has-dark & {
+      :where(.is-legacy) & {
         background-color: $color-black-transparent-30;
         background-image: $gradient-black-vertical-50-0-100-60;
       }
-      .is-not-piecemeal.has-light & {
+    }
+    .is-not-piecemeal.has-light & {
+      :where(.is-legacy) & {
         background-color: $color-white-transparent-30;
         background-image: $gradient-white-vertical-50-0-100-60;
       }

@@ -310,8 +310,8 @@ $abreastChildSpacing: $unit * 2.5;
   @layer odyssey.future {
     :where(.is-future) & {
       font-size: 1.25 * $unit;
+      margin-bottom: $unit * 2;
     }
-    margin-bottom: $unit * 2;
   }
 }
 

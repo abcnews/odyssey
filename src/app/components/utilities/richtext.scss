@@ -2,8 +2,8 @@
 
 // Attribute selectors are used for `u-richtext` so those styles also apply to
 // `u-richtext-invert`.
-[class*='u-richtext'] {
-
+[class*='u-richtext'],
+[class*='u-richtext'] > div {
   > h1,
   > h2,
   > h3 {
@@ -208,13 +208,12 @@
   }
 }
 
-
-
 // There are also some legacy styles that are moved from the defaults above
 // because we want them to *only* apply in the legacy environment. This is usually
 // where we want to let styles from PL apply where we didn't before (e.g. body font).
 :where(.is-legacy) {
-  [class*='u-richtext'] {
+  [class*='u-richtext'],
+  [class*='u-richtext'] > div {
     > * {
       font-family: var(--od-font-stack-serif);
       color: $color-grey-900;
@@ -235,7 +234,7 @@
     > ul li,
     > ol li,
     > blockquote {
-     @media #{$mq-gt-sm} {
+      @media #{$mq-gt-sm} {
         line-height: 1.666666667;
       }
     }
@@ -338,6 +337,7 @@
     }
   }
 
+  .u-richtext-invert > div,
   .u-richtext-invert {
     > h1,
     > h2,
@@ -354,6 +354,7 @@
     > table {
       color: $color-lightBg;
     }
+
     a,
     a > * {
       color: var(--nw-colour-theme-text-link);
@@ -376,7 +377,6 @@
 
 // TODO: check all the colours!
 :where(.is-future) {
-
   [class*='u-richtext'] {
     > * {
       color: var(--od-colour-text-primary);

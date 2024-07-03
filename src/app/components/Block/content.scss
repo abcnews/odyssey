@@ -190,6 +190,22 @@
   }
 }
 
+:where(.is-legacy) {
+  .is-not-piecemeal {
+    .Block-content[class*='u-richtext'] > div > * {
+      margin: 0;
+      padding-top: 18px;
+      padding-bottom: 18px;
+      &:first-child {
+        padding-top: 0;
+      }
+      &:last-child {
+        padding-bottom: 0;
+      }
+    }
+  }
+}
+
 :where(.is-future) {
   .is-not-piecemeal,
   .is-piecemeal {
