@@ -118,6 +118,7 @@ $radius: calc($unit * 0.75);
 $radius-images: 0;
 
 .Main {
+  // Fonts
   --od-font-stack-condensed: var(
     --dls-font-stack-condensed,
     '"abcsans condensed",-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Helvetica Neue",Arial,sans-serif'
@@ -132,5 +133,40 @@ $radius-images: 0;
   );
   --od-font-stack-serif: var(--dls-font-stack-serif, '"abcserif","Book Anitqua","Palatino Linotype",Palatino,serif');
   --od-font-stack-monospace: var(--dls-font-stack-monospace, '"abcsans tabbed",monospace');
-  --od-font-size: 1.125rem;
+
+  --od-font-size: 1.125rem; // 18px
+  --od-font-size-lg: 1.25rem; // 20px
+  --od-font-size-heading-lg: 1.75rem; // 28px
+  --od-font-size-heading-md: 1.5rem; // 24px
+  --od-font-size-heading-sm: 1.25rem; // 20px
+  --od-line-height: 1.5;
+
+  @media #{$mq-gt-sm} {
+    --od-font-size-heading-lg: 2.25rem; // 36px
+    --od-font-size-heading-md: 2rem; // 32px
+  }
+
+  @media #{$mq-gt-md} {
+    --od-font-size-heading-lg: 2.5rem; // 40px
+  }
+
+  // Spacing
+  --od-space-sm: 0.875rem; // 14px
+  --od-space-md: 1rem; // 16px
+  --od-space-lg: 1.5rem; // 24px
+  --od-space-xl: 2rem; // 32px
+  --od-space-2xl: 3rem; // 48px
+
+  --od-space-paragraph-margin: var(--od-space-sm);
+  --od-space-component-margin: var(--od-space-lg);
+
+  @media #{$mq-gt-sm} {
+    --od-space-paragraph-margin: var(--od-space-lg);
+    --od-space-component-margin: var(--od-space-xl);
+  }
+
+  @media #{$mq-gt-md} {
+    --od-space-paragraph-margin: var(--od-space-lg);
+    --od-space-component-margin: var(--od-space-2xl);
+  }
 }

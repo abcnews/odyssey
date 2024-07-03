@@ -8,8 +8,11 @@ $abreastChildSpacing: $unit * 2.5;
   position: relative;
   line-height: 1.5;
 
+  --od-space-header-margin: var(--od-space-lg);
+
   @media #{$mq-gt-sm} {
     font-size: 1.25rem;
+    --od-space-header-margin: var(--od-space-xl);
   }
 
   :root.is-dark-mode &:not(.is-dark) {
@@ -136,14 +139,16 @@ $abreastChildSpacing: $unit * 2.5;
   }
   @layer odyssey.future {
     .is-future & {
-      margin: $unit;
+      margin: 0 var(--od-space-md);
       @media #{$mq-md} {
-        margin: $unit 0;
+        margin-left: 0;
+        margin-right: 0;
       }
       @media #{$mq-gt-md} {
-        margin: $unit auto;
+        margin-left: auto;
+        margin-right: auto;
         width: calc($layout-fixed * 0.666);
-        padding: $layout-fixed-padding;
+        padding: 0 $layout-fixed-padding;
       }
     }
   }
@@ -194,11 +199,12 @@ $abreastChildSpacing: $unit * 2.5;
     @layer odyssey.future {
       .is-future & {
         margin-bottom: 0;
-        padding: $unit * 1.5;
+        padding: 0 $unit * 1.5;
 
         :first-child {
           margin-top: 0;
         }
+
         border-radius: $radius $radius 0 0;
         background-color: $color-white-transparent-85;
 
@@ -300,26 +306,28 @@ $abreastChildSpacing: $unit * 2.5;
       margin-left: 0;
     }
   }
+
+  :where(.is-future) & {
+    margin-top: var(--od-space-xl);
+    margin-bottom: var(--od-space-xl);
+  }
 }
 
 .Header-content > h2 {
   max-width: none;
 }
 
-.Header-miscEl {
-  @layer odyssey.future {
-    :where(.is-future) & {
-      font-size: 1.25 * $unit;
-      margin-bottom: $unit * 2;
-    }
+.Header-content > .Header-miscEl {
+  :where(.is-future) & {
+    font-size: var(--od-font-size-lg);
+    margin-top: var(--od-space-md);
+    margin-bottom: var(--od-space-md);
   }
 }
 
-.Header-byline {
-  @layer odyssey.future {
-    :where(.is-future) & {
-      margin-bottom: $unit;
-    }
+.Header-content > .Header-byline {
+  :where(.is-future) & {
+    margin-bottom: var(--od-space-md);
   }
 }
 
@@ -327,7 +335,8 @@ $abreastChildSpacing: $unit * 2.5;
 .Header-byline {
   :where(.is-future) & {
     ul[class^='CardTagList'] {
-      margin-top: $unit;
+      margin-top: var(--od-space-md);
+      margin-bottom: var(--od-space-md);
       a:any-link {
         color: var(--od-colour-theme-text-accent);
         background-color: var(--od-colour-theme-tag);
@@ -438,4 +447,18 @@ ul.Header-miscEl > li {
 
 .is-abreast .Header-content > h1 ~ * {
   text-align: left;
+}
+
+:where(.is-future) {
+  .Header.u-full .Header-meta {
+    margin-bottom: 0;
+  }
+
+  [data-scheme='dark'] > .Header[data-scheme='light'],
+  [data-scheme='light'] > .Header[data-scheme='dark'],
+  .Header.is-layered {
+    .Header-meta {
+      margin-bottom: var(--od-space-header-margin);
+    }
+  }
 }

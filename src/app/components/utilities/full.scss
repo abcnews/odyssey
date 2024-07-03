@@ -29,3 +29,12 @@ $isFlush: '.u-full:is(.Backdrop, .Block, .Header)';
 #{$isFlush} + [data-mount]:not([class]) + #{$isFlush} {
   margin-top: calc(var(--u-full-vertical-margin) * -1);
 }
+
+:where(.is-future) {
+  .u-full.u-full {
+    --u-full-vertical-margin: var(--od-space-xl);
+    @media #{$mq-gt-sm} {
+      --u-full-vertical-margin: var(--od-space-2xl);
+    }
+  }
+}

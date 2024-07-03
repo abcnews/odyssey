@@ -126,6 +126,7 @@ const Header = ({
   });
 
   const clonedBylineNodes = meta.bylineNodes ? meta.bylineNodes.map(node => node.cloneNode(true)) : null;
+  const clonedMetadataNodes = meta.metadataNodes ? meta.metadataNodes.map(node => node.cloneNode(true)) : null;
   const infoSourceEl = meta.infoSource
     ? html`
         <p class="Header-infoSource">
@@ -150,7 +151,7 @@ const Header = ({
     ...clonedMiscContentEls,
     clonedBylineNodes ? html`<p class="Header-byline">${clonedBylineNodes}</p>` : null,
     !meta.isFuture ? infoSourceEl : null,
-    meta.isFuture ? html`<div class="Header-meta">${meta.metadataNodes}</div>` : null,
+    meta.isFuture && clonedMetadataNodes?.length ? html`<div class="Header-meta">${clonedMetadataNodes}</div>` : null,
     updated && !meta.isFuture
       ? html`<div class="Header-updated">Updated <time datetime="${updated.datetime}">${updated.text}</time></div>`
       : null,
