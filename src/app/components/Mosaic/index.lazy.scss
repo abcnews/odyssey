@@ -41,30 +41,30 @@
     max-width: var(--Mosaic-item-gt-md-horizontal-pct);
   }
 
-  & > :first-child {
+  &> :first-child {
     height: 100%;
   }
 
-  .RichtextTile-content > * {
+  .RichtextTile-content>* {
     padding: 0 !important;
   }
 
   @media #{$mq-lt-lg} {
-    &[data-row-length='2'] .RichtextTile-content > .Quote.is-pullquote p {
+    &[data-row-length='2'] .RichtextTile-content>.Quote.is-pullquote p {
       font-size: 1.125rem;
     }
 
-    &[data-row-length='3'] .RichtextTile-content > .Quote.is-pullquote p {
+    &[data-row-length='3'] .RichtextTile-content>.Quote.is-pullquote p {
       font-size: 0.875rem;
     }
   }
 
   @media #{$mq-gt-md} {
-    &[data-large-display-row-length='3'] .RichtextTile-content > .Quote.is-pullquote p {
+    &[data-large-display-row-length='3'] .RichtextTile-content>.Quote.is-pullquote p {
       font-size: 1.125rem;
     }
 
-    &[data-large-display-row-length='4'] .RichtextTile-content > .Quote.is-pullquote p {
+    &[data-large-display-row-length='4'] .RichtextTile-content>.Quote.is-pullquote p {
       font-size: 0.875rem;
     }
   }
@@ -86,7 +86,7 @@
   }
 
   &:hover .Caption,
-  & :not(.Caption):focus + .Caption {
+  & :not(.Caption):focus+.Caption {
     opacity: 1;
     pointer-events: all;
   }
@@ -97,12 +97,17 @@
     margin-top: var(--od-space-component-margin);
     margin-bottom: var(--od-space-component-margin);
   }
+
   .Mosaic-item .Caption {
     -webkit-backdrop-filter: blur(5px);
     backdrop-filter: blur(5px);
     background-color: var(--od-colour-theme-surface-over-image);
     margin-left: $unit/2;
     margin-right: $unit/2;
+  }
+
+  .Caption {
+    width: auto;
   }
 }
 
