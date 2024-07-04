@@ -260,7 +260,7 @@ $abreastChildSpacing: $unit * 2.5;
 
 .Header-content > h1 {
   @layer odyssey.legacy {
-    .is-legacy {
+    .is-legacy & {
       @media #{$mq-sm} {
         margin-left: -$layout-fluid-padding;
         margin-right: -$layout-fluid-padding;

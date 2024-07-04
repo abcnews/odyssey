@@ -154,6 +154,10 @@ $radius-images: 0;
     --od-font-size-heading-lg: 2.5rem; // 40px
   }
 
+  @media #{$mq-gt-lg} {
+    --od-font-size-heading-lg: 2.75rem; // 44px
+  }
+
   // Spacing
   --od-space-sm: 0.875rem; // 14px
   --od-space-md: 1rem; // 16px
