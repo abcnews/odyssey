@@ -41,6 +41,7 @@
     &:focus span {
       color: var(--od-colour-text-inverse);
       background-color: var(--od-button-secondary-hover);
+      text-decoration: underline;
     }
 
     &:active span {
