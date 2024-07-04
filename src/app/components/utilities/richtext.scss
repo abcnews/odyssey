@@ -2,13 +2,12 @@
 
 // Attribute selectors are used for `u-richtext` so those styles also apply to
 // `u-richtext-invert`.
-[class*='u-richtext'] {
-
+[class*='u-richtext'],
+[class*='u-richtext'] > div {
   > h1,
   > h2,
   > h3 {
     font-weight: bold;
-    line-height: 1.294117647;
     text-transform: none;
     font-family: var(--od-font-stack-serif);
   }
@@ -17,15 +16,6 @@
     clear: both;
     margin-left: auto;
     margin-right: auto;
-  }
-
-  > h4,
-  > p,
-  > ul li,
-  > ol li,
-  > blockquote {
-    font-size: var(--od-font-size);
-    line-height: 1.555555556;
   }
 
   > ul,
@@ -208,13 +198,12 @@
   }
 }
 
-
-
 // There are also some legacy styles that are moved from the defaults above
 // because we want them to *only* apply in the legacy environment. This is usually
 // where we want to let styles from PL apply where we didn't before (e.g. body font).
 :where(.is-legacy) {
-  [class*='u-richtext'] {
+  [class*='u-richtext'],
+  [class*='u-richtext'] > div {
     > * {
       font-family: var(--od-font-stack-serif);
       color: $color-grey-900;
@@ -230,12 +219,20 @@
       }
     }
 
+    > h1,
+    > h2,
+    > h3 {
+      line-height: 1.294117647;
+    }
+
     > h4,
     > p,
     > ul li,
     > ol li,
     > blockquote {
-     @media #{$mq-gt-sm} {
+      font-size: var(--od-font-size);
+      line-height: 1.555555556;
+      @media #{$mq-gt-sm} {
         line-height: 1.666666667;
       }
     }
@@ -338,6 +335,7 @@
     }
   }
 
+  .u-richtext-invert > div,
   .u-richtext-invert {
     > h1,
     > h2,
@@ -354,6 +352,7 @@
     > table {
       color: $color-lightBg;
     }
+
     a,
     a > * {
       color: var(--nw-colour-theme-text-link);
@@ -376,16 +375,27 @@
 
 // TODO: check all the colours!
 :where(.is-future) {
-
   [class*='u-richtext'] {
     > * {
+      font-size: var(--od-font-size);
       color: var(--od-colour-text-primary);
-      margin-top: 0;
-      margin-bottom: $unit * 1.25;
+      margin-top: var(--od-space-paragraph-margin);
+      margin-bottom: var(--od-space-paragraph-margin);
+      line-height: var(--od-line-height);
+    }
 
-      @media #{$mq-gt-sm} {
-        margin-bottom: $unit * 1.5;
-      }
+    h1 {
+      font-size: var(--od-font-size-heading-lg);
+    }
+
+    h2 {
+      font-size: var(--od-font-size-heading-md);
+      margin-top: var(--od-space-component-margin);
+    }
+
+    h3 {
+      font-size: var(--od-font-size-heading-sm);
+      margin-top: var(--od-space-component-margin);
     }
 
     a:any-link,
@@ -421,5 +431,21 @@
     border-style: solid;
     border-color: var(--od-colour-border-opacity-low);
     border-width: 1px 0;
+    margin-top: var(--od-space-component-margin);
+    margin-bottom: var(--od-space-component-margin);
+    padding-top: var(--od-space-md);
+    padding-bottom: var(--od-space-md);
+
+    @media #{$mq-gt-sm} {
+      padding-top: var(--od-space-lg);
+      padding-bottom: var(--od-space-lg);
+    }
+
+    :first-child {
+      margin-top: 0;
+    }
+    :last-child {
+      margin-bottom: 0;
+    }
   }
 }
