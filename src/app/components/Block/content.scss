@@ -97,23 +97,29 @@
     }
   }
 
-  :where(.is-legacy) & {
-    &.u-richtext > * {
-      .is-not-piecemeal & {
+  &.u-richtext > * {
+    .is-not-piecemeal & {
+      :where(.is-legacy) & {
         background-color: $color-white-transparent-75;
-      }
-
-      .is-piecemeal & {
-        background-color: $color-white-transparent-90;
       }
     }
 
-    &.u-richtext-invert > * {
-      .is-not-piecemeal & {
+    .is-piecemeal & {
+      :where(.is-legacy) & {
+        background-color: $color-white-transparent-90;
+      }
+    }
+  }
+
+  &.u-richtext-invert > * {
+    .is-not-piecemeal & {
+      :where(.is-legacy) & {
         background-color: $color-black-transparent-30;
       }
+    }
 
-      .is-piecemeal & {
+    .is-piecemeal & {
+      :where(.is-legacy) & {
         background-color: $color-black-transparent-60;
       }
     }
