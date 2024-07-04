@@ -195,7 +195,7 @@
     > a:any-link,
     > div {
       display: grid;
-      gap: $unit / 3 $unit;
+      gap: calc($unit / 3) $unit;
       grid-template-columns: auto 1fr;
       grid-template-rows: auto auto;
       align-items: center;
