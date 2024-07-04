@@ -80,6 +80,12 @@
 }
 
 :where(.is-legacy) {
+  .u-richtext-invert {
+    .Quote blockquote p {
+      color: $color-lighterPrimary;
+    }
+  }
+
   .Quote blockquote {
     border-left: $unit * 0.625 solid $color-grey-300-transparent-70;
     padding: 0 $unit * 2;
@@ -90,10 +96,6 @@
       color: $color-darkerPrimary;
       font-size: 1.125rem;
       line-height: 1.666666667;
-
-      .u-richtext-invert > & {
-        color: $color-lighterPrimary;
-      }
     }
   }
 
