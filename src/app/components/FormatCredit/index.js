@@ -10,7 +10,7 @@ const FormatCredit = () => {
 
   return html`
     <p class="FormatCredit">
-      <span>Odyssey format</span>
+      <span>Odyssey format by</span>
       <a class="FormatCredit__tag" href=${LINK_URL} onclick=${LINK_TRACKER}><span>ABC News Story Lab</span></a>
     </p>
   `;
