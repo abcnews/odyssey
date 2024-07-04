@@ -22,8 +22,8 @@
   }
 }
 
-@layer odyssey.legacy {
-  .is-legacy .u-cta {
+.u-cta {
+  :where(.is-legacy) & {
     a {
       color: $color-white !important;
       font-size: 1.375rem;
@@ -41,9 +41,13 @@
         filter: brightness(1.2);
       }
     }
+  }
 
-    .u-richtext-invert & {
-      background-color: $color-white-transparent-30;
+  .u-richtext-invert & {
+    :where(.is-legacy) & {
+      a {
+        background-color: $color-white-transparent-30;
+      }
     }
   }
 }
