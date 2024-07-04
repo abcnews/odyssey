@@ -2,6 +2,7 @@ import api from './api';
 import { transformSection as transformSectionIntoBackdrop } from './components/Backdrop';
 import { transformSection as transformSectionIntoBlock } from './components/Block';
 import FormatCredit from './components/FormatCredit';
+import FormatCreditLegacy from './components/legacy/FormatCredit';
 import { transformSection as transformSectionIntoGallery } from './components/Gallery';
 import { Lite as LiteHeader, transformSection as transformSectionIntoHeader } from './components/Header';
 import { transformMarker as transformMarkerIntoHR } from './components/HR';
@@ -311,7 +312,7 @@ export default terminusDocument => {
 
   // Append format credit for non-DSI stories
   if (meta.productionUnit !== 'EDL team' && (meta.infoSource || {}).name !== 'Digital Story Innovation Team') {
-    append(mainEl, FormatCredit());
+    append(mainEl, meta.isFuture ? FormatCredit() : FormatCreditLegacy());
     debug('Appended Odyssey format credit');
   }
 
