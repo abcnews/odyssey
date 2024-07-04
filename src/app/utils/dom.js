@@ -134,6 +134,20 @@ export const before = (sibling, node) => {
 };
 
 /**
+ * Unwrap a node from its parent element
+ * @param {Node} node
+ */
+export const unwrap = node => {
+  const parent = node.parentElement;
+  if (!parent) {
+    debug(new Error("Attempted to unwrap a node that doesn't have a parent."));
+    return;
+  }
+  after(parent, node);
+  detach(parent);
+};
+
+/**
  * Insert a node into the DOM after the specified node
  * @param {Node} sibling
  * @param {Node} node

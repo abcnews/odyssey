@@ -1,7 +1,7 @@
 // @ts-check
 import Main from '../components/Main';
 import { SELECTORS, THEME } from '../constants';
-import { $, $$, append, before, detach, detachAll, isHTMLElement } from '../utils/dom';
+import { $, $$, append, before, detach, detachAll, isHTMLElement, unwrap } from '../utils/dom';
 import { debug } from '../utils/logging';
 import './index.scss';
 
@@ -127,6 +127,8 @@ export const reset = (storyEl, meta) => {
   });
 
   // Clean up Presentation Layer components
+  $$('[data-component="Table"', mainEl).forEach(el => unwrap(el));
+
   $$(
     [
       '[data-component="ContentLink"]',
@@ -134,6 +136,7 @@ export const reset = (storyEl, meta) => {
       '[data-component="Link"]',
       '[data-component="List"]',
       '[data-component="ListItem"]',
+      '[data-component="Table"]',
       'p'
     ].join(),
     mainEl
