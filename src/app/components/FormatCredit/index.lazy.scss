@@ -1,16 +1,12 @@
 @import '../../constants';
 
 .FormatCredit {
-  color: $color-black;
+  color: var(--od-colour-text-primary);
   font-family: var(--od-font-stack-serif);
   font-size: 1rem;
   font-style: normal;
   font-weight: 600;
   line-height: 125%;
-
-  .u-richtext-invert & {
-    color: $color-white;
-  }
 
   .FormatCredit>* {
     color: inherit;
