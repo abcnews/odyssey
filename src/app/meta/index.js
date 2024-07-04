@@ -194,7 +194,7 @@ function getMetadataNodes(isFuture) {
   }
 
   const metadataEl = $('header [data-component="ArticleHeadline"] [class^="ArticleHeadlineTitle_meta"]');
-  console.log('metadataEl :>> ', metadataEl);
+
   if (!metadataEl) {
     return [];
   }
