@@ -1,51 +1,23 @@
 @import '../../constants';
 
 .FormatCredit {
-  color: $color-black;
-  font-family: var(--od-font-stack-serif);
+  color: $color-black-transparent-75;
+  font-family: var(--od-font-stack-sans);
   font-size: 1rem;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 125%;
+  font-weight: bold;
+  line-height: 1.555555556;
+  text-transform: uppercase;
+  letter-spacing: 0.0625em;
 
   .u-richtext-invert & {
-    color: $color-white;
+    color: $color-white-transparent-75;
   }
 
-  .FormatCredit>* {
+  .FormatCredit > * {
     color: inherit;
   }
 
-  // pill/tag
-  &__tag {
-
-    // Style inner span to avoid leaky styles from Odyssey/story customisations
-    span {
-      margin-left: .75rem;
-      border-radius: 6.25rem;
-      // These are important because some stories override link colours.
-      // If this is important to override, please change the var instead.
-      color: var(--od-colour-theme-text-accent);
-      background-color: var(--od-colour-theme-tag);
-      padding: 0.75rem;
-      font-family: var(--od-font-stack-sans);
-      font-size: 0.875rem;
-      font-style: normal;
-      font-weight: 700;
-      line-height: normal;
-      white-space: nowrap;
-      transition: var(--dls-link-transition);
-    }
-
-    &:hover span,
-    &:focus span {
-      color: var(--od-colour-text-inverse);
-      background-color: var(--od-button-secondary-hover);
-    }
-
-    &:active span {
-      color: var(--od-colour-text-inverse);
-      background-color: var(--od-button-secondary-active);
-    }
+  & a {
+    white-space: nowrap;
   }
 }
