@@ -3,7 +3,7 @@
 // Attribute selectors are used for `u-richtext` so those styles also apply to
 // `u-richtext-invert`.
 [class*='u-richtext'],
-[class*='u-richtext'] > div {
+.is-not-piecemeal > [class*='u-richtext'] > div {
   > h1,
   > h2,
   > h3 {
@@ -79,7 +79,7 @@
     background: none;
   }
 
-  > table {
+  table {
     border-collapse: separate;
     border-spacing: 0;
     font-size: 1rem;
@@ -190,7 +190,8 @@
   padding-right: 0;
 }
 
-.u-richtext-invert {
+.u-richtext-invert,
+.is-not-piecemeal > .u-richtext-invert > div {
   > ul > li,
   > ul ul > li,
   > ol ul > li {
@@ -203,7 +204,7 @@
 // where we want to let styles from PL apply where we didn't before (e.g. body font).
 :where(.is-legacy) {
   [class*='u-richtext'],
-  [class*='u-richtext'] > div {
+  .is-not-piecemeal > [class*='u-richtext'] > div {
     > * {
       font-family: var(--od-font-stack-serif);
       color: $color-grey-900;
@@ -279,7 +280,7 @@
       }
     }
 
-    > table {
+    table {
       font-family: var(--od-font-stack-sans);
 
       th {
@@ -335,7 +336,7 @@
     }
   }
 
-  .u-richtext-invert > div,
+  .is-not-piecemeal > .u-richtext-invert > div,
   .u-richtext-invert {
     > h1,
     > h2,
@@ -349,7 +350,7 @@
     > ul li,
     > ol li,
     > blockquote,
-    > table {
+    table {
       color: $color-lightBg;
     }
 
@@ -412,7 +413,7 @@
       }
     }
 
-    // TODO: This is a temporary fix for a but in PL's dark mode implementation
+    // TODO: This is a temporary fix for a but in PL's dark mode
     table th {
       background-color: var(--od-colour-surface-utility);
     }
