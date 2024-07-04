@@ -235,11 +235,17 @@
   }
 
   [class*='Gallery-step-'] {
-    width: 56px;
+    width: 46px;
+    height: 34px;
     background-color: var(--od-button-secondary);
     color: var(--od-colour-text-primary);
     border-radius: $radius * 2 !important;
     margin-left: 0;
+
+    @media #{$mq-gt-sm} {
+      width: 56px;
+      height: 42px;
+    }
 
     &:hover {
       background-color: var(--od-button-secondary-hover);
