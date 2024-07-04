@@ -99,21 +99,29 @@
 
   &.u-richtext > * {
     .is-not-piecemeal & {
-      background-color: $color-white-transparent-75;
+      :where(.is-legacy) & {
+        background-color: $color-white-transparent-75;
+      }
     }
 
     .is-piecemeal & {
-      background-color: $color-white-transparent-90;
+      :where(.is-legacy) & {
+        background-color: $color-white-transparent-90;
+      }
     }
   }
 
   &.u-richtext-invert > * {
     .is-not-piecemeal & {
-      background-color: $color-black-transparent-30;
+      :where(.is-legacy) & {
+        background-color: $color-black-transparent-30;
+      }
     }
 
     .is-piecemeal & {
-      background-color: $color-black-transparent-60;
+      :where(.is-legacy) & {
+        background-color: $color-black-transparent-60;
+      }
     }
   }
 
@@ -212,7 +220,30 @@
     .Block-content[class*='u-richtext'] > * {
       -webkit-backdrop-filter: blur(5px);
       backdrop-filter: blur(5px);
-      background-color: var(--od-colour-theme-surface-over-image);
+      position: relative;
+      overflow: hidden;
+      // This section is a little convoluted.
+      // The reason the background colour is applied as a pseudo element and not
+      // as a simple background colour is that we want to be able to utilise the
+      // global --bg variable to take the tint from the background of the page
+      // Unfortunately, that colour doesn't have any opacity, so we need to add
+      // that. This may become possible with the color() function as browser
+      // support improves.
+      // Adding opacity to the entire element has two down sides (1) transparency
+      // on the text and (2) backdrop-filter() only works with background- styles
+      // which have some transparency.
+      &::before {
+        content: '';
+        position: absolute;
+        z-index: -1;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--bg, var(--od-colour-theme-surface-over-image));
+        transition: background-color 2s;
+        opacity: 0.75;
+      }
     }
   }
 }

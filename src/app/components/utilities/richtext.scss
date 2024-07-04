@@ -412,6 +412,11 @@
       }
     }
 
+    // TODO: This is a temporary fix for a but in PL's dark mode implementation
+    table th {
+      background-color: var(--od-colour-surface-utility);
+    }
+
     > hr {
       &::before {
         content: '';
