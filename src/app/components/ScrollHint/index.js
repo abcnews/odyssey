@@ -1,11 +1,19 @@
 import html from 'nanohtml';
 import { enqueue, subscribe, unsubscribe } from '../../scheduler';
 import { detach } from '../../utils/dom';
+import { getMeta } from '../../meta';
 import styles from './index.lazy.scss';
 
 let scrollHintEl = null;
 
 const ScrollHint = () => {
+
+  // This component no longer exists as of the Future News redesign.
+  // We can remove all traces of it once the old site has been turned off for good.
+  if (getMeta().isFuture) {
+    return null;
+  }
+
   // We only ever want one instance
   if (scrollHintEl === null) {
     scrollHintEl = html`<div class="ScrollHint" role="presentation"></div>`;
