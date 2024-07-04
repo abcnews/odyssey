@@ -12,8 +12,8 @@
     color: inherit;
   }
 
-  // pill/tag
-  &__tag {
+  // pill/tag w specificity to fight Odyssey richtext links
+  [class*=u-richtext] &__tag {
 
     // Style inner span to avoid leaky styles from Odyssey/story customisations
     span {
