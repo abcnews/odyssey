@@ -104,6 +104,14 @@ html.is-master-gallery-open {
     margin: $unit * 0.75;
     padding: $unit * 0.5;
 
+    width: 34px;
+    height: 34px;
+
+    @media #{$mq-gt-sm} {
+      width: 42px;
+      height: 42px;
+    }
+
     &:hover {
       background-color: var(--od-button-secondary-hover);
       color: var(--od-colour-text-inverse);
@@ -117,7 +125,11 @@ html.is-master-gallery-open {
 
   .MasterGallery {
     .Gallery-pane {
-      margin: 0 $unit/4;
+      margin: 0;
+    }
+
+    .Gallery-item {
+      padding: 0;
     }
 
     .Caption {
