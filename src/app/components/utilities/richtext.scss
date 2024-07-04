@@ -79,7 +79,7 @@
     background: none;
   }
 
-  table {
+  > table {
     border-collapse: separate;
     border-spacing: 0;
     font-size: 1rem;
@@ -280,7 +280,7 @@
       }
     }
 
-    table {
+    > table {
       font-family: var(--od-font-stack-sans);
 
       th {
@@ -350,7 +350,7 @@
     > ul li,
     > ol li,
     > blockquote,
-    table {
+    > table {
       color: $color-lightBg;
     }
 
@@ -413,8 +413,8 @@
       }
     }
 
-    // TODO: This is a temporary fix for a but in PL's dark mode
-    table th {
+    // TODO: This is a temporary fix for a bug in PL's dark mode
+    > table th {
       background-color: var(--od-colour-surface-utility);
     }
 
