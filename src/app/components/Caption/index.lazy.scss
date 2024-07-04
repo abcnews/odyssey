@@ -1,7 +1,7 @@
 @import '../../constants';
 
 .Caption {
-  * > & {
+  *>& {
     font-size: 0.8125rem !important;
     line-height: 1.555555556;
   }
@@ -18,9 +18,16 @@
     }
   }
 
+  :where(.is-future) .u-full & {
+    padding-left: $layout-fixed-padding;
+    padding-right: $layout-fixed-padding;
+    margin: 1rem;
+  }
+
   .u-richtext-invert & {
     padding-left: $layout-fluid-padding;
     padding-right: $layout-fluid-padding;
+
     :where(.is-legacy) & {
       background-color: $color-black-transparent-60;
       color: $color-white;
@@ -86,6 +93,7 @@
     padding: $unit * 0.75 $unit;
     border-radius: $radius;
     background-color: var(--od-colour-surface-utility);
+
     @media #{$mq-md} {
       margin-left: auto;
       margin-right: auto;
