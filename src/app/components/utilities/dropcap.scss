@@ -10,7 +10,8 @@
   :where(.is-future) & {
     font-family: var(--od-font-stack-serif);
     padding-top: 6px;
-    font-size: 3.44rem;
+    font-size: 3.45rem;
+    margin-bottom: -0.1em;
   }
 
   @media #{$mq-gt-sm} {
@@ -19,7 +20,7 @@
     line-height: 0.74; // Gecko ignores this
     :where(.is-future) & {
       padding-top: 6px;
-      font-size: 3.44rem;
+      font-size: 3.45rem;
     }
   }
 }
