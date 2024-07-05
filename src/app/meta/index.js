@@ -365,7 +365,6 @@ export const getMeta = () => {
 /**
  * Get an image document from the CDN url
  * @param {string} url An image URL
- * @returns {}
  */
 export const lookupImageByAssetURL = url => {
   const { imagesByBinaryKey } = getMeta();
