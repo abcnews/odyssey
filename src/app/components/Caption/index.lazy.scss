@@ -1,13 +1,10 @@
 @import '../../constants';
 
 .Caption {
-  margin-top: 0;
-  margin-right: 0;
-  margin-bottom: 0;
-  margin-left: 0;
-  padding-top: $unit * 0.4375;
-  padding-bottom: $unit * 0.375;
-  font-family: $font-sans;
+  *>& {
+    font-size: 0.8125rem !important;
+    line-height: 1.555555556;
+  }
 
   @media #{$mq-lt-lg} {
     padding-left: $layout-fluid-padding;
@@ -21,11 +18,20 @@
     }
   }
 
+  :where(.is-future) .u-full & {
+    padding-left: $layout-fixed-padding;
+    padding-right: $layout-fixed-padding;
+    margin: 1rem;
+  }
+
   .u-richtext-invert & {
     padding-left: $layout-fluid-padding;
     padding-right: $layout-fluid-padding;
-    background-color: $color-black-transparent-60;
-    color: $color-white;
+
+    :where(.is-legacy) & {
+      background-color: $color-black-transparent-60;
+      color: $color-white;
+    }
 
     @media #{$mq-gt-md} {
       padding-left: $layout-fluid-padding;
@@ -41,18 +47,9 @@
     }
   }
 
-  * > & {
-    font-size: 0.8125rem !important;
-    line-height: 1.555555556;
-  }
-
-  :first-child {
-    margin-right: $unit * 0.25;
-  }
-
   a,
   a:visited {
-    color: currentColor;
+    color: currentColor !important;
   }
 }
 
@@ -72,5 +69,41 @@
 
   .has-long-attribution & {
     white-space: normal;
+  }
+}
+
+:where(.is-legacy) {
+  .Caption {
+    font-family: var(--od-font-stack-sans);
+
+    margin: 0;
+
+    padding-top: $unit * 0.4375;
+    padding-bottom: $unit * 0.375;
+
+    :first-child {
+      margin-right: $unit * 0.25;
+    }
+  }
+}
+
+:where(.is-future) {
+  .Caption {
+    margin: $unit * 0.5;
+    padding: $unit * 0.75 $unit;
+    border-radius: $radius;
+    background-color: var(--od-colour-surface-utility);
+
+    @media #{$mq-md} {
+      margin-left: auto;
+      margin-right: auto;
+      width: calc(cells(10) - $layout-fluid-padding * 2);
+    }
+
+    @media #{$mq-gt-md} {
+      margin-left: 0;
+      margin-right: 0;
+      width: 100%;
+    }
   }
 }

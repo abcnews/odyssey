@@ -44,7 +44,7 @@
   & > h2 {
     margin: $unit * 0.625 0 0;
     color: inherit !important;
-    font-family: $font-sans;
+    font-family: var(--od-font-stack-sans);
     font-size: 0.875rem;
     font-weight: normal;
     line-height: 1.294117647;

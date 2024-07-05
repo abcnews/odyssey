@@ -66,7 +66,7 @@
   flex: 0 0 100%;
   overflow: hidden;
   position: relative;
-  padding: 0 $unit * 0.46875;
+  padding: 0 $unit * 0.4687;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
@@ -104,7 +104,6 @@
     opacity: 0;
     margin-left: -$layout-fluid-padding;
     margin-right: -$layout-fluid-padding;
-    background-color: transparent;
     pointer-events: none;
     transition: opacity 0.125s;
     will-change: opacity;
@@ -151,11 +150,8 @@
 .Gallery-index {
   padding: 0 $unit * 0.8125;
   min-width: 3.5rem;
+  font-family: var(--od-font-stack-sans);
   height: $size-control;
-  background-color: $color-black-transparent-60;
-  color: $color-white;
-  font-family: $font-sans;
-  font-size: 0.8125rem;
   line-height: $size-control;
   letter-spacing: 0.05em;
   text-align: right;
@@ -166,12 +162,8 @@
 }
 
 [class*='Gallery-step-'] {
-  padding: 0;
   border: none;
-  width: $size-control;
   height: $size-control;
-  background-color: $color-black-transparent-60;
-  color: $color-white;
   vertical-align: bottom;
   transition: opacity 0.25s;
   will-change: opacity;
@@ -190,9 +182,95 @@
   transform: scaleX(-1);
 }
 
-.is-at-start .Gallery-step-prev,
-.is-at-end .Gallery-step-next {
-  opacity: 0.2;
-  cursor: disabled;
-  pointer-events: none;
+@layer odyssey.legacy {
+  .is-legacy {
+    .Gallery-index,
+    [class*='Gallery-step-'] {
+      background-color: $color-black-transparent-60;
+      color: $color-white;
+      font-size: 0.8125rem;
+    }
+
+    [class*='Gallery-step-'] {
+      width: $size-control;
+      padding: 0;
+    }
+
+    .Gallery-item .Caption {
+      background-color: transparent;
+      margin-left: -$layout-fluid-padding;
+      margin-right: -$layout-fluid-padding;
+    }
+
+    .is-at-start .Gallery-step-prev,
+    .is-at-end .Gallery-step-next {
+      opacity: 0.2;
+      cursor: disabled;
+      pointer-events: none;
+    }
+  }
+}
+
+:where(.is-future) {
+  .Gallery {
+    margin-top: var(--od-space-component-margin);
+    margin-bottom: var(--od-space-component-margin);
+  }
+
+  .Gallery-controls {
+    @media #{$mq-gt-sm} {
+      padding: 0;
+    }
+  }
+  .Gallery-index,
+  [class*='Gallery-step-'] {
+    font-size: 0.925rem;
+    border-radius: $radius;
+    margin: $unit * 0.75;
+  }
+
+  .Gallery-index {
+    background-color: var(--od-colour-surface-utility-bolder);
+    color: var(--od-colour-text-primary);
+  }
+
+  [class*='Gallery-step-'] {
+    width: 46px;
+    height: 34px;
+    background-color: var(--od-button-secondary);
+    color: var(--od-colour-text-primary);
+    border-radius: $radius * 2 !important;
+    margin-left: 0;
+
+    @media #{$mq-gt-sm} {
+      width: 56px;
+      height: 42px;
+    }
+
+    &:hover {
+      background-color: var(--od-button-secondary-hover);
+      color: var(--od-colour-text-inverse);
+    }
+
+    &:disabled {
+      background-color: var(--od-button-secondary);
+      opacity: 0.5;
+      color: var(--od-colour-icon-neutral);
+      -webkit-backdrop-filter: blur(5px);
+      backdrop-filter: blur(5px);
+      cursor: not-allowed;
+    }
+  }
+
+  .Gallery-item {
+    padding: 0 $unit * 0.25;
+  }
+
+  .Gallery-item .Caption {
+    margin-left: 0;
+    margin-right: 0;
+    @media #{$mq-gt-md} {
+      margin-left: 0;
+    }
+  }
 }

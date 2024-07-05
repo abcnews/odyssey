@@ -1,80 +1,21 @@
 @import '../../constants';
 
-[class*='u-richtext'] {
-  > * {
-    margin-top: 0;
-    margin-bottom: $unit * 1.5;
-    color: $color-grey-900;
-    font-family: $font-serif;
-
-    @media #{$mq-md} {
-      margin-bottom: $unit * 2;
-    }
-
-    @media #{$mq-gt-md} {
-      margin-bottom: $unit * 2.25;
-    }
-  }
-
+// Attribute selectors are used for `u-richtext` so those styles also apply to
+// `u-richtext-invert`.
+[class*='u-richtext'],
+.is-not-piecemeal > [class*='u-richtext'] > div {
   > h1,
   > h2,
   > h3 {
-    color: $color-black;
-    font-family: $font-serif;
     font-weight: bold;
-    line-height: 1.294117647;
     text-transform: none;
-  }
-
-  > h1 {
-    font-size: 2rem;
-    letter-spacing: normal;
-
-    @media #{$mq-md} {
-      font-size: 2.25rem;
-    }
-
-    @media #{$mq-gt-md} {
-      font-size: 3rem;
-    }
+    font-family: var(--od-font-stack-serif);
   }
 
   > h2 {
     clear: both;
     margin-left: auto;
     margin-right: auto;
-    max-width: $unit * 32;
-    font-size: 1.875rem;
-    text-align: center;
-
-    @media #{$mq-gt-sm} {
-      font-size: 2.25rem;
-    }
-  }
-
-  > h3,
-  > h4,
-  > h5,
-  > h6 {
-    font-family: $font-sans;
-    font-weight: bold;
-  }
-
-  > h3 {
-    font-size: 1.375rem;
-  }
-
-  > h4,
-  > p,
-  > ul li,
-  > ol li,
-  > blockquote {
-    font-size: 1.125rem;
-    line-height: 1.555555556;
-
-    @media #{$mq-gt-sm} {
-      line-height: 1.666666667;
-    }
   }
 
   > ul,
@@ -141,7 +82,6 @@
   > table {
     border-collapse: separate;
     border-spacing: 0;
-    font-family: $font-sans;
     font-size: 1rem;
 
     td,
@@ -154,20 +94,6 @@
     tr > * {
       border-bottom: $unit * 0.0625 solid $color-grey-300-transparent-70;
     }
-
-    th {
-      background-color: $color-grey-300-transparent-15;
-    }
-  }
-
-  a,
-  a > * {
-    color: $color-darkPrimary;
-  }
-
-  a:visited,
-  a:visited > * {
-    color: $color-darkSecondary;
   }
 
   > a[id],
@@ -186,34 +112,6 @@
     padding-bottom: $unit * 0.5;
   }
 
-  > h2,
-  > hr {
-    &::before {
-      content: '';
-      display: block;
-      margin: $unit * 3 auto $unit;
-      width: $unit * 7.5;
-      height: $unit * 0.125;
-      background-color: $color-grey-300-transparent-70;
-
-      @media #{$mq-md} {
-        margin: $unit * 4 auto $unit * 1.5;
-      }
-
-      @media #{$mq-gt-md} {
-        margin: $unit * 5 auto $unit * 1.5;
-      }
-    }
-
-    @media #{$mq-md} {
-      padding-bottom: $unit * 0.5;
-    }
-
-    @media #{$mq-gt-md} {
-      padding-bottom: $unit;
-    }
-  }
-
   &::after {
     content: '';
     display: table;
@@ -224,8 +122,6 @@
 [class*='u-richtext'] > [class*='u-richtext'],
 [class*='u-pull'] > [class*='u-richtext'] {
   margin-top: $unit * 0.375;
-  border-top: $unit * 0.125 solid $color-grey-300-transparent-70;
-  border-bottom: $unit * 0.125 solid $color-grey-300-transparent-70;
   padding-top: $unit * 2;
   padding-bottom: $unit * 0.75;
 
@@ -240,16 +136,11 @@
     @media #{$mq-md} {
       margin-bottom: $unit * 1.666666667;
     }
-
-    @media #{$mq-gt-md} {
-      margin-bottom: $unit * 1.875;
-    }
   }
 
   > h2 {
     max-width: none;
     font-size: 1.375rem;
-    font-family: $font-sans;
     text-align: left;
   }
 
@@ -299,36 +190,268 @@
   padding-right: 0;
 }
 
-.u-richtext-invert {
-  > h1,
-  > h2,
-  > h3,
-  > h4 {
-    color: $color-white;
-  }
-
-  > h4,
-  > p,
-  > ul li,
-  > ol li,
-  > blockquote,
-  > table {
-    color: $color-lightBg;
-  }
-
+.u-richtext-invert,
+.is-not-piecemeal > .u-richtext-invert > div {
   > ul > li,
   > ul ul > li,
   > ol ul > li {
     background-image: url(./bullet-inverted.svg);
   }
+}
 
-  a,
-  a > * {
-    color: $color-lightPrimary;
+// There are also some legacy styles that are moved from the defaults above
+// because we want them to *only* apply in the legacy environment. This is usually
+// where we want to let styles from PL apply where we didn't before (e.g. body font).
+:where(.is-legacy) {
+  [class*='u-richtext'],
+  .is-not-piecemeal > [class*='u-richtext'] > div {
+    > * {
+      font-family: var(--od-font-stack-serif);
+      color: $color-grey-900;
+      margin-top: 0;
+      margin-bottom: $unit * 1.5;
+
+      @media #{$mq-md} {
+        margin-bottom: $unit * 2;
+      }
+
+      @media #{$mq-gt-md} {
+        margin-bottom: $unit * 2.25;
+      }
+    }
+
+    > h1,
+    > h2,
+    > h3 {
+      line-height: 1.294117647;
+    }
+
+    > h4,
+    > p,
+    > ul li,
+    > ol li,
+    > blockquote {
+      font-size: var(--od-font-size);
+      line-height: 1.555555556;
+      @media #{$mq-gt-sm} {
+        line-height: 1.666666667;
+      }
+    }
+
+    > h1 {
+      font-size: 2rem;
+      letter-spacing: normal;
+
+      @media #{$mq-md} {
+        font-size: 2.25rem;
+      }
+
+      @media #{$mq-gt-md} {
+        font-size: 3rem;
+      }
+    }
+
+    > h1,
+    > h2,
+    > h3 {
+      font-family: var(--od-font-stack-serif);
+      color: $color-black;
+    }
+
+    > h3,
+    > h4,
+    > h5,
+    > h6 {
+      font-family: var(--od-font-stack-sans);
+      font-weight: bold;
+    }
+
+    > h3 {
+      font-size: 1.375rem;
+    }
+
+    > h2 {
+      text-align: center;
+      max-width: $unit * 32;
+      font-size: 1.875rem;
+
+      @media #{$mq-gt-sm} {
+        font-size: 2.25rem;
+      }
+    }
+
+    > table {
+      font-family: var(--od-font-stack-sans);
+
+      th {
+        background-color: $color-grey-300-transparent-15;
+      }
+    }
+
+    a,
+    a > * {
+      color: $color-darkPrimary;
+    }
+
+    a:visited,
+    a:visited > * {
+      color: $color-darkSecondary;
+    }
+
+    > h2,
+    > hr {
+      &::before {
+        content: '';
+        display: block;
+        margin: $unit * 3 auto $unit;
+        width: $unit * 7.5;
+        height: $unit * 0.125;
+        background-color: $color-grey-300-transparent-70;
+
+        @media #{$mq-md} {
+          margin: $unit * 4 auto $unit * 1.5;
+        }
+
+        @media #{$mq-gt-md} {
+          margin: $unit * 5 auto $unit * 1.5;
+        }
+      }
+
+      @media #{$mq-md} {
+        padding-bottom: $unit * 0.5;
+      }
+
+      @media #{$mq-gt-md} {
+        padding-bottom: $unit;
+      }
+    }
   }
 
-  a:visited,
-  a:visited > * {
-    color: $color-lightSecondary;
+  [class*='u-richtext'] > [class*='u-richtext'],
+  [class*='u-pull'] > [class*='u-richtext'] {
+    border-top: $unit * 0.125 solid $color-grey-300-transparent-70;
+    border-bottom: $unit * 0.125 solid $color-grey-300-transparent-70;
+    > h2 {
+      font-family: var(--od-font-stack-sans);
+    }
+  }
+
+  .is-not-piecemeal > .u-richtext-invert > div,
+  .u-richtext-invert {
+    > h1,
+    > h2,
+    > h3,
+    > h4 {
+      color: $color-white;
+    }
+
+    > h4,
+    > p,
+    > ul li,
+    > ol li,
+    > blockquote,
+    > table {
+      color: $color-lightBg;
+    }
+
+    a,
+    a > * {
+      color: var(--nw-colour-theme-text-link);
+      @layer odyssey.legacy {
+        .is-legacy & {
+          color: $color-lightPrimary;
+        }
+      }
+    }
+
+    a:visited,
+    a:visited > * {
+      color: $color-lightSecondary;
+    }
+  }
+}
+
+// Styles related to Future News are below enclosed in an odyssey.future layer
+// and .is-future class.
+
+// TODO: check all the colours!
+:where(.is-future) {
+  [class*='u-richtext'] {
+    > * {
+      font-size: var(--od-font-size);
+      color: var(--od-colour-text-primary);
+      margin-top: var(--od-space-paragraph-margin);
+      margin-bottom: var(--od-space-paragraph-margin);
+      line-height: var(--od-line-height);
+    }
+
+    h1 {
+      font-size: var(--od-font-size-heading-lg);
+    }
+
+    h2 {
+      font-size: var(--od-font-size-heading-md);
+      margin-top: var(--od-space-component-margin);
+    }
+
+    h3 {
+      font-size: var(--od-font-size-heading-sm);
+      margin-top: var(--od-space-component-margin);
+    }
+
+    a:any-link,
+    a:any-link > * {
+      color: var(--od-colour-theme-text-link);
+    }
+
+    > h2 {
+      font-size: 1.5rem;
+      font-family: var(--od-font-stack-serif);
+
+      @media #{$mq-gt-sm} {
+        font-size: 2rem;
+      }
+    }
+
+    // TODO: This is a temporary fix for a bug in PL's dark mode
+    > table th {
+      background-color: var(--od-colour-surface-utility);
+    }
+
+    > hr {
+      &::before {
+        content: '';
+        display: block;
+        margin: $unit * 2 auto $unit * 1 0;
+        width: 33%;
+        height: $unit * 0.25;
+        opacity: 0.4;
+        background-color: var(--od-colour-theme-text-tag);
+      }
+    }
+  }
+
+  // Styles for embedded wysiwyg teasers
+  [class*='u-richtext'] > [class*='u-richtext'],
+  [class*='u-pull'] > [class*='u-richtext'] {
+    border-style: solid;
+    border-color: var(--od-colour-border-opacity-low);
+    border-width: 1px 0;
+    margin-top: var(--od-space-component-margin);
+    margin-bottom: var(--od-space-component-margin);
+    padding-top: var(--od-space-md);
+    padding-bottom: var(--od-space-md);
+
+    @media #{$mq-gt-sm} {
+      padding-top: var(--od-space-lg);
+      padding-bottom: var(--od-space-lg);
+    }
+
+    :first-child {
+      margin-top: 0;
+    }
+    :last-child {
+      margin-bottom: 0;
+    }
   }
 }

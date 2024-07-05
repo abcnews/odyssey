@@ -31,7 +31,7 @@
 
     & > h2,
     & > p {
-      font-family: $font-sans;
+      font-family: var(--od-font-stack-sans);
       font-weight: normal;
       text-transform: none;
       transition: color 0.25s;

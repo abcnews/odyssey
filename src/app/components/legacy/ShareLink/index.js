@@ -2,7 +2,7 @@ import { dataLayer } from '@abcaustralia/analytics-datalayer';
 import cn from 'classnames';
 import html from 'nanohtml';
 import styles from './index.lazy.scss';
-import { getMeta } from '../../meta/index';
+import { getMeta } from '../../../meta/index';
 
 const PATHS = {
   email:
@@ -28,6 +28,9 @@ const ShareLink = ({ link, shouldBlend }) => {
 
   styles.use();
 
+  if (link.id === 'copylink') {
+    return null;
+  }
   if (link.id === 'native') {
     return html`
       <button class="${className}" data-id=${link.id} onclick="${() => native(link)}" aria-label="Share this story">

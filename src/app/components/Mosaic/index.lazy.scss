@@ -20,7 +20,7 @@
 }
 
 .Mosaic-items {
-  margin: 0 calc(var(--Mosaic-gap) * -0.5);
+  margin: calc(var(--Mosaic-gap) * -1) calc(var(--Mosaic-gap) * -0.5);
   position: relative;
   display: flex;
   flex-wrap: wrap;
@@ -75,10 +75,8 @@
     bottom: 0;
     padding-right: var(--Mosaic-gap);
     padding-left: var(--Mosaic-gap);
-    max-width: calc(100% - var(--Mosaic-gap));
+    max-width: calc(100% - var(--Mosaic-gap) - $unit);
     min-height: 0;
-    background-color: $color-black-transparent-60;
-    color: $color-lightBg;
     pointer-events: none;
     transition: opacity 0.125s;
 
@@ -92,8 +90,36 @@
     opacity: 1;
     pointer-events: all;
   }
+}
 
-  .Caption-attribution {
-    color: $color-grey-100;
+:where(.is-future) {
+  .Mosaic {
+    margin-top: var(--od-space-component-margin);
+    margin-bottom: var(--od-space-component-margin);
+  }
+
+  .Mosaic-item .Caption {
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    background-color: var(--od-colour-theme-surface-over-image);
+    margin-left: calc($unit / 2);
+    margin-right: calc($unit / 2);
+  }
+
+  .Caption {
+    width: auto;
+  }
+}
+
+:where(.is-legacy) {
+  .Mosaic-item {
+    .Caption {
+      background-color: $color-black-transparent-60;
+      color: $color-lightBg;
+    }
+
+    .Caption-attribution {
+      color: $color-grey-100;
+    }
   }
 }

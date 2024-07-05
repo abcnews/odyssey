@@ -1,18 +1,17 @@
 @use 'sass:math';
 
-$font-sans: 'ABCSans', Helvetica, Arial, sans-serif;
-$font-serif: 'ABCSerif', 'Book Antiqua', 'Palatino Linotype', Palatino, serif;
-
 $color-white: #fff;
 $color-white-transparent: rgba(255, 255, 255, 0);
 $color-white-transparent-30: rgba(255, 255, 255, 0.3);
 $color-white-transparent-45: rgba(255, 255, 255, 0.45);
 $color-white-transparent-60: rgba(255, 255, 255, 0.6);
 $color-white-transparent-75: rgba(255, 255, 255, 0.75);
+$color-white-transparent-85: rgba(255, 255, 255, 0.85);
 $color-white-transparent-90: rgba(255, 255, 255, 0.9);
 
 $color-black: #000;
 $color-black-transparent: rgba(0, 0, 0, 0);
+$color-black-transparent-10: rgba(0, 0, 0, 0.3);
 $color-black-transparent-30: rgba(0, 0, 0, 0.3);
 $color-black-transparent-45: rgba(0, 0, 0, 0.45);
 $color-black-transparent-60: rgba(0, 0, 0, 0.6);
@@ -112,3 +111,69 @@ $mq-pl-lt-md: '(max-width: #{$bp-pl-md - 1px})';
 
 $size-control: $unit * 2.5;
 $size-control-margin: $unit * 0.1875;
+
+// Future News
+$color-surface-utility: #f1f2f3;
+$radius: calc($unit * 0.75);
+
+.Main {
+  // Fonts
+  --od-font-stack-condensed: var(
+    --dls-font-stack-condensed,
+    '"abcsans condensed",-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Helvetica Neue",Arial,sans-serif'
+  );
+  --od-font-stack-rounded: var(
+    --dls-font-stack-rounded,
+    '"abcsans rounded",-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Helvetica Neue",Arial,sans-serif'
+  );
+  --od-font-stack-sans: var(
+    --dls-font-stack-sans,
+    '"abcsans",-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Helvetica Neue",Arial,sans-serif'
+  );
+  --od-font-stack-serif: var(--dls-font-stack-serif, '"abcserif","Book Anitqua","Palatino Linotype",Palatino,serif');
+  --od-font-stack-monospace: var(--dls-font-stack-monospace, '"abcsans tabbed",monospace');
+
+  --od-font-size-sm: 0.875rem; // 14px
+  --od-font-size: 1.125rem; // 18px
+  --od-font-size-lg: 1.25rem; // 20px
+  --od-font-size-xl: 1.5rem; // 24px
+  --od-font-size-2xl: 1.75rem; // 28px
+
+  --od-font-size-heading-lg: var(--od-font-size-2xl); // 28px
+  --od-font-size-heading-md: var(--od-font-size-xl);
+  --od-font-size-heading-sm: var(--od-font-size-lg); // 20px
+  --od-line-height: 1.5;
+
+  @media #{$mq-gt-sm} {
+    --od-font-size-heading-lg: 2.25rem; // 36px
+    --od-font-size-heading-md: 2rem; // 32px
+  }
+
+  @media #{$mq-gt-md} {
+    --od-font-size-heading-lg: 2.5rem; // 40px
+  }
+
+  @media #{$mq-gt-lg} {
+    --od-font-size-heading-lg: 2.75rem; // 44px
+  }
+
+  // Spacing
+  --od-space-sm: 0.875rem; // 14px
+  --od-space-md: 1rem; // 16px
+  --od-space-lg: 1.5rem; // 24px
+  --od-space-xl: 2rem; // 32px
+  --od-space-2xl: 3rem; // 48px
+
+  --od-space-paragraph-margin: var(--od-space-sm);
+  --od-space-component-margin: var(--od-space-lg);
+
+  @media #{$mq-gt-sm} {
+    --od-space-paragraph-margin: var(--od-space-lg);
+    --od-space-component-margin: var(--od-space-xl);
+  }
+
+  @media #{$mq-gt-md} {
+    --od-space-paragraph-margin: var(--od-space-lg);
+    --od-space-component-margin: var(--od-space-2xl);
+  }
+}

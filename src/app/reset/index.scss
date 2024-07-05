@@ -5,12 +5,13 @@ html {
   font-size: 16px;
   -webkit-text-size-adjust: none;
   text-size-adjust: none;
-  background-color: $color-lightBg;
   background-color: var(--bg, #{$color-lightBg});
 
   &.is-dark-mode {
-    background-color: $color-darkBg;
     background-color: var(--bg, #{$color-darkBg});
+    &:has(.is-future[data-key='body']) {
+      background-color: var(--bg, #0f0f0f);
+    }
   }
 }
 

@@ -1,11 +1,12 @@
+// @ts-check
 import { getMountValue, isMount } from '@abcnews/mount-utils';
 import cn from 'classnames';
 import html from 'nanohtml';
-import { VIDEO_MARKER_PATTERN } from '../../constants';
+import { THEME, VIDEO_MARKER_PATTERN } from '../../constants';
 import { enqueue, subscribe } from '../../scheduler';
 import { fetchDocument } from '../../utils/content';
 import { $, detach, detectVideoId, getChildImage, isElement } from '../../utils/dom';
-import { clampNumber, formattedDate, getRatios } from '../../utils/misc';
+import { clampNumber, formattedDate, getRatios, isDefined } from '../../utils/misc';
 import Picture from '../Picture';
 import ScrollHint from '../ScrollHint';
 import { activate as activateUParallax } from '../UParallax';
@@ -13,6 +14,28 @@ import VideoPlayer from '../VideoPlayer';
 import YouTubePlayer from '../YouTubePlayer';
 import styles from './index.lazy.scss';
 
+/**
+ * @typedef {object} HeaderConfig
+ * @prop {HTMLImageElement} imgEl
+ * @prop {boolean} isAbreast
+ * @prop {boolean} isDark
+ * @prop {boolean} isFloating
+ * @prop {boolean} isKicker
+ * @prop {boolean} isLayered
+ * @prop {boolean} isPale
+ * @prop {boolean} isVideoYouTube
+ * @prop {Partial<import('src/app/meta').MetaData>} meta
+ * @prop {Element[]} miscContentEls
+ * @prop {import('../../utils/misc').Ratios} ratios
+ * @prop {boolean} shouldVideoPlayOnce
+ * @prop {string|number} videoId
+ */
+
+/**
+ * Create a header component
+ * @param {Partial<HeaderConfig>} config Configuration to create header.
+ * @returns {HTMLElement}
+ */
 const Header = ({
   imgEl,
   isAbreast,
@@ -30,8 +53,10 @@ const Header = ({
 }) => {
   isFloating = isFloating || (isLayered && !imgEl && !videoId);
   isLayered = isLayered || isFloating;
-  isDark = isLayered || typeof isDark === 'boolean' ? isDark : meta.isDarkMode;
-  isAbreast = !isFloating && !isLayered && (imgEl || videoId) && isAbreast;
+  isDark = typeof isDark === 'boolean' ? isDark : !!meta.isDarkMode;
+  isAbreast = !isFloating && !isLayered && (isDefined(imgEl) || isDefined(videoId)) && isAbreast;
+
+  const scheme = isDark ? 'dark' : 'light';
 
   const className = cn(
     'Header',
@@ -84,7 +109,7 @@ const Header = ({
 
   const titleEl = html`
     <h1>
-      ${isKicker && meta.title.indexOf(': ') > -1
+      ${isKicker && meta.title && meta.title.indexOf(': ') > -1
         ? meta.title.split(': ').map((text, index) => (index === 0 ? html`<small>${text}</small>` : text))
         : meta.title}
     </h1>
@@ -93,12 +118,15 @@ const Header = ({
   const clonedMiscContentEls = miscContentEls.map(el => {
     const clonedEl = el.cloneNode(true);
 
-    clonedEl.classList.add('Header-miscEl');
+    if (isElement(clonedEl)) {
+      clonedEl.classList.add('Header-miscEl');
+    }
 
     return clonedEl;
   });
 
   const clonedBylineNodes = meta.bylineNodes ? meta.bylineNodes.map(node => node.cloneNode(true)) : null;
+  const clonedMetadataNodes = meta.metadataNodes ? meta.metadataNodes.map(node => node.cloneNode(true)) : null;
   const infoSourceEl = meta.infoSource
     ? html`
         <p class="Header-infoSource">
@@ -117,27 +145,27 @@ const Header = ({
       : null
   );
 
-  const contentEls = [titleEl]
-    .concat(clonedMiscContentEls)
-    .concat([
-      clonedBylineNodes ? html`<p class="Header-byline">${clonedBylineNodes}</p>` : null,
-      infoSourceEl,
-      updated
-        ? html`<div class="Header-updated">Updated <time datetime="${updated.datetime}">${updated.text}</time></div>`
-        : null,
-      published
-        ? html`
-            <div class="Header-published">
-              Published <time datetime="${published.datetime}">${published.text}</time>
-            </div>
-          `
-        : null
-    ]);
+  /** @type {(Node|null|undefined)[]} */
+  const contentEls = [
+    titleEl,
+    ...clonedMiscContentEls,
+    clonedBylineNodes ? html`<p class="Header-byline">${clonedBylineNodes}</p>` : null,
+    !meta.isFuture ? infoSourceEl : null,
+    meta.isFuture && clonedMetadataNodes?.length ? html`<div class="Header-meta">${clonedMetadataNodes}</div>` : null,
+    updated && !meta.isFuture
+      ? html`<div class="Header-updated">Updated <time datetime="${updated.datetime}">${updated.text}</time></div>`
+      : null,
+    published && !meta.isFuture
+      ? html`
+          <div class="Header-published">Published <time datetime="${published.datetime}">${published.text}</time></div>
+        `
+      : null
+  ];
 
   const headerContentEl = html`<div class="Header-content u-richtext${isDark ? '-invert' : ''}">${contentEls}</div>`;
 
   const headerEl = html`
-    <div class="${className}">
+    <div class="${className}" data-scheme="${scheme}" data-theme="${THEME}">
       ${mediaEl
         ? html`
             <div class="Header-media${isLayered && !isAbreast && mediaEl.tagName !== 'DIV' ? ' u-parallax' : ''}">
@@ -164,10 +192,19 @@ const Header = ({
 
 export default Header;
 
+/**
+ * Create a lite header for when no header configuration or content is specified.
+ * @param {Partial<import('src/app/meta').MetaData>} meta Page metadata
+ * @returns {HTMLElement}
+ */
 export const Lite = meta => {
   return Header({ meta, imgEl: meta.relatedMedia && getChildImage(meta.relatedMedia.cloneNode(true)) });
 };
 
+/**
+ * Update the CSS custom prop that controls how much content is visible below the header before scroll
+ * @param {HTMLElement} headerEl The Header element
+ */
 function updateContentPeek(headerEl) {
   let titleHeight = 0;
   let titleBottomMargin = 0;
@@ -211,7 +248,7 @@ export const transformSection = (section, meta) => {
   const isFloating = section.configString.indexOf('floating') > -1;
   const isLayered = isFloating || section.configString.indexOf('layered') > -1;
   const isDark =
-    isLayered || section.configString.indexOf('dark') > -1
+    (isLayered && !meta.isFuture) || section.configString.indexOf('dark') > -1
       ? true
       : section.configString.indexOf('light') > -1
       ? false
@@ -243,7 +280,7 @@ export const transformSection = (section, meta) => {
       if (!isNoMedia && !config.videoId && !config.imgEl && isElement(node)) {
         if (isVideoMarker) {
           config.isVideoYouTube = !!mountValue.split('youtube')[1];
-          config.videoId = videoId = mountValue.match(VIDEO_MARKER_PATTERN)[1];
+          config.videoId = videoId = mountValue.match(VIDEO_MARKER_PATTERN)?.[1];
         } else {
           videoId = detectVideoId(node);
 

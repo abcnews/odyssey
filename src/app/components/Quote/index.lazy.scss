@@ -5,26 +5,12 @@
     overflow: visible;
     margin: 0;
     border-width: 0;
-    border-left: $unit * 0.625 solid $color-grey-300-transparent-70;
-    padding: 0 $unit * 2;
     background-color: transparent;
-  }
-
-  p {
-    overflow: visible;
-    margin: 0 0 $unit 0;
-    color: $color-darkerPrimary;
-    font-size: 1.125rem;
-    line-height: 1.666666667;
-
-    .u-richtext-invert > & {
-      color: $color-lighterPrimary;
-    }
   }
 
   footer {
     color: $color-grey-500;
-    font-family: $font-sans;
+    font-family: var(--od-font-stack-sans);
     font-size: 0.9375rem;
 
     .u-richtext-invert > & {
@@ -44,30 +30,18 @@
       margin-left: -$layout-fluid-padding;
       margin-right: -$layout-fluid-padding;
     }
-
-    .Main > & {
-      padding-left: 0;
-      padding-right: 0;
-    }
   }
 }
 
 .Quote.is-pullquote {
-  text-align: center;
-
   @media #{$mq-gt-sm} {
-    .u-pull-left &,
-    .u-pull-right &,
-    &.u-pull-left,
-    &.u-pull-right {
-      text-align: left;
-    }
-
     [class*='u-richtext'] > &:not([class*='u-pull']),
     .u-pull-out > &:not([class*='u-pull']),
     .u-pull > &:not([class*='u-pull']) {
-      padding-left: cells(1);
-      padding-right: cells(1);
+      :where(.is-legacy) & {
+        padding-left: cells(1);
+        padding-right: cells(1);
+      }
     }
   }
 
@@ -78,9 +52,6 @@
   }
 
   p {
-    font-size: 1.625rem;
-    line-height: 1.4;
-
     &:last-child {
       margin-bottom: 0;
     }
@@ -88,14 +59,6 @@
     @media #{$mq-sm} {
       position: relative;
       z-index: 1;
-    }
-
-    @media #{$mq-md} {
-      font-size: 1.75rem;
-    }
-
-    @media #{$mq-gt-md} {
-      font-size: 1.875rem;
     }
   }
 
@@ -118,6 +81,119 @@
 
     &::before {
       content: '\2014\00A0';
+    }
+  }
+}
+
+:where(.is-legacy) {
+  .u-richtext-invert {
+    .Quote blockquote p {
+      color: $color-lighterPrimary;
+    }
+  }
+
+  @media #{$mq-sm} {
+    .Main > .Quote:not(.is-pullquote) {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+
+  .Quote blockquote {
+    border-left: $unit * 0.625 solid $color-grey-300-transparent-70;
+    padding: 0 $unit * 2;
+
+    p {
+      overflow: visible;
+      margin: 0 0 $unit 0;
+      color: $color-darkerPrimary;
+      font-size: 1.125rem;
+      line-height: 1.666666667;
+    }
+  }
+
+  .Quote.is-pullquote {
+    text-align: center;
+
+    @media #{$mq-gt-sm} {
+      .u-pull-left &,
+      .u-pull-right &,
+      &.u-pull-left,
+      &.u-pull-right {
+        text-align: left;
+      }
+    }
+
+    p {
+      font-size: 1.625rem;
+      line-height: 1.4;
+
+      @media #{$mq-md} {
+        font-size: 1.75rem;
+      }
+
+      @media #{$mq-gt-md} {
+        font-size: 1.875rem;
+      }
+    }
+  }
+}
+
+:where(.is-future) {
+  .Quote {
+    margin-top: var(--od-space-component-margin);
+    margin-bottom: var(--od-space-component-margin);
+
+    &.u-pull-left,
+    &.u-pull-right {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+  }
+
+  .Quote blockquote {
+    border-left: calc($unit / 4) solid var(--od-colour-theme-text-tag-opacity-40);
+    padding: 0 $unit;
+    margin: 0;
+    :first-child {
+      margin-top: 0;
+    }
+  }
+
+  .Quote:not(.is-pullquote) blockquote {
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .Quote.is-pullquote {
+    padding-top: $unit * 2;
+    padding-bottom: $unit * 1;
+
+    blockquote {
+      margin: 0;
+    }
+
+    @media #{$mq-sm} {
+      padding-left: $unit * 3;
+      padding-right: $unit * 3;
+    }
+
+    p {
+      color: var(--od-colour-theme-text-tag);
+      font-family: var(--od-font-stack-serif);
+      font-size: var(--od-font-size-xl);
+      line-height: 1.25;
+    }
+
+    &::after {
+      content: '';
+      display: block;
+      margin: $unit auto $unit 0;
+      width: 50px;
+      height: $unit * 0.25;
+      opacity: 0.4;
+      background-color: var(--od-colour-theme-text-tag);
     }
   }
 }

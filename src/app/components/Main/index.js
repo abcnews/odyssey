@@ -2,6 +2,7 @@ import cn from 'classnames';
 import html from 'nanohtml';
 import { enqueue, subscribe } from '../../scheduler';
 import styles from './index.lazy.scss';
+import { THEME } from '../../../app/constants';
 
 const Main = (childNodes, meta) => {
   const className = cn('Main', 'u-layout', {
@@ -10,7 +11,9 @@ const Main = (childNodes, meta) => {
     'has-caption-attributions': meta.hasCaptionAttributions
   });
 
-  const el = html`<main class="${className}">${childNodes}</main>`;
+  const el = html`<main class="${className}" data-scheme="${meta.isDarkMode ? 'dark' : 'light'}" data-theme="${THEME}">
+    ${childNodes}
+  </main>`;
 
   subscribe(function _updateMainOffsetTop() {
     enqueue(function _updateMainOffsetTopCustomProp() {

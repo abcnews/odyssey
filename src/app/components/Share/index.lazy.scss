@@ -1,17 +1,155 @@
+// Share components are all new for Future News so no flags required here. For legacy
+// component see the ../legacy folder.
 @import '../../constants';
-
-.Share {
-}
 
 .Share-title {
   margin-bottom: $unit * 0.375;
   color: $color-black-transparent-75;
-  font-family: $font-sans;
+  font-family: var(--od-font-stack-sans);
   font-size: 0.8125rem;
   font-weight: bold;
   text-transform: uppercase;
 
   .u-richtext-invert & {
     color: $color-white-transparent-75;
+  }
+}
+
+.is-future {
+  .ShareBar {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: var(--od-space-component-margin);
+    margin-bottom: var(--od-space-component-margin);
+
+    // Styles that are shared by both buttons in the share
+    button {
+      font-family: var(--od-font-stack-sans);
+      font-size: 0.875rem;
+      font-weight: 700;
+
+      padding: 0.825rem 1.1rem 0.525rem;
+      margin: 0;
+      text-align: center;
+      vertical-align: middle;
+      cursor: pointer;
+      border: none;
+      transition: var(--dls-link-transition);
+
+      touch-action: manipulation;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+
+      border-radius: $radius * 2;
+      box-shadow: none;
+
+      &:focus-visible {
+        outline-width: var(--tab-outline-width);
+        outline-style: var(--tab-outline-style);
+        outline-color: var(--tab-outline-colour, var(--colour-assistant));
+        outline-offset: var(--tab-offset);
+      }
+    }
+  }
+
+  button.ShareBarLinkButton {
+    color: var(--od-colour-icon-inverse);
+    background: var(--od-button-primary);
+
+    &:hover {
+      color: var(--od-colour-text-primary);
+      background-color: var(--od-button-primary-hover);
+    }
+
+    &:active {
+      color: var(--od-colour-text-primary);
+      background-color: var(--od-button-primary-active);
+    }
+
+    &:focus {
+      color: var(--od-colour-text-primary);
+      background-color: var(--od-button-primary-hover);
+    }
+
+    svg {
+      font-size: 1.4rem;
+    }
+  }
+
+  .ShareBarUrl {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background: var(--od-colour-theme-tag);
+    min-width: 0;
+    border-radius: $radius * 2;
+  }
+
+  .ShareBarText {
+    padding: 0.5rem 1rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+
+  .ShareBannerButton {
+    position: relative;
+    button {
+      display: flex;
+      padding: var(--nw-spacing-3) var(--nw-spacing-5);
+
+      color: var(--od-colour-theme-text-accent);
+      background: var(--od-colour-theme-tag);
+
+      &:hover {
+        color: var(--od-colour-text-inverse);
+        background-color: var(--od-button-secondary-hover);
+      }
+
+      &:active {
+        color: var(--od-colour-text-inverse);
+        background-color: var(--od-button-secondary-active);
+      }
+      &:focus {
+        color: var(--od-colour-text-inverse);
+        background-color: var(--od-button-secondary-hover);
+        span {
+          color: var(--od-colour-text-inverse);
+        }
+      }
+
+      min-width: max-content;
+
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+
+      svg {
+        font-size: 1.4rem;
+        vertical-align: middle;
+      }
+    }
+
+    .ShareButtonTextLong {
+      display: none;
+    }
+
+    @media (min-width: 48em) {
+      .ShareButtonTextShort {
+        display: none;
+      }
+      .ShareButtonTextLong {
+        display: initial;
+      }
+    }
   }
 }

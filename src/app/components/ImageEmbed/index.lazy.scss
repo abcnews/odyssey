@@ -26,3 +26,10 @@
     }
   }
 }
+
+:where(.is-future) {
+  .ImageEmbed {
+    margin-top: var(--od-space-component-margin);
+    margin-bottom: var(--od-space-component-margin);
+  }
+}

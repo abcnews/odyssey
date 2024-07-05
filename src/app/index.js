@@ -2,6 +2,7 @@ import api from './api';
 import { transformSection as transformSectionIntoBackdrop } from './components/Backdrop';
 import { transformSection as transformSectionIntoBlock } from './components/Block';
 import FormatCredit from './components/FormatCredit';
+import FormatCreditLegacy from './components/legacy/FormatCredit';
 import { transformSection as transformSectionIntoGallery } from './components/Gallery';
 import { Lite as LiteHeader, transformSection as transformSectionIntoHeader } from './components/Header';
 import { transformMarker as transformMarkerIntoHR } from './components/HR';
@@ -53,6 +54,7 @@ export default terminusDocument => {
   }
 
   const mainEl = reset(storyEl, meta);
+  mainEl.parentElement.classList.add(meta.isFuture ? 'is-future' : 'is-legacy');
   debug('Performed page reset');
 
   mockDecoyActivationsUnderEl(mainEl); // Mock PL's decoy activation events
@@ -94,7 +96,7 @@ export default terminusDocument => {
         transformSectionIntoHeader(section, meta);
         break;
       case 'block':
-        transformSectionIntoBlock(section);
+        transformSectionIntoBlock(section, meta);
         break;
       case 'gallery':
         transformSectionIntoGallery(section);
@@ -170,7 +172,7 @@ export default terminusDocument => {
         transformMarkerIntoUCTA(marker);
         break;
       case 'hr':
-        transformMarkerIntoHR(marker);
+        transformMarkerIntoHR(marker, meta);
         break;
       case 'scrollhint':
         transformMarkerIntoScrollHint(marker);
@@ -310,7 +312,7 @@ export default terminusDocument => {
 
   // Append format credit for non-DSI stories
   if (meta.productionUnit !== 'EDL team' && (meta.infoSource || {}).name !== 'Digital Story Innovation Team') {
-    append(mainEl, FormatCredit());
+    append(mainEl, meta.isFuture ? FormatCredit() : FormatCreditLegacy());
     debug('Appended Odyssey format credit');
   }
 

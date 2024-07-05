@@ -7,11 +7,21 @@
   font-size: 3.46875rem;
   font-weight: bold;
   line-height: 0.78; // Gecko ignores this
+  :where(.is-future) & {
+    font-family: var(--od-font-stack-serif);
+    padding-top: 6px;
+    font-size: 3.45rem;
+    margin-bottom: -0.1em;
+  }
 
   @media #{$mq-gt-sm} {
     padding-top: $unit * 0.5;
     font-size: 3.625rem;
     line-height: 0.74; // Gecko ignores this
+    :where(.is-future) & {
+      padding-top: 6px;
+      font-size: 3.45rem;
+    }
   }
 }
 

@@ -1,6 +1,8 @@
+// @ts-check
 import Main from '../components/Main';
-import { SELECTORS } from '../constants';
-import { $, $$, append, before, detach, detachAll } from '../utils/dom';
+import { SELECTORS, THEME } from '../constants';
+import { $, $$, append, before, detach, detachAll, isHTMLElement, unwrap } from '../utils/dom';
+import { debug } from '../utils/logging';
 import './index.scss';
 
 const TEMPLATE_REMOVABLES = {
@@ -21,20 +23,35 @@ const TEMPLATE_REMOVABLES = {
 
 const WHITESPACE_REMOVABLES = 'p';
 
+/**
+ *
+ * @param {Element} storyEl
+ * @param {import('../meta').MetaData} meta
+ */
 function addDescriptorHints(storyEl, meta) {
-  const storyElChildElements = [...storyEl.children];
+  const storyElChildElements = Array.from(storyEl.children);
   const storyElChildDescriptors = meta._articledetail.text.descriptor.children;
 
   storyElChildElements.forEach((childEl, index) => {
+    // @ts-ignore Extensions to built in objects aren't yet typed here
     childEl._descriptor = storyElChildDescriptors[index];
   });
 }
 
+/**
+ * Pull the story element up one level in the DOM
+ * @param {Element} storyEl
+ * @param {import('../meta').MetaData} meta
+ * @returns {Element}
+ */
 function promoteToMain(storyEl, meta) {
   const existingMainEl = $(SELECTORS.MAIN);
   const mainEl = Main(Array.from(storyEl.childNodes), meta);
-
-  mainEl.setAttribute('id', existingMainEl.getAttribute('id'));
+  if (!existingMainEl) {
+    debug('Could not find existing main element, not promoting.');
+    return mainEl;
+  }
+  mainEl.setAttribute('id', existingMainEl.getAttribute('id') || '');
   existingMainEl.removeAttribute('id');
   existingMainEl.removeAttribute('role');
   before(existingMainEl, mainEl);
@@ -42,13 +59,19 @@ function promoteToMain(storyEl, meta) {
   return mainEl;
 }
 
+/**
+ * Perform a bunch of resets to start with a clean slate.
+ * @param {Element} storyEl
+ * @param {import('../meta').MetaData} meta
+ * @returns {Element}
+ */
 export const reset = (storyEl, meta) => {
   const { isDarkMode, theme } = meta;
 
   // Apply minimum-scale=1 to viewport meta
   document
     .querySelector('meta[name="viewport"]')
-    .setAttribute('content', 'width=device-width, initial-scale=1, minimum-scale=1');
+    ?.setAttribute('content', 'width=device-width, initial-scale=1, minimum-scale=1');
 
   // Apply theme, if defined
   if (typeof theme === 'string') {
@@ -89,8 +112,7 @@ export const reset = (storyEl, meta) => {
   Array.from(mainEl.children).forEach(el => {
     if (el.tagName === 'A' && el.hasAttribute('href')) {
       const pEl = document.createElement('p');
-
-      before(el.nextElementSibling, pEl);
+      before(el, pEl);
       append(pEl, el);
     }
   });
@@ -98,9 +120,15 @@ export const reset = (storyEl, meta) => {
   // Treat WYSIWYG teaser embeds as nested richtext content
   $$(SELECTORS.WYSIWYG_EMBED, mainEl).forEach(el => {
     el.className = `u-richtext${isDarkMode ? '-invert' : ''}`;
+    if (isHTMLElement(el)) {
+      el.dataset.theme = THEME;
+      el.dataset.scheme = isDarkMode ? 'dark' : 'light';
+    }
   });
 
   // Clean up Presentation Layer components
+  $$('[data-component="Table"', mainEl).forEach(el => unwrap(el));
+
   $$(
     [
       '[data-component="ContentLink"]',
@@ -108,6 +136,7 @@ export const reset = (storyEl, meta) => {
       '[data-component="Link"]',
       '[data-component="List"]',
       '[data-component="ListItem"]',
+      '[data-component="Table"]',
       'p'
     ].join(),
     mainEl
