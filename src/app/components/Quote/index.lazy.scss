@@ -30,11 +30,6 @@
       margin-left: -$layout-fluid-padding;
       margin-right: -$layout-fluid-padding;
     }
-
-    .Main > & {
-      padding-left: 0;
-      padding-right: 0;
-    }
   }
 }
 
@@ -83,6 +78,15 @@
   .u-richtext-invert {
     .Quote blockquote p {
       color: $color-lighterPrimary;
+    }
+  }
+
+  .Quote:not(.is-pullquote) {
+    @media #{$mq-sm} {
+      .Main > & {
+        padding-left: 0;
+        padding-right: 0;
+      }
     }
   }
 
