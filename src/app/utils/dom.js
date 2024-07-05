@@ -5,6 +5,15 @@ import { debug } from './logging';
 /**
  *
  * @param {any} node
+ * @returns {node is Node}
+ */
+export const isNode = node => {
+  return node && node instanceof Node;
+};
+
+/**
+ *
+ * @param {any} node
  * @returns {node is Text}
  */
 export const isText = node => {

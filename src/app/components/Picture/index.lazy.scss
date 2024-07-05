@@ -44,12 +44,3 @@
     will-change: unset;
   }
 }
-
-.is-future {
-  :not(.u-full) .Picture {
-    @media #{$mq-gt-md} {
-      overflow: hidden;
-      border-radius: $radius-images;
-    }
-  }
-}

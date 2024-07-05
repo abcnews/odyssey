@@ -47,7 +47,7 @@ html.is-master-gallery-open {
   }
 
   // mediaEl
-  .Gallery-item> :not(.Caption) {
+  .Gallery-item > :not(.Caption) {
     max-width: 100%;
     height: auto;
   }
@@ -60,10 +60,11 @@ html.is-master-gallery-open {
     @media #{$mq-gt-md} {
       font-size: 1rem !important;
       line-height: 1.625;
-
-      .Caption-attribution {
-        display: block;
-        font-size: 0.8125rem !important;
+      :where(.is-legacy) & {
+        .Caption-attribution {
+          display: block;
+          font-size: 0.8125rem !important;
+        }
       }
     }
   }
@@ -135,6 +136,10 @@ html.is-master-gallery-open {
     .Caption {
       margin: $unit 0;
       max-width: 100%;
+      @media (max-width: 133vh) {
+        margin: $unit;
+        max-width: calc(100% - $unit * 2);
+      }
     }
   }
 }

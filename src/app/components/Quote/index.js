@@ -32,7 +32,7 @@ const Quote = ({ isPullquote = false, alignment, parEls = [], attributionNodes =
 
   return html`
     <div class="${className}">
-      <blockquote class="${isFuture ? 'u-richtext' : ''}">${parEls.concat(attributionEl)}</blockquote>
+      <blockquote>${parEls.concat(attributionEl)}</blockquote>
     </div>
   `;
 };

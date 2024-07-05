@@ -3,7 +3,7 @@ import { getTier, TIERS, getApplication, APPLICATIONS } from '@abcnews/env-utils
 import { url2cmid } from '@abcnews/url2cmid';
 import { INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID, SELECTORS } from '../constants';
 import { fetchDocument } from '../utils/content';
-import { $, $$, detach, isAnchorElement, isElement } from '../utils/dom';
+import { $, $$, detach, isAnchorElement, isElement, isNode } from '../utils/dom';
 import { debug } from '../utils/logging';
 
 /**
@@ -68,10 +68,9 @@ function getDataAttribute(name) {
 
 /**
  * Get DOM elements that make up the byline
- * @param {boolean} isFuture
- * @returns {Element[]}
+ * @returns {Node[]}
  */
-function getBylineNodes(isFuture) {
+function getBylineNodes() {
   const bylineEl = $(SELECTORS.BYLINE);
   const tagsEl = $(SELECTORS.HEADER_TAGS);
 
@@ -99,7 +98,7 @@ function getBylineNodes(isFuture) {
       )
     : [];
 
-  return [...bylineEls, clonedTagsEl].filter(isElement);
+  return [...bylineEls, clonedTagsEl].filter(isNode);
 }
 
 const FACEBOOK = /facebook\.com/;
@@ -263,7 +262,7 @@ export const initMeta = terminusDocument => {
     }),
     // Parse remaining props from the DOM, sometimes using defaults
     meta => ({
-      bylineNodes: getBylineNodes(meta.isFuture || false),
+      bylineNodes: getBylineNodes(),
       metadataNodes: getMetadataNodes(meta.isFuture || false),
       infoSourceLogosHTMLFragmentId: getDataAttribute('info-source-logos') || INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID,
       relatedMedia: getRelatedMedia(),
@@ -366,7 +365,6 @@ export const getMeta = () => {
 /**
  * Get an image document from the CDN url
  * @param {string} url An image URL
- * @returns {}
  */
 export const lookupImageByAssetURL = url => {
   const { imagesByBinaryKey } = getMeta();

@@ -39,6 +39,17 @@
 }
 
 .Quote.is-pullquote {
+  @media #{$mq-gt-sm} {
+    [class*='u-richtext'] > &:not([class*='u-pull']),
+    .u-pull-out > &:not([class*='u-pull']),
+    .u-pull > &:not([class*='u-pull']) {
+      :where(.is-legacy) & {
+        padding-left: cells(1);
+        padding-right: cells(1);
+      }
+    }
+  }
+
   blockquote {
     border: none;
     background-color: transparent;
@@ -108,13 +119,6 @@
       &.u-pull-left,
       &.u-pull-right {
         text-align: left;
-      }
-
-      [class*='u-richtext'] > &:not([class*='u-pull']),
-      .u-pull-out > &:not([class*='u-pull']),
-      .u-pull > &:not([class*='u-pull']) {
-        padding-left: cells(1);
-        padding-right: cells(1);
       }
     }
 

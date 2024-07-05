@@ -48,10 +48,3 @@
     }
   }
 }
-
-.is-future .VideoPlayer {
-  @media #{$mq-gt-md} {
-    border-radius: $radius-images;
-    overflow: hidden;
-  }
-}
