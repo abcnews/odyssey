@@ -92,12 +92,10 @@
     }
   }
 
-  .Quote:not(.is-pullquote) {
-    @media #{$mq-sm} {
-      .Main > & {
-        padding-left: 0;
-        padding-right: 0;
-      }
+  @media #{$mq-sm} {
+    .Main > .Quote:not(.is-pullquote) {
+      padding-left: 0;
+      padding-right: 0;
     }
   }
 
