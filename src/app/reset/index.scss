@@ -12,6 +12,13 @@ html {
     &:has(.is-future[data-key='body']) {
       background-color: var(--bg, #0f0f0f);
     }
+
+    // Hot fix for App output in future mode with light scheme.
+    // TODO: revisit this — it's not the right solution, we shouldn't rely on (or change) background colour of elements controlled by PL (like body/html).
+    #app-container {
+      background: transparent;
+      color: inherit;
+    }
   }
 }
 
