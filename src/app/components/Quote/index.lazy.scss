@@ -167,29 +167,25 @@
   }
 
   .Quote.is-pullquote {
-    padding-top: $unit * 2;
-    padding-bottom: $unit * 1;
+    padding-left: calc($layout-fluid-padding + 1.5rem);
+    color: var(--od-colour-theme-text-tag);
+    font-family: var(--od-font-stack-serif);
+    font-size: var(--od-font-size-xl);
+    line-height: 1.4;
+    font-weight: 600;
+    overflow: hidden;
+
+    @media #{$mq-gt-md} {
+      padding-left: calc($layout-fixed-padding + 1.5rem);
+    }
 
     blockquote {
-      margin: 0;
-    }
-
-    @media #{$mq-sm} {
-      padding-left: $unit * 3;
-      padding-right: $unit * 3;
-    }
-
-    p {
-      color: var(--od-colour-theme-text-tag);
-      font-family: var(--od-font-stack-serif);
-      font-size: var(--od-font-size-xl);
-      line-height: 1.25;
+      margin: var(--od-space-component-margin) 0;
     }
 
     &::after {
       content: '';
       display: block;
-      margin: $unit auto $unit 0;
       width: 50px;
       height: $unit * 0.25;
       opacity: 0.4;
