@@ -8,7 +8,7 @@
 
 [data-scheme='light'] {
   // Surfaces
-  --od-colour-surface-neutral: var(--bg, var(--nw-colour-surface-neutral, rgb(255, 255, 255)));
+  --od-colour-surface-neutral: var(--nw-colour-surface-neutral, rgb(255, 255, 255));
   --od-colour-surface-utility: #75808a26;
   --od-colour-surface-utility-opaque: var(--nw-colour-surface-utility, #75808a);
   --od-colour-surface-utility-bolder: #f9fafacf;
@@ -52,7 +52,7 @@
 
 [data-scheme='dark'] {
   // Surfaces
-  --od-colour-surface-neutral: var(--bg, var(--nw-colour-surface-neutral, rgb(15, 15, 15)));
+  --od-colour-surface-neutral: var(--nw-colour-surface-neutral, rgb(15, 15, 15));
   --od-colour-surface-utility: #30323699;
   --od-colour-surface-utility-opaque: var(--nw-colour-surface-utility, #303236);
   --od-colour-surface-utility-bolder: #18191bbf;
