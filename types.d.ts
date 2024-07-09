@@ -4,6 +4,9 @@ interface Window {
   __NEXT_DATA__: any; // TODO: define this type
   YT: any; // The YouTube iframe player API
   onYouTubeIframeAPIReady: () => void;
+  FB: any; // The Facebook embed API
+  twttr: any; // The twitter embed API
+  instgrm: any; // The instagram embed API
 }
 
 interface TerminusArticle {
