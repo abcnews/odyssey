@@ -1,4 +1,5 @@
-import { TIERS, getTier } from '@abcnews/env-utils';
+// @ts-check
+
 import cn from 'classnames';
 import html from 'nanohtml';
 import { ALIGNMENT_PATTERN, EMBED_ALIGNMENT_MAP } from '../../constants';
@@ -18,9 +19,7 @@ const SUPPORTED_PROVIDER_TYPES = [
   'tiktok',
   'youtubeplaylist'
 ];
-const LOADERS_ENDPOINT = `https://${
-  getTier() === TIERS.LIVE ? 'www.abc.net.au' : 'master-news-web.news-web-developer.presentation-layer.abc-prod.net.au'
-}/news-web/api/loader/`;
+const LOADERS_ENDPOINT = `/news-web/api/loader/`;
 const LOADER_NAME = 'oembed';
 
 const InteractiveEmbed = ({ url, providerType, alignment, isFull }) => {
@@ -68,17 +67,17 @@ const InteractiveEmbed = ({ url, providerType, alignment, isFull }) => {
         case 'facebook':
         case 'facebookVideo':
           if (window.FB) {
-            FB.XFBML.parse(embedContainerEl);
+            window.FB.XFBML.parse(embedContainerEl);
           }
           break;
         case 'instagram':
           if (window.instgrm) {
-            instgrm.Embeds.process();
+            window.instgrm.Embeds.process();
           }
           break;
         case 'singleTweet':
           if (window.twttr) {
-            twttr.widgets.load(embedContainerEl);
+            window.twttr.widgets.load(embedContainerEl);
           }
           break;
         default:
@@ -97,6 +96,10 @@ const InteractiveEmbed = ({ url, providerType, alignment, isFull }) => {
 
 export default InteractiveEmbed;
 
+/**
+ *
+ * @param {HTMLElement & {_descriptor: any}} el
+ */
 export const transformElement = el => {
   const url = el.getAttribute('itemid');
   const providerType = el.getAttribute('data-provider');
@@ -115,6 +118,12 @@ export const transformElement = el => {
   );
 };
 
+/**
+ * Manipulate some HTML to fix minor issues with embeds
+ * @param {string} html HTML to manipulate
+ * @param {string} providerType The provider type TODO: this should be an enum
+ * @returns {string}
+ */
 const normaliseHTML = (html, providerType) => {
   let normalisedHTML = html;
 
