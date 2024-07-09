@@ -337,7 +337,8 @@
   .Caption {
     position: absolute;
     bottom: 0;
-    margin-left: 0;
+    margin: var(--od-space-md);
+    width: auto;
     max-width: 100%;
     min-height: 0;
     background-color: $color-black-transparent-60;
