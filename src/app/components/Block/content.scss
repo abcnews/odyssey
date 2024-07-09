@@ -133,7 +133,9 @@
     }
 
     .is-not-piecemeal > & {
-      padding-top: $unit * 5;
+      :where(.is-legacy) & {
+        padding-top: $unit * 5;
+      }
     }
   }
 
@@ -145,7 +147,9 @@
     }
 
     .is-not-piecemeal > & {
-      padding-bottom: $unit * 5;
+      :where(.is-legacy) & {
+        padding-bottom: $unit * 5;
+      }
     }
   }
 
@@ -215,6 +219,17 @@
 }
 
 :where(.is-future) {
+  .is-not-piecemeal {
+    .Block-content[class*='u-richtext'] > div > * {
+      &:first-child {
+        margin-top: 0;
+      }
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
   .is-not-piecemeal,
   .is-piecemeal {
     .Block-content[class*='u-richtext'] > * {
