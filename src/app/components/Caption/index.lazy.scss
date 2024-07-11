@@ -1,7 +1,7 @@
 @import '../../constants';
 
 .Caption {
-  *>& {
+  * > & {
     font-size: 0.8125rem !important;
     line-height: 1.555555556;
   }
@@ -36,14 +36,6 @@
     @media #{$mq-gt-md} {
       padding-left: $layout-fluid-padding;
       padding-right: $layout-fluid-padding;
-    }
-  }
-
-  .u-richtext .u-pull-left &,
-  .u-richtext .u-pull-right & {
-    @media #{$mq-gt-sm} {
-      padding-left: 0;
-      padding-right: 0;
     }
   }
 
@@ -83,6 +75,14 @@
 
     :first-child {
       margin-right: $unit * 0.25;
+    }
+
+    .u-richtext .u-pull-left &,
+    .u-richtext .u-pull-right & {
+      @media #{$mq-gt-sm} {
+        padding-left: 0;
+        padding-right: 0;
+      }
     }
   }
 }
