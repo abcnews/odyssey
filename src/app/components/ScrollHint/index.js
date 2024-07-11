@@ -1,3 +1,5 @@
+// @ts-check
+
 import html from 'nanohtml';
 import { enqueue, subscribe, unsubscribe } from '../../scheduler';
 import { detach } from '../../utils/dom';
@@ -6,14 +8,12 @@ import styles from './index.lazy.scss';
 
 let scrollHintEl = null;
 
+/**
+ * Get a scroll hint element.
+ *
+ * @returns {HTMLDivElement}
+ */
 const ScrollHint = () => {
-
-  // This component no longer exists as of the Future News redesign.
-  // We can remove all traces of it once the old site has been turned off for good.
-  if (getMeta().isFuture) {
-    return null;
-  }
-
   // We only ever want one instance
   if (scrollHintEl === null) {
     scrollHintEl = html`<div class="ScrollHint" role="presentation"></div>`;
@@ -50,6 +50,16 @@ function _checkIfScrollHintNeedsToBeRemoved() {
   });
 }
 
+/**
+ * Transform the scroll hint marker
+ * @param {import('src/app/utils/mounts').Marker} marker
+ */
 export const transformMarker = marker => {
-  marker.substituteWith(ScrollHint());
+  // This component no longer exists as of the Future News redesign.
+  // We can remove all traces of it once the old site has been turned off for good.
+  if (marker.substituteWith && getMeta().isFuture) {
+    marker.substituteWith(ScrollHint());
+  } else {
+    detach(marker.node);
+  }
 };
