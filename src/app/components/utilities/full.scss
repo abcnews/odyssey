@@ -20,7 +20,7 @@
   }
 }
 
-// Collapse margin between subsequent Bakcdrop, Block and Header
+// Collapse margin between subsequent Backdrop, Block and Header
 // components, even when separated by a mount point
 
 $isFlush: '.u-full:is(.Backdrop, .Block, .Header)';
@@ -33,5 +33,9 @@ $isFlush: '.u-full:is(.Backdrop, .Block, .Header)';
 :where(.is-future) {
   .u-full.u-full {
     --u-full-vertical-margin: var(--od-space-component-margin);
+  }
+
+  .u-full:is(.Header) + #{$isFlush} {
+    margin-top: calc(var(--od-space-paragraph-margin) * -1);
   }
 }

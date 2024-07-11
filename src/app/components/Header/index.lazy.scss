@@ -459,8 +459,8 @@ ul.Header-miscEl > li {
 }
 
 :where(.is-future) {
-  .Header.u-full .Header-meta {
-    margin-bottom: 0;
+  .Header.u-full {
+    margin-bottom: var(--od-space-paragraph-margin);
   }
 
   .Header .Header-content .Header-byline {
@@ -470,6 +470,7 @@ ul.Header-miscEl > li {
   [data-scheme='dark'] > .Header[data-scheme='light'],
   [data-scheme='light'] > .Header[data-scheme='dark'],
   .Header.is-layered {
+    margin-bottom: var(--od-space-header-margin);
     .Header-meta {
       margin-bottom: var(--od-space-header-margin);
     }
