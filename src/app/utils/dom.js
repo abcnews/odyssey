@@ -274,3 +274,8 @@ export const detectVideoId = node => {
 
   return videoId;
 };
+
+// These are not used internally but are used by some interactives that rely
+// on Odyssey's API exposed at window.__ODYSSEY__.utils.dom
+export const select = $;
+export const selectAll = $$;
