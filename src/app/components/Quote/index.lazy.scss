@@ -167,7 +167,6 @@
   }
 
   .Quote.is-pullquote {
-    padding-left: calc($layout-fluid-padding + 1.5rem);
     color: var(--od-colour-theme-text-tag);
     font-family: var(--od-font-stack-serif);
     font-size: var(--od-font-size-xl);
@@ -175,21 +174,8 @@
     font-weight: 600;
     overflow: hidden;
 
-    @media #{$mq-gt-md} {
-      padding-left: calc($layout-fixed-padding + 1.5rem);
-    }
-
     blockquote {
-      margin: var(--od-space-component-margin) 0;
-    }
-
-    &::after {
-      content: '';
-      display: block;
-      width: 50px;
-      height: $unit * 0.25;
-      opacity: 0.4;
-      background-color: var(--od-colour-theme-text-tag);
+      margin: 0;
     }
   }
 }
