@@ -29,8 +29,8 @@ import { debug } from '../utils/logging';
  * @prop {any} infoSourceLogosHTMLFragmentId
  * @prop {any} relatedMedia
  * @prop {any} relatedStoriesIds
- * @prop {Record<string, unknown>} imagesByBinaryKey
- * @prop {Record<string, unknown>} mediaById
+ * @prop {Record<string, {id: string}>} imagesByBinaryKey
+ * @prop {Record<string, {id: string}>} mediaById
  * @prop {boolean} isPL
  * @prop {boolean} isPreview
  * @prop {boolean} isFuture

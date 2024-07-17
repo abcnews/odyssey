@@ -1,7 +1,8 @@
+// @ts-check
 import html from 'nanohtml';
 import { MQ, ONLY_RATIO_PATTERN, PLACEHOLDER_IMAGE_CUSTOM_PROPERTY, SMALLEST_IMAGE, UNIT } from '../../constants';
 import { enqueue, invalidateClient, subscribe } from '../../scheduler';
-import { toggleAttribute, toggleBooleanAttributes } from '../../utils/dom';
+import { isVideoElement, toggleAttribute, toggleBooleanAttributes } from '../../utils/dom';
 import { blurImage } from '../Picture/blur';
 import Sizer from '../Sizer';
 import VideoControls from '../VideoControls';
@@ -9,6 +10,35 @@ import { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } from './p
 import { initialiseVideoAnalytics } from './stats';
 import { getMetadata, hasAudio } from './utils';
 import styles from './index.lazy.scss';
+
+/**
+ * @typedef {object} VideoPlayerAPI
+ * @prop {boolean} hasNativeUI
+ * @prop {boolean} isAmbient
+ * @prop {boolean} isScrollplay
+ * @prop {number | undefined} scrollplayPct
+ * @prop {boolean} willPlayAudio
+ * @prop {boolean} [isInPlayableRange]
+ * @prop {string} [alternativeText]
+ * @prop {() => string} getTitle
+ * @prop {() => DOMRect} getRect
+ * @prop {() => HTMLVideoElement} getVideoEl
+ * @prop {() => boolean} isMuted
+ * @prop {(shouldBeMuted: boolean) => void} setMuted
+ * @prop {(this: HTMLElement, event: PointerEvent) => void} toggleMutePreference
+ * @prop {() => boolean} isPaused
+ * @prop {() => void} play
+ * @prop {() => void} pause
+ * @prop {(_event: Event, wasScrollBased: boolean) => void} togglePlayback
+ * @prop {boolean} [isUserInControl]
+ * @prop {(pct: number) => void} jumpToPct
+ * @prop {(time: number) => void} jumpBy
+ * @prop {(metadata: import('./utils').VideoMetadata) => void} [metadataHook]
+ */
+
+/**
+ * @typedef {HTMLElement & {api?: VideoPlayerAPI}} VideoPlayerEl
+ */
 
 const FUZZY_INCREMENT_FPS = 30;
 const FUZZY_INCREMENT_INTERVAL = 1000 / FUZZY_INCREMENT_FPS;
@@ -28,6 +58,7 @@ let hasSubscribed = false;
  * @param {boolean} [config.isLoop] Should the video loop?
  * @param {boolean} [config.isMuted] Should the video be muted?
  * @param {number} [config.scrollplayPct] What protion of the video should be visible for play on scroll
+ * @param {HTMLElement} [config.videoDuration] A <time> element to display the video duration.
  * @returns
  */
 const VideoPlayer = ({
@@ -42,7 +73,9 @@ const VideoPlayer = ({
   videoDuration,
   scrollplayPct
 }) => {
+  /** @type {VideoPlayerEl} */
   let videoPlayerEl;
+  /** @type {import('../VideoControls').VideoControlsEl} */
   let videoControlsEl;
   let fuzzyCurrentTime = 0;
   let fuzzyTimeout;
@@ -53,6 +86,8 @@ const VideoPlayer = ({
     lg: ONLY_RATIO_PATTERN.test(ratios.lg) ? ratios.lg : DEFAULT_RATIO,
     xl: ONLY_RATIO_PATTERN.test(ratios.xl) ? ratios.xl : DEFAULT_RATIO
   };
+
+  isAmbient = !!isAmbient;
 
   if (isInvariablyAmbient) {
     isAmbient = true;
@@ -77,6 +112,9 @@ const VideoPlayer = ({
 
   const videoEl = html`<video preload="none" tabindex="-1" aria-label="${title}"></video>`;
 
+  // This is a silly hack for types because nanohtml always returns a HTMLElement regardless of the tag used.
+  if (!isVideoElement(videoEl)) return;
+
   const isInitiallySmallViewport = window.matchMedia(MQ.SM).matches;
   const initiallyPreferredRatio = ratios[isInitiallySmallViewport ? 'sm' : 'lg'];
   const [initiallyPreferredRatioNumerator, initiallyPreferredRatioDenominator] = initiallyPreferredRatio
@@ -86,8 +124,8 @@ const VideoPlayer = ({
     initiallyPreferredRatioNumerator / initiallyPreferredRatioDenominator <= 1;
 
   toggleBooleanAttributes(videoEl, {
-    loop: isLoop,
-    muted: isMuted,
+    loop: !!isLoop,
+    muted: !!isMuted,
     paused: true,
     playsinline: true,
     'webkit-playsinline': true
@@ -99,12 +137,15 @@ const VideoPlayer = ({
   }
 
   function nextFuzzyIncrement() {
+    // This is a silly hack for types because nanohtml always returns a HTMLElement regardless of the tag used.
+    if (!isVideoElement(videoEl)) return;
+
     if (!videoControlsEl || videoEl.paused || !videoEl.duration) {
       return;
     }
 
     fuzzyCurrentTime = (fuzzyCurrentTime + FUZZY_INCREMENT_INTERVAL / 1000) % videoEl.duration;
-    videoControlsEl.api.setProgress((fuzzyCurrentTime / videoEl.duration) * 100);
+    videoControlsEl.api?.setProgress((fuzzyCurrentTime / videoEl.duration) * 100);
     clearTimeout(fuzzyTimeout);
     fuzzyTimeout = setTimeout(nextFuzzyIncrement, FUZZY_INCREMENT_INTERVAL);
   }
@@ -114,7 +155,7 @@ const VideoPlayer = ({
   });
 
   videoEl.addEventListener('playing', () => {
-    if (videoControlsEl && videoControlsEl.api.isScrubbing()) {
+    if (videoControlsEl && videoControlsEl.api?.isScrubbing()) {
       return;
     }
 
@@ -137,7 +178,7 @@ const VideoPlayer = ({
     videoEl.removeAttribute('paused');
 
     if (videoControlsEl) {
-      videoControlsEl.api.setPlaybackLabel('Pause');
+      videoControlsEl.api?.setPlaybackLabel('Pause');
     }
 
     // Incrememnt fuzzy time
@@ -147,20 +188,20 @@ const VideoPlayer = ({
   videoEl.addEventListener('pause', () => {
     clearTimeout(fuzzyTimeout);
 
-    if (videoControlsEl && videoControlsEl.api.isScrubbing()) {
+    if (videoControlsEl && videoControlsEl.api?.isScrubbing()) {
       return;
     }
 
     videoEl.setAttribute('paused', '');
 
     if (videoControlsEl) {
-      videoControlsEl.api.setPlaybackLabel('Play');
+      videoControlsEl.api?.setPlaybackLabel('Play');
     }
   });
 
   videoEl.addEventListener('play', nextFuzzyIncrement);
-  videoEl.addEventListener('stalled', clearTimeout(fuzzyTimeout));
-  videoEl.addEventListener('waiting', clearTimeout(fuzzyTimeout));
+  videoEl.addEventListener('stalled', () => clearTimeout(fuzzyTimeout));
+  videoEl.addEventListener('waiting', () => clearTimeout(fuzzyTimeout));
 
   videoEl.addEventListener('canplay', () => {
     if (hasAudio(videoEl)) {
@@ -174,10 +215,11 @@ const VideoPlayer = ({
     videoEl.setAttribute('paused', '');
 
     if (videoControlsEl) {
-      videoControlsEl.api.setPlaybackLabel('Replay');
+      videoControlsEl.api?.setPlaybackLabel('Replay');
     }
   });
 
+  /** @type {VideoPlayerAPI} */
   const player = {
     hasNativeUI: false,
     isAmbient,
@@ -192,8 +234,7 @@ const VideoPlayer = ({
     getRect: () => {
       // Fixed players should use their parent's rect, as they're always in the viewport
       const position = window.getComputedStyle(videoPlayerEl).position;
-      const el = position === 'fixed' ? videoPlayerEl.parentElement : videoPlayerEl;
-
+      const el = position === 'fixed' && videoPlayerEl.parentElement ? videoPlayerEl.parentElement : videoPlayerEl;
       return el.getBoundingClientRect();
     },
     getVideoEl: () => videoEl,
@@ -204,7 +245,7 @@ const VideoPlayer = ({
       toggleAttribute(videoEl, 'muted', shouldBeMuted);
 
       if (videoControlsEl) {
-        videoControlsEl.api.setMuteLabel(shouldBeMuted ? 'Unmute' : 'Mute');
+        videoControlsEl.api?.setMuteLabel(shouldBeMuted ? 'Unmute' : 'Mute');
       }
     },
     toggleMutePreference: toggleMutePreference,
@@ -273,10 +314,12 @@ const VideoPlayer = ({
       }
     }
 
+    /** @type {[import('./utils').VideoSource[], import('./utils').VideoSource[]]} */
+    const initSources = [[], []];
     const [portraitSources, landscapeSources] = sources.reduce(
       // 1x1 is considered portrait
       (memo, source) => (memo[+(source.width > source.height)].push(source), memo),
-      [[], []]
+      initSources
     );
     const candidateSources =
       isInitiallyPreferredPortraitContainer && portraitSources.length
@@ -306,7 +349,14 @@ const VideoPlayer = ({
 
   videoControlsEl = VideoControls(player, isAmbient, videoDuration);
 
+  /**
+   * Jump to a time on the video
+   * @param {number} time The timestamp (in seconds) to jump to on the video
+   */
   function jumpTo(time) {
+    // This is a silly hack for types because nanohtml always returns a HTMLElement regardless of the tag used.
+    if (!isVideoElement(videoEl)) return;
+
     if (isNaN(videoEl.duration) || videoEl.duration === videoEl.currentTime) {
       return;
     }
@@ -315,14 +365,14 @@ const VideoPlayer = ({
     fuzzyCurrentTime = videoEl.currentTime;
 
     if (videoControlsEl) {
-      videoControlsEl.api.setProgress((videoEl.currentTime / videoEl.duration) * 100);
+      videoControlsEl.api?.setProgress((videoEl.currentTime / videoEl.duration) * 100);
     }
   }
 
   if (!isAmbient) {
     videoEl.addEventListener('timeupdate', () => {
       if (videoEl.readyState > 0) {
-        videoControlsEl.api.setTimeRemaining(videoEl.duration - videoEl.currentTime);
+        videoControlsEl.api?.setTimeRemaining(videoEl.duration - videoEl.currentTime);
       }
     });
 
@@ -345,12 +395,24 @@ const VideoPlayer = ({
   return videoPlayerEl;
 };
 
+/**
+ * @param {PointerEvent} event
+ * @this {HTMLElement}
+ */
 function toggleMutePreference(event) {
   event.stopPropagation();
 
+  /** @type {import('../VideoControls').VideoControlsEl | null} */
   const controlsEl = this.parentElement;
-  const controlledPlayer = controlsEl.parentElement.api;
-  const shouldBeMuted = !controlsEl.previousElementSibling.muted;
+  if (!controlsEl) return;
+  /** @type {VideoPlayerEl | null} */
+  const playerEl = controlsEl.parentElement;
+  const controlledPlayer = playerEl?.api;
+  const videoEl = controlsEl.previousElementSibling;
+  if (!isVideoElement(videoEl)) {
+    throw new Error('Error selecting video element.');
+  }
+  const shouldBeMuted = !videoEl.muted;
 
   forEachPlayer(player => {
     // We can't potentially unmute an ambient or other scroll-based video as
@@ -368,6 +430,10 @@ export default VideoPlayer;
 const mql = window.matchMedia(`(max-height: ${UNIT * 30}px)`);
 let mqlDidMatch = mql.matches;
 
+/**
+ * Update the UI of a player based on media query
+ * @param {VideoPlayerAPI} player
+ */
 function updateUI(player) {
   const shouldBeNative = mql.matches;
 
@@ -392,10 +458,10 @@ function _checkIfVideoPlayersNeedToUpdateUIBasedOnMedia() {
       return;
     }
 
-    const wasPlaying = Boolean(player.paused);
+    const wasPlaying = !player.isPaused();
 
     enqueue(function _updateVideoPlayerUI() {
-      updateUI(player, mql.matches);
+      updateUI(player);
 
       if (wasPlaying && player.getVideoEl().scrollIntoView) {
         enqueue(function _scrollVideoPlayerIntoView() {

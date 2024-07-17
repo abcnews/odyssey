@@ -1,11 +1,32 @@
+// @ts-check
 import html from 'nanohtml';
-import { setText } from '../../utils/dom';
+import { isProgressElement, setText } from '../../utils/dom';
 import { twoDigits, whenKeyIn } from '../../utils/misc';
 import { getMeta } from '../../meta';
 import styles from './index.lazy.scss';
 
+/**
+ * @typedef {object} VideoControlsAPI
+ * @prop {(label: string) => void} setMuteLabel
+ * @prop {() => boolean} isScrubbing
+ * @prop {(label: string) => void} setPlaybackLabel
+ * @prop {(value: number) => void} setProgress
+ * @prop {(secondsRemaining: number) => void} setTimeRemaining
+ */
+
+/**
+ * @typedef {HTMLElement & {api?: VideoControlsAPI}} VideoControlsEl
+ */
+
 const STEP_SECONDS = 5;
 
+/**
+ * Initialise a video player controlls element
+ * @param {import('../VideoPlayer').VideoPlayerAPI} player
+ * @param {boolean} hasAmbientParent
+ * @param {HTMLElement} [videoDuration]
+ * @returns {VideoControlsEl}
+ */
 const VideoControls = (player, hasAmbientParent, videoDuration) => {
   let steppingKeysHeldDown = [];
   let wasPlayingBeforeStepping;
@@ -54,6 +75,10 @@ const VideoControls = (player, hasAmbientParent, videoDuration) => {
       return;
     }
 
+    if (!progressEl) {
+      return;
+    }
+
     if (!isPassive) {
       event.preventDefault();
     }
@@ -91,7 +116,9 @@ const VideoControls = (player, hasAmbientParent, videoDuration) => {
       onkeydown=${hasAmbientParent ? null : whenKeyIn([37, 38, 39, 40], steppingKeyDown)}
       onkeyup=${hasAmbientParent ? null : whenKeyIn([37, 38, 39, 40], steppingKeyUp)}
       onclick=${player.togglePlayback}
-    >${isFuture ? preplayButton : ''}</button>
+    >
+      ${isFuture ? preplayButton : ''}
+    </button>
   `;
   const muteEl = hasAmbientParent
     ? null
@@ -105,6 +132,7 @@ const VideoControls = (player, hasAmbientParent, videoDuration) => {
   const timeRemainingEl = hasAmbientParent
     ? null
     : html`<time class="VideoControls-timeRemaining" aria-label="Time Remaining"></time>`;
+
   const progressBarEl = hasAmbientParent
     ? null
     : html`
@@ -115,14 +143,19 @@ const VideoControls = (player, hasAmbientParent, videoDuration) => {
           draggable="false"
         ></progress>
       `;
+  if (!isProgressElement(progressBarEl) && progressBarEl !== null) {
+    throw new Error('Something went wrong constructing the progress bar element');
+  }
+
   const progressEl = hasAmbientParent ? null : html`<div class="VideoControls-progress">${progressBarEl}</div>`;
+  /** @type {HTMLElement & {api?: VideoControlsAPI}} */
   const videoControlsEl = html`
     <div class="VideoControls">${playbackEl} ${muteEl} ${progressEl} ${timeRemainingEl}</div>
   `;
 
   if (!hasAmbientParent) {
-    progressEl.addEventListener('mousedown', scrubStart);
-    progressEl.addEventListener('touchstart', scrubStart, { passive: true });
+    progressEl && progressEl.addEventListener('mousedown', scrubStart);
+    progressEl && progressEl.addEventListener('touchstart', scrubStart, { passive: true });
     document.addEventListener('mousemove', scrub);
     document.addEventListener('touchmove', scrub, { passive: true });
     document.addEventListener('mouseup', scrubEnd);

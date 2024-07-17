@@ -23,12 +23,12 @@ export const fetchDocument = optionsOrId => {
 /**
  *
  * @param {{id: string, type:string} | string} optionsOrId
- * @param {import('../meta').MetaData} meta
+ * @param {Partial<import('../meta').MetaData>} meta
  * @returns
  */
 export const getOrFetchDocument = (optionsOrId, meta) => {
   const { id } = typeof optionsOrId === 'object' ? optionsOrId : { id: optionsOrId };
-  const localDocument = meta.mediaById[id];
+  const localDocument = meta.mediaById?.[id];
 
   return localDocument ? Promise.resolve(localDocument) : fetchDocument(optionsOrId);
 };

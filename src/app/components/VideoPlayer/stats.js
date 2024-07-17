@@ -7,7 +7,7 @@ import { debug } from '../../utils/logging';
 /**
  * Analytics for video progress.
  *
- * @param {string} id The document ID of the video in CoreMedia
+ * @param {string|number} id The document ID of the video in CoreMedia
  * @param {HTMLVideoElement} el The video player DOM element
  */
 export const initialiseVideoAnalytics = (id, el) => {
@@ -21,7 +21,7 @@ export const initialiseVideoAnalytics = (id, el) => {
   const uri = `${contentSource}://${contentType}/${id}`;
 
   const pushEmbedMetadata = async () => {
-    const doc = await getOrFetchDocument(id, getMeta());
+    const doc = await getOrFetchDocument(String(id), getMeta());
     debug(`analytics: push embed metadata (${uri})`);
     dataLayer.push({
       document: {

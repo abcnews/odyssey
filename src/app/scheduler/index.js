@@ -1,5 +1,10 @@
+// @ts-check
 import debounce from 'debounce';
 import { IS_PROBABLY_RESISTING_FINGERPRINTING } from '../constants';
+
+/**
+ * @typedef {{hasChanged: boolean; fixedHeight: number; width: number; height: number}} Client
+ */
 
 // Preferably use a "millisecond budget", falling back
 // to a "ticks budget" if we can reasonably assume that
@@ -25,8 +30,10 @@ const budget = IS_PROBABLY_RESISTING_FINGERPRINTING
       }
     };
 
+/** @type {Map<(client:Client) => void, boolean>} */
 const subscribers = new Map();
 const queue = [];
+/** @type {{width: number; height: number} | null} */
 let icb = null; // initial containing block
 let hasStarted;
 let isFlushing;
@@ -52,6 +59,11 @@ function flush() {
   isFlushing = false;
 }
 
+/**
+ * Enqueue a function to be run ASAP.
+ * @param {(...params: any[]) => void} task The function to run
+ * @param  {...any} params
+ */
 export const enqueue = (task, ...params) => {
   if (hasStarted && !isFlushing) {
     requestAnimationFrame(flush);
@@ -60,6 +72,10 @@ export const enqueue = (task, ...params) => {
   queue.push([task, params]);
 };
 
+/**
+ *
+ * @param {boolean} hasChanged
+ */
 function notifySubscribers(hasChanged) {
   // `window.innerHeight` can change on mobile browser during scrolling because
   // the UI can grow/shrink. This affects the height of fixed items, not those
@@ -82,10 +98,16 @@ function onScroll() {
 }
 
 function setCSSCustomProperties() {
+  if (!icb) return;
   document.documentElement.style.setProperty('--scrollbar-width', `${window.innerWidth - icb.width}px`);
   document.documentElement.style.setProperty('--vw-ratio-16x9', `${Math.floor((icb.width / 16) * 9)}px`);
 }
 
+/**
+ *
+ * @param {*} event
+ * @returns
+ */
 function onClientInvalidated(event) {
   let nextICB;
 
@@ -126,6 +148,10 @@ export const invalidateClient = () => {
   }
 };
 
+/**
+ * Start the scheduler. It listens for scroll, resize and orientationchange events
+ * and notifies subsribers
+ */
 export const start = () => {
   if (hasStarted) {
     return;
@@ -138,6 +164,11 @@ export const start = () => {
   invalidateClient();
 };
 
+/**
+ * Subscribe to scheduler updates.
+ * @param {(client: Client) => void} subscriber
+ * @param {boolean} [shouldIgnoreUnchangedClients]
+ */
 export const subscribe = (subscriber, shouldIgnoreUnchangedClients) => {
   if (typeof subscriber !== 'function') {
     return;
@@ -150,6 +181,10 @@ export const subscribe = (subscriber, shouldIgnoreUnchangedClients) => {
   }
 };
 
+/**
+ * Unsubscribe from scheduler updates.
+ * @param {(client:Client)=> void} subscriber
+ */
 export const unsubscribe = subscriber => {
   return subscribers.delete(subscriber);
 };
