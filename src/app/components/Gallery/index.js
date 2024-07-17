@@ -465,7 +465,7 @@ export const transformSection = section => {
         if (!videoCaptionEl) {
           // @ts-ignore element api props are currently not typed
           videoPlayerEl.api.metadataHook = ({ alternativeText }) => {
-            if (alternativeText && isElement(videoPlayerEl.parentElement)) {
+            if (alternativeText && isElement(videoPlayerEl?.parentElement)) {
               const cap = Caption({ text: alternativeText, attribution: 'ABC News' });
               if (cap) {
                 append(videoPlayerEl.parentElement, cap);

@@ -1,5 +1,13 @@
+// @ts-check
 import { getMeta } from '../../meta';
 import { getOrFetchDocument } from '../../utils/content';
+
+/**
+ * @typedef {{width: number; height: number; url: string}} VideoSource
+
+/**
+ * @typedef {{alternativeText: string; posterURL: string; sources: VideoSource[]}} VideoMetadata
+ */
 
 const NO_CMID_ERROR = 'No CMID available for video';
 
@@ -13,6 +21,11 @@ const getPosterURL = videoDoc => {
 
 const getSources = videoDoc => [...videoDoc.media.video.renditions.files].sort((a, b) => a.size - b.size);
 
+/**
+ * Get metadata for a video
+ * @param {string|number} videoId The CMID for the video
+ * @returns {Promise<VideoMetadata>}
+ */
 export const getMetadata = videoId =>
   new Promise((resolve, reject) => {
     if (!videoId) {
@@ -21,7 +34,7 @@ export const getMetadata = videoId =>
 
     const meta = getMeta();
 
-    getOrFetchDocument({ id: videoId, type: 'video' }, meta)
+    getOrFetchDocument({ id: String(videoId), type: 'video' }, meta)
       .then(videoDocOrTeaserDoc => {
         // Even if the first document teases another, keep this alternativeText
         const alternativeText = videoDocOrTeaserDoc.title;

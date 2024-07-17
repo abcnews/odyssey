@@ -1,16 +1,23 @@
+// @ts-check
 import { enqueue, subscribe } from '../../scheduler';
 import { proximityCheck } from '../../utils/misc';
 
 const AMBIENT_PLAYABLE_RANGE = 0.5;
 
+/** @type {import('.').VideoPlayerAPI[]} */
 const players = [];
 
 let nextUntitledMediaCharCode = 65;
 
 export const getNextUntitledMediaCharCode = () => nextUntitledMediaCharCode++;
 
+/** @type {(fn: (value: import('.').VideoPlayerAPI) => void) => void} */
 export const forEachPlayer = fn => players.forEach(fn);
 
+/**
+ * Register a video player so it can be controlled by scroll actions
+ * @param {import('.').VideoPlayerAPI} player
+ */
 export const registerPlayer = player => {
   players.push(player);
 
@@ -19,6 +26,9 @@ export const registerPlayer = player => {
   }
 };
 
+/**
+ * @param {import('../../scheduler').Client} client
+ */
 function _checkIfPlayersNeedToBeToggled(client) {
   forEachPlayer(player => {
     if (player.isUserInControl || (!player.isAmbient && !player.isScrollplay)) {

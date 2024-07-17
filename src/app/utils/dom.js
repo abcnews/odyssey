@@ -57,6 +57,20 @@ export const isAnchorElement = el => el instanceof HTMLAnchorElement;
 export const isImageElement = el => el instanceof HTMLImageElement;
 
 /**
+ *
+ * @param {any} el A possible video element
+ * @returns {el is HTMLVideoElement}
+ */
+export const isVideoElement = el => el instanceof HTMLVideoElement;
+
+/**
+ *
+ * @param {any} el A possible video element
+ * @returns {el is HTMLProgressElement}
+ */
+export const isProgressElement = el => el instanceof HTMLProgressElement;
+
+/**
  * Select a single DOM node.
  * @param {string} selector CSS selector for elements to select
  * @param {Element|Document|null} [root] Specify ancestor element to reduce selection scope.
