@@ -479,6 +479,11 @@ ul.Header-miscEl > li {
     font-size: var(--od-font-size-sm);
   }
 
+  .Header.is-layered .Header-content {
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+  }
+
   [data-scheme='dark'] > .Header[data-scheme='light'],
   [data-scheme='light'] > .Header[data-scheme='dark'],
   .Header.is-layered {
