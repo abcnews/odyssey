@@ -173,7 +173,6 @@ const Block = ({
     } else {
       mediaContainerEl = html`<div class="${mediaClassName}">${backgroundsEls}</div>`;
     }
-    console.log('backgroundsEls :>> ', backgroundsEls);
   } else {
     // Wrap in extra div to pop it in a phone frame
     if (isPhoneFrame) {
@@ -181,7 +180,6 @@ const Block = ({
     }
 
     mediaContainerEl = mediaEl ? html`<div class="${mediaClassName}">${mediaEl}</div>` : null;
-    console.log('mediaEl :>> ', mediaEl);
   }
 
   const mediaCaptionContainerEl = html`<div class="${mediaCaptionClassName}">${captionEls[0] || null}</div>`;
