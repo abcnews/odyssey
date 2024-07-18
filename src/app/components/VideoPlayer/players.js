@@ -41,12 +41,13 @@ function _checkIfPlayersNeedToBeToggled(client) {
         ? proximityCheck(rect, client, player.willPlayAudio ? 0 : AMBIENT_PLAYABLE_RANGE)
         : proximityCheck(rect, client, (player.scrollplayPct || 0) / -100);
 
-    if (
-      (typeof player.isInPlayableRange === 'undefined' && isInPlayableRange) ||
-      (typeof player.isInPlayableRange !== 'undefined' && isInPlayableRange !== player.isInPlayableRange)
-    ) {
+    if (isInPlayableRange || isInPlayableRange !== player.isInPlayableRange) {
       enqueue(function _toggleVideoPlay() {
-        if (isInPlayableRange) {
+        let prefersReducedMotion =
+          document.body.classList.contains('is-reduced-motion') ||
+          (!document.body.classList.contains('is-high-motion') &&
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+        if (isInPlayableRange && !prefersReducedMotion) {
           player.play();
         } else {
           player.pause();

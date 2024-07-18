@@ -148,6 +148,14 @@ export const invalidateClient = () => {
   }
 };
 
+const classObserver = new MutationObserver(mutations => {
+  mutations.forEach(mutation => {
+    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+      enqueue(notifySubscribers, false);
+    }
+  });
+});
+
 /**
  * Start the scheduler. It listens for scroll, resize and orientationchange events
  * and notifies subsribers
@@ -161,6 +169,9 @@ export const start = () => {
   window.addEventListener('scroll', onScroll, false);
   window.addEventListener('resize', onClientInvalidated_debounced, false);
   window.addEventListener('orientationchange', onClientInvalidated_debounced, false);
+  classObserver.observe(document.body, {
+    attributeFilter: ['class']
+  });
   invalidateClient();
 };
 
