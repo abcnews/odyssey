@@ -21,7 +21,7 @@ import styles from './index.lazy.scss';
 const STEP_SECONDS = 5;
 
 /**
- * Initialise a video player controlls element
+ * Initialise a video player controls element
  * @param {import('../VideoPlayer').VideoPlayerAPI} player
  * @param {boolean} hasAmbientParent
  * @param {HTMLElement} [videoDuration]
