@@ -36,6 +36,6 @@ $isFlush: '.u-full:is(.Backdrop, .Block, .Header)';
   }
 
   .u-full:is(.Header) + #{$isFlush} {
-    margin-top: calc(var(--od-space-paragraph-margin) * -1);
+    margin-top: calc(var(--od-space-header-margin) * -1);
   }
 }

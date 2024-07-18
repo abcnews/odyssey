@@ -3,17 +3,14 @@
 $abreastChildSpacing: $unit * 2.5;
 
 .Header {
+  @media #{$mq-gt-sm} {
+    font-size: 1.25rem;
+  }
+
   --Header-contentPeek: #{$unit * 9};
   overflow: hidden;
   position: relative;
   line-height: 1.5;
-
-  --od-space-header-margin: var(--od-space-lg);
-
-  @media #{$mq-gt-sm} {
-    font-size: 1.25rem;
-    --od-space-header-margin: var(--od-space-xl);
-  }
 
   :root.is-dark-mode &:not(.is-dark) {
     background-color: $color-lightBg;

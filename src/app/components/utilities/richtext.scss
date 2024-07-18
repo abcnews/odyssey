@@ -385,6 +385,11 @@
       line-height: var(--od-line-height);
     }
 
+    > [data-mount] {
+      margin-top: var(--od-space-component-margin);
+      margin-bottom: var(--od-space-component-margin);
+    }
+
     h1 {
       font-size: var(--od-font-size-heading-lg);
     }
