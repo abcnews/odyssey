@@ -43,13 +43,13 @@ function _checkIfPlayersNeedToBeToggled(client) {
 
     if (isInPlayableRange || isInPlayableRange !== player.isInPlayableRange) {
       enqueue(function _toggleVideoPlay() {
-          const userPrefersReducedMotion =
-            document.body.classList.contains("is-reduced-motion") ||
-            document.body.classList.contains("is-high-motion")
-              ? false
-              : null;
-          const prefersReducedMotion =
-            userPrefersReducedMotion ?? window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const inPageMotionPreference =
+          document.body.classList.contains('is-reduced-motion') ||
+          (document.body.classList.contains('is-high-motion') ? false : null);
+
+        const prefersReducedMotion =
+          inPageMotionPreference ?? window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
         if (isInPlayableRange && !prefersReducedMotion) {
           player.play();
         } else {
