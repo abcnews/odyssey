@@ -7,6 +7,10 @@ html {
   text-size-adjust: none;
   background-color: var(--bg, #{$color-lightBg});
 
+  &:has(.is-future[data-key='body']) {
+    background-color: var(--bg, #fff);
+  }
+
   &.is-dark-mode {
     background-color: var(--bg, #{$color-darkBg});
     &:has(.is-future[data-key='body']) {

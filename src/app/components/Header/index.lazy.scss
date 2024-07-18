@@ -456,8 +456,23 @@ ul.Header-miscEl > li {
 }
 
 :where(.is-future) {
+  .Header h1 {
+    line-height: 1.2;
+
+    @media #{$mq-gt-sm} {
+      line-height: 1.15;
+    }
+  }
+
   .Header.u-full {
     margin-bottom: var(--od-space-paragraph-margin);
+  }
+
+  .Header-miscEl {
+    line-height: 1.3;
+    @media #{$mq-gt-sm} {
+      line-height: 1.5;
+    }
   }
 
   .Header .Header-content .Header-byline {
