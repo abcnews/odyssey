@@ -21,7 +21,6 @@
   :where(.is-future) .u-full & {
     padding-left: $layout-fixed-padding;
     padding-right: $layout-fixed-padding;
-    margin: 1rem;
   }
 
   .u-richtext-invert & {
@@ -90,6 +89,8 @@
 :where(.is-future) {
   .Caption {
     margin: $unit * 0.5;
+    margin-left: var(--od-space-component-inline-margin);
+    margin-right: var(--od-space-component-inline-margin);
     padding: $unit * 0.75 $unit;
     border-radius: $radius;
     background-color: var(--od-colour-surface-utility);

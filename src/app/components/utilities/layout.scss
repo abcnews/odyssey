@@ -8,6 +8,12 @@
   @media #{$mq-gt-md} {
     width: $layout-fixed;
   }
+
+  :where(.is-future) & {
+    @media #{$mq-gt-lg} {
+      width: 1200px;
+    }
+  }
 }
 
 .u-layout > * {
@@ -25,5 +31,14 @@
     padding-left: $layout-fixed-padding;
     padding-right: $layout-fixed-padding;
     width: cells(8);
+  }
+
+  :where(.is-future) & {
+    padding-left: var(--od-space-component-inline-margin);
+    padding-right: var(--od-space-component-inline-margin);
+
+    @media #{$mq-gt-lg} {
+      width: calc(980px * 0.666);
+    }
   }
 }

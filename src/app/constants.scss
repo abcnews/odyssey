@@ -166,6 +166,7 @@ $radius: calc($unit * 0.75);
 
   --od-space-paragraph-margin: var(--od-space-sm);
   --od-space-component-margin: var(--od-space-lg);
+  --od-space-component-inline-margin: var(--od-space-md);
   --od-space-header-margin: var(--od-space-lg);
 
   @media #{$mq-gt-sm} {

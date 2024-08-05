@@ -424,6 +424,7 @@
     }
 
     > hr {
+      clear: both;
       &::before {
         content: '';
         display: block;
