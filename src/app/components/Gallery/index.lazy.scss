@@ -229,10 +229,12 @@
       padding-right: var(--od-space-component-inline-margin);
     }
 
+    @media #{$mq-gt-md} {
+      width: calc(992px - var(--od-space-component-inline-margin) * 2);
+    }
+
     @media #{$mq-gt-lg} {
-      padding-left: $layout-fixed-padding;
-      padding-right: $layout-fixed-padding;
-      width: 1200px;
+      width: 928px;
     }
   }
 
@@ -246,8 +248,7 @@
   .Gallery-controls {
     padding: 0 19px;
     @media #{$mq-gt-sm} {
-      padding-left: var(--od-space-component-inline-margin);
-      padding-right: var(--od-space-component-inline-margin);
+      padding: 0 var(--od-space-component-inline-margin);
     }
   }
 
@@ -304,5 +305,10 @@
     @media #{$mq-gt-md} {
       margin-left: 0;
     }
+  }
+
+  .Gallery-steps {
+    display: flex;
+    align-items: end;
   }
 }

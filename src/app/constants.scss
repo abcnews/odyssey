@@ -179,4 +179,8 @@ $radius: calc($unit * 0.75);
     --od-space-paragraph-margin: var(--od-space-lg);
     --od-space-component-margin: var(--od-space-2xl);
   }
+
+  @media #{$mq-gt-lg} {
+    --od-space-component-inline-margin: 0px;
+  }
 }

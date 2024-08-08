@@ -59,6 +59,21 @@
 // * The extra ($layout-fixed-padding * 2) means content won't align with the grid, but it now has better breathing space in relation to the floated content
 
 :where(.is-future) {
+  .u-pull {
+    @media #{$mq-gt-md} {
+      width: calc(100% - 20px);
+    }
+    @media #{$mq-gt-lg} {
+      width: 100%;
+    }
+  }
+
+  .u-pull-in {
+    @media #{$mq-gt-sm} {
+      width: calc(980px * 0.666);
+    }
+  }
+
   .u-pull-left,
   .u-pull-right {
     margin-top: 0.4em;
