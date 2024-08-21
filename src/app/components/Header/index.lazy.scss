@@ -150,7 +150,7 @@ $abreastChildSpacing: $unit * 2.5;
       @media #{$mq-gt-md} {
         margin-left: auto;
         margin-right: auto;
-        width: calc($layout-fixed * 0.666);
+        width: calc($layout-fixed * 0.666 - var(--od-space-component-inline-margin) * 2);
         padding: 0;
       }
     }
