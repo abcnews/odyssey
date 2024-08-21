@@ -217,7 +217,8 @@ $abreastChildSpacing: $unit * 2.5;
           margin-bottom: 0;
           margin-left: auto;
           margin-right: auto;
-          width: calc(cells(10) + #{$layout-fluid-padding});
+          padding: 0 $unit * 2;
+          width: calc(cells(10) + #{$unit * 2});
         }
 
         @media #{$mq-gt-md} {
@@ -225,7 +226,9 @@ $abreastChildSpacing: $unit * 2.5;
           margin-bottom: 0;
           margin-left: auto;
           margin-right: auto;
+          padding: var(--od-space-md) $unit * 3 0;
           border-radius: calc($radius * 2) calc($radius * 2) 0 0;
+          width: calc($layout-fixed * 0.666 - var(--od-space-component-inline-margin) * 2 + $unit * 6);
         }
       }
     }
