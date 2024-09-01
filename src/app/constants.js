@@ -24,6 +24,7 @@ export const SELECTORS = {
     '[data-component="ArticleHeadline"] [class^="ArticleHeadlineTitleByline"]' // Future News
   ].join(','),
   HEADER_TAGS: '[data-component="ArticleHeadline"] [class^="CardTagList"]', // Future News
+  METADATA: '[data-component="ArticleHeadline"] [class^="ArticleHeadlineTitle_meta"]',
   WYSIWYG_EMBED: '[data-component="LegacyWysiwyg"],[data-component="RelatedCard"]',
   QUOTE: '[data-component="Blockquote"],[data-component="EmphasisedText"],[data-component="Pullquote"]'
 };
