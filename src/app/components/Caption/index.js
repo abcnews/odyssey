@@ -59,7 +59,7 @@ export const createFromElement = (el, unlink) => {
   const config = {
     url: `/news/${clone.getAttribute('id')}`,
     text: [MOCK_TEXT]
-      .concat(Array.from(($('figcaption', clone) || MOCK_ELEMENT).childNodes))
+      .concat(Array.from(($('figcaption p', clone) || $('figcaption', clone) || MOCK_ELEMENT).childNodes))
       .filter(isText)
       .sort((a, b) => b.nodeValue.length - a.nodeValue.length)[0].nodeValue,
     attribution: (($('cite', clone) || MOCK_ELEMENT).textContent || '').slice(1, -1).trim(),
