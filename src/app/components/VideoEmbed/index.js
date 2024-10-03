@@ -11,7 +11,7 @@ import VideoPlayer from '../VideoPlayer';
 import YouTubePlayer from '../YouTubePlayer';
 import styles from './index.lazy.scss';
 
-const VideoEmbed = ({ playerEl, captionEl, alignment, isFull, isCover, isAnon }) => {
+const VideoEmbed = ({ playerEl, captionEl, alignment, isFull, isCover, isAnon, isShrink }) => {
   if (isCover) {
     isFull = true;
     isAnon = true;
@@ -19,8 +19,8 @@ const VideoEmbed = ({ playerEl, captionEl, alignment, isFull, isCover, isAnon })
 
   const className = cn('VideoEmbed', {
     [`u-pull-${alignment}`]: !isFull && alignment,
-    'u-pull': !isFull && !alignment,
-    'u-full': isFull,
+    'u-pull': !isFull && !isShrink && !alignment,
+    'u-full': isFull && !isShrink,
     'is-cover': isCover
   });
 
@@ -64,7 +64,8 @@ export const transformElement = el => {
     alignment,
     isFull: configString.indexOf('full') > -1,
     isCover: configString.indexOf('cover') > -1,
-    isAnon: configString.indexOf('anon') > -1
+    isAnon: configString.indexOf('anon') > -1,
+    isShrink: configString.indexOf('shrink') > -1
   };
 
   const [, scrollplayPctString] = configString.match(SCROLLPLAY_PCT_PATTERN) || [
