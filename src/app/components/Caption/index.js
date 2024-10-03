@@ -58,8 +58,9 @@ export const createFromElement = (el, unlink) => {
   const clone = el.cloneNode(true);
   const config = {
     url: `/news/${clone.getAttribute('id')}`,
+    // Future news has the caption text inside the 'p' el, while legacy does not
     text: [MOCK_TEXT]
-      .concat(Array.from(($('figcaption', clone) || MOCK_ELEMENT).childNodes))
+      .concat(Array.from(($('figcaption p', clone) || $('figcaption', clone) || MOCK_ELEMENT).childNodes))
       .filter(isText)
       .sort((a, b) => b.nodeValue.length - a.nodeValue.length)[0].nodeValue,
     attribution: (($('cite', clone) || MOCK_ELEMENT).textContent || '').slice(1, -1).trim(),
