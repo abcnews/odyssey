@@ -6,7 +6,10 @@ import FormatCreditLegacy from './components/legacy/FormatCredit';
 import { transformSection as transformSectionIntoGallery } from './components/Gallery';
 import { Lite as LiteHeader, transformSection as transformSectionIntoHeader } from './components/Header';
 import { transformMarker as transformMarkerIntoHR } from './components/HR';
-import { transformElement as transformElementIntoImageEmbed } from './components/ImageEmbed';
+import {
+  transformElement as transformElementIntoImageEmbed,
+  transformMarker as transformMarkerIntoImageEmbed
+} from './components/ImageEmbed';
 import { transformElement as transformElementIntoInteractiveEmbed } from './components/InteractiveEmbed';
 import MasterGallery, { register as registerWithMasterGallery } from './components/MasterGallery';
 import {
@@ -155,6 +158,7 @@ export default terminusDocument => {
     'series',
     'share',
     'video',
+    'image',
     'youtube',
     'related',
     'tease',
@@ -186,6 +190,9 @@ export default terminusDocument => {
       case 'video':
       case 'youtube':
         transformMarkerIntoVideoEmbed(marker);
+        break;
+      case 'image':
+        transformMarkerIntoImageEmbed(marker);
         break;
       case 'related':
       case 'tease':

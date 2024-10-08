@@ -26,6 +26,7 @@ const RATIO_SIZE_WIDTH_INDICES = {
 /**
  *
  * @param {object} obj
+ * @param {any} [obj.imageDoc]
  * @param {string} [obj.src]
  * @param {string|null} [obj.alt]
  * @param {object} [obj.ratios]
@@ -35,6 +36,7 @@ const RATIO_SIZE_WIDTH_INDICES = {
  * @returns {HTMLElement}
  */
 const Picture = ({
+  imageDoc,
   src = SMALLEST_IMAGE,
   alt = '',
   ratios = {},
@@ -57,7 +59,7 @@ const Picture = ({
     [MQ.XL]: src
   };
 
-  const imageDoc = lookupImageByAssetURL(src); // Will only work if image's document was catalogued during initMeta
+  imageDoc = imageDoc || lookupImageByAssetURL(src); // Will only work if image's document was catalogued during initMeta
 
   if (imageDoc) {
     const { renditions } = getImages(imageDoc, WIDTHS);
