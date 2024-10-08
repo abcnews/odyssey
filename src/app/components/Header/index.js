@@ -169,7 +169,7 @@ const Header = ({
       ${mediaEl
         ? html`
             <div class="Header-media${isLayered && !isAbreast && mediaEl.tagName !== 'DIV' ? ' u-parallax' : ''}">
-              ${!isLayered && !isAbreast ? ScrollHint() : null} ${mediaEl}
+              ${!isLayered && !isAbreast && !meta.isFuture ? ScrollHint() : null} ${mediaEl}
             </div>
           `
         : null}

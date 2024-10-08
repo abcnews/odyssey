@@ -83,13 +83,15 @@ $abreastChildSpacing: $unit * 2.5;
   }
 
   &::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: $unit * 6.25;
-    background-image: $gradient-black-vertical-0-0-100-60;
+    .is-legacy & {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: $unit * 6.25;
+      background-image: $gradient-black-vertical-0-0-100-60;
+    }
   }
 
   .is-pale > &::after {

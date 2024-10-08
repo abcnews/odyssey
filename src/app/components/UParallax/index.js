@@ -1,3 +1,4 @@
+import { getMeta } from '../../meta';
 import { enqueue, subscribe } from '../../scheduler';
 
 const parallaxes = [];
@@ -26,6 +27,8 @@ function _checkIfParallaxesPropertiesNeedToBeUpdated() {
       return;
     }
 
+    const meta = getMeta();
+
     const top = Math.min(0, rect.top);
     const opacityExtent = parallax.nextEl ? parallax.nextEl.getBoundingClientRect().top - top : rect.height;
     const opacity = 1 + top / opacityExtent;
@@ -33,7 +36,7 @@ function _checkIfParallaxesPropertiesNeedToBeUpdated() {
 
     if (opacity !== parallax.state.opacity) {
       enqueue(function _updateParallaxProperties() {
-        parallax.el.style.opacity = opacity;
+        if (!meta.isFuture) parallax.el.style.opacity = opacity;
         parallax.el.style.transform = `translate3d(0, ${yOffset}%, 0)`;
       });
       parallax.state = { opacity, yOffset };

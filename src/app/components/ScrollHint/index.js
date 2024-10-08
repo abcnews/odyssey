@@ -57,7 +57,7 @@ function _checkIfScrollHintNeedsToBeRemoved() {
 export const transformMarker = marker => {
   // This component no longer exists as of the Future News redesign.
   // We can remove all traces of it once the old site has been turned off for good.
-  if (marker.substituteWith && getMeta().isFuture) {
+  if (marker.substituteWith && !getMeta().isFuture) {
     marker.substituteWith(ScrollHint());
   } else {
     detach(marker.node);
