@@ -1,15 +1,27 @@
+// @ts-check
 import { getMountValue, isMount } from '@abcnews/mount-utils';
 import cn from 'classnames';
 import html from 'nanohtml';
-import { ALIGNMENT_PATTERN, SCROLLPLAY_PCT_PATTERN, THEME, VIDEO_MARKER_PATTERN } from '../../constants';
+import {
+  ALIGNMENT_PATTERN,
+  IMAGE_MARKER_PATTERN,
+  SCROLLPLAY_PCT_PATTERN,
+  THEME,
+  VIDEO_MARKER_PATTERN
+} from '../../constants';
 import { enqueue, subscribe } from '../../scheduler';
 import { detach, detectVideoId, getChildImage, isElement } from '../../utils/dom';
 import { getRatios } from '../../utils/misc';
-import { createFromElement as createCaptionFromElement } from '../Caption';
+import {
+  createFromElement as createCaptionFromElement,
+  createFromTerminusDoc as createCaptionFromTerminusDoc
+} from '../Caption';
 import Picture from '../Picture';
 import VideoPlayer from '../VideoPlayer';
 import YouTubePlayer from '../YouTubePlayer';
 import styles from './index.lazy.scss';
+import { getMeta, lookupImageByAssetURL } from '../../meta';
+import { debug } from '../../utils/logging';
 
 const TRANSITIONS = [
   'colour',
@@ -23,7 +35,40 @@ const TRANSITIONS = [
   'shuffle'
 ];
 
-/*
+/**
+ * @typedef {object} Ratios
+ * @prop {string} [sm]
+ * @prop {string} [md]
+ * @prop {string} [lg]
+ * @prop {string} [xl]
+ */
+
+/**
+ * @typedef {Object} BlockConfig
+ * @prop {"left"|"right"} [alignment]
+ * @prop {({type: "element"; el: HTMLImageElement}|{type: 'youtube', videoId: string}|{type:"video"; videoId: string}|{type: 'image', imgId: string})[]} [backgrounds]
+ * @prop {HTMLElement[]} [captionEls]
+ * @prop {HTMLElement[]} [contentEls]
+ * @prop {boolean} [hasInsetMedia]
+ * @prop {boolean} [hasHiddenCaptionTitles]
+ * @prop {HTMLImageElement} [imgEl]
+ * @prop {string} [imgId]
+ * @prop {boolean} [isContained]
+ * @prop {boolean} [isDocked]
+ * @prop {boolean} [isGrouped]
+ * @prop {boolean} [isDark]
+ * @prop {boolean} [isPiecemeal]
+ * @prop {boolean} [isPhoneFrame]
+ * @prop {boolean} [isVideoYouTube]
+ * @prop {Ratios} [ratios]
+ * @prop {boolean} [shouldVideoPlayOnce]
+ * @prop {number} [videoScrollplayPct]
+ * @prop {string} [transition]
+ * @prop {string} [videoId]
+ */
+
+/**
+
   Block media can be one of:
 
   * imgEl - an image document
@@ -31,6 +76,8 @@ const TRANSITIONS = [
   * backgrounds - an array of acceptable values for imgEl/videoId
 
   Media may be captioned/attributed, in which case captionEls (an array of Caption components) should be supplied
+
+  @param {BlockConfig} config
 */
 const Block = ({
   alignment,
@@ -40,6 +87,7 @@ const Block = ({
   hasInsetMedia,
   hasHiddenCaptionTitles,
   imgEl,
+  imgId,
   isContained,
   isDocked,
   isGrouped,
@@ -94,18 +142,30 @@ const Block = ({
   let backgroundsEls;
 
   if (backgrounds) {
-    backgroundsEls = backgrounds.map(background => {
-      // Try to resolve the background element
-      let backgroundEl = document.createElement('div'); // placeholder
+    backgroundsEls = backgrounds
+      .map(background => {
+        // Try to resolve the background element
+        /** @type {HTMLElement | undefined} */
+        let backgroundEl = document.createElement('div'); // placeholder
 
-      if (background.tagName === 'IMG') {
-        backgroundEl = Picture({
-          src: background.src,
-          alt: background.getAttribute('alt'),
-          ratios
-        });
-      } else if (background.videoId) {
-        if (background.isVideoYouTube) {
+        if (background.type === 'element') {
+          backgroundEl = Picture({
+            src: background.el.src,
+            alt: background.el.getAttribute('alt'),
+            ratios
+          });
+        } else if (background.type === 'image') {
+          const imageDoc = getMeta().mediaById?.[background.imgId];
+          if (!imageDoc) {
+            debug(`Missing block background image ${background.imgId}, has it been added to featured media?`);
+            return;
+          }
+          backgroundEl = Picture({
+            src: imageDoc.media?.image.primary.images['3x2'],
+            alt: imageDoc.alt,
+            ratios
+          });
+        } else if (background.type === 'youtube') {
           backgroundEl = YouTubePlayer({
             videoId: background.videoId,
             ratios,
@@ -122,21 +182,22 @@ const Block = ({
             isInvariablyAmbient: true
           });
         }
-      }
 
-      backgroundEl.classList.add('background-transition');
+        backgroundEl?.classList.add('background-transition');
 
-      if (TRANSITIONS.indexOf(transition) > -1) {
-        backgroundEl.classList.add(transition);
-      } else {
-        backgroundEl.classList.add('colour');
-      }
+        if (transition && TRANSITIONS.indexOf(transition) > -1) {
+          backgroundEl?.classList.add(transition);
+        } else {
+          backgroundEl?.classList.add('colour');
+        }
 
-      return backgroundEl;
-    });
-  } else if (imgEl) {
-    const src = imgEl.src;
-    const alt = imgEl.getAttribute('alt');
+        return backgroundEl;
+      })
+      .filter(d => !!d);
+  } else if (imgEl || imgId) {
+    const imageDoc = imgEl ? lookupImageByAssetURL(imgEl.src) : getMeta().mediaById?.[imgId || ''];
+    const src = imgEl?.src || imageDoc?.media?.image.primary.images['3x2'];
+    const alt = imageDoc?.alt;
 
     mediaEl = Picture({
       src,
@@ -185,8 +246,11 @@ const Block = ({
   const mediaCaptionContainerEl = html`<div class="${mediaCaptionClassName}">${captionEls[0] || null}</div>`;
 
   if (captionEls.length) {
-    mediaContainerEl.appendChild(mediaCaptionContainerEl);
+    mediaContainerEl?.appendChild(mediaCaptionContainerEl);
   }
+
+  /** @type {HTMLElement[]} */
+  const contentElContainers = [];
 
   const blockEl = html`
     <div class="${className}" data-scheme="${scheme}" data-theme="${THEME}">
@@ -221,7 +285,7 @@ const Block = ({
             }
 
             return memo;
-          }, [])
+          }, contentElContainers)
         : contentEls.length > 0
         ? html`<div class="${contentClassName}"><div>${contentEls}</div></div>`
         : null}
@@ -249,7 +313,7 @@ const Block = ({
 
   if (backgroundsEls && backgroundsEls.length) {
     // In theory, this could be any colour
-    if (transition.length === 6 && transition.match(/^[0-9a-f]{6}$/)) {
+    if (transition?.length === 6 && transition.match(/^[0-9a-f]{6}$/)) {
       blockEl.style.setProperty('background-color', '#' + transition);
     }
 
@@ -277,7 +341,7 @@ const Block = ({
         return currentMarker;
       }, markers[0]);
 
-      const newActiveIndex = parseInt(marker.getAttribute('data-background-index'), 10);
+      const newActiveIndex = parseInt(marker.getAttribute('data-background-index') || '', 10);
 
       if (activeIndex !== newActiveIndex) {
         previousActiveIndex = activeIndex;
@@ -348,7 +412,7 @@ export const transformSection = (section, meta) => {
   const shouldVideoPlayOnce = section.configString.indexOf('once') > -1;
   const [, videoScrollplayPctString] = section.configString.match(SCROLLPLAY_PCT_PATTERN) || [, ''];
   const videoScrollplayPct =
-    videoScrollplayPctString.length > 0 && Math.max(0, Math.min(100, +videoScrollplayPctString));
+    (videoScrollplayPctString.length > 0 && Math.max(0, Math.min(100, +videoScrollplayPctString))) || undefined;
 
   let transition;
 
@@ -378,11 +442,11 @@ export const transformSection = (section, meta) => {
 
   const hasHiddenCaptionTitles = hasAttributedMedia && !hasCaptionedMedia;
 
+  /** @type {BlockConfig} */
   let config = {
     alignment,
     captionEls: [],
     contentEls: [],
-    hasAttributedMedia,
     hasHiddenCaptionTitles,
     hasInsetMedia,
     isContained,
@@ -411,18 +475,25 @@ export const transformSection = (section, meta) => {
       .map(node => {
         const mountValue = isMount(node) ? getMountValue(node) : '';
         const isVideoMarker = !!mountValue.match(VIDEO_MARKER_PATTERN);
-        const videoId = isVideoMarker ? mountValue.match(VIDEO_MARKER_PATTERN)[1] : detectVideoId(node);
+        const videoId = isVideoMarker ? mountValue.match(VIDEO_MARKER_PATTERN)?.[1] : detectVideoId(node);
         const imgEl = getChildImage(node);
+        const imgId = mountValue.match(IMAGE_MARKER_PATTERN)?.[1];
 
         // The video player DOM has an image element descentdent, so check it's not a video
         // before assuming it's an image.
-        if (imgEl && !videoId) {
+        if ((imgEl || imgId) && !videoId) {
           // We found an image to use as one of the backgrounds
-          config.backgrounds.push(imgEl);
+          if (imgEl) {
+            config.backgrounds?.push({ type: 'element', el: imgEl });
+          }
+          if (imgId) {
+            config.backgrounds?.push({ type: 'image', imgId });
+          }
+
           config.ratios = getRatios(section.configString);
 
           // Graft a 'marker' onto the next paragraph
-          if (node.nextElementSibling) {
+          if (node.nextElementSibling && config.backgrounds) {
             node.nextElementSibling.setAttribute('data-background-index', config.backgrounds.length - 1);
           }
 
@@ -435,7 +506,8 @@ export const transformSection = (section, meta) => {
 
           // Add the caption, if one exists
           if (hasAttributedMedia || hasCaptionedMedia) {
-            config.captionEls.push(createCaptionFromElement(node, true));
+            const caption = createCaptionFromElement(node, true);
+            if (caption) config.captionEls?.push(caption);
           }
 
           return null;
@@ -450,11 +522,14 @@ export const transformSection = (section, meta) => {
 
         if (videoMarker.videoId) {
           // We found a video to use as one of the backgrounds
-          config.backgrounds.push(videoMarker);
+          config.backgrounds?.push({
+            type: videoMarker.isVideoYouTube ? 'youtube' : 'video',
+            videoId: videoMarker.videoId
+          });
           config.ratios = getRatios(section.configString);
 
           // Graft a 'marker' onto the next paragraph
-          if (node.nextElementSibling) {
+          if (node.nextElementSibling && config.backgrounds) {
             node.nextElementSibling.setAttribute('data-background-index', config.backgrounds.length - 1);
           }
 
@@ -467,7 +542,8 @@ export const transformSection = (section, meta) => {
 
           // Add a non-caption, to keep the background:caption indices in sync
           if (hasAttributedMedia || hasCaptionedMedia) {
-            config.captionEls.push(createCaptionFromElement(node, true));
+            const caption = createCaptionFromElement(node, true);
+            if (caption) config.captionEls?.push(caption);
           }
 
           return null;
@@ -498,11 +574,12 @@ export const transformSection = (section, meta) => {
 
           // If an image gave us this config we can pass it onto the actual paragraph
           if (node.hasAttribute('data-background-index')) {
-            node.nextElementSibling.setAttribute('data-background-index', node.getAttribute('data-background-index'));
+            const idx = node.getAttribute('data-background-index');
+            if (idx) node.nextElementSibling?.setAttribute('data-background-index', idx);
           }
 
           // Remove this mount from the flow
-          node.parentElement.removeChild(node);
+          node.parentElement?.removeChild(node);
           return null;
         } else if (isMount(node)) {
           // Remove any extra orphan mount tags
@@ -526,13 +603,14 @@ export const transformSection = (section, meta) => {
     config = section.betweenNodes.reduce((_config, node) => {
       let videoId;
       let imgEl;
+      let imgId;
 
       if (!_config.videoId && !_config.imgEl && isElement(node)) {
         const mountValue = isMount(node) ? getMountValue(node) : '';
 
         if (!!mountValue.match(VIDEO_MARKER_PATTERN)) {
           _config.isVideoYouTube = !!mountValue.split('youtube')[1];
-          _config.videoId = videoId = mountValue.match(VIDEO_MARKER_PATTERN)[1];
+          _config.videoId = videoId = mountValue.match(VIDEO_MARKER_PATTERN)?.[1];
         } else {
           videoId = detectVideoId(node);
         }
@@ -541,22 +619,26 @@ export const transformSection = (section, meta) => {
           _config.videoId = videoId;
         } else {
           imgEl = getChildImage(node);
+          imgId = mountValue.match(IMAGE_MARKER_PATTERN)?.[1];
 
-          if (imgEl) {
+          if (imgEl || imgId) {
             _config.imgEl = imgEl;
+            _config.imgId = imgId;
             _config.ratios = getRatios(section.configString);
           }
         }
 
-        if (videoId || imgEl) {
+        if (videoId || imgEl || imgId) {
           sourceMediaEl = node;
           if (hasAttributedMedia || hasCaptionedMedia) {
-            _config.captionEls.push(createCaptionFromElement(node, true));
+            _config.captionEls.push(
+              imgId ? createCaptionFromTerminusDoc(meta.mediaById(imgId), true) : createCaptionFromElement(node, true)
+            );
           }
         }
       }
 
-      if (!videoId && !imgEl && isElement(node)) {
+      if (!videoId && !imgEl && !imgId && isElement(node)) {
         _config.contentEls.push(node);
       }
 

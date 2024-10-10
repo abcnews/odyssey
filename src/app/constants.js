@@ -8,6 +8,7 @@ export const MD_RATIO_PATTERN = /md(\d+x\d+)/;
 export const LG_RATIO_PATTERN = /lg(\d+x\d+)/;
 export const XL_RATIO_PATTERN = /xl(\d+x\d+)/;
 export const VIDEO_MARKER_PATTERN = /(?:video|youtube)(\w+)/;
+export const IMAGE_MARKER_PATTERN = /(?:image)(\d+)/;
 export const SCROLLPLAY_PCT_PATTERN = /scrollplay(\d+)/;
 
 export const SELECTORS = {

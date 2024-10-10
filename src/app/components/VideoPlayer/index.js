@@ -13,22 +13,23 @@ import styles from './index.lazy.scss';
 
 /**
  * @typedef {object} VideoPlayerAPI
- * @prop {boolean} hasNativeUI
- * @prop {boolean} isAmbient
+ * @prop {boolean} [hasNativeUI]
+ * @prop {boolean} [isAmbient]
  * @prop {boolean} isScrollplay
  * @prop {number | undefined} scrollplayPct
- * @prop {boolean} willPlayAudio
+ * @prop {boolean} [willPlayAudio]
  * @prop {boolean} [isInPlayableRange]
  * @prop {string} [alternativeText]
  * @prop {() => string} getTitle
  * @prop {() => DOMRect} getRect
- * @prop {() => HTMLVideoElement} getVideoEl
+ * @prop {() => HTMLVideoElement} [getVideoEl]
  * @prop {() => boolean} isMuted
  * @prop {(shouldBeMuted: boolean) => void} setMuted
  * @prop {(this: HTMLElement, event: PointerEvent) => void} toggleMutePreference
  * @prop {() => boolean} isPaused
  * @prop {() => void} play
  * @prop {() => void} pause
+ * @prop {() => void} [resize]
  * @prop {(_event: Event, wasScrollBased: boolean) => void} togglePlayback
  * @prop {boolean} [isUserInControl]
  * @prop {(pct: number) => void} jumpToPct
@@ -58,7 +59,7 @@ let hasSubscribed = false;
  * @param {boolean} [config.isLoop] Should the video loop?
  * @param {boolean} [config.isMuted] Should the video be muted?
  * @param {number} [config.scrollplayPct] What protion of the video should be visible for play on scroll
- * @param {HTMLElement} [config.videoDuration] A <time> element to display the video duration.
+ * @param {Element} [config.videoDuration] A <time> element to display the video duration.
  * @returns
  */
 const VideoPlayer = ({
@@ -347,7 +348,7 @@ const VideoPlayer = ({
     }
   });
 
-  videoControlsEl = VideoControls(player, isAmbient, videoDuration);
+  videoControlsEl = VideoControls(player, isAmbient, videoDuration instanceof HTMLElement ? videoDuration : undefined);
 
   /**
    * Jump to a time on the video
@@ -439,11 +440,13 @@ function updateUI(player) {
 
   player.hasNativeUI = shouldBeNative;
 
-  toggleBooleanAttributes(player.getVideoEl(), {
-    controls: shouldBeNative,
-    playsinline: !shouldBeNative,
-    'webkit-playsinline': !shouldBeNative
-  });
+  if (player.getVideoEl) {
+    toggleBooleanAttributes(player.getVideoEl(), {
+      controls: shouldBeNative,
+      playsinline: !shouldBeNative,
+      'webkit-playsinline': !shouldBeNative
+    });
+  }
 }
 
 function _checkIfVideoPlayersNeedToUpdateUIBasedOnMedia() {
@@ -463,9 +466,11 @@ function _checkIfVideoPlayersNeedToUpdateUIBasedOnMedia() {
     enqueue(function _updateVideoPlayerUI() {
       updateUI(player);
 
-      if (wasPlaying && player.getVideoEl().scrollIntoView) {
+      if (wasPlaying && player.getVideoEl && player.getVideoEl().scrollIntoView) {
         enqueue(function _scrollVideoPlayerIntoView() {
-          player.getVideoEl().scrollIntoView(true);
+          if (player.getVideoEl) {
+            player.getVideoEl().scrollIntoView(true);
+          }
         });
       }
     });

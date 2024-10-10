@@ -41,7 +41,7 @@ let nextId = 0;
 
 /**
  * Create a YouTubePlayer component
- * @param {Partial<YouTubePlayerConfig} config
+ * @param {Partial<YouTubePlayerConfig>} config
  * @returns {HTMLElement}
  */
 const YouTubePlayer = ({
@@ -89,6 +89,7 @@ const YouTubePlayer = ({
   let youtube;
   let youTubePlayerEl;
   let videoControlsEl;
+  /** @type {import('../VideoPlayer').VideoPlayerAPI} */
   let player;
   let fuzzyCurrentTime = 0;
   let fuzzyTimeout;
@@ -159,7 +160,7 @@ const YouTubePlayer = ({
 
           registerPlayer(player);
           players.push(player);
-          player.resize();
+          player.resize && player.resize();
 
           if (players.length === 1) {
             subscribe(_resizePlayers, true);

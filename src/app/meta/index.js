@@ -29,8 +29,10 @@ import { debug } from '../utils/logging';
  * @prop {any} infoSourceLogosHTMLFragmentId
  * @prop {any} relatedMedia
  * @prop {any} relatedStoriesIds
- * @prop {Record<string, {id: string}>} imagesByBinaryKey
- * @prop {Record<string, {id: string}>} mediaById
+ * @prop {MediaEmbedded[]} images
+ * @prop {MediaEmbedded[]} masterGalleryImages
+ * @prop {Record<string, MediaEmbedded>} imagesByBinaryKey
+ * @prop {Record<string, MediaEmbedded>} mediaById
  * @prop {boolean} isPL
  * @prop {boolean} isPreview
  * @prop {boolean} isFuture
@@ -273,54 +275,68 @@ export const initMeta = terminusDocument => {
       /**
        * @typedef {object} Media
        * @prop {MediaEmbedded[]} images
+       * @prop {MediaEmbedded[]} masterGalleryImages
        * @prop {Record<string, MediaEmbedded>} imagesByBinaryKey
        * @prop {Record<string, MediaEmbedded>} imagesById
        * @prop {MediaEmbedded[]} media
        * @prop {Record<string, MediaEmbedded>} mediaById
        */
       /** @type Media */
-      const init = {
+      const mediaCatalogue = {
         images: [],
+        masterGalleryImages: [],
         imagesByBinaryKey: {},
         imagesById: {},
         media: [],
         mediaById: {}
       };
-      return (terminusDocument._embedded.mediaEmbedded || [])
-        .concat(terminusDocument._embedded.mediaFeatured || [])
-        .concat(terminusDocument._embedded.mediaRelated || [])
-        .reduce((memo, doc) => {
-          const { docType, id, media, target } = doc;
 
-          if (!memo.mediaById[id]) {
-            memo.media.push(doc);
-            memo.mediaById[id] = doc;
-          }
+      /**
+       * @param {{doc:MediaEmbedded, type: string}} doc
+       * @param {number} index
+       */
+      const catalogueEmbeddedMedia = ({ doc, type }, index) => {
+        const { docType, id, media, target } = doc;
 
-          switch (docType) {
-            case 'Teaser':
-              if (target) {
-                // Pre-empt a future fetch of the target document
-                fetchDocument({ id: target.id, type: target.docType.toLowerCase() });
+        if (!mediaCatalogue.mediaById[id]) {
+          mediaCatalogue.media.push(doc);
+          mediaCatalogue.mediaById[id] = doc;
+        }
+
+        switch (docType) {
+          case 'Teaser':
+            if (target) {
+              // Pre-empt a future fetch of the target document
+              fetchDocument({ id: target.id, type: target.docType.toLowerCase() });
+            }
+            break;
+          case 'Image':
+          case 'ImageProxy':
+            // It's possible for the `media` key to be undefined if it's an ImageProxy
+            // pointing at a deleted image. The `!!media` condition will stop Odyssey
+            // falling over in that case.
+            if (!mediaCatalogue.imagesById[id] && !!media) {
+              mediaCatalogue.images.push(doc);
+              mediaCatalogue.imagesById[id] = doc;
+              mediaCatalogue.imagesByBinaryKey[media.image.primary.binaryKey] = doc;
+              if (type !== 'featured' || (type === 'featured' && index === 0)) {
+                mediaCatalogue.masterGalleryImages.push(doc);
               }
-              break;
-            case 'Image':
-            case 'ImageProxy':
-              // It's possible for the `media` key to be undefined if it's an ImageProxy
-              // pointing at a deleted image. The `!!media` condition will stop Odyssey
-              // falling over in that case.
-              if (!memo.imagesById[id] && !!media) {
-                memo.images.push(doc);
-                memo.imagesById[id] = doc;
-                memo.imagesByBinaryKey[media.image.primary.binaryKey] = doc;
-              }
-              break;
-            default:
-              break;
-          }
+            }
+            break;
+          default:
+            break;
+        }
 
-          return memo;
-        }, init);
+        return mediaCatalogue;
+      };
+
+      const { mediaEmbedded, mediaFeatured, mediaRelated } = terminusDocument._embedded;
+      mediaEmbedded && mediaEmbedded.forEach((doc, i) => catalogueEmbeddedMedia({ doc, type: 'embedded' }, i));
+      mediaFeatured && mediaFeatured.forEach((doc, i) => catalogueEmbeddedMedia({ doc, type: 'featured' }, i));
+      mediaRelated && mediaRelated.forEach((doc, i) => catalogueEmbeddedMedia({ doc, type: 'related' }, i));
+
+      return mediaCatalogue;
     }
   ];
 

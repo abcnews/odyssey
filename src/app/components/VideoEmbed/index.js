@@ -1,3 +1,4 @@
+// @ts-check
 import { getMountValue, isMount } from '@abcnews/mount-utils';
 import { url2cmid } from '@abcnews/url2cmid';
 import cn from 'classnames';
@@ -38,7 +39,7 @@ export const transformElement = el => {
   const playerIdEl = $('[data-component="VideoPlayer"]', el);
   const expiredMediaWarningEl = $('[data-component="ExpiredMediaWarning"]', el);
   const videoId = isVideoMarker
-    ? mountValue.match(VIDEO_MARKER_PATTERN)[1]
+    ? mountValue.match(VIDEO_MARKER_PATTERN)?.[1]
     : playerIdEl
     ? detectVideoId(el)
     : expiredMediaWarningEl
@@ -57,8 +58,8 @@ export const transformElement = el => {
   const unlink = configString.indexOf('unlink') > -1;
 
   const isYouTube = isVideoMarker && mountValue.indexOf('youtube') === 0;
-  const captionEl = !isVideoMarker ? createCaptionFromElement(el, unlink) : null;
-  const title = captionEl ? captionEl.children[0].textContent : null;
+  const captionEl = !isVideoMarker ? createCaptionFromElement(el, unlink) : undefined;
+  const title = captionEl ? captionEl.children[0].textContent : undefined;
 
   const options = {
     alignment,
@@ -72,17 +73,18 @@ export const transformElement = el => {
     ,
     configString.indexOf('autoplay') > -1 ? '0' : ''
   ];
-  const scrollplayPct = scrollplayPctString.length > 0 && Math.max(0, Math.min(100, +scrollplayPctString));
+  const scrollplayPct =
+    (scrollplayPctString.length > 0 && Math.max(0, Math.min(100, +scrollplayPctString))) || undefined;
 
   const playerOptions = {
     videoId,
     ratios: getRatios(configString),
-    title,
+    title: title || undefined,
     isAmbient: configString.indexOf('ambient') > -1 ? true : undefined,
     isLoop: configString.indexOf('loop') > -1 ? true : configString.indexOf('once') > -1 ? false : undefined,
     isMuted: configString.indexOf('muted') > -1 ? true : undefined,
     scrollplayPct,
-    videoDuration: $('time', el),
+    videoDuration: $('time', el) || undefined
   };
 
   substitute(
