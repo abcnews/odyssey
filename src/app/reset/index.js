@@ -26,7 +26,7 @@ const WHITESPACE_REMOVABLES = 'p';
 /**
  *
  * @param {Element} storyEl
- * @param {import('../meta').MetaData} meta
+ * @param {Partial<import('../meta').MetaData>} meta
  */
 function addDescriptorHints(storyEl, meta) {
   const storyElChildElements = Array.from(storyEl.children);
@@ -41,7 +41,7 @@ function addDescriptorHints(storyEl, meta) {
 /**
  * Pull the story element up one level in the DOM
  * @param {Element} storyEl
- * @param {import('../meta').MetaData} meta
+ * @param {Partial<import('../meta').MetaData>} meta
  * @returns {Element}
  */
 function promoteToMain(storyEl, meta) {
@@ -62,7 +62,7 @@ function promoteToMain(storyEl, meta) {
 /**
  * Perform a bunch of resets to start with a clean slate.
  * @param {Element} storyEl
- * @param {import('../meta').MetaData} meta
+ * @param {Partial<import('../meta').MetaData>} meta
  * @returns {Element}
  */
 export const reset = (storyEl, meta) => {

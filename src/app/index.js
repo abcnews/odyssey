@@ -1,3 +1,4 @@
+// @ts-check
 import api from './api';
 import { transformSection as transformSectionIntoBackdrop } from './components/Backdrop';
 import { transformSection as transformSectionIntoBlock } from './components/Block';
@@ -6,7 +7,10 @@ import FormatCreditLegacy from './components/legacy/FormatCredit';
 import { transformSection as transformSectionIntoGallery } from './components/Gallery';
 import { Lite as LiteHeader, transformSection as transformSectionIntoHeader } from './components/Header';
 import { transformMarker as transformMarkerIntoHR } from './components/HR';
-import { transformElement as transformElementIntoImageEmbed } from './components/ImageEmbed';
+import {
+  transformElement as transformElementIntoImageEmbed,
+  transformMarker as transformMarkerIntoImageEmbed
+} from './components/ImageEmbed';
 import { transformElement as transformElementIntoInteractiveEmbed } from './components/InteractiveEmbed';
 import MasterGallery, { register as registerWithMasterGallery } from './components/MasterGallery';
 import {
@@ -54,14 +58,14 @@ export default terminusDocument => {
   }
 
   const mainEl = reset(storyEl, meta);
-  mainEl.parentElement.classList.add(meta.isFuture ? 'is-future' : 'is-legacy');
+  mainEl.parentElement?.classList.add(meta.isFuture ? 'is-future' : 'is-legacy');
   debug('Performed page reset');
 
   mockDecoyActivationsUnderEl(mainEl); // Mock PL's decoy activation events
   start(); // scheduler loop
 
   // Register all embedded images with MasterGallery
-  meta.images.forEach(image => registerWithMasterGallery(image));
+  meta.masterGalleryImages?.forEach(image => registerWithMasterGallery(image));
 
   let hasHeader = false;
 
@@ -154,6 +158,7 @@ export default terminusDocument => {
     'scrollhint',
     'series',
     'share',
+    'image',
     'video',
     'youtube',
     'related',
@@ -183,6 +188,8 @@ export default terminusDocument => {
       case 'share':
         transformMarkerIntoShare(marker, meta.shareLinks);
         break;
+      case 'image':
+        transformMarkerIntoImageEmbed(marker);
       case 'video':
       case 'youtube':
         transformMarkerIntoVideoEmbed(marker);
@@ -223,7 +230,7 @@ export default terminusDocument => {
 
     return ['audio', 'customimage', 'video'].find(docType => dataURI.indexOf(docType) > -1) == null && $('img', el);
   });
-  imageEmbeds.forEach(el => transformElementIntoImageEmbed(el, sidePulls.filter(pEl => pEl.contains(el)).length > 0));
+  imageEmbeds.forEach(el => transformElementIntoImageEmbed(el)); //, sidePulls.filter(pEl => pEl.contains(el)).length > 0));
   conditionalDebug(imageEmbeds.length > 0, `Transformed ${imageEmbeds.length} image embeds`);
 
   // Transform quotes (native and embedded) that haven't already been transformed
@@ -264,6 +271,7 @@ export default terminusDocument => {
   // Take-up dynamic height management of embedded external link iframes
   const embeddedExternalLinkIframes = $$(`[data-component="Iframe"] iframe[src*="abcnewsembedheight"]`, mainEl);
   embeddedExternalLinkIframes.forEach(el => {
+    if (!(el instanceof HTMLIFrameElement)) return;
     window.addEventListener(
       'message',
       event => {
@@ -288,6 +296,9 @@ export default terminusDocument => {
   // Set correct mode for Datawrapper embeds, based on current background
   const datawrapperIframes = $$(`[data-component="Iframe"] iframe[src*="datawrapper"]`, mainEl);
   datawrapperIframes.forEach(el => {
+    if (!(el instanceof HTMLIFrameElement)) {
+      return;
+    }
     const shouldBeDark =
       (el.closest('[class*="u-richtext"]') || MOCK_ELEMENT).className.indexOf('u-richtext-invert') > -1;
     const desiredParam = `dark=${shouldBeDark}`;
@@ -329,7 +340,7 @@ export default terminusDocument => {
     substitute(
       el,
       Picture({
-        src: $('img', el).getAttribute('data-src'),
+        src: $('img', el)?.getAttribute('data-src') || undefined,
         ratios: {
           sm: '3x2',
           md: '3x2',

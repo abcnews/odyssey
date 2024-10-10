@@ -23,7 +23,7 @@ const STEP_SECONDS = 5;
 /**
  * Initialise a video player controls element
  * @param {import('../VideoPlayer').VideoPlayerAPI} player
- * @param {boolean} hasAmbientParent
+ * @param {boolean} [hasAmbientParent]
  * @param {HTMLElement} [videoDuration]
  * @returns {VideoControlsEl}
  */

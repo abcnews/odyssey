@@ -1,13 +1,15 @@
+// @ts-check
 import cn from 'classnames';
 import html from 'nanohtml';
-import { ALIGNMENT_PATTERN, EMBED_ALIGNMENT_MAP } from '../../constants';
-import { lookupImageByAssetURL } from '../../meta';
+import { ALIGNMENT_PATTERN, EMBED_ALIGNMENT_MAP, IMAGE_MARKER_PATTERN } from '../../constants';
+import { getMeta, lookupImageByAssetURL } from '../../meta';
 import { getChildImage, substitute } from '../../utils/dom';
 import { getRatios } from '../../utils/misc';
 import { grabPrecedingConfigString } from '../../utils/mounts';
 import { createFromTerminusDoc as createCaptionFromTerminusDoc } from '../Caption';
 import Picture from '../Picture';
 import styles from './index.lazy.scss';
+import { getMountValue, isMount } from '@abcnews/mount-utils';
 
 const ImageEmbed = ({ pictureEl, captionEl, alignment, isFull, isCover, isAnon }) => {
   if (isCover) {
@@ -30,16 +32,17 @@ const ImageEmbed = ({ pictureEl, captionEl, alignment, isFull, isCover, isAnon }
 export default ImageEmbed;
 
 export const transformElement = el => {
+  const mountValue = isMount(el) ? getMountValue(el) : '';
   const imgEl = getChildImage(el);
+  const imgId = mountValue.match(IMAGE_MARKER_PATTERN)?.[1];
 
-  if (!imgEl) {
+  if (!imgEl && !imgId) {
     return;
   }
 
-  const src = imgEl.src;
-  const imageDoc = lookupImageByAssetURL(src);
+  const imageDoc = imgEl ? lookupImageByAssetURL(imgEl.src) : getMeta().mediaById?.[imgId || ''];
 
-  if (!imageDoc || imageDoc.media.image.primary.complete.length < 2) {
+  if (!imageDoc?.media || imageDoc.media.image.primary.complete.length < 2) {
     // Custom Images appear to be Images in Terminus V2. We should ignore them (for now).
     // TODO: A custom image embed solution. Captionless with custom aspect ratio? #config for max-width?
     return;
@@ -51,11 +54,11 @@ export const transformElement = el => {
   const ratios = getRatios(configString);
   const isStatic = configString.indexOf('static') > -1;
   const unlink = configString.indexOf('unlink') > -1;
-  const alt = imgEl.getAttribute('alt');
+  const alt = imageDoc.alt;
 
   const imageEmbedEl = ImageEmbed({
     pictureEl: Picture({
-      src,
+      src: imageDoc.media.image.primary.images['3x2'],
       alt,
       ratios: {
         sm: ratios.sm || '3x4',
@@ -75,3 +78,5 @@ export const transformElement = el => {
 
   substitute(el, imageEmbedEl);
 };
+
+export const transformMarker = marker => transformElement(marker.node);

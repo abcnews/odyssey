@@ -39,15 +39,15 @@ interface TerminusArticle {
 }
 
 interface TerminusArticleEmbedded {
-  contributors: Contributor[];
-  javascript: Javascript[];
+  contributors?: Contributor[];
+  javascript?: Javascript[];
   locations: Location[];
-  mediaEmbedded: MediaEmbedded[];
-  mediaFeatured: MediaEmbedded[];
-  mediaRelated: MediaEmbedded[];
-  mediaThumbnail: MediaThumbnail;
+  mediaEmbedded?: MediaEmbedded[];
+  mediaFeatured?: MediaEmbedded[];
+  mediaRelated?: MediaEmbedded[];
+  mediaThumbnail?: MediaThumbnail;
   primaryContext: PrimaryContext;
-  subjects: Subject[];
+  subjects?: Subject[];
 }
 
 interface Contributor {
