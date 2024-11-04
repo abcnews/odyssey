@@ -60,6 +60,9 @@ $abreastChildSpacing: $unit * 2.5;
 
   :not(.is-layered) > & {
     max-height: calc(100vh - var(--Main-offsetTop) - var(--Header-contentPeek));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
   .is-layered > & {
