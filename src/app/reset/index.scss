@@ -5,17 +5,11 @@ html {
   font-size: 16px;
   -webkit-text-size-adjust: none;
   text-size-adjust: none;
-  background-color: var(--bg, #{$color-lightBg});
 
-  &:has(.is-future[data-key='body']) {
-    background-color: var(--bg, #fff);
-  }
-
+  // Note: Background colour has been switched to FN styles for ALL outputs ahead of all audience being on FN.
+  background-color: var(--bg, #fff);
   &.is-dark-mode {
-    background-color: var(--bg, #{$color-darkBg});
-    &:has(.is-future[data-key='body']) {
-      background-color: var(--bg, #0f0f0f);
-    }
+    background-color: var(--bg, #0f0f0f);
   }
 }
 
