@@ -104,6 +104,8 @@
     background-color: var(--od-colour-theme-surface-over-image);
     margin-left: calc($unit / 2);
     margin-right: calc($unit / 2);
+    border-radius: $radius;
+    padding: var(--od-space-caption-padding);
   }
 }
 

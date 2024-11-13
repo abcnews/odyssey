@@ -133,6 +133,7 @@ $radius: calc($unit * 0.75);
   --od-font-stack-serif: var(--dls-font-stack-serif, '"abcserif","Book Anitqua","Palatino Linotype",Palatino,serif');
   --od-font-stack-monospace: var(--dls-font-stack-monospace, '"abcsans tabbed",monospace');
 
+  --od-font-size-xs: 0.75rem; // 12px
   --od-font-size-sm: 0.875rem; // 14px
   --od-font-size: 1.125rem; // 18px
   --od-font-size-lg: 1.25rem; // 20px
@@ -168,6 +169,7 @@ $radius: calc($unit * 0.75);
   --od-space-component-margin: var(--od-space-lg);
   --od-space-component-inline-margin: var(--od-space-md);
   --od-space-header-margin: var(--od-space-lg);
+  --od-space-caption-padding: calc(var(--od-space-md) * 0.75) var(--od-space-md);
 
   @media #{$mq-gt-sm} {
     --od-space-paragraph-margin: var(--od-space-lg);

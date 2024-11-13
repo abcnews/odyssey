@@ -18,11 +18,6 @@
     }
   }
 
-  :where(.is-future) .u-full & {
-    padding-left: $layout-fixed-padding;
-    padding-right: $layout-fixed-padding;
-  }
-
   .u-richtext-invert & {
     padding-left: $layout-fluid-padding;
     padding-right: $layout-fluid-padding;
@@ -41,14 +36,13 @@
   a,
   a:visited {
     color: currentColor !important;
+    text-decoration: none;
   }
 }
 
 .Caption-attribution {
   display: none;
   white-space: nowrap;
-  font-size: 0.6875rem;
-  color: $color-grey-500;
 
   .has-caption-attributions & {
     display: inline;
@@ -84,27 +78,29 @@
       }
     }
   }
+
+  .Caption-attribution {
+    font-size: 0.6875rem;
+    color: $color-grey-500;
+  }
 }
 
 :where(.is-future) {
   .Caption {
-    margin: $unit * 0.5;
-    margin-left: var(--od-space-component-inline-margin);
-    margin-right: var(--od-space-component-inline-margin);
-    padding: $unit * 0.75 $unit;
-    border-radius: $radius;
-    background-color: var(--od-colour-surface-utility);
-
-    @media #{$mq-md} {
-      margin-left: auto;
-      margin-right: auto;
-      width: calc(cells(10) - $layout-fluid-padding * 2);
+    margin: $unit * 0.5 0;
+    font-size: var(--od-font-size-xs) !important;
+    line-height: 1.25rem;
+    padding: 0;
+    @media #{$mq-lt-lg} {
+      margin-inline: var(--od-space-component-inline-margin);
     }
+  }
 
-    @media #{$mq-gt-md} {
-      margin-left: 0;
-      margin-right: 0;
-      width: 100%;
+  [class*='u-pull-'] {
+    .Caption {
+      @media #{$mq-gt-sm} {
+        margin-inline: 0;
+      }
     }
   }
 }

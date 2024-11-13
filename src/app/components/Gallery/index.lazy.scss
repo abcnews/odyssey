@@ -302,6 +302,7 @@
   .Gallery-item .Caption {
     margin-left: 0;
     margin-right: 0;
+    padding: 0;
     @media #{$mq-gt-md} {
       margin-left: 0;
     }
