@@ -52,7 +52,7 @@ export const createFromElement = (el, options) => {
   const config = {
     isPullquote: componentName === 'Pullquote' || componentName === 'EmphasisedText',
     alignment,
-    parEls: $$('p', clone),
+    parEls: $$('p,blockquote', clone),
     attributionNodes: ($('cite', clone) || MOCK_NODE).childNodes
   };
 
