@@ -27,7 +27,8 @@ export const SELECTORS = {
   HEADER_TAGS: '[data-component="ArticleHeadline"] [class^="CardTagList"]', // Future News
   METADATA: '[data-component="ArticleHeadline"] [class^="ArticleHeadlineTitle_meta"]',
   WYSIWYG_EMBED: '[data-component="LegacyWysiwyg"],[data-component="RelatedCard"]',
-  QUOTE: '[data-component="Blockquote"],[data-component="EmphasisedText"],[data-component="Pullquote"]'
+  QUOTE: '[data-component="Blockquote"],[data-component="EmphasisedText"],[data-component="Pullquote"]',
+  IFRAME: ':has([data-component="Iframe"])'
 };
 
 export const RICHTEXT_BLOCK_TAGNAMES = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'OL', 'UL'];
