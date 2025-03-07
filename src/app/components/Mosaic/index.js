@@ -15,6 +15,7 @@ import RichtextTile from '../RichtextTile';
 import { SIZES } from '../Sizer';
 import VideoPlayer from '../VideoPlayer';
 import styles from './index.lazy.scss';
+import IFrameTile from '../IFrameTile';
 
 const ROW_LENGTHS_PATTERN = /mosaic[a-z]*(\d+)(?:\:(\d+))?/;
 const MAX_ROW_ITEMS = 3;
@@ -181,6 +182,7 @@ export const transformSection = section => {
     const videoId = isMount(node, 'video') ? getMountValue(node).match(VIDEO_MARKER_PATTERN)[1] : detectVideoId(node);
     const imgEl = getChildImage(node);
     const isQuote = node.matches(SELECTORS.QUOTE);
+    const isIFrame = node.matches(SELECTORS.IFRAME);
 
     if (videoId) {
       items.push({
@@ -217,6 +219,17 @@ export const transformSection = section => {
         },
         formattedRatio
       });
+    } else if (isIFrame) {
+      const el = node.querySelector('iframe');
+      if (el) {
+        el.allow = 'fullscreen';
+        items.push({
+          component: IFrameTile,
+          componentProps: {
+            el
+          }
+        });
+      }
     } else if (node.tagName === 'P') {
       if (!masterCaptionText) {
         masterCaptionText = node.textContent;
