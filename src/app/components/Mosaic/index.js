@@ -222,7 +222,6 @@ export const transformSection = section => {
     } else if (isIFrame) {
       const el = node.querySelector('iframe');
       if (el) {
-        el.allow = 'fullscreen';
         items.push({
           component: IFrameTile,
           componentProps: {
