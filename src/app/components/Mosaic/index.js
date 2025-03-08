@@ -221,6 +221,7 @@ export const transformSection = section => {
       });
     } else if (isIFrame) {
       const el = node.querySelector('iframe');
+      el.allow = "fullscreen 'none'";
       if (el) {
         items.push({
           component: IFrameTile,
