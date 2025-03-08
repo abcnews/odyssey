@@ -11,8 +11,6 @@
 
   @media #{$mq-gt-md} {
     --u-full-vertical-margin: #{$unit * 3};
-    width: calc(100dvw - var(--scrollbar-width, 0px));
-    max-width: 100%; // Fix larger text size in app issue
   }
 
   // Cold-opens
