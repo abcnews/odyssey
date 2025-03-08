@@ -17,7 +17,7 @@
 
   & > iframe {
     margin: 0 !important;
-    max-width: none !important; /* Roughly equivalent to body copy width, after padding is factored in */
+    max-width: 100% !important;
     height: 100%;
   }
 }

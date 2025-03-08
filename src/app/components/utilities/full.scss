@@ -8,6 +8,7 @@
   padding-left: 0;
   padding-right: 0;
   width: calc(100vw - var(--scrollbar-width, 0px));
+  max-width: 100%;
 
   @media #{$mq-gt-md} {
     --u-full-vertical-margin: #{$unit * 3};
