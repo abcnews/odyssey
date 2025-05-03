@@ -13,6 +13,11 @@
     --u-full-vertical-margin: #{$unit * 3};
   }
 
+  @media #{$mq-lt-md} {
+    margin-left: 0;
+    width: 100%;
+  }
+
   // Cold-opens
   &:first-child,
   [data-mount]:first-child + & {
