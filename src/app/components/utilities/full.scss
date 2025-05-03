@@ -14,7 +14,8 @@
   }
 
   @media #{$mq-lt-md} {
-    margin-left: 0;
+    margin-left: auto !important;
+    margin-right: auto !important;
     width: 100%;
   }
 
