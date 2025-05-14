@@ -39,7 +39,11 @@ export const transformElement = el => {
   substitute(el, pullRightWrapperEl);
   pullRightWrapperEl.appendChild(el);
   imageURL = imageURL.replace(/[“”]/g, '');
-  $$('noscript', el).forEach(noscriptEl => noscriptEl.parentElement.removeChild(noscriptEl));
+
+  // remove noscript and screen reader elements before getting the text content
+  $$('noscript,[data-component="ScreenReaderOnly"]', el).forEach(noscriptEl =>
+    noscriptEl.parentElement.removeChild(noscriptEl)
+  );
 
   const description = (el.textContent || '')
     .replace(title, '')
