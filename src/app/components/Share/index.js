@@ -80,7 +80,7 @@ const ShareButton = ({ links }) => {
   const onClickUrl = e => {
     // Avoid double open
     if (!$('.ShareBar .SharePopover')) {
-      // @ts-expect-error
+      // @ts-expect-error Event targets aren't always DOM elements
       e.target?.closest('.ShareBannerButton')?.append(popoverEl);
     }
   };
