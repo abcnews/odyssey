@@ -30,8 +30,8 @@ const ShareLink = ({ link }) => {
   if (link.id === 'native') {
     return html`
       <li>
-        <button class="ShareLink" data-id=${link.id} onclick="${() => native(link)}" aria-label="Share this story">
-          ${Icon(link.id)}
+        <button class="ShareLink" data-id=${link.id} onclick="${() => nativeShare(link)}" aria-label="Share this story">
+          ${Icon(link.id)} <span>${LABELS[link.id]}</span>
         </button>
       </li>
     `;
@@ -83,11 +83,11 @@ const ShareLink = ({ link }) => {
 export default SharePopover;
 
 const LABELS = {
-  email: '',
+  email: 'Email',
   facebook: 'Facebook',
-  native: '',
+  native: 'More options',
   copylink: 'Copy',
-  linkedin: '',
+  linkedin: 'LinkedIn',
   twitter: 'X (formerly Twitter)'
 };
 
@@ -96,6 +96,11 @@ export async function trackShare(socialNetwork) {
   analyticsEvent('share', { socialNetwork, url });
 }
 
-function native({ id, url, title, description }) {
-  navigator.share({ text: description, title, url }).then(() => trackShare(id));
+function nativeShare({ id, url, title, description }) {
+  navigator
+    .share({ text: description, title, url })
+    .catch(e => {
+      if (!e.toString().includes('AbortError')) throw e;
+    })
+    .then(() => trackShare(id));
 }
