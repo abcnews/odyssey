@@ -74,7 +74,22 @@ module.exports = {
 
 After checking out this repo, you'll need to copy `.env.example` to `.env` and populate it (ask one of the authors for values to use).
 
-Odyssey also uses some internal ABC libraries, so you'll need to login following the [instructions](https://pl.abc-dev.net.au/docs/getting-started/aws/aws-login) in the PL documentation.
+Odyssey also uses some internal ABC libraries, so you'll need to login following the
+[instructions](https://pl.abc-dev.net.au/docs/getting-started/aws/aws-login) in the PL documentation.
+
+### Testing
+
+There are some e2e tests designed to be run against the production preview output from Presentation Layer. These can be
+used to test for visual or functional regressions while developing Odyssey and may also be useful for diagnosing issues
+related to changes in Presentation Layer that have affected Odyssey.
+
+You must be on the internal network (including via VPN) to run these tests successfully.
+
+To run tests, two environment variables are required:
+
+- `TEST_LOCAL_SERVER` set to the domain the local server is running on (e.g. typically that's the same URL output by
+  `aunty serve` when on the internal network), and
+- `TEST_PAGE_ORIGIN` set to the origin of the preview server.
 
 ## Authors
 
