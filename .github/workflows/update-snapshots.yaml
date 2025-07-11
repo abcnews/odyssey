@@ -1,0 +1,4 @@
+name: Update Snapshots on Comment
+on:
+  issue_comment:
+    types: [created]
