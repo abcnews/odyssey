@@ -1,6 +1,5 @@
 import html from 'nanohtml';
-import { dataLayer } from '@abcaustralia/analytics-datalayer';
-import { track } from '../../utils/behaviour';
+import { analyticsEvent, track } from '../../utils/behaviour';
 import { $ } from '../../utils/dom';
 import { getMeta } from '../../meta';
 import { subscribe, unsubscribe } from '../../scheduler';
@@ -14,9 +13,7 @@ const SharePopover = ({ links, onClose }) => {
   return html`
     <div class="SharePopover">
       <div class="SharePopoverContent">
-        <button class="SharePopoverCrossButton" onclick="${onClose}">
-          ${Icon('cross')}
-        </button>
+        <button class="SharePopoverCrossButton" onclick="${onClose}">${Icon('cross')}</button>
         <div class="ShareLinks">
           <h3>Share this on</h3>
           <ul class="ShareLinkList">
@@ -27,7 +24,7 @@ const SharePopover = ({ links, onClose }) => {
       <div class="PopoverStick" />
     </div>
   `;
-}
+};
 
 const ShareLink = ({ link }) => {
   if (link.id === 'native') {
@@ -41,12 +38,12 @@ const ShareLink = ({ link }) => {
   }
 
   let hdl;
-  const copyToClipboard = async (link) => {
+  const copyToClipboard = async link => {
     trackShare(link.id);
 
-     try {
+    try {
       await navigator.clipboard.writeText(link.url);
-      
+
       $('.ShareLink.Copy svg')?.replaceWith(Icon('tick'));
       $('.ShareLink.Copy span')?.replaceWith(html`<span>Copied</span>`);
 
@@ -55,8 +52,7 @@ const ShareLink = ({ link }) => {
         $('.ShareLink.Copy svg')?.replaceWith(Icon('link'));
         $('.ShareLink.Copy span')?.replaceWith(html`<span>Copy</span>`);
       }, 1500);
-    } catch (err) {
-    }
+    } catch (err) {}
   };
 
   if (link.id === 'copylink') {
@@ -84,7 +80,6 @@ const ShareLink = ({ link }) => {
   `;
 };
 
-
 export default SharePopover;
 
 const LABELS = {
@@ -93,16 +88,14 @@ const LABELS = {
   native: '',
   copylink: 'Copy',
   linkedin: '',
-  twitter: 'X (formerly Twitter)',
+  twitter: 'X (formerly Twitter)'
 };
-
 
 export async function trackShare(socialNetwork) {
   const { url } = await getMeta();
-  dataLayer.event('share', { socialNetwork, url });
+  analyticsEvent('share', { socialNetwork, url });
 }
 
 function native({ id, url, title, description }) {
   navigator.share({ text: description, title, url }).then(() => trackShare(id));
 }
-
