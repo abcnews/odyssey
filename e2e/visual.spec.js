@@ -1,7 +1,6 @@
 // @ts-check
 import { join } from 'node:path';
 import { test, expect } from '@playwright/test';
-// import { cross } from './utils';
 
 // TODO: A test to ensure the branch/development version of Odyssey is being used for testing
 
@@ -13,48 +12,58 @@ const RESOLUTIONS = [
   [390, 844]
 ];
 
-// web/app
-const PATH_PREFIXES = ['news', 'newsapp'];
+/**
+ * The outputs to test with as an array of [subdomain, path_prefix]
+ * @type {[string, string][]}
+ */
+const PLATFORMS = [
+  ['www', 'news'],
+  ['newsapp', 'newsapp']
+];
 
-// list of articles
-const ARTICLES = new Map([
+/**
+ * List of articles and elements to do visual tests on
+ * @type {[string, {targets: string[]}][]}
+ */
+const ARTICLES = [
   [
     '105234668', // Finding Robert Bogucki, the man who disappeared on purpose
     {
       targets: ['.Block', '.Header.is-layered']
     }
   ]
-  // ['101160796', { targets: ['.Gallery', '.Mosaic', '.u-cta'] }], // kitchen sink
-  // ['8676500', { targets: [] }] // producer's documentation home
-]);
+];
 
 /**
  *
  * @param {string} path_prefix The prefix (denoting web or app)
  * @param {string} article An article ID
  */
-const constructFullUrl = (path_prefix, article) => {
-  return `https://${path_prefix === 'newsapp' ? 'newsapp' : 'www'}.abc.net.au/${path_prefix}/${article}?future=true`;
-};
 
-// cross(RESOLUTIONS, PATH_PREFIXES, Array.from(ARTICLES.keys())).forEach(([resolution, prefix, article]) => {
-Array.from(ARTICLES).forEach(([article, { targets }]) => {
+test.use({
+  ignoreHTTPSErrors: true // This is to allow loading dev stuff on localhost.
+});
+
+ARTICLES.forEach(([article, { targets }]) => {
   test.describe(`article ${article}`, { tag: `@${article}` }, () => {
-    PATH_PREFIXES.forEach(prefix => {
+    PLATFORMS.forEach(([subdomain, prefix]) => {
       test.describe(`${prefix}`, { tag: `@${prefix}` }, () => {
         test.beforeEach(async ({ page }) => {
-          const url = constructFullUrl(prefix, article);
+          const url = `https://${subdomain}.abc.net.au/${prefix}/${article}?future=true`;
           // Substitute production odyssey for local dev build
-          // await page.route('https://www.abc.net.au/res/sites/news-projects/odyssey/**/*', route => {
-          //   if (TEST_LOCAL_SERVER) {
-          //     const url = route
-          //       .request()
-          //       .url()
-          //       .replace(/https:\/\/www.abc.net.au\/res\/sites\/news-projects\/odyssey\/[^\/]+/, TEST_LOCAL_SERVER);
-          //     return route.continue({ url });
-          //   }
-          //   return route.continue();
-          // });
+          await page.route('https://www.abc.net.au/res/sites/news-projects/odyssey/**/*', route => {
+            const url = route
+              .request()
+              .url()
+              .replace(
+                /https:\/\/www.abc.net.au\/res\/sites\/news-projects\/odyssey\/[^\/]+/,
+                'https://localhost:8000'
+              );
+            return route.continue({ url });
+          });
+
+          // Uncomment this to help diagnose errors inside the headless browser
+          // which would be otherwise invisible.
           // page.on('console', msg => console.log(msg.text(), msg.location(), msg.args()));
           await page.goto(url);
         });
