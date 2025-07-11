@@ -1,5 +1,6 @@
 name: Update Snapshots on Comment
 on:
+  workflow_dispatch:
   issue_comment:
     types: [created]
 env:
