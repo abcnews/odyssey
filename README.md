@@ -79,11 +79,9 @@ Odyssey also uses some internal ABC libraries, so you'll need to login following
 
 ### Testing
 
-There are some e2e tests designed to be run against the production preview output from Presentation Layer. These can be
-used to test for visual or functional regressions while developing Odyssey and may also be useful for diagnosing issues
-related to changes in Presentation Layer that have affected Odyssey.
-
-You must be on the internal network (including via VPN) to run these tests successfully.
+There are some e2e tests designed to be run against the live production output from Presentation Layer. These can be
+used to test for visual or functional regressions **while developing** Odyssey and may also be useful for diagnosing
+**issues related to changes in Presentation Layer** that have affected Odyssey.
 
 To run tests, two environment variables are required:
 

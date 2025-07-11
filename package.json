@@ -38,7 +38,10 @@
     "@abcnews/mount-utils": "^3.0.0",
     "@abcnews/terminus-fetch": "^6.0.1",
     "@playwright/test": "^1.52.0",
+    "@types/d3-array": "^3.2.1",
     "@types/node": "^22.15.29",
+    "d3-array": "^3.2.4",
+    "playwright": "^1.53.2",
     "typescript": "^5.4.5"
   },
   "browserslist": [
