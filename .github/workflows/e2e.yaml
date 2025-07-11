@@ -2,7 +2,7 @@ name: Run e2e tests
 
 on:
   push:
-    branches: [main, master, playwright]
+    branches: [main, master]
   pull_request:
     branches: [main, master]
 
@@ -14,14 +14,18 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout the PR branch
+        uses: actions/checkout@v4
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
-      - run: npm ci
-      - run: npx playwright install --with-deps
-      - run: echo "TERMINUS_FETCH_API_KEY=$TERMINUS_FETCH_API_KEY" > .env
+          node-version: 'lts/*'
+      - name: Install dependencies
+        run: npm ci
+      - name: Install playwright browsers
+        run: npx playwright install --with-deps
+      - name: Setup terminus API key
+        run: echo "TERMINUS_FETCH_API_KEY=$TERMINUS_FETCH_API_KEY" > .env
       - name: Run Playwright tests
         run: |
           npm run test | tee output.log
