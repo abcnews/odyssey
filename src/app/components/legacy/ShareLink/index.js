@@ -1,8 +1,8 @@
-import { dataLayer } from '@abcaustralia/analytics-datalayer';
 import cn from 'classnames';
 import html from 'nanohtml';
 import styles from './index.lazy.scss';
 import { getMeta } from '../../../meta/index';
+import { analyticsEvent } from '../../../utils/behaviour';
 
 const PATHS = {
   email:
@@ -16,7 +16,7 @@ const PATHS = {
 
 async function trackShare(socialNetwork) {
   const { url } = await getMeta();
-  dataLayer.event('share', { socialNetwork, url });
+  analyticsEvent('share', { socialNetwork, url });
 }
 
 function native({ id, url, title, description }) {
