@@ -103,8 +103,8 @@ const Header = ({
   }
 
   if (mediaEl && !isLayered && !isAbreast) {
-    mediaEl.classList.add('u-parallax');
-    activateUParallax(mediaEl);
+    // mediaEl.classList.add('u-parallax');
+    // activateUParallax(mediaEl);
   }
 
   const titleEl = html`

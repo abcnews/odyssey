@@ -1,8 +1,8 @@
 // @ts-check
-import { dataLayer } from '@abcaustralia/analytics-datalayer';
 import { getOrFetchDocument } from '../../utils/content';
 import { getMeta } from '../../meta';
 import { debug } from '../../utils/logging';
+import { analyticsEvent, analyticsPush } from '../../utils/behaviour';
 
 /**
  * Analytics for video progress.
@@ -23,7 +23,7 @@ export const initialiseVideoAnalytics = (id, el) => {
   const pushEmbedMetadata = async () => {
     const doc = await getOrFetchDocument(String(id), getMeta());
     debug(`analytics: push embed metadata (${uri})`);
-    dataLayer.push({
+    analyticsPush({
       document: {
         embedded: {
           [uri]: {
@@ -53,7 +53,7 @@ export const initialiseVideoAnalytics = (id, el) => {
 
     const event = playRecorded ? 'resume' : 'play';
     debug(`analytics: ${event} (${uri})`);
-    dataLayer.event(event, {
+    analyticsEvent(event, {
       uri,
       elapsedSeconds: Math.floor(previousTime),
       elapsedPercentage: Math.floor(previousPercentage * 100)
@@ -64,7 +64,7 @@ export const initialiseVideoAnalytics = (id, el) => {
   el.addEventListener('pause', () => {
     const event = previousTime >= duration ? 'complete' : 'pause';
     debug(`analytics: ${event} (${uri})`);
-    dataLayer.event(event, {
+    analyticsEvent(event, {
       uri,
       elapsedSeconds: Math.floor(previousTime),
       elapsedPercentage: Math.floor(previousPercentage * 100)
@@ -81,7 +81,7 @@ export const initialiseVideoAnalytics = (id, el) => {
     [25, 50, 75, 95, 98].forEach(pct => {
       if (Math.floor(previousPercentage * 100) < pct && Math.floor(currentPercentage * 100) >= pct) {
         debug(`analytics: reached ${pct}% (${uri})`);
-        dataLayer.event('progressPercentage', {
+        analyticsEvent('progressPercentage', {
           uri,
           elapsedSeconds: Math.floor(currentTime),
           elapsedPercentage: pct
@@ -93,7 +93,7 @@ export const initialiseVideoAnalytics = (id, el) => {
     [30].forEach(time => {
       if (Math.floor(previousTime) < time && Math.floor(currentTime) >= time) {
         debug(`analytics: reached ${time} seconds (${uri})`);
-        dataLayer.event('progress', {
+        analyticsEvent('progress', {
           uri,
           elapsedSeconds: time,
           elapsedPercentage: Math.floor(currentPercentage * 100)
