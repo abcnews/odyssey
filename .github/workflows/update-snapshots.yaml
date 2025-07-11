@@ -2,6 +2,9 @@ name: Update Snapshots on Comment
 on:
   issue_comment:
     types: [created]
+env:
+  AUNTY_HOST: localhost # This tells aunty to serve on localhost
+  TERMINUS_FETCH_API_KEY: ${{ secrets.TERMINUS_FETCH_API_KEY }}
 jobs:
   update-snapshots:
     name: Update Snapshots
