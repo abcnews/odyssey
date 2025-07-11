@@ -1,13 +1,6 @@
 // @ts-check
 import { defineConfig, devices } from '@playwright/test';
 
-const origin = process.env.TEST_PAGE_ORIGIN;
-const server = process.env.TEST_LOCAL_SERVER;
-
-if (!server || !origin) {
-  throw new Error('TEST_PAGE_ORIGIN and TEST_LOCAL_SERVER environment variables must be set.');
-}
-
 /**
  * @see https://playwright.dev/docs/test-configuration
  */
