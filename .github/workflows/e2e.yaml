@@ -2,9 +2,9 @@ name: Run e2e tests
 
 on:
   push:
-    branches: [main, master]
+    branches: [main]
   pull_request:
-    branches: [main, master]
+    branches: [main]
 
 env:
   AUNTY_HOST: localhost # This tells aunty to serve on localhost
