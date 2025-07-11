@@ -20,8 +20,10 @@
     "registry-login": "npm config set registry https://registry.npmjs.org && aws codeartifact login --tool npm --repository shared --domain abc --domain-owner 920345511325 --region ap-southeast-2 --namespace @abcaustralia",
     "registry-rollback": "npm config set registry https://registry.npmjs.org"
   },
+  "optionalDependencies": {
+    "@abcaustralia/analytics-datalayer": "^24.0.0"
+  },
   "dependencies": {
-    "@abcaustralia/analytics-datalayer": "^24.0.0",
     "@abcnews/dev-proxy": "^1.2.1",
     "@abcnews/env-utils": "^4.0.0",
     "@abcnews/url2cmid": "^1.1.0",
