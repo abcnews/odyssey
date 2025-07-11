@@ -14,6 +14,7 @@
   ],
   "scripts": {
     "start": "aunty serve",
+    "dev": "aunty serve",
     "test": "playwright test",
     "aws-login": "npx -y aws-azure-login --mode=gui",
     "aws-login:configure": "npx -y aws-azure-login --configure",
@@ -37,7 +38,7 @@
     "@abcnews/aunty": "^15.0.3",
     "@abcnews/mount-utils": "^3.0.0",
     "@abcnews/terminus-fetch": "^6.0.1",
-    "@playwright/test": "^1.52.0",
+    "@playwright/test": "^1.54.0",
     "@types/d3-array": "^3.2.1",
     "@types/node": "^22.15.29",
     "d3-array": "^3.2.4",
