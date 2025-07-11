@@ -2,3 +2,9 @@ name: Update Snapshots on Comment
 on:
   issue_comment:
     types: [created]
+
+jobs:
+  update-snapshots:
+    name: Update Snapshots
+    if: github.event.issue.pull_request && contains(github.event.comment.body, '/approve-snapshots')
+    runs-on: ubuntu-latest
