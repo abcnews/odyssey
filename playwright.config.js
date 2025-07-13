@@ -28,6 +28,9 @@ export default defineConfig({
   },
   webServer: {
     command: 'npm run start',
+    url: 'https://localhost:8000',
+    reuseExistingServer: true,
+    ignoreHTTPSErrors: true,
     stdout: 'ignore',
     stderr: 'pipe'
   },
