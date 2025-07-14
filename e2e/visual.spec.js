@@ -74,6 +74,7 @@ ARTICLES.forEach(([article, { targets }]) => {
           // TODO: Add resolution tag
           test.describe(`${resolution.join(',')}`, () => {
             test.beforeEach(async ({ page }) => {
+              await page.setViewportSize({ width: resolution[0], height: resolution[1] });
               await page.mainFrame().waitForFunction(() => window.__ODYSSEY__);
               await page.waitForTimeout(1000);
             });
