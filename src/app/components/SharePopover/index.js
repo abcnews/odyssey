@@ -14,9 +14,7 @@ const SharePopover = ({ links, onClose }) => {
   return html`
     <div class="SharePopover">
       <div class="SharePopoverContent">
-        <button class="SharePopoverCrossButton" onclick="${onClose}">
-          ${Icon('cross')}
-        </button>
+        <button class="SharePopoverCrossButton" onclick="${onClose}">${Icon('cross')}</button>
         <div class="ShareLinks">
           <h3>Share this on</h3>
           <ul class="ShareLinkList">
@@ -27,26 +25,26 @@ const SharePopover = ({ links, onClose }) => {
       <div class="PopoverStick" />
     </div>
   `;
-}
+};
 
 const ShareLink = ({ link }) => {
   if (link.id === 'native') {
     return html`
       <li>
-        <button class="ShareLink" data-id=${link.id} onclick="${() => native(link)}" aria-label="Share this story">
-          ${Icon(link.id)}
+        <button class="ShareLink" data-id=${link.id} onclick="${() => nativeShare(link)}" aria-label="Share this story">
+          ${Icon(link.id)} <span>${LABELS[link.id]}</span>
         </button>
       </li>
     `;
   }
 
   let hdl;
-  const copyToClipboard = async (link) => {
+  const copyToClipboard = async link => {
     trackShare(link.id);
 
-     try {
+    try {
       await navigator.clipboard.writeText(link.url);
-      
+
       $('.ShareLink.Copy svg')?.replaceWith(Icon('tick'));
       $('.ShareLink.Copy span')?.replaceWith(html`<span>Copied</span>`);
 
@@ -55,8 +53,7 @@ const ShareLink = ({ link }) => {
         $('.ShareLink.Copy svg')?.replaceWith(Icon('link'));
         $('.ShareLink.Copy span')?.replaceWith(html`<span>Copy</span>`);
       }, 1500);
-    } catch (err) {
-    }
+    } catch (err) {}
   };
 
   if (link.id === 'copylink') {
@@ -84,25 +81,27 @@ const ShareLink = ({ link }) => {
   `;
 };
 
-
 export default SharePopover;
 
 const LABELS = {
-  email: '',
+  email: 'Email',
   facebook: 'Facebook',
-  native: '',
+  native: 'More options',
   copylink: 'Copy',
-  linkedin: '',
-  twitter: 'X (formerly Twitter)',
+  linkedin: 'LinkedIn',
+  twitter: 'X (formerly Twitter)'
 };
-
 
 export async function trackShare(socialNetwork) {
   const { url } = await getMeta();
   dataLayer.event('share', { socialNetwork, url });
 }
 
-function native({ id, url, title, description }) {
-  navigator.share({ text: description, title, url }).then(() => trackShare(id));
+function nativeShare({ id, url, title, description }) {
+  navigator
+    .share({ text: description, title, url })
+    .catch(e => {
+      if (!e.toString().includes('AbortError')) throw e;
+    })
+    .then(() => trackShare(id));
 }
-
