@@ -1,4 +1,5 @@
 // @ts-check
+import { join } from 'node:path';
 import { test, expect } from '@playwright/test';
 
 // TODO: A test to ensure the branch/development version of Odyssey is being used for testing
@@ -76,7 +77,7 @@ ARTICLES.forEach(([article, { targets }]) => {
             });
 
             test('above the fold', async ({ page }) => {
-              await expect(page).toHaveScreenshot();
+              await expect(page).toHaveScreenshot({ timeout: 10000, stylePath: join(__dirname, 'screenshots.css') });
             });
 
             targets.forEach(target => {
@@ -84,7 +85,10 @@ ARTICLES.forEach(([article, { targets }]) => {
                 const locator = page.locator(target).first();
                 await expect(locator).toHaveCount(1);
                 await locator.scrollIntoViewIfNeeded();
-                await expect(locator).toHaveScreenshot({ timeout: 10000 });
+                await expect(locator).toHaveScreenshot({
+                  timeout: 10000,
+                  stylePath: join(__dirname, 'screenshots.css')
+                });
               });
             });
           });
