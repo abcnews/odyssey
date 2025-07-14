@@ -1,5 +1,4 @@
 // @ts-check
-import { join } from 'node:path';
 import { test, expect } from '@playwright/test';
 
 // TODO: A test to ensure the branch/development version of Odyssey is being used for testing
@@ -90,7 +89,6 @@ ARTICLES.forEach(([article, { targets }]) => {
                 const locator = page.locator(target).first();
                 await expect(locator).toHaveCount(1);
                 await locator.scrollIntoViewIfNeeded();
-                await page.waitForTimeout(100);
                 await expect(locator).toHaveScreenshot({
                   timeout: 30000,
                   stylePath: join(__dirname, 'screenshots.css')
