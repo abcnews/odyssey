@@ -1,5 +1,4 @@
 // @ts-check
-import { join } from 'node:path';
 import { test, expect } from '@playwright/test';
 
 // TODO: A test to ensure the branch/development version of Odyssey is being used for testing
@@ -66,23 +65,18 @@ ARTICLES.forEach(([article, { targets }]) => {
           // which would be otherwise invisible.
           // page.on('console', msg => console.log(msg.text(), msg.location(), msg.args()));
           await page.goto(url);
+          await page.mainFrame().waitForFunction(() => window.__ODYSSEY__);
         });
 
         RESOLUTIONS.forEach(resolution => {
-          test.use({ viewport: { width: resolution[0], height: resolution[1] } });
-
           // TODO: Add resolution tag
           test.describe(`${resolution.join(',')}`, () => {
             test.beforeEach(async ({ page }) => {
               await page.setViewportSize({ width: resolution[0], height: resolution[1] });
-              await page.mainFrame().waitForFunction(() => window.__ODYSSEY__);
-              await page.waitForTimeout(1000);
             });
 
             test('above the fold', async ({ page }) => {
-              await expect(page).toHaveScreenshot({
-                stylePath: join(__dirname, 'screenshots.css')
-              });
+              await expect(page).toHaveScreenshot();
             });
 
             targets.forEach(target => {
@@ -90,10 +84,7 @@ ARTICLES.forEach(([article, { targets }]) => {
                 const locator = page.locator(target).first();
                 await expect(locator).toHaveCount(1);
                 await locator.scrollIntoViewIfNeeded();
-                await page.waitForTimeout(500);
-                await expect(locator).toHaveScreenshot({
-                  stylePath: join(__dirname, 'screenshots.css')
-                });
+                await expect(locator).toHaveScreenshot({ timeout: 10000 });
               });
             });
           });
