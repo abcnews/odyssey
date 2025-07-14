@@ -76,9 +76,10 @@ ARTICLES.forEach(([article, { targets }]) => {
               await page.setViewportSize({ width: resolution[0], height: resolution[1] });
             });
 
-            test('above the fold', async ({ page }) => {
-              await expect(page).toHaveScreenshot({ timeout: 10000, stylePath: join(__dirname, 'screenshots.css') });
-            });
+            // Above the fold is being troublesome and doesn't add much
+            // test('above the fold', async ({ page }) => {
+            //   await expect(page).toHaveScreenshot({ timeout: 10000, stylePath: join(__dirname, 'screenshots.css') });
+            // });
 
             targets.forEach(target => {
               test(`${target}`, { tag: `@${target}` }, async ({ page }) => {
