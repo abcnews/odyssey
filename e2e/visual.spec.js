@@ -1,5 +1,4 @@
 // @ts-check
-import { join } from 'node:path';
 import { test, expect } from '@playwright/test';
 
 // TODO: A test to ensure the branch/development version of Odyssey is being used for testing
