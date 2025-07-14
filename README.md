@@ -77,17 +77,42 @@ After checking out this repo, you'll need to copy `.env.example` to `.env` and p
 Odyssey also uses some internal ABC libraries, so you'll need to login following the
 [instructions](https://pl.abc-dev.net.au/docs/getting-started/aws/aws-login) in the PL documentation.
 
-### Testing
+### Visual regression testing
 
 There are some e2e tests designed to be run against the live production output from Presentation Layer. These can be
-used to test for visual or functional regressions **while developing** Odyssey and may also be useful for diagnosing
+used to test for visual regressions **while developing** Odyssey and may also be useful for diagnosing
 **issues related to changes in Presentation Layer** that have affected Odyssey.
 
-To run tests, two environment variables are required:
+There are GitHub workflows that run tests for any pull requests to `main`. There is also a workflow for updating the
+'expected' snapshots tests are compared against.
 
-- `TEST_LOCAL_SERVER` set to the domain the local server is running on (e.g. typically that's the same URL output by
-  `aunty serve` when on the internal network), and
-- `TEST_PAGE_ORIGIN` set to the origin of the preview server.
+Because Playwright visual tests [are not cross-OS
+compatible](https://www.tonyward.dev/articles/visual-regression-testing-disruption) the source of truth must always be
+the CI output. It's the responsibility of the developer making the PR to check, approve and update the 'expected'
+snapshots for visual changes.
+
+When a PR for merging back to `main` is created, the workflow will run. If visual regression tests fail, the workflow
+will post a comment on the PR with a link to the test report.
+
+Once you have checked the test report and are happy with the visual changes, add a comment to the PR with the text
+`/approve-snapshots`. This will kick off the snapshot update workflow which will commit the new source of truth
+snapshots back to the PR branch when it's done.
+
+> [!NOTE]
+> Haley Ward [describes the problem and this solution well](https://medium.com/@haleywardo/streamlining-playwright-visual-regression-testing-with-github-actions-e077fd33c27c).
+
+#### Running visual tests locally
+
+Although the source of truth is controlled by the CI, it can still be useful to run tests locally during development.
+However, ultimately visual changes need to be approved in a PR using the workflows.
+
+To do this effectively, you'll need to take a couple of steps:
+
+1. Run `npx playwright test --update-snapshots` with `main` checked out
+2. Run `npm run test` (or `npx playwright test`) against your dev branch to test for visual changes.
+
+There is a `.gitignore` rule in place for snapshot files generated on MacOS to avoid accidentally committing them to the
+repository.
 
 ## Authors
 
