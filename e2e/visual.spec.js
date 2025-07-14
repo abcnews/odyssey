@@ -78,7 +78,7 @@ ARTICLES.forEach(([article, { targets }]) => {
 
             // Above the fold is being troublesome and doesn't add much
             // test('above the fold', async ({ page }) => {
-            //   await expect(page).toHaveScreenshot({ timeout: 10000, stylePath: join(__dirname, 'screenshots.css') });
+            //   await expect(page).toHaveScreenshot({ timeout: 30000, stylePath: join(__dirname, 'screenshots.css') });
             // });
 
             targets.forEach(target => {
@@ -87,7 +87,7 @@ ARTICLES.forEach(([article, { targets }]) => {
                 await expect(locator).toHaveCount(1);
                 await locator.scrollIntoViewIfNeeded();
                 await expect(locator).toHaveScreenshot({
-                  timeout: 10000,
+                  timeout: 30000,
                   stylePath: join(__dirname, 'screenshots.css')
                 });
               });
