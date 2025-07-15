@@ -28,8 +28,8 @@ jobs:
         run: echo "TERMINUS_FETCH_API_KEY=$TERMINUS_FETCH_API_KEY" > .env
       - name: Run Playwright tests
         run: |
-          npm run test | tee output.log
-          if grep -q -e "Error: A snapshot doesn't exist at" -e "Screenshot comparison failed" -e "Error\: expect\(locator\)\.toHaveScreenshot\(expected\)" output.log; then
+          npm run test | tee >(sed $'s/\033[[][^A-Za-z]*[A-Za-z]//g' > output.log)
+          if grep -q -F -e "Error: A snapshot doesn't exist at" -e "Screenshot comparison failed" -e "Error: expect(locator).toHaveScreenshot(expected)" output.log; then
             echo "Playwright tests failed due to a snapshot issue."
             echo "SNAPSHOT_DIFFERENCES=true" >> $GITHUB_ENV
             exit 1
