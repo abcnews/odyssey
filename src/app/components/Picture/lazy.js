@@ -1,3 +1,4 @@
+// @ts-check
 import { PLACEHOLDER_IMAGE_CUSTOM_PROPERTY } from '../../constants';
 import { enqueue, subscribe, unsubscribe } from '../../scheduler';
 import { append, detach } from '../../utils/dom';
@@ -41,17 +42,42 @@ const unregister = api => {
   }
 };
 
+/**
+ * @typedef {object} LazyLoadAPI
+ * @prop {() => void} forget
+ * @prop {() => DOMRect | null} getRect
+ * @prop {() => void} load
+ * @prop {boolean} isLoaded
+ * @prop {boolean} isLoading
+ * @prop {() => void} unload
+ * @prop {(imgEl: HTMLImageElement) => void} [loadedHook]
+ */
+
+/**
+ *
+ * @param {object} options
+ * @param {HTMLElement & {api?: LazyLoadAPI}} options.rootEl
+ * @param {HTMLElement} options.placeholderEl
+ * @param {HTMLPictureElement} options.pictureEl
+ * @param {string} options.blurSrc
+ * @param {string | null} options.alt
+ */
 export const addLazyLoadableAPI = ({ rootEl, placeholderEl, pictureEl, blurSrc, alt }) => {
-  let api = null;
-  let imgEl = null;
+  /**
+   * @type {LazyLoadAPI}
+   */
+  let api;
+  /**
+   * @type {HTMLImageElement | undefined}
+   */
+  let imgEl;
   let hasPlaceholder = false;
 
   const getRect = () => {
     // Fixed images should use their parent's rect, as they're always in the viewport
     const position = window.getComputedStyle(rootEl).position;
     const measurableEl = position === 'fixed' ? rootEl.parentElement : rootEl;
-
-    return measurableEl.getBoundingClientRect();
+    return measurableEl && measurableEl.getBoundingClientRect();
   };
 
   const load = () => {
@@ -62,7 +88,7 @@ export const addLazyLoadableAPI = ({ rootEl, placeholderEl, pictureEl, blurSrc, 
     api.isLoading = true;
     rootEl.setAttribute('loading', '');
     imgEl = document.createElement('img');
-    imgEl.setAttribute('alt', alt);
+    alt && imgEl.setAttribute('alt', alt);
     imgEl.addEventListener('load', onLoad, false);
     append(pictureEl, imgEl);
 
@@ -86,7 +112,7 @@ export const addLazyLoadableAPI = ({ rootEl, placeholderEl, pictureEl, blurSrc, 
     rootEl.removeAttribute('loading');
     rootEl.removeAttribute('loaded');
     detach(imgEl);
-    imgEl = null;
+    imgEl = undefined;
   };
 
   const onLoad = () => {

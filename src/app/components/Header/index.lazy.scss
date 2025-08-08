@@ -54,6 +54,17 @@ $abreastChildSpacing: $unit * 2.5;
     background-color: $color-lightBg;
   }
 
+  &:has(.is-original) {
+    :not(.is-layered) > & {
+      max-height: none;
+    }
+  }
+
+  .is-original {
+    max-height: calc(100vh - var(--Main-offsetTop) - var(--Header-contentPeek));
+  }
+
+  &:has(.is-original),
   .is-abreast > & {
     background-color: transparent;
   }

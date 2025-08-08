@@ -1,3 +1,4 @@
+// @ts-check
 import { enqueue, subscribe } from '../../scheduler';
 import styles from './index.lazy.scss';
 
@@ -10,9 +11,14 @@ const DEFAULT_SIZE_RATIOS = {
 };
 export const SIZES = Object.keys(DEFAULT_SIZE_RATIOS);
 
+/** @type {HTMLDivElement[]} */
 const instances = [];
+/** @type {number} */
 let lastKnownNumInstances;
 
+/**
+ * @param {Record<string, string>} sizeRatios
+ */
 const Sizer = sizeRatios => {
   const el = document.createElement('div');
 

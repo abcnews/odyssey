@@ -1,3 +1,4 @@
+// @ts-check
 import { getImages } from '@abcnews/terminus-fetch';
 import cn from 'classnames';
 import html from 'nanohtml';
@@ -15,20 +16,13 @@ const DEFAULT_RATIOS = {
   xl: '16x9'
 };
 const WIDTHS = [700, 940, 1400, 2150];
-const RATIO_SIZE_WIDTH_INDICES = {
-  '16x9': { sm: 0, md: 1, lg: 3, xl: 3 },
-  '3x2': { sm: 0, md: 1, lg: 1, xl: 1 },
-  '4x3': { sm: 0, md: 1, lg: 1, xl: 1 },
-  '1x1': { sm: 0, md: 1, lg: 2, xl: 2 },
-  '3x4': { sm: 0, md: 1, lg: 1, xl: 1 }
-};
 
 /**
  *
  * @param {object} obj
  * @param {string} [obj.src]
  * @param {string|null} [obj.alt]
- * @param {object} [obj.ratios]
+ * @param {Record<string, string>} [obj.ratios]
  * @param {string} [obj.linkUrl]
  * @param {boolean} [obj.isContained]
  * @param {boolean} [obj.shouldLazyLoad]
@@ -49,6 +43,9 @@ const Picture = ({
     xl: ratios.xl || DEFAULT_RATIOS.xl
   };
 
+  /**
+   * @type {Record<string, string|null>}
+   */
   const sources = {
     [MQ.SM]: src,
     [MQ.MD]: src,
@@ -62,14 +59,15 @@ const Picture = ({
   if (imageDoc) {
     const { renditions } = getImages(imageDoc, WIDTHS);
     if (renditions && renditions.length) {
-      sources[MQ.SM] = srcsetFromRenditions(renditions, ratios.sm, 'sm');
-      sources[MQ.MD] = srcsetFromRenditions(renditions, ratios.md, 'md');
-      sources[MQ.LANDSCAPE_LT_LG] = srcsetFromRenditions(renditions, ratios.lg, 'md');
-      sources[MQ.LG] = srcsetFromRenditions(renditions, ratios.lg, 'lg');
-      sources[MQ.XL] = srcsetFromRenditions(renditions, ratios.xl, 'xl');
+      sources[MQ.SM] = srcsetFromRenditions(renditions, ratios.sm);
+      sources[MQ.MD] = srcsetFromRenditions(renditions, ratios.md);
+      sources[MQ.LANDSCAPE_LT_LG] = srcsetFromRenditions(renditions, ratios.lg);
+      sources[MQ.LG] = srcsetFromRenditions(renditions, ratios.lg);
+      sources[MQ.XL] = srcsetFromRenditions(renditions, ratios.xl);
+      sources['all'] = srcsetFromRenditions(renditions);
     }
 
-    alt = imageDoc.alt;
+    alt = imageDoc.alt || '';
   }
 
   const sizerEl = Sizer(ratios);
@@ -82,7 +80,12 @@ const Picture = ({
     )}</picture
   >`;
 
-  const rootEl = html`<a class=${cn('Picture', { 'is-contained': isContained })}>${sizerEl}${pictureEl}</a>`;
+  /**
+   * @type {HTMLElement & {api?: import('./lazy').LazyLoadAPI}}
+   */
+  const rootEl = html`<a class=${cn('Picture', { 'is-contained': isContained, 'is-original': srcsets.length === 1 })}
+    >${sizerEl}${pictureEl}</a
+  >`;
 
   if (linkUrl) {
     rootEl.setAttribute('href', linkUrl);
@@ -93,11 +96,11 @@ const Picture = ({
   } else {
     const imgEl = document.createElement('img');
 
-    imgEl.setAttribute('alt', alt);
-    imgEl.addEventListener('load', () => rootEl.api.loadedHook && rootEl.api.loadedHook(imgEl));
+    alt && imgEl.setAttribute('alt', alt);
+    imgEl.addEventListener('load', () => rootEl.api?.loadedHook && rootEl.api.loadedHook(imgEl));
     append(pictureEl, imgEl);
 
-    rootEl.api = {};
+    delete rootEl.api;
     rootEl.setAttribute('loaded', '');
   }
 
@@ -108,13 +111,19 @@ const Picture = ({
 
 export default Picture;
 
+/**
+ *
+ * @param {{width: number;height: number;ratio: string;url: string;isUndersizedBinary: boolean;}[]} renditions
+ * @param {string} [preferredRatio]
+ * @returns
+ */
 function srcsetFromRenditions(renditions, preferredRatio) {
   if (!renditions) {
     return null;
   }
 
   // Filter renditions for preferredRatio
-  const preferredRatioRenditions = renditions.filter(r => r.ratio === preferredRatio);
+  const preferredRatioRenditions = renditions.filter(r => preferredRatio === undefined || r.ratio === preferredRatio);
   if (preferredRatioRenditions.length === 0) {
     return null;
   }
