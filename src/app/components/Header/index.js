@@ -9,7 +9,6 @@ import { $, detach, detectVideoId, getChildImage, isElement } from '../../utils/
 import { clampNumber, formattedDate, getRatios, isDefined } from '../../utils/misc';
 import Picture from '../Picture';
 import ScrollHint from '../ScrollHint';
-import { activate as activateUParallax } from '../UParallax';
 import VideoPlayer from '../VideoPlayer';
 import YouTubePlayer from '../YouTubePlayer';
 import styles from './index.lazy.scss';
@@ -77,6 +76,9 @@ const Header = ({
     xl: isAbreast ? '1x1' : ratios.xl
   };
 
+  /**
+   * @type {HTMLElement | undefined}
+   */
   let mediaEl;
 
   if (imgEl) {
@@ -100,11 +102,6 @@ const Header = ({
           isLoop: shouldVideoPlayOnce ? false : undefined,
           isInvariablyAmbient: true
         });
-  }
-
-  if (mediaEl && !isLayered && !isAbreast) {
-    // mediaEl.classList.add('u-parallax');
-    // activateUParallax(mediaEl);
   }
 
   const titleEl = html`

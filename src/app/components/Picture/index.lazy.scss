@@ -32,6 +32,13 @@
     will-change: opacity;
   }
 
+  &.is-original {
+    max-height: 100%;
+    img {
+      object-fit: contain;
+    }
+  }
+
   @media #{$mq-lt-lg} {
     &.is-contained img {
       object-fit: contain;
