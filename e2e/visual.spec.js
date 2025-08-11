@@ -74,6 +74,10 @@ ARTICLES.forEach(([article, { targets }]) => {
           test.describe(`${resolution.join(',')}`, () => {
             test.beforeEach(async ({ page }) => {
               await page.setViewportSize({ width: resolution[0], height: resolution[1] });
+              // Make sure all images are loaded before taking screenshots
+              for (const img of await page.locator('#content > :has(.Picture):not(.MasterGallery)').all()) {
+                await img.scrollIntoViewIfNeeded();
+              }
             });
 
             // Above the fold is being troublesome and doesn't add much
