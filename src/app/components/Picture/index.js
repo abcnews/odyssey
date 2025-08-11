@@ -54,7 +54,13 @@ const Picture = ({
     [MQ.XL]: src
   };
 
+  // When 'use original image' is checked in CM the imageDoc will only contain a single entry in the 'ratios' object.
+  // That means when we generate renditions for the image from our desired WIDTHS only renditions for the ratio of the
+  // original image will be generated.
   const imageDoc = lookupImageByAssetURL(src); // Will only work if image's document was catalogued during initMeta
+
+  // Therefore we assume if there's only a single entry, this is a 'use original image' image.
+  const isOriginal = Object.keys(imageDoc?.media?.image.primary.ratios || {}).length === 1;
 
   if (imageDoc) {
     const { renditions } = getImages(imageDoc, WIDTHS);
@@ -64,6 +70,10 @@ const Picture = ({
       sources[MQ.LANDSCAPE_LT_LG] = srcsetFromRenditions(renditions, ratios.lg);
       sources[MQ.LG] = srcsetFromRenditions(renditions, ratios.lg);
       sources[MQ.XL] = srcsetFromRenditions(renditions, ratios.xl);
+      // This 'all' media query/srcset combo is used when an image has 'use original image' checked in CM. This works
+      // because the only renditions will be ones with a ratio that matches the original image. Therefore (unless the
+      // 'original' image happens to be the same as one of the standard ratios) this 'all' key in the sources object
+      // will be the only one populated with a srcset. All the others will be null.
       sources['all'] = srcsetFromRenditions(renditions);
     }
 
@@ -75,7 +85,8 @@ const Picture = ({
   const srcsets = Object.entries(sources).filter(([, srcset]) => !!srcset);
   const pictureEl = html`<picture
     >${srcsets.map(
-      // TODO: Ideally this would have a more nuanced sizes attribute
+      // TODO: Ideally this would have a more nuanced sizes attribute right now it is assumed that images display at
+      // full viewport width, but that is not always the case.
       ([media, srcset]) => html`<source media=${media} srcset=${srcset} sizes="100vw"></source>`
     )}</picture
   >`;
@@ -83,7 +94,7 @@ const Picture = ({
   /**
    * @type {HTMLElement & {api?: import('./lazy').LazyLoadAPI}}
    */
-  const rootEl = html`<a class=${cn('Picture', { 'is-contained': isContained, 'is-original': srcsets.length === 1 })}
+  const rootEl = html`<a class=${cn('Picture', { 'is-contained': isContained, 'is-original': isOriginal })}
     >${sizerEl}${pictureEl}</a
   >`;
 
