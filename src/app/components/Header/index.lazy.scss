@@ -55,6 +55,8 @@ $abreastChildSpacing: $unit * 2.5;
   }
 
   &:has(.is-original) {
+    width: var(--od-header-media-width);
+    margin: auto;
     :not(.is-layered) > & {
       max-height: none;
     }
