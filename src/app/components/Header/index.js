@@ -24,6 +24,7 @@ import styles from './index.lazy.scss';
  * @prop {boolean} isPale
  * @prop {boolean} isVideoYouTube
  * @prop {Partial<import('src/app/meta').MetaData>} meta
+ * @prop {{value: number; units: string}} [mediaWidth]
  * @prop {Element[]} miscContentEls
  * @prop {import('../../utils/misc').Ratios} ratios
  * @prop {boolean} shouldVideoPlayOnce
@@ -45,6 +46,7 @@ const Header = ({
   isPale,
   isVideoYouTube,
   meta = {},
+  mediaWidth,
   miscContentEls = [],
   ratios = {},
   shouldVideoPlayOnce,
@@ -165,7 +167,10 @@ const Header = ({
     <div class="${className}" data-scheme="${scheme}" data-theme="${THEME}">
       ${mediaEl
         ? html`
-            <div class="Header-media${isLayered && !isAbreast && mediaEl.tagName !== 'DIV' ? ' u-parallax' : ''}">
+            <div
+              class="Header-media${isLayered && !isAbreast && mediaEl.tagName !== 'DIV' ? ' u-parallax' : ''}"
+              style="${mediaWidth ? '--od-header-media-width: ' + mediaWidth.value + mediaWidth.units : ''}"
+            >
               ${!isLayered && !isAbreast && !meta.isFuture ? ScrollHint() : null} ${mediaEl}
             </div>
           `
@@ -256,7 +261,8 @@ export const transformSection = (section, meta) => {
   const isKicker = section.configString.indexOf('kicker') > -1;
   const shouldSupplant = section.configString.indexOf('supplant') > -1;
   const shouldVideoPlayOnce = section.configString.indexOf('once') > -1;
-
+  /** @type {(string|undefined)[]} */
+  const [, , mediaWidthValue, mediaWidthUnit] = section.configString.match(/mediawidth(([0-9]+)(px|pct|rem))/) || [];
   let candidateNodes = section.betweenNodes;
 
   if (!isNoMedia && meta.relatedMedia != null) {
@@ -308,6 +314,9 @@ export const transformSection = (section, meta) => {
       isFloating,
       isLayered,
       isKicker,
+      mediaWidth: mediaWidthValue
+        ? { value: +mediaWidthValue, units: mediaWidthUnit?.replace('pct', '%') || 'px' }
+        : undefined,
       miscContentEls: [],
       shouldVideoPlayOnce
     }
