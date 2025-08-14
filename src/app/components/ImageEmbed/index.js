@@ -31,6 +31,9 @@ const ImageEmbed = ({ pictureEl, captionEl, alignment, isFull, isCover, isAnon }
 
 export default ImageEmbed;
 
+/**
+ * @param {HTMLElement & {_descriptor?: {props: {align: 'floatLeft' | 'floatRight'}}}} el The element to transform into an image embed
+ */
 export const transformElement = el => {
   const mountValue = isMount(el) ? getMountValue(el) : '';
   const imgEl = getChildImage(el);
@@ -42,13 +45,26 @@ export const transformElement = el => {
 
   const imageDoc = imgEl ? lookupImageByAssetURL(imgEl.src) : getMeta().mediaById?.[imgId || ''];
 
-  if (!imageDoc?.media || imageDoc.media.image.primary.complete.length < 2) {
-    // Custom Images appear to be Images in Terminus V2. We should ignore them (for now).
-    // TODO: A custom image embed solution. Captionless with custom aspect ratio? #config for max-width?
+  if (!imageDoc?.media) {
+    return;
+  }
+
+  const isOriginal = imageDoc.media.image.primary.complete.length < 2;
+
+  // For backward compatibility reasons, we should not transform embedded images with 'use original image' checked in
+  // the CMS. However, these images can be transformed into Odyssey image embeds by embedding them with a `#image<id>`
+  // tag. It might be possible to re-visit this if we require a specific config to enable conversion which would exclude
+  // previously published stories from conversion.
+  if (isOriginal && imgEl) {
     return;
   }
 
   const configString = grabPrecedingConfigString(el);
+
+  // TODO: Support defining the size and positioning for 'use original' images.
+  // /** @type {(string|undefined)[]} */
+  // const [, , imageWidthValue, imageWidthUnit] = configString.match(/width(([0-9]+)(px|pct|rem))/) || [];
+
   const descriptorAlignment = el._descriptor ? EMBED_ALIGNMENT_MAP[el._descriptor.props.align] : undefined;
   const [, alignment] = configString.match(ALIGNMENT_PATTERN) || [, descriptorAlignment];
   const ratios = getRatios(configString);
@@ -56,19 +72,21 @@ export const transformElement = el => {
   const unlink = configString.indexOf('unlink') > -1;
   const alt = imageDoc.alt;
 
+  const pictureEl = Picture({
+    src: isOriginal ? imageDoc.media.image.primary.complete[0].url : imageDoc.media.image.primary.images['3x2'],
+    alt,
+    ratios: {
+      sm: ratios.sm || '3x4',
+      md: ratios.md || '4x3',
+      lg: ratios.lg,
+      xl: ratios.xl
+    },
+    linkUrl: `/news/${imageDoc.id}`,
+    shouldLazyLoad: !isStatic
+  });
+
   const imageEmbedEl = ImageEmbed({
-    pictureEl: Picture({
-      src: imageDoc.media.image.primary.images['3x2'],
-      alt,
-      ratios: {
-        sm: ratios.sm || '3x4',
-        md: ratios.md || '4x3',
-        lg: ratios.lg,
-        xl: ratios.xl
-      },
-      linkUrl: `/news/${imageDoc.id}`,
-      shouldLazyLoad: !isStatic
-    }),
+    pictureEl,
     captionEl: createCaptionFromTerminusDoc(imageDoc, unlink),
     alignment,
     isFull: configString.indexOf('full') > -1,

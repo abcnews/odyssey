@@ -22,7 +22,7 @@ const WIDTHS = [700, 940, 1400, 2150];
  * @param {object} obj
  * @param {string} [obj.src]
  * @param {string|null} [obj.alt]
- * @param {Record<string, string>} [obj.ratios]
+ * @param {Record<string, string | undefined>} [obj.ratios]
  * @param {string} [obj.linkUrl]
  * @param {boolean} [obj.isContained]
  * @param {boolean} [obj.shouldLazyLoad]
@@ -31,16 +31,17 @@ const WIDTHS = [700, 940, 1400, 2150];
 const Picture = ({
   src = SMALLEST_IMAGE,
   alt = '',
-  ratios = {},
+  ratios: requestedRatios = {},
   linkUrl = '',
   isContained = false,
   shouldLazyLoad = true
 }) => {
-  ratios = {
-    sm: ratios.sm || DEFAULT_RATIOS.sm,
-    md: ratios.md || DEFAULT_RATIOS.md,
-    lg: ratios.lg || DEFAULT_RATIOS.lg,
-    xl: ratios.xl || DEFAULT_RATIOS.xl
+  /** @type {Record<string, string>} */
+  const ratios = {
+    sm: requestedRatios.sm || DEFAULT_RATIOS.sm,
+    md: requestedRatios.md || DEFAULT_RATIOS.md,
+    lg: requestedRatios.lg || DEFAULT_RATIOS.lg,
+    xl: requestedRatios.xl || DEFAULT_RATIOS.xl
   };
 
   /**
