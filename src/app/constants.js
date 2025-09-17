@@ -142,3 +142,7 @@ export const EMBED_ALIGNMENT_MAP = {
  * be found on the `data-scheme` attribute on `<body>`
  */
 export const THEME = 'light-blue';
+
+export const SURVEY_URL = `https://forms.office.com/Pages/ResponsePage.aspx?id=mkDBl3hw50e7lNHlNQPgEtWMpmXfgBdBhPa55B3u5WVUQkYwNDVLRFZNUTFGWjdYSUFCVUhMTTlBOS4u&r0f37b43b3f954868a84686bba89ef4b5=${encodeURIComponent(
+  document.location.href
+)}`;
