@@ -1,11 +1,16 @@
 import html from 'nanohtml';
 
+/**
+ *
+ * @param {keyof ICONS | 'copylink'} id
+ * @returns
+ */
 const Icon = id => {
   if (id === 'copylink') {
     id = 'link';
   }
 
-  const { path, stroke, strokeWidth, fill } = ICONS[id];
+  const { path, stroke, strokeWidth, fill, viewBox } = ICONS[id];
 
   const paths = Array.isArray(path) ? path : [path];
   return html`
@@ -14,7 +19,7 @@ const Icon = id => {
       fill="${fill || ''}"
       width="1em"
       height="1em"
-      viewBox="0 0 24 24"
+      viewBox="${viewBox || '0 0 24 24'}"
       xmlns="http://www.w3.org/2000/svg"
     >
       ${paths.map(
@@ -70,5 +75,20 @@ const ICONS = {
   share: {
     path: 'M15 13s-9-1-12.998 7c0 0 0-13 12.998-13V3l7 7-7 7v-4Z',
     fill: 'currentColor'
+  },
+  pencil: {
+    path: 'M14 7.5L7.35705 14.143C7.28725 14.2128 7.19835 14.2603 7.10155 14.2797L3.64709 14.9706C3.57711 14.9846 3.51542 14.9229 3.52942 14.8529L4.22031 11.3984C4.23967 11.3017 4.28725 11.2128 4.35705 11.143L10.9869 4.51309M14 7.5L15.8964 5.60355C16.0917 5.40829 16.0917 5.09171 15.8964 4.89645L13.6036 2.60355C13.4083 2.40829 13.0917 2.40829 12.8964 2.60355L10.9869 4.51309M14 7.5L10.9869 4.51309',
+    stroke: 'currentColor',
+    strokeWidth: 2,
+    viewBox: '0 0 18 18'
+  },
+  feedback: {
+    path: [
+      'M19 3H5C3.89543 3 3 3.89543 3 5V17V21.7586C3 21.8477 3.10771 21.8923 3.17071 21.8293L7.85355 17.1464C7.94732 17.0527 8.0745 17 8.20711 17H19C20.1046 17 21 16.1046 21 15V5C21 3.89543 20.1046 3 19 3Z',
+      'M12 6V11',
+      'M12 14V12'
+    ],
+    stroke: 'currentColor',
+    strokeWidth: 2
   }
 };

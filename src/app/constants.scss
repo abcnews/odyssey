@@ -159,6 +159,7 @@ $radius: calc($unit * 0.75);
   }
 
   // Spacing
+  --od-space-2xs: 0.5rem; // 8px
   --od-space-sm: 0.875rem; // 14px
   --od-space-md: 1rem; // 16px
   --od-space-lg: 1.5rem; // 24px
@@ -170,6 +171,10 @@ $radius: calc($unit * 0.75);
   --od-space-component-inline-margin: var(--od-space-md);
   --od-space-header-margin: var(--od-space-lg);
   --od-space-caption-padding: calc(var(--od-space-md) * 0.75) var(--od-space-md);
+
+  --od-button-radius: 100px;
+  --od-button-padding: 12px 18px;
+  --od-button-font-size: var(--od-font-size-small);
 
   @media #{$mq-gt-sm} {
     --od-space-paragraph-margin: var(--od-space-lg);

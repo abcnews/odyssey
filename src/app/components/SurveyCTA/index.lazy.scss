@@ -1,0 +1,84 @@
+@import '../../constants';
+
+/* Modify some of the default colours */
+.SurveyCTA {
+  --od-button-primary-hover: #405a88;
+}
+[data-scheme='dark'] {
+  .SurveyCTA {
+    --od-button-primary: #a0beeb;
+    --od-button-primary-hover: #83a2d1;
+  }
+}
+
+@media #{$mq-gt-sm} {
+  .SurveyCTA {
+    --od-font-size: var(--od-font-size-lg);
+    --od-button-font-size: 1rem;
+  }
+}
+
+.SurveyCTA .Panel {
+  display: flex;
+  padding: var(--od-space-md);
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--od-space-md);
+  border-radius: $radius;
+  font-weight: 700;
+
+  background: var(--od-colour-surface-utility);
+  color: var(--od-colour-text-primary);
+  font-family: var(--od-font-stack-sans);
+
+  > label {
+    display: block;
+    color: var(--od-colour-text-secondary);
+
+    font-size: var(--od-font-size-sm);
+    line-height: 1.35;
+    > svg {
+      font-size: var(--od-font-size-xl);
+      vertical-align: middle;
+    }
+  }
+
+  > div {
+    line-height: 1.25;
+  }
+
+  > a:any-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-self: stretch;
+    padding: var(--od-button-padding);
+    gap: var(--od-space-2xs);
+    border-radius: var(--od-button-radius);
+    background: var(--od-button-primary);
+    color: var(--od-colour-text-inverse);
+
+    font-size: var(--od-button-font-size);
+    line-height: 1.35;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  > a:any-link > * {
+    color: var(--od-colour-text-inverse);
+    transition: all 0.2s;
+  }
+
+  > a:hover {
+    background-color: var(--od-button-primary-hover);
+  }
+  > a:active {
+    background-color: var(--od-button-primary-active);
+    color: var(--od-colour-text-primary);
+  }
+
+  > a:active > * {
+    color: var(--od-colour-text-primary);
+  }
+}
