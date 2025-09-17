@@ -32,7 +32,7 @@ const ImageEmbed = ({ pictureEl, captionEl, alignment, isFull, isCover, isAnon }
 export default ImageEmbed;
 
 /**
- * @param {HTMLElement & {_descriptor?: {props: {align: 'floatLeft' | 'floatRight'}}}} el The element to transform into an image embed
+ * @param {Element & {_descriptor?: {props: {align: 'floatLeft' | 'floatRight'}}}} el The element to transform into an image embed
  */
 export const transformElement = el => {
   const mountValue = isMount(el) ? getMountValue(el) : '';
