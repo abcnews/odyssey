@@ -4,7 +4,9 @@
 .SurveyCTA {
   --od-button-primary-hover: #405a88;
 }
-[data-scheme='dark'] {
+
+// only use Odyssey data-schemes, the main page is a red herring.
+[data-scheme='dark']:not(body) {
   .SurveyCTA {
     --od-button-primary: #a0beeb;
     --od-button-primary-hover: #83a2d1;
