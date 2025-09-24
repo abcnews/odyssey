@@ -46,7 +46,8 @@
     }
   }
 
-  > div {
+  > div,
+  > h2 {
     line-height: 1.25;
   }
 
@@ -59,17 +60,15 @@
     gap: var(--od-space-2xs);
     border-radius: var(--od-button-radius);
     background: var(--od-button-primary);
+    border: 1px solid transparent;
     color: var(--od-colour-text-inverse);
-
     font-size: var(--od-button-font-size);
     line-height: 1.35;
     text-decoration: none;
-    transition: all 0.2s;
-  }
-
-  > a:any-link > * {
-    color: var(--od-colour-text-inverse);
-    transition: all 0.2s;
+    transition: color 0.2s, fill 0.2s;
+    > * {
+      color: inherit;
+    }
   }
 
   > a:hover {
@@ -80,7 +79,21 @@
     color: var(--od-colour-text-primary);
   }
 
-  > a:active > * {
-    color: var(--od-colour-text-primary);
+  > a:focus-visible {
+    outline: 2px solid var(--od-button-primary);
+    @media (forced-colors: active) {
+      text-decoration: underline;
+    }
+    [data-scheme='dark']:not(body) & {
+      background: var(--od-colour-surface-utility);
+      border-color: var(--od-colour-text-primary);
+      color: var(--od-colour-text-primary);
+    }
+  }
+
+  > h2 {
+    font-size: var(--od-font-size);
+    margin: 0;
+    line-height: 1.25;
   }
 }
