@@ -3,9 +3,10 @@ import html from 'nanohtml';
 /**
  *
  * @param {keyof ICONS | 'copylink'} id
+ * @param {boolean} isHidden - Whether to apply aria-hidden=true
  * @returns
  */
-const Icon = id => {
+const Icon = (id, isHidden = false) => {
   if (id === 'copylink') {
     id = 'link';
   }
@@ -21,6 +22,7 @@ const Icon = id => {
       height="1em"
       viewBox="${viewBox || '0 0 24 24'}"
       xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="${isHidden ? 'true' : 'false'}"
     >
       ${paths.map(
         p => html`

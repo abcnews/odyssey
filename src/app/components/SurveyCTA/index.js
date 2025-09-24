@@ -7,16 +7,19 @@ import { subscribe, unsubscribe } from '../../scheduler';
 import Icon from '../Icon';
 import styles from './index.lazy.scss';
 
+let uniqueId = Math.round(Math.random() * 1e6);
+
 const SurveyCTA = ({ url }) => {
   styles.use();
+  let id = uniqueId++;
 
-  return html`<div class="SurveyCTA">
-    <div class="Panel">
-      <label>${Icon('feedback')} Feedback</label>
-      <div>Help us improve — Tell us about your experience with this rich visual article</div>
-      <a href="${url}">Take survey ${Icon('pencil')}</a>
+  return html`<aside class="SurveyCTA">
+    <div class="Panel" aria-labelledby="odyssey-surveycta-${id}">
+      <label id="odyssey-surveycta-${id}">${Icon('feedback', true)} Feedback</label>
+      <h2>Help us improve — Tell us about your experience with this rich visual article</h2>
+      <a href="${url}">Take survey ${Icon('pencil', true)}</a>
     </div>
-  </div> `;
+  </aside> `;
 };
 
 export default SurveyCTA;
