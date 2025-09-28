@@ -13,8 +13,8 @@ const SurveyCTA = ({ url }) => {
   styles.use();
   let id = uniqueId++;
 
-  return html`<aside class="SurveyCTA">
-    <div class="Panel" aria-labelledby="odyssey-surveycta-${id}">
+  return html`<aside class="SurveyCTA" aria-labelledby="odyssey-surveycta-${id}">
+    <div class="Panel">
       <label id="odyssey-surveycta-${id}">${Icon('feedback', true)} Feedback</label>
       <h2>Help us improve — Tell us about your experience with this rich visual article</h2>
       <a href="${url}">Take survey ${Icon('pencil', true)}</a>
