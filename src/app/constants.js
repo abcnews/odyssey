@@ -1,3 +1,4 @@
+import { url2cmid } from '@abcnews/url2cmid';
 export const NEWLINE = '\n';
 export const HYPHEN = '-';
 export const CSS_URL = /url\('?"?(.*?)"?'?\)/;
@@ -144,5 +145,5 @@ export const EMBED_ALIGNMENT_MAP = {
 export const THEME = 'light-blue';
 
 export const SURVEY_URL = `https://forms.office.com/Pages/ResponsePage.aspx?id=mkDBl3hw50e7lNHlNQPgEtWMpmXfgBdBhPa55B3u5WVUQkYwNDVLRFZNUTFGWjdYSUFCVUhMTTlBOS4u&r0f37b43b3f954868a84686bba89ef4b5=${encodeURIComponent(
-  document.location.href
+  `${document.title} (#${url2cmid(window.location.href)})`
 )}`;
