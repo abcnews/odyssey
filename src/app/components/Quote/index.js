@@ -30,11 +30,7 @@ const Quote = ({ isPullquote = false, alignment, parEls = [], attributionNodes =
 
   styles.use();
 
-  return html`
-    <div class="${className}">
-      <blockquote>${parEls.concat(attributionEl)}</blockquote>
-    </div>
-  `;
+  return html` <div class="${className}">${parEls.concat(attributionEl)}</div> `;
 };
 
 export default Quote;
@@ -52,7 +48,12 @@ export const createFromElement = (el, options) => {
   const config = {
     isPullquote: componentName === 'Pullquote' || componentName === 'EmphasisedText',
     alignment,
-    parEls: $$('p,blockquote', clone),
+
+    // The News Web EmphasisedText component returns contents as either
+    // paragraph(s), or a combo of blockquote+span depending on the text.
+    parEls: $$('p,blockquote,span', clone),
+
+    // These can no longer be created in Core, but still exist in legacy articles.
     attributionNodes: ($('cite', clone) || MOCK_NODE).childNodes
   };
 
