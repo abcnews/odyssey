@@ -281,7 +281,7 @@ export const detectVideoId = node => {
   let videoId;
 
   const isFigure = node.getAttribute('data-component') === 'Figure';
-  const isVideo = $('[data-component="VideoPlayer"]', node);
+  const isVideo = $('[data-component^="VideoPlayer"]', node);
   if (isFigure && isVideo) {
     videoId = node.getAttribute('data-uri')?.replace('coremedia://video/', '');
   }

@@ -218,7 +218,7 @@ export default terminusDocument => {
 
   // Transform video embeds
   const videoEmbeds = $$('[data-component="Figure"]', mainEl).filter(el =>
-    $('[data-component="VideoPlayer"],[data-component="ExpiredMediaWarning"]', el)
+    $('[data-component^="VideoPlayer"],[data-component="ExpiredMediaWarning"]', el)
   );
   videoEmbeds.forEach(transformElementIntoVideoEmbed);
   conditionalDebug(videoEmbeds.length > 0, `Transformed ${videoEmbeds.length} video embeds`);

@@ -36,7 +36,7 @@ export const transformElement = el => {
   const mountValue = isMount(el) ? getMountValue(el) : '';
   const isVideoMarker = !!mountValue.match(VIDEO_MARKER_PATTERN);
   const linkEl = $('a[href]', el);
-  const playerIdEl = $('[data-component="VideoPlayer"]', el);
+  const playerIdEl = $('[data-component="VideoPlayer"]', el) || el;
   const expiredMediaWarningEl = $('[data-component="ExpiredMediaWarning"]', el);
   const videoId = isVideoMarker
     ? mountValue.match(VIDEO_MARKER_PATTERN)?.[1]
