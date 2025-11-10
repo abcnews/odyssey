@@ -361,7 +361,7 @@ export const initMeta = terminusDocument => {
     // keep isPL around until we can audit Odyssey plugins and ensure none depend on it
     isPL: true,
     isPreview: getTier() === TIERS.PREVIEW,
-    isFuture: getApplication() === APPLICATIONS.PLNF
+    isFuture: true
   };
 
   // Feed terminus document-based props through the above mixins
