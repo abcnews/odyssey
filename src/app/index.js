@@ -23,6 +23,7 @@ import { transformMarker as transformMarkerIntoRecirculation } from './component
 import { transformMarker as transformMarkerIntoScrollHint } from './components/ScrollHint';
 import { transformMarker as transformMarkerIntoSeries } from './components/Series';
 import { transformMarker as transformMarkerIntoShare } from './components/Share';
+import SurveyCTA, { transformMarker as transformMarkerIntoSurveyCTA } from './components/SurveyCTA';
 import {
   doesElMatchConvention as doesElMatchConventionOfStoryTeaserEmbed,
   transformElement as transformElementIntoStoryTeaserEmbed
@@ -38,13 +39,13 @@ import {
   transformMarker as transformMarkerIntoVideoEmbed
 } from './components/VideoEmbed';
 import { transformMarker as transformMarkerIntoWhatNext } from './components/WhatNext';
-import { MOCK_ELEMENT, RICHTEXT_BLOCK_TAGNAMES, SELECTORS } from './constants';
+import { MOCK_ELEMENT, RICHTEXT_BLOCK_TAGNAMES, SELECTORS, SURVEY_URL } from './constants';
 import './keyframes.scss';
 import { initMeta } from './meta';
 import { reset } from './reset';
 import { start } from './scheduler';
 import { mockDecoyActivationsUnderEl } from './utils/decoys';
-import { $, $$, append, detachAll, prepend, substitute } from './utils/dom';
+import { $, $$, after, append, before, detachAll, prepend, substitute } from './utils/dom';
 import { conditionalDebug, debug } from './utils/logging';
 import { getMarkers, getSections } from './utils/mounts';
 
@@ -76,13 +77,20 @@ export default terminusDocument => {
   //   nested inside them
   // - Finally, all other sections (which shouldn't nest each other) can safely
   //   be transformed
+
+  /** @type {Record<string, import('./utils/mounts').Section[]>} */
   const transformedSections = {};
+
+  /**
+   * Add a record to the map of transformed sections
+   * @param {import('./utils/mounts').Section} section
+   */
   const trackTransformedSection = section => {
     if (!(section.name in transformedSections)) {
       transformedSections[section.name] = [];
     }
 
-    transformedSections[section.name].push(section.startNode);
+    transformedSections[section.name].push(section);
   };
 
   getSections(['remove']).forEach(section => {
@@ -142,13 +150,20 @@ export default terminusDocument => {
   debug('Applied quote-mark formatting to qualifying elements');
 
   // Transform markers
+
+  /** @type {Record<string, import('./utils/mounts').Marker[]>} */
   const transformedMarkers = {};
+
+  /**
+   * Add. a record to the map of transformed markers
+   * @param {import('./utils/mounts').Marker} marker
+   */
   const trackTransformedMarker = marker => {
     if (!(marker.name in transformedMarkers)) {
       transformedMarkers[marker.name] = [];
     }
 
-    transformedMarkers[marker.name].push(marker.node);
+    transformedMarkers[marker.name].push(marker);
   };
 
   getMarkers([
@@ -163,7 +178,8 @@ export default terminusDocument => {
     'youtube',
     'related',
     'tease',
-    'whatnext'
+    'whatnext',
+    'surveycta'
   ]).forEach(marker => {
     let shouldTrackTransformedMarker = true;
 
@@ -201,6 +217,8 @@ export default terminusDocument => {
       case 'whatnext':
         transformMarkerIntoWhatNext(marker);
         break;
+      case 'surveycta':
+        transformMarkerIntoSurveyCTA(marker, SURVEY_URL);
       default:
         break;
     }
@@ -210,6 +228,23 @@ export default terminusDocument => {
     }
   });
   debug(`Transformed markers (${Object.keys(transformedMarkers).length})`, transformedMarkers);
+
+  // Force a Survey CTA if it wasn't manually placed
+  if (!transformedMarkers['surveycta']) {
+    // Find the first Block
+    const block = transformedSections['block']?.[0];
+    const survey = SurveyCTA({
+      url: SURVEY_URL
+    });
+    if (block && block.substitutionNode) {
+      after(block.substitutionNode, survey);
+    } else {
+      const heading = $('main > h2');
+      if (heading) {
+        before(heading, survey);
+      }
+    }
+  }
 
   // Activate existing parallaxes
   const parallaxes = $$('.u-parallax');
