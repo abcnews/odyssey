@@ -19,7 +19,8 @@ import styles from './index.lazy.scss';
  * @prop {number | undefined} scrollplayPct
  * @prop {boolean} [willPlayAudio]
  * @prop {boolean} [isInPlayableRange]
- * @prop {string} [alternativeText]
+ * @prop {string} [_alternativeText] - Private property, do not use.
+ * @prop {string} [alternativeText] - Alternative text for the video.
  * @prop {() => string} getTitle
  * @prop {() => DOMRect} getRect
  * @prop {() => HTMLVideoElement} [getVideoEl]
@@ -106,12 +107,17 @@ const VideoPlayer = ({
   }
 
   if (!title) {
-    title = String.fromCharCode(getNextUntitledMediaCharCode());
+    title = '';
   }
 
   const placeholderEl = Sizer(ratios);
 
-  const videoEl = html`<video preload="none" tabindex="-1" aria-label="${title}"></video>`;
+  const videoEl = html`<video
+    preload="none"
+    tabindex="-1"
+    aria-label="${title || ''}"
+    aria-hidden="${!title}"
+  ></video>`;
 
   // This is a silly hack for types because nanohtml always returns a HTMLElement regardless of the tag used.
   if (!isVideoElement(videoEl)) return;
@@ -231,6 +237,19 @@ const VideoPlayer = ({
      * threshold so videos with audio are less likely to overlap
      */
     willPlayAudio: false,
+    set alternativeText(text) {
+      const sanitisedText = typeof text === 'string' ? text : '';
+      this._alternativeText = sanitisedText;
+      const videoEl = this.getVideoEl?.();
+      if (!videoEl) {
+        return;
+      }
+      videoEl.setAttribute('aria-label', sanitisedText);
+      videoEl.setAttribute('aria-hidden', !text ? 'true' : 'false');
+    },
+    get alternativeText() {
+      return this._alternativeText;
+    },
     getTitle: () => title,
     getRect: () => {
       // Fixed players should use their parent's rect, as they're always in the viewport
