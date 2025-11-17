@@ -36,8 +36,9 @@ export const getMetadata = videoId =>
 
     getOrFetchDocument({ id: String(videoId), type: 'video' }, meta)
       .then(videoDocOrTeaserDoc => {
-        // Even if the first document teases another, keep this alternativeText
-        const alternativeText = videoDocOrTeaserDoc.title;
+        // Keep the alt text from the title of the teaser doc (if exists).
+        // Otherwise return the alt text from the thumbnail image.
+        const alternativeText = videoDocOrTeaserDoc?._embedded?.mediaThumbnail?.alt || videoDocOrTeaserDoc.title;
 
         if (videoDocOrTeaserDoc.target) {
           // We need to fetch & parse the (teased) target document
