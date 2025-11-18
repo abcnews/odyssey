@@ -117,7 +117,7 @@ const VideoPlayer = ({
   const videoEl = html`<video
     preload="none"
     tabindex="-1"
-    aria-label="${title || ''}"
+    aria-label="${title}"
     aria-hidden="${isAmbient && !title}"
   ></video>`;
 
