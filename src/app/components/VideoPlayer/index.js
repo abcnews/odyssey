@@ -56,7 +56,7 @@ let hasSubscribed = false;
  * @param {string} [config.title] The title of the video
  * @param {boolean} [config.isAmbient] Should the video be displayed as an ambient video
  * @param {boolean} [config.isContained] Should the video be contained
- * @param {boolean} [config.isInvariablyAmbient]
+ * @param {boolean} [config.isInvariablyAmbient] Force the video to be displayed as ambient, regardless of configuration.
  * @param {boolean} [config.isLoop] Should the video loop?
  * @param {boolean} [config.isMuted] Should the video be muted?
  * @param {number} [config.scrollplayPct] What protion of the video should be visible for play on scroll
@@ -116,7 +116,7 @@ const VideoPlayer = ({
     preload="none"
     tabindex="-1"
     aria-label="${title || ''}"
-    aria-hidden="${!title}"
+    aria-hidden="${isAmbient && !title}"
   ></video>`;
 
   // This is a silly hack for types because nanohtml always returns a HTMLElement regardless of the tag used.
