@@ -106,7 +106,9 @@ const VideoPlayer = ({
     isMuted = true;
   }
 
-  if (!title) {
+  if (typeof title === 'string') {
+    title = title.trim();
+  } else {
     title = '';
   }
 
@@ -238,14 +240,14 @@ const VideoPlayer = ({
      */
     willPlayAudio: false,
     set alternativeText(text) {
-      const sanitisedText = typeof text === 'string' ? text : '';
+      const sanitisedText = typeof text === 'string' ? text.trim() : '';
       this._alternativeText = sanitisedText;
       const videoEl = this.getVideoEl?.();
       if (!videoEl) {
         return;
       }
       videoEl.setAttribute('aria-label', sanitisedText);
-      videoEl.setAttribute('aria-hidden', !text ? 'true' : 'false');
+      videoEl.setAttribute('aria-hidden', !sanitisedText ? 'true' : 'false');
     },
     get alternativeText() {
       return this._alternativeText;
