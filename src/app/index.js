@@ -232,17 +232,17 @@ export default terminusDocument => {
   // Force a Survey CTA if it wasn't manually placed
   if (!transformedMarkers['surveycta']) {
     // Find the first Block
-    const block = transformedSections['block']?.[0];
+    const block = transformedSections['block']?.[2];
+    const heading = $$('h2', mainEl)?.[2];
     const survey = SurveyCTA({
       url: SURVEY_URL
     });
     if (block && block.substitutionNode) {
       after(block.substitutionNode, survey);
+    } else if (heading) {
+      before(heading, survey);
     } else {
-      const heading = $('main > h2');
-      if (heading) {
-        before(heading, survey);
-      }
+      append(mainEl, survey);
     }
   }
 
