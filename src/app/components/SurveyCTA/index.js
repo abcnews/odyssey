@@ -15,11 +15,13 @@ const SurveyCTA = ({ url }) => {
 
   return html`<aside class="SurveyCTA" aria-labelledby="odyssey-surveycta-${id}">
     <div class="Panel">
-      <label id="odyssey-surveycta-${id}">${Icon('feedback', true)} Feedback</label>
-      <h2>Help us improve — Tell us about your experience with this rich visual article</h2>
+      <div id="odyssey-surveycta-${id}" class="SurveyCTA__label" role="heading" aria-level="2">
+        ${Icon('feedback', true)} Feedback
+      </div>
+      <div class="SurveyCTA__text">Help us improve — Tell us about your experience with this rich visual article</div>
       <a href="${url}">Take survey ${Icon('pencil', true)}</a>
     </div>
-  </aside> `;
+  </aside>`;
 };
 
 export default SurveyCTA;
