@@ -34,7 +34,7 @@
   color: var(--od-colour-text-primary);
   font-family: var(--od-font-stack-sans);
 
-  > label {
+  > .SurveyCTA__label {
     display: block;
     color: var(--od-colour-text-secondary);
 
@@ -47,7 +47,7 @@
   }
 
   > div,
-  > h2 {
+  > .SurveyCTA__text {
     line-height: 1.25;
   }
 
@@ -91,7 +91,7 @@
     }
   }
 
-  > h2 {
+  > .SurveyCTA__text {
     font-size: var(--od-font-size);
     margin: 0;
     line-height: 1.25;
