@@ -6,7 +6,7 @@ import { isVideoElement, toggleAttribute, toggleBooleanAttributes } from '../../
 import { blurImage } from '../Picture/blur';
 import Sizer from '../Sizer';
 import VideoControls from '../VideoControls';
-import { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } from './players';
+import { registerPlayer, forEachPlayer } from './players';
 import { initialiseVideoAnalytics } from './stats';
 import { getMetadata, hasAudio } from './utils';
 import styles from './index.lazy.scss';
@@ -19,7 +19,6 @@ import styles from './index.lazy.scss';
  * @prop {number | undefined} scrollplayPct
  * @prop {boolean} [willPlayAudio]
  * @prop {boolean} [isInPlayableRange]
- * @prop {string} [_alternativeText] - Private property, do not use.
  * @prop {string} [alternativeText] - Alternative text for the video.
  * @prop {() => string} getTitle
  * @prop {() => DOMRect} getRect
@@ -241,7 +240,6 @@ const VideoPlayer = ({
     willPlayAudio: false,
     set alternativeText(text) {
       const sanitisedText = typeof text === 'string' ? text.trim() : '';
-      this._alternativeText = sanitisedText;
       const videoEl = this.getVideoEl?.();
       if (!videoEl) {
         return;
@@ -250,7 +248,7 @@ const VideoPlayer = ({
       videoEl.setAttribute('aria-hidden', !sanitisedText ? 'true' : 'false');
     },
     get alternativeText() {
-      return this._alternativeText;
+      return this.getVideoEl?.()?.getAttribute('aria-label') || '';
     },
     getTitle: () => title,
     getRect: () => {
