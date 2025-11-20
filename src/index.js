@@ -32,14 +32,17 @@ proxy('odyssey').then(() => {
   const fetchArticleDocumentTask = fetchDocument(url2cmid(window.location.href));
   debugWhen(fetchArticleDocumentTask, 'Fetched article document');
 
-  // 3. permission to modify the DOM
-  const obtainBodyDOMPermitTask = requestDOMPermit('body').catch(err => {
-    // Try again, once.
-    // It appears possible that sometimes this request is made before PL sets up the decoy request listener
-    // See: NEWSWEB-3258
-    debug('Attempting second request for "body" DOM permit');
-    return requestDOMPermit('body');
-  });
+  // 3. permission to modify the DOM (unless __ODYSSEY_NODECOY__ is set)
+  const obtainBodyDOMPermitTask =
+    typeof window.__ODYSSEY_NODECOY__ !== 'undefined'
+      ? Promise.resolve()
+      : requestDOMPermit('body').catch(err => {
+          // Try again, once.
+          // It appears possible that sometimes this request is made before PL sets up the decoy request listener
+          // See: NEWSWEB-3258
+          debug('Attempting second request for "body" DOM permit');
+          return requestDOMPermit('body');
+        });
   debug('Requested "body" DOM permit');
   debugWhen(obtainBodyDOMPermitTask, 'Obtained "body" DOM permit');
 
