@@ -6,7 +6,7 @@ import { isVideoElement, toggleAttribute, toggleBooleanAttributes } from '../../
 import { blurImage } from '../Picture/blur';
 import Sizer from '../Sizer';
 import VideoControls from '../VideoControls';
-import { getNextUntitledMediaCharCode, registerPlayer, forEachPlayer } from './players';
+import { registerPlayer, forEachPlayer } from './players';
 import { initialiseVideoAnalytics } from './stats';
 import { getMetadata, hasAudio } from './utils';
 import styles from './index.lazy.scss';
@@ -19,7 +19,7 @@ import styles from './index.lazy.scss';
  * @prop {number | undefined} scrollplayPct
  * @prop {boolean} [willPlayAudio]
  * @prop {boolean} [isInPlayableRange]
- * @prop {string} [alternativeText]
+ * @prop {string} [alternativeText] - Alternative text for the video.
  * @prop {() => string} getTitle
  * @prop {() => DOMRect} getRect
  * @prop {() => HTMLVideoElement} [getVideoEl]
@@ -55,7 +55,7 @@ let hasSubscribed = false;
  * @param {string} [config.title] The title of the video
  * @param {boolean} [config.isAmbient] Should the video be displayed as an ambient video
  * @param {boolean} [config.isContained] Should the video be contained
- * @param {boolean} [config.isInvariablyAmbient]
+ * @param {boolean} [config.isInvariablyAmbient] Force the video to be displayed as ambient, regardless of configuration.
  * @param {boolean} [config.isLoop] Should the video loop?
  * @param {boolean} [config.isMuted] Should the video be muted?
  * @param {number} [config.scrollplayPct] What protion of the video should be visible for play on scroll
@@ -105,13 +105,20 @@ const VideoPlayer = ({
     isMuted = true;
   }
 
-  if (!title) {
-    title = String.fromCharCode(getNextUntitledMediaCharCode());
+  if (typeof title === 'string') {
+    title = title.trim();
+  } else {
+    title = '';
   }
 
   const placeholderEl = Sizer(ratios);
 
-  const videoEl = html`<video preload="none" tabindex="-1" aria-label="${title}"></video>`;
+  const videoEl = html`<video
+    preload="none"
+    tabindex="-1"
+    aria-label="${title}"
+    aria-hidden="${isAmbient && !title}"
+  ></video>`;
 
   // This is a silly hack for types because nanohtml always returns a HTMLElement regardless of the tag used.
   if (!isVideoElement(videoEl)) return;
@@ -231,7 +238,21 @@ const VideoPlayer = ({
      * threshold so videos with audio are less likely to overlap
      */
     willPlayAudio: false,
-    getTitle: () => title,
+    set alternativeText(text) {
+      const sanitisedText = typeof text === 'string' ? text.trim() : '';
+      const videoEl = this.getVideoEl?.();
+      if (!videoEl) {
+        return;
+      }
+      videoEl.setAttribute('aria-label', sanitisedText);
+      videoEl.setAttribute('aria-hidden', !sanitisedText ? 'true' : 'false');
+    },
+    get alternativeText() {
+      return this.getVideoEl?.()?.getAttribute('aria-label') || '';
+    },
+    getTitle() {
+      return this.alternativeText || '';
+    },
     getRect: () => {
       // Fixed players should use their parent's rect, as they're always in the viewport
       const position = window.getComputedStyle(videoPlayerEl).position;
