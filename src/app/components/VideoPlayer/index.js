@@ -250,7 +250,9 @@ const VideoPlayer = ({
     get alternativeText() {
       return this.getVideoEl?.()?.getAttribute('aria-label') || '';
     },
-    getTitle: () => title,
+    getTitle() {
+      return this.alternativeText || '';
+    },
     getRect: () => {
       // Fixed players should use their parent's rect, as they're always in the viewport
       const position = window.getComputedStyle(videoPlayerEl).position;
