@@ -106,9 +106,6 @@ $mq-portrait: '(orientation: portrait)';
 $mq-landscape: '(orientation: landscape)';
 $mq-gt-4-3: '(min-aspect-ratio: 4/3)';
 
-$bp-pl-md: $unit * 34;
-$mq-pl-lt-md: '(max-width: #{$bp-pl-md - 1px})';
-
 $size-control: $unit * 2.5;
 $size-control-margin: $unit * 0.1875;
 
