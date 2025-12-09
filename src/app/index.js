@@ -23,7 +23,7 @@ import { transformMarker as transformMarkerIntoRecirculation } from './component
 import { transformMarker as transformMarkerIntoScrollHint } from './components/ScrollHint';
 import { transformMarker as transformMarkerIntoSeries } from './components/Series';
 import { transformMarker as transformMarkerIntoShare } from './components/Share';
-import SurveyCTA, { transformMarker as transformMarkerIntoSurveyCTA } from './components/SurveyCTA';
+import { transformMarker as transformMarkerIntoSurveyCTA } from './components/SurveyCTA';
 import {
   doesElMatchConvention as doesElMatchConventionOfStoryTeaserEmbed,
   transformElement as transformElementIntoStoryTeaserEmbed
@@ -45,7 +45,7 @@ import { initMeta } from './meta';
 import { reset } from './reset';
 import { start } from './scheduler';
 import { mockDecoyActivationsUnderEl } from './utils/decoys';
-import { $, $$, after, append, before, detachAll, prepend, substitute } from './utils/dom';
+import { $, $$, append, detachAll, prepend, substitute } from './utils/dom';
 import { conditionalDebug, debug } from './utils/logging';
 import { getMarkers, getSections } from './utils/mounts';
 
@@ -228,23 +228,6 @@ export default terminusDocument => {
     }
   });
   debug(`Transformed markers (${Object.keys(transformedMarkers).length})`, transformedMarkers);
-
-  // Force a Survey CTA if it wasn't manually placed
-  if (!transformedMarkers['surveycta']) {
-    // Find the first Block
-    const block = transformedSections['block']?.[2];
-    const heading = $$('h2', mainEl)?.[2];
-    const survey = SurveyCTA({
-      url: SURVEY_URL
-    });
-    if (block && block.substitutionNode) {
-      after(block.substitutionNode, survey);
-    } else if (heading) {
-      before(heading, survey);
-    } else {
-      append(mainEl, survey);
-    }
-  }
 
   // Activate existing parallaxes
   const parallaxes = $$('.u-parallax');
