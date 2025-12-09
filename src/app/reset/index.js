@@ -11,8 +11,6 @@ const TEMPLATE_REMOVABLES = {
     '[data-component="AppDetailLayout"]',
     '[data-component="DetailLayout"]',
     '[data-component="WebContentWarning"]',
-    'ol>li>span:first-child',
-    'ul>li>span:first-child',
     '[data-component="NewsTicker"]',
     '[data-component="StickyHeader"]',
     ':not(aside)>[data-component="Sidebar"]'
