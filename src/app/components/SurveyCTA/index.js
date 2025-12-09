@@ -1,9 +1,5 @@
 // @ts-check
 import html from 'nanohtml';
-import { proximityCheck } from '../../utils/misc';
-import { $ } from '../../utils/dom';
-import { getMeta } from '../../meta';
-import { subscribe, unsubscribe } from '../../scheduler';
 import Icon from '../Icon';
 import styles from './index.lazy.scss';
 
