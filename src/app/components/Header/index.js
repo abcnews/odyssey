@@ -23,6 +23,7 @@ import styles from './index.lazy.scss';
  * @prop {boolean} isLayered
  * @prop {boolean} isPale
  * @prop {boolean} isVideoYouTube
+ * @prop {boolean} isParallax
  * @prop {Partial<import('src/app/meta').MetaData>} meta
  * @prop {{value: number; units: string}} [mediaWidth]
  * @prop {Element[]} miscContentEls
@@ -45,6 +46,7 @@ const Header = ({
   isLayered,
   isPale,
   isVideoYouTube,
+  isParallax,
   meta = {},
   mediaWidth,
   miscContentEls = [],
@@ -163,12 +165,17 @@ const Header = ({
 
   const headerContentEl = html`<div class="Header-content u-richtext${isDark ? '-invert' : ''}">${contentEls}</div>`;
 
+  const mediaClassName = cn([
+    'Header-media',
+    { 'u-parallax': isLayered && !isAbreast && mediaEl?.tagName !== 'DIV' && isParallax }
+  ]);
+
   const headerEl = html`
     <div class="${className}" data-scheme="${scheme}" data-theme="${THEME}">
       ${mediaEl
         ? html`
             <div
-              class="Header-media${isLayered && !isAbreast && mediaEl.tagName !== 'DIV' ? ' u-parallax' : ''}"
+              class="${mediaClassName}"
               style="${mediaWidth ? '--od-header-media-width: ' + mediaWidth.value + mediaWidth.units : ''}"
             >
               ${!isLayered && !isAbreast && !meta.isFuture ? ScrollHint() : null} ${mediaEl}
@@ -248,6 +255,7 @@ function fetchInfoSourceLogo(meta, el, variant) {
 export const transformSection = (section, meta) => {
   const ratios = getRatios(section.configString);
   const isFloating = section.configString.indexOf('floating') > -1;
+  const isParallax = section.configString.indexOf('parallax') > -1;
   const isLayered = isFloating || section.configString.indexOf('layered') > -1;
   const isDark =
     (isLayered && !meta.isFuture) || section.configString.indexOf('dark') > -1
@@ -312,6 +320,7 @@ export const transformSection = (section, meta) => {
       isDark,
       isPale,
       isFloating,
+      isParallax,
       isLayered,
       isKicker,
       mediaWidth: mediaWidthValue
