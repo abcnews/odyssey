@@ -1,4 +1,5 @@
 // @ts-check
+import { prefersReducedMotion } from '@abcnews/env-utils';
 import { enqueue, subscribe } from '../../scheduler';
 import { proximityCheck } from '../../utils/misc';
 
@@ -43,14 +44,7 @@ function _checkIfPlayersNeedToBeToggled(client) {
 
     if (isInPlayableRange || isInPlayableRange !== player.isInPlayableRange) {
       enqueue(function _toggleVideoPlay() {
-        const inPageMotionPreference =
-          document.body.classList.contains('is-reduced-motion') ||
-          (document.body.classList.contains('is-high-motion') ? false : null);
-
-        const prefersReducedMotion =
-          inPageMotionPreference ?? window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-        if (isInPlayableRange && !prefersReducedMotion) {
+        if (isInPlayableRange && !prefersReducedMotion.value) {
           player.play();
         } else {
           player.pause();
