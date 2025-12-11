@@ -26,7 +26,7 @@
 	},
 	"dependencies": {
 		"@abcnews/dev-proxy": "^1.2.1",
-		"@abcnews/env-utils": "^4.0.0",
+		"@abcnews/env-utils": "^6.0.0",
 		"@abcnews/url2cmid": "^1.1.0",
 		"classnames": "^2.2.6",
 		"core-js": "^3.23.4",

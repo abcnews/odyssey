@@ -1,3 +1,4 @@
+import { prefersReducedMotion } from '@abcnews/env-utils';
 import { getMeta } from '../../meta';
 import { enqueue, subscribe } from '../../scheduler';
 
@@ -20,6 +21,8 @@ export const activate = el => {
 };
 
 function _checkIfParallaxesPropertiesNeedToBeUpdated() {
+  if (prefersReducedMotion.value) return;
+
   parallaxes.forEach(parallax => {
     const rect = parallax.el.getBoundingClientRect();
 
