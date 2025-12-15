@@ -1,4 +1,4 @@
-@import '../../constants';
+@use '../../constants' as *;
 
 // Attribute selectors are used for `u-richtext` so those styles also apply to
 // `u-richtext-invert`.

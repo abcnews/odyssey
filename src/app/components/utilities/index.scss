@@ -1,12 +1,10 @@
-@layer odyssey {
-  @layer legacy, future;
-}
-@import './richtext';
-@import './blend-luminosity';
-@import './cta';
-@import './dropcap';
-@import './full';
-@import './layout';
-@import './parallax';
-@import './pull';
-@import './quote';
+@use './layers';
+@use './richtext';
+@use './blend-luminosity';
+@use './cta';
+@use './dropcap';
+@use './full';
+@use './layout';
+@use './parallax';
+@use './pull';
+@use './quote';

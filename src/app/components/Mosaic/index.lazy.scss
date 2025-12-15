@@ -1,4 +1,4 @@
-@import '../../constants';
+@use '../../constants' as *;
 
 .Mosaic {
   --Mosaic-gap: #{$unit * 0.25};

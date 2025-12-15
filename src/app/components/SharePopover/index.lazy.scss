@@ -1,4 +1,4 @@
-@import '../../constants';
+@use '../../constants' as *;
 
 .is-future {
   @media (max-width: 33.9375em) {

@@ -1,4 +1,4 @@
-@import '../../constants';
+@use '../../constants' as *;
 
 [class*='u-pull'] {
   @media #{$mq-gt-sm} {

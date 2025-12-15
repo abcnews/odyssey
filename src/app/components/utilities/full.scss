@@ -1,4 +1,4 @@
-@import '../../constants';
+@use '../../constants' as *;
 
 .u-full.u-full {
   --u-full-vertical-margin: #{$unit * 2};

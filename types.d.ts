@@ -7,6 +7,7 @@ interface Window {
   FB: any; // The Facebook embed API
   twttr: any; // The twitter embed API
   instgrm: any; // The instagram embed API
+  dataLayer?: any;
 }
 
 interface TerminusArticle {

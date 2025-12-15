@@ -1,4 +1,6 @@
-@import '../../constants';
+@use '../../constants' as *;
+@use './media';
+@use './content';
 
 .Block {
   overflow: hidden;
@@ -20,6 +22,3 @@
     background-color: $color-lightBg;
   }
 }
-
-@import './media';
-@import './content';

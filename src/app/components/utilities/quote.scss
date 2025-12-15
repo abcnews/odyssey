@@ -1,4 +1,4 @@
-@import '../../constants';
+@use '../../constants' as *;
 
 @media #{$mq-gt-sm} {
   .u-quote {

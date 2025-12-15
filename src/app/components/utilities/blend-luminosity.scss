@@ -1,4 +1,4 @@
-@import '../../constants';
+@use '../../constants' as *;
 
 @supports (background-blend-mode: luminosity) {
   .u-blend-luminosity {
