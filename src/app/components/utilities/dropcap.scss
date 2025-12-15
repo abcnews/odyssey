@@ -1,4 +1,4 @@
-@import '../../constants';
+@use '../../constants' as *;
 
 [class*='u-richtext'] > .u-dropcap::first-letter {
   float: left;

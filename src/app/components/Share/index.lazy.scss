@@ -1,6 +1,6 @@
 // Share components are all new for Future News so no flags required here. For legacy
 // component see the ../legacy folder.
-@import '../../constants';
+@use '../../constants' as *;
 
 .Share-title {
   margin-bottom: $unit * 0.375;

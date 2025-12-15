@@ -1,4 +1,4 @@
-@import '../../constants';
+@use '../../constants' as *;
 
 .FormatCredit {
   color: var(--od-colour-text-primary);
@@ -9,16 +9,15 @@
   line-height: 125%;
   padding-top: var(--od-space-component-margin);
 
-  .FormatCredit>* {
+  .FormatCredit > * {
     color: inherit;
   }
 
   // pill/tag w specificity to fight Odyssey richtext links
-  [class*=u-richtext] &__tag {
-
+  [class*='u-richtext'] &__tag {
     // Style inner span to avoid leaky styles from Odyssey/story customisations
     span {
-      margin-left: .75rem;
+      margin-left: 0.75rem;
       border-radius: 6.25rem;
       // These are important because some stories override link colours.
       // If this is important to override, please change the var instead.

@@ -1,4 +1,4 @@
-@import '../../constants';
+@use '../../constants' as *;
 
 .Block-content {
   display: flex;

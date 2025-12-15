@@ -1,4 +1,4 @@
-@import '../../constants';
+@use '../../constants' as *;
 
 .Backdrop {
   padding-top: $unit * 2;

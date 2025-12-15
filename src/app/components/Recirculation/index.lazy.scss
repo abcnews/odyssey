@@ -1,4 +1,4 @@
-@import '../../constants';
+@use '../../constants' as *;
 
 .Recirculation:not(.has-children) {
   display: none;
