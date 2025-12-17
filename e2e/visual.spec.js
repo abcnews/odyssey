@@ -49,7 +49,7 @@ ARTICLES.forEach(([article, { targets }]) => {
     PLATFORMS.forEach(([subdomain, prefix]) => {
       test.describe(`${prefix}`, { tag: `@${prefix}` }, () => {
         test.beforeEach(async ({ page }) => {
-          const url = `https://${subdomain}.abc.net.au/${prefix}/${article}?future=true`;
+          const url = `https://${subdomain}.abc.net.au/${prefix}/${article}`;
           // Substitute production odyssey for local dev build
           await page.route('https://www.abc.net.au/res/sites/news-projects/odyssey/**/*', route => {
             const url = route
@@ -71,13 +71,9 @@ ARTICLES.forEach(([article, { targets }]) => {
 
         RESOLUTIONS.forEach(resolution => {
           // TODO: Add resolution tag
-          test.describe(`${resolution.join(',')}`, () => {
+          test.describe(`${resolution.join(',')}`, async () => {
             test.beforeEach(async ({ page }) => {
               await page.setViewportSize({ width: resolution[0], height: resolution[1] });
-              // Make sure all images are loaded before taking screenshots
-              for (const img of await page.locator('#content > :has(.Picture):not(.MasterGallery)').all()) {
-                await img.scrollIntoViewIfNeeded();
-              }
             });
 
             // Above the fold is being troublesome and doesn't add much
@@ -91,6 +87,7 @@ ARTICLES.forEach(([article, { targets }]) => {
                 await expect(locator).toHaveCount(1);
                 await locator.scrollIntoViewIfNeeded();
                 await page.waitForTimeout(100);
+                await page.waitForLoadState('networkidle');
                 await expect(locator).toHaveScreenshot({
                   timeout: 30000,
                   stylePath: join(__dirname, 'screenshots.css')

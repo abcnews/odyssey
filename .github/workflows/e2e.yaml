@@ -13,6 +13,9 @@ env:
 jobs:
   e2e:
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.57.0-noble
+      options: --user 1001
     steps:
       - name: Checkout the PR branch
         uses: actions/checkout@v4
@@ -22,15 +25,14 @@ jobs:
           node-version: 'lts/*'
       - name: Install dependencies
         run: npm ci
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
       - name: Setup terminus API key
         run: echo "TERMINUS_FETCH_API_KEY=$TERMINUS_FETCH_API_KEY" > .env
       - name: Run Playwright tests
         run: |
-          npm run test | tee >(sed $'s/\033[[][^A-Za-z]*[A-Za-z]//g' > output.log)
+          npm run test --update-snapshots | npx strip-ansi-cli > output.log
           if grep -q -F -e "Error: A snapshot doesn't exist at" -e "Screenshot comparison failed" -e "Error: expect(locator).toHaveScreenshot(expected)" output.log; then
             echo "Playwright tests failed due to a snapshot issue."
+            cat output.log
             echo "SNAPSHOT_DIFFERENCES=true" >> $GITHUB_ENV
             exit 1
           elif grep -q "failed" output.log; then
@@ -46,7 +48,7 @@ jobs:
           retention-days: 30
       - name: Comment on PR with report link
         uses: thollander/actions-comment-pull-request@v3
-        if: ${{ failure() && env.SNAPSHOT_DIFFERENCES == 'true' }}
+        if: ${{ failure() && env.SNAPSHOT_DIFFERENCES == 'true' && !env.ACT }}
         with:
           message: |
             ### Playwright visual snapshot differences were detected.

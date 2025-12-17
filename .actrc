@@ -1,0 +1,2 @@
+--artifact-server-path $PWD/.artifacts
+-e ./event.json
