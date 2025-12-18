@@ -74,20 +74,18 @@ module.exports = {
 
 After checking out this repo, you'll need to copy `.env.example` to `.env` and populate it (ask one of the authors for values to use).
 
-Odyssey also uses some internal ABC libraries, so you'll need to login following the
-[instructions](https://pl.abc-dev.net.au/docs/getting-started/aws/aws-login) in the PL documentation.
-
 ### Visual regression testing
 
 There are some e2e tests designed to be run against the live production output from Presentation Layer. These can be
-used to test for visual regressions **while developing** Odyssey and may also be useful for diagnosing
+used to test for visual regressions **while developing** and may also be useful for diagnosing
 **issues related to changes in Presentation Layer** that have affected Odyssey.
 
 There are GitHub workflows that run tests for any pull requests to `main`. There is also a workflow for updating the
 'expected' snapshots tests are compared against.
 
-Because Playwright visual tests [are not cross-OS
-compatible](https://www.tonyward.dev/articles/visual-regression-testing-disruption) the source of truth must always be
+Playwright visual tests [are not cross-OS
+compatible](https://www.tonyward.dev/articles/visual-regression-testing-disruption), so running tests locally will not
+produce snapshots usable in the CI environment. Therefore the source of truth must always be
 the CI output. It's the responsibility of the developer making the PR to check, approve and update the 'expected'
 snapshots for visual changes.
 
@@ -104,7 +102,8 @@ snapshots back to the PR branch when it's done.
 #### Running visual tests locally
 
 Although the source of truth is controlled by the CI, it can still be useful to run tests locally during development.
-However, ultimately visual changes need to be approved in a PR using the workflows.
+
+However, ultimately visual changes should to be approved in a PR using the workflows.
 
 To do this effectively, you'll need to take a couple of steps:
 
@@ -113,6 +112,19 @@ To do this effectively, you'll need to take a couple of steps:
 
 There is a `.gitignore` rule in place for snapshot files generated on MacOS to avoid accidentally committing them to the
 repository.
+
+#### Running visual tests locally with `act`
+
+It's also possible to run the GitHub workflows locally using [`act`](https://nektosact.com/introduction.html). To run
+the tests and check for visual changes, simply run `act` from the root of the repository.
+
+This will spin up Docker containers and run the tests in an environment that mimics the GitHub workflows environment. It
+will create a Playwright report in `.artifacts/1/playwright-report/`.
+
+In theory, this can produce snapshots that will be usable by the CI. To run the update-snapshots workflow call `act
+workflow_dispatch`. This will generate new snapshots and copy them to `.artifacts/1/snapshots/snapshots.zip`.
+
+To make snapshots generated this way into the expected versions, you'll need to extract them from the zip file and move them to `e2e/visual.spec.js-snapshots`.
 
 ## Authors
 
