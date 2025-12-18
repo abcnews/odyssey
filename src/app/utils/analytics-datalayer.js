@@ -1,5 +1,10 @@
 // @ts-check
 
+// This file re-implements the small subset of functions we need from @abcaustralia/analytics-datalayer
+// We would utilise that package, but using it outside the PL ecosystem is painful and this is a simple
+// solution. We should re-visit this at some point, particularly in light of the much better types the
+// package offers.
+
 /** Push any general data into the datalayer */
 const handlePush = data => {
   if (typeof window !== 'undefined') {
