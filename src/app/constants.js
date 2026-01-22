@@ -140,7 +140,7 @@ export const EMBED_ALIGNMENT_MAP = {
  * a dark variant of this theme. The light/dark is controlled by a 'scheme' variable in PL.
  *
  * TODO: This is hard coded in Odyssey for now, but we may want to adopt the PL themes which can
- * be found on the `data-scheme` attribute on `<body>`
+ * be found on the `data-theme` attribute on `<body>`
  */
 export const THEME = 'light-blue';
 
