@@ -10,12 +10,6 @@
     }
   }
 
-  &:not(.u-pull):not(.u-full) {
-    :where(.is-legacy) {
-      margin-bottom: $unit * 1.5;
-    }
-  }
-
   @media #{$mq-sm} {
     .Main > & {
       padding-left: 0;
@@ -38,9 +32,7 @@
   }
 }
 
-:where(.is-future) {
-  .VideoEmbed {
-    margin-top: var(--od-space-component-margin);
-    margin-bottom: var(--od-space-component-margin);
-  }
+.VideoEmbed {
+  margin-top: var(--od-space-component-margin);
+  margin-bottom: var(--od-space-component-margin);
 }

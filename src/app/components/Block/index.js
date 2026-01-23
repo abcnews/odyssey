@@ -403,9 +403,7 @@ export const transformSection = (section, meta) => {
   const isContained = section.configString.indexOf('contain') > -1;
   const isDocked = section.configString.indexOf('docked') > -1;
   const isGrouped = section.configString.indexOf('grouped') > -1;
-  const isDark = meta.isFuture
-    ? section.configString.indexOf('dark') > -1 || meta.isDark || meta.isDarkMode
-    : section.configString.indexOf('light') === -1;
+  const isDark = section.configString.indexOf('dark') > -1 || meta.isDark || meta.isDarkMode;
   const isPiecemeal = section.configString.indexOf('piecemeal') > -1;
   const isPhoneFrame = section.configString.indexOf('phoneframe') > -1;
   const shouldSupplant = section.configString.indexOf('supplant') > -1;

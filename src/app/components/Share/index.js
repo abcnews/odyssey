@@ -1,28 +1,18 @@
 // @ts-check
 import html from 'nanohtml';
-import { track } from '../../utils/behaviour';
-import { proximityCheck } from '../../utils/misc';
 import { $ } from '../../utils/dom';
 import { getMeta } from '../../meta';
-import { subscribe, unsubscribe } from '../../scheduler';
-import ShareLinksLegacy from '../legacy/ShareLinks';
 import SharePopover, { trackShare } from '../SharePopover';
 import Icon from '../Icon';
 import styles from './index.lazy.scss';
 
-const DEFAULT_TYPE = 'story';
-const INVITATION_RANGE = 0;
-const UPPERCASE_PATTERN = /[A-Z]/g;
-
-const instances = [];
-
-const Share = ({ type, links }) => {
+const Share = ({ links }) => {
   if (links.length === 0) {
     return html`<div data-error="No share links to render"></div>`;
   }
   styles.use();
 
-  const { isFuture, url } = getMeta();
+  const { url } = getMeta();
 
   let hdl;
   const copyToClipboard = async () => {
@@ -39,37 +29,16 @@ const Share = ({ type, links }) => {
     } catch (err) {}
   };
 
-  if (isFuture) {
-    return html`
-      <div class="ShareBar">
-        <div class="ShareBarUrl" onclick="${() => copyToClipboard()}">
-          <div class="ShareBarText">${(url || '').replace('https://www.', '').replace(/\d\d\d\d-\d\d-\d\d\//, '')}</div>
-          <button class="ShareBarLinkButton">${Icon('link')}</button>
-        </div>
-
-        ${ShareButton({ links })}
+  return html`
+    <div class="ShareBar">
+      <div class="ShareBarUrl" onclick="${() => copyToClipboard()}">
+        <div class="ShareBarText">${(url || '').replace('https://www.', '').replace(/\d\d\d\d-\d\d-\d\d\//, '')}</div>
+        <button class="ShareBarLinkButton">${Icon('link')}</button>
       </div>
-    `;
-  }
 
-  //
-  // Legacy version
-  //
-  const formattedType = (type.length ? type : DEFAULT_TYPE).replace(UPPERCASE_PATTERN, x => ' ' + x.toLowerCase());
-  const el = html`
-    <div class="Share">
-      <div class="Share-title">Share this ${formattedType}</div>
-      ${ShareLinksLegacy({ links, shouldBlend: true })}
+      ${ShareButton({ links })}
     </div>
   `;
-
-  instances.push(el);
-
-  if (instances.length === 1) {
-    subscribe(_checkIfFirstShareInvitationShouldBeReported);
-  }
-
-  return el;
 };
 
 const ShareButton = ({ links }) => {
@@ -125,15 +94,6 @@ const ShareButton = ({ links }) => {
 
 export default Share;
 
-function _checkIfFirstShareInvitationShouldBeReported(client) {
-  instances.forEach(el => {
-    if (proximityCheck(el.getBoundingClientRect(), client, INVITATION_RANGE)) {
-      unsubscribe(_checkIfFirstShareInvitationShouldBeReported);
-      track('share-invitation', '*');
-    }
-  });
-}
-
 export const transformMarker = (marker, links) => {
-  marker.substituteWith(Share({ type: marker.configString, links }));
+  marker.substituteWith(Share({ links }));
 };

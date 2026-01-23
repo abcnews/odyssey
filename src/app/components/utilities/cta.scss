@@ -1,57 +1,5 @@
 @use '../../constants' as *;
 
-.u-cta {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  font-family: var(--od-font-stack-sans);
-
-  a {
-    flex: 0 1 auto;
-    margin: $unit * 0.5;
-    max-width: calc(100% - #{$unit});
-    font-family: var(--od-font-stack-sans);
-    line-height: 1.333333333;
-    text-align: center;
-    text-transform: uppercase;
-    will-change: opacity; // create stacking context
-
-    &:any-link {
-      text-decoration: none;
-    }
-  }
-}
-
-.u-cta {
-  :where(.is-legacy) & {
-    a {
-      color: $color-white !important;
-      font-size: 1.375rem;
-      font-weight: bold;
-      background-color: $color-black-transparent-30;
-      padding: $unit * 0.5 $unit * 2;
-      transition: filter 0.25s;
-
-      &:visited {
-        color: $color-white !important;
-      }
-
-      &:hover,
-      &:focus {
-        filter: brightness(1.2);
-      }
-    }
-  }
-
-  .u-richtext-invert & {
-    :where(.is-legacy) & {
-      a {
-        background-color: $color-white-transparent-30;
-      }
-    }
-  }
-}
-
 [data-scheme='light'] {
   --od-colour-theme-cta-background: var(--nw-colour-theme-button-primary, rgb(16, 49, 106));
   --od-colour-theme-cta-text: var(--nw-colour-theme-text-inverse, rgb(255, 255, 255));
@@ -70,8 +18,22 @@
   --od-colour-theme-cta-text-active: var(--nw-colour-text-accent, rgb(235, 235, 235));
 }
 
-:where(.is-future) .u-cta {
+.u-cta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-family: var(--od-font-stack-sans);
+
   a {
+    flex: 0 1 auto;
+    margin: $unit * 0.5;
+    max-width: calc(100% - #{$unit});
+    font-family: var(--od-font-stack-sans);
+    line-height: 1.333333333;
+    text-align: center;
+    text-transform: uppercase;
+    will-change: opacity; // create stacking context
+
     text-transform: none;
     border-radius: var(--nw-pill-radius, var(--nw-radius-full));
     font-size: $unit;
@@ -82,9 +44,11 @@
 
     &:any-link,
     &:any-link > * {
+      text-decoration: none;
       background-color: var(--od-colour-theme-cta-background);
       color: var(--od-colour-theme-cta-text);
     }
+
     &:hover,
     &:hover > * {
       background-color: var(--od-colour-theme-cta-background-hover);

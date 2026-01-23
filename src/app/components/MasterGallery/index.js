@@ -1,8 +1,9 @@
+// @ts-check
 import { url2cmid } from '@abcnews/url2cmid';
 import html from 'nanohtml';
 import { enqueue, invalidateClient } from '../../scheduler';
 import { track } from '../../utils/behaviour';
-import { $, $$, prepend } from '../../utils/dom';
+import { $, $$, isHTMLElement, prepend } from '../../utils/dom';
 import { getMeta } from '../../meta';
 import { createFromTerminusDoc as createCaptionFromTerminusDoc } from '../Caption';
 import Gallery from '../Gallery';
@@ -13,7 +14,9 @@ import { THEME } from '../../../app/constants';
 
 const TAB_KEY = 9;
 
+/** @type {MasterGalleryItem[]} */
 const items = [];
+/** @type {HTMLElement | null} */
 let masterGalleryEl = null; // singleton
 let clickHandler = null;
 
@@ -29,13 +32,15 @@ const MasterGallery = () => {
   }
 
   const galleryEl = Gallery({ items });
-  const { isFuture } = getMeta();
 
   galleryEl.classList.remove('u-full');
 
+  /**
+   * @param {string} id A Core Media ID
+   */
   function goToId(id) {
     const itemEl = $(`[data-id="${id}"]`, galleryEl);
-    const index = itemEl.dataset['index'];
+    const index = isHTMLElement(itemEl) && itemEl?.dataset['index'];
 
     if (index != null) {
       open(galleryEl, +index);
@@ -69,7 +74,7 @@ const MasterGallery = () => {
 
     const id = url2cmid(node.href);
 
-    if (!has(id)) {
+    if (!id || !has(id)) {
       return;
     }
 
@@ -84,7 +89,7 @@ const MasterGallery = () => {
   const captionLinkEls = $$('.Caption a', galleryEl);
   const lastCaptionLinkEl = captionLinkEls[captionLinkEls.length - 1];
 
-  if (lastCaptionLinkEl) {
+  if (isHTMLElement(lastCaptionLinkEl)) {
     lastCaptionLinkEl.onkeydown = event => {
       if (!event.shiftKey && event.keyCode === TAB_KEY) {
         event.preventDefault();
@@ -101,18 +106,19 @@ const MasterGallery = () => {
         if (event.shiftKey && event.keyCode === TAB_KEY) {
           event.preventDefault();
 
-          if (lastCaptionLinkEl) {
+          if (isHTMLElement(lastCaptionLinkEl)) {
             lastCaptionLinkEl.focus();
           }
         }
       }}"
       onclick="${close}"
     >
-      ${isFuture ? Icon('cross') : ''}
+      ${Icon('cross')}
     </button>
   `;
 
-  prepend($('.Gallery-layout', galleryEl), closeEl);
+  const layout = $('.Gallery-layout', galleryEl);
+  layout && prepend(layout, closeEl);
 
   masterGalleryEl = html`
     <div
@@ -122,13 +128,18 @@ const MasterGallery = () => {
       tabindex="-1"
       data-scheme="dark"
       data-theme="${THEME}"
-      onclick="${function (event) {
-        if (this === event.target) {
-          close();
+      onclick="${
+        /**
+         * @param {PointerEvent} event
+         */
+        event => {
+          if (event.currentTarget === event.target) {
+            close();
+          }
         }
-      }}"
+      }"
     >
-      <div class="MasterGallery-container ${isFuture ? '' : 'u-richtext-invert'}">${galleryEl}</div>
+      <div class="MasterGallery-container">${galleryEl}</div>
     </div>
   `;
 
@@ -141,12 +152,18 @@ export default MasterGallery;
 
 let externalActiveElement;
 
+/**
+ *
+ * @param {GalleryElement} galleryEl
+ * @param {*} index
+ */
 function open(galleryEl, index = 0) {
   galleryEl.api.goToItem(index, true);
   document.documentElement.classList.add('is-master-gallery-open');
   externalActiveElement = document.activeElement;
   enqueue(function _focusActiveMasterGalleryItem() {
-    $('.is-active', masterGalleryEl).focus();
+    const item = masterGalleryEl && $('.is-active', masterGalleryEl);
+    isHTMLElement(item) && item.focus();
   });
   invalidateClient();
   setTimeout(galleryEl.api.measureDimensions, 0);
@@ -164,8 +181,16 @@ function has(id) {
   return items.filter(item => item.id === id).length > 0;
 }
 
+/**
+ *
+ * @param {MediaEmbedded} image
+ * @returns {void}
+ */
 export const register = image => {
   const { id, media } = image;
+
+  if (!media) return void 0;
+
   const { complete, images } = media.image.primary;
 
   if (Object.keys(images).length < 2) {

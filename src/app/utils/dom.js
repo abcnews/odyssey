@@ -78,14 +78,14 @@ export const isProgressElement = el => el instanceof HTMLProgressElement;
  */
 export const $ = (selector, root) => {
   root = isElement(root) ? root : document;
-
-  return root.querySelector(selector);
+  const selected = root.querySelector(selector);
+  return selected;
 };
 
 /**
  * Select multiple elements in the DOM.
  * @param {string} selector CSS selector for elements to select
- * @param {Element|Element[]|null} [roots] Specify ancestor elements to reduce selection scope.
+ * @param {Element|Document|(Element|Document)[]|null} [roots] Specify ancestor elements to reduce selection scope.
  * @returns {Element[]}
  */
 export const $$ = (selector, roots) => {
