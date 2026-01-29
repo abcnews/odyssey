@@ -77,7 +77,10 @@ export const reset = (storyEl, meta) => {
       const [prop, value] = definition.split(':');
 
       if (prop && value) {
-        document.documentElement.style.setProperty(prop, value);
+        // It sometimes happens that producers use the wrong kind of dash when defining custom CSS props in the Core
+        // Media interface. This cleans things up.
+        const cleanProp = prop.replaceAll(/\p{Dash_Punctuation}/gu, '-');
+        document.documentElement.style.setProperty(cleanProp, value);
       }
     });
   }
