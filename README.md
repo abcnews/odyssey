@@ -24,6 +24,14 @@ if (window.__ODYSSEY__) {
 }
 ```
 
+To simulate Odyssey loading in development:
+
+```html
+<script>
+  window.dispatchEvent(new CustomEvent('odyssey:api'));
+</script>
+```
+
 A brief tour of the API is included below, but please read the source to get a better picture of what's available, what arguments the functions take, and the expected effects of using them.
 
 ### `api.components.*`
