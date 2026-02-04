@@ -28,7 +28,9 @@ To simulate Odyssey loading in development:
 
 ```html
 <script>
-  window.dispatchEvent(new CustomEvent('odyssey:api'));
+  window.addEventListener("DOMContentLoaded", () => {
+    window.dispatchEvent(new CustomEvent("odyssey:api"));
+  });
 </script>
 ```
 
