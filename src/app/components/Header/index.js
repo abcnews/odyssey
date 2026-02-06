@@ -150,7 +150,7 @@ const Header = ({
   const contentEls = [
     titleEl,
     ...clonedMiscContentEls,
-    clonedBylineNodes ? html`<p class="Header-byline">${clonedBylineNodes}</p>` : null,
+    clonedBylineNodes ? html`<div class="Header-byline">${clonedBylineNodes}</div>` : null,
     !meta.isFuture ? infoSourceEl : null,
     meta.isFuture && clonedMetadataNodes?.length ? html`<div class="Header-meta">${clonedMetadataNodes}</div>` : null,
     updated && !meta.isFuture
