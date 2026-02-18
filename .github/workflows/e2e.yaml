@@ -18,9 +18,9 @@ jobs:
       options: --user 1001
     steps:
       - name: Checkout the PR branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 'lts/*'
       - name: Install dependencies
@@ -29,7 +29,7 @@ jobs:
         run: echo "TERMINUS_FETCH_API_KEY=$TERMINUS_FETCH_API_KEY" > .env
       - name: Run Playwright tests
         run: |
-          npm run test --update-snapshots | npx strip-ansi-cli > output.log
+          npx playwright test | npx strip-ansi-cli > output.log
           if grep -q -F -e "Error: A snapshot doesn't exist at" -e "Screenshot comparison failed" -e "Error: expect(locator).toHaveScreenshot(expected)" output.log; then
             echo "Playwright tests failed due to a snapshot issue."
             cat output.log
