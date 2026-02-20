@@ -33,8 +33,6 @@ jobs:
         with:
           message: |
             Updating snapshots. Click [here](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) to see the status.
-      - name: Checkout repository
-        uses: actions/checkout@v6
       - name: Use Node.js
         uses: actions/setup-node@v6
         with:
