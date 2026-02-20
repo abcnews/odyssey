@@ -15,9 +15,9 @@
 	"scripts": {
 		"start": "aunty serve",
 		"dev": "aunty serve",
-		"test:local": "playwright test",
 		"test": "act",
-		"test:update": "act workflow_dispatch --artifact-server-path=./.artifacts && unzip -u -d e2e .artifacts/1/snapshots/snapshots.zip"
+		"test:update-snapshots": "act workflow_dispatch --artifact-server-path=./.artifacts && unzip -o -u -d e2e .artifacts/1/snapshots/snapshots.zip",
+		"test:local": "playwright test"
 	},
 	"dependencies": {
 		"@abcnews/dev-proxy": "^1.2.1",

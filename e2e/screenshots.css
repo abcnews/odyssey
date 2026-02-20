@@ -1,5 +1,6 @@
 [data-component='DeveloperFlags'],
 [class^='ThemeDebugger_debugger'],
+[class^='Masthead_'],
 #webpack-dev-server-client-overlay-div {
   display: none;
 }

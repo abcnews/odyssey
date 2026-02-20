@@ -28,8 +28,8 @@ To simulate Odyssey loading in development:
 
 ```html
 <script>
-  window.addEventListener("DOMContentLoaded", () => {
-    window.dispatchEvent(new CustomEvent("odyssey:api"));
+  window.addEventListener('DOMContentLoaded', () => {
+    window.dispatchEvent(new CustomEvent('odyssey:api'));
   });
 </script>
 ```
@@ -119,19 +119,21 @@ Once `act` and `docker` are installed and `docker` is running, run the tests wit
 This will spin up the necessary Docker containers and run the tests in an environment that mimics the GitHub workflows
 environment. It will create a Playwright report in `.artifacts/1/playwright-report/`.
 
-In theory, this can produce snapshots that will be usable by the CI. To run the update-snapshots workflow use `npm run test:update`. This will generate new snapshots and copy them to `.artifacts/1/snapshots/snapshots.zip`.
-
-To make snapshots generated this way into the expected versions, you'll need to extract them from the zip file and move them to `e2e/visual.spec.js-snapshots`.
+In theory, this can produce snapshots that will be usable by the CI. To run the update-snapshots workflow use `npm run test:update-snapshots`.
 
 #### Running visual tests locally
 
-Ultimately visual changes should to be approved in a PR using the workflows to ensure the source of truth is controlled
-by the CI, however it can still be useful to run tests locally during development.
+It can still be useful to run tests locally during development. To run tests locally effectively, you'll first need to
+generate the 'expected' snapshots.
 
-To run tests locally effectively, you'll need to take a couple of steps:
+```
+npx playwright test --update-snapshots
+```
 
-1. Run `npx playwright test --update-snapshots` with `main` checked out
-2. Run `npm run test:local` (or `npx playwright test`) against your dev branch to test for visual changes.
+You'll probably want to do this with `main` checked out, to effectively test your branch changes for regressions.
+
+To actually run `npm run test:local` or `npx playwright test`. The Playwright UI is also pretty hannd: `npm run
+test:local -- --ui` or `npx playwright test --ui`.
 
 There is a `.gitignore` rule in place for snapshot files generated on MacOS to avoid accidentally committing them to the
 repository.
