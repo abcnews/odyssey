@@ -28,8 +28,8 @@ To simulate Odyssey loading in development:
 
 ```html
 <script>
-  window.addEventListener("DOMContentLoaded", () => {
-    window.dispatchEvent(new CustomEvent("odyssey:api"));
+  window.addEventListener('DOMContentLoaded', () => {
+    window.dispatchEvent(new CustomEvent('odyssey:api'));
   });
 </script>
 ```
@@ -109,32 +109,34 @@ snapshots back to the PR branch when it's done.
 > [!NOTE]
 > Haley Ward [describes the problem and this solution well](https://medium.com/@haleywardo/streamlining-playwright-visual-regression-testing-with-github-actions-e077fd33c27c).
 
+#### Running visual tests locally with `act`
+
+Visual tests can be run locally using [`act`](https://nektosact.com/introduction.html), which requires Docker and mimics
+the environment that GitHub workflows use.
+
+Once `act` and `docker` are installed and `docker` is running, run the tests with `npm run test`.
+
+This will spin up the necessary Docker containers and run the tests in an environment that mimics the GitHub workflows
+environment. It will create a Playwright report in `.artifacts/1/playwright-report/`.
+
+In theory, this can produce snapshots that will be usable by the CI. To run the update-snapshots workflow use `npm run test:update-snapshots`.
+
 #### Running visual tests locally
 
-Although the source of truth is controlled by the CI, it can still be useful to run tests locally during development.
+It can still be useful to run tests locally during development. To run tests locally effectively, you'll first need to
+generate the 'expected' snapshots.
 
-However, ultimately visual changes should to be approved in a PR using the workflows.
+```
+npx playwright test --update-snapshots
+```
 
-To do this effectively, you'll need to take a couple of steps:
+You'll probably want to do this with `main` checked out, to effectively test your branch changes for regressions.
 
-1. Run `npx playwright test --update-snapshots` with `main` checked out
-2. Run `npm run test` (or `npx playwright test`) against your dev branch to test for visual changes.
+To actually run `npm run test:local` or `npx playwright test`. The Playwright UI is also pretty hannd: `npm run
+test:local -- --ui` or `npx playwright test --ui`.
 
 There is a `.gitignore` rule in place for snapshot files generated on MacOS to avoid accidentally committing them to the
 repository.
-
-#### Running visual tests locally with `act`
-
-It's also possible to run the GitHub workflows locally using [`act`](https://nektosact.com/introduction.html). To run
-the tests and check for visual changes, simply run `act` from the root of the repository.
-
-This will spin up Docker containers and run the tests in an environment that mimics the GitHub workflows environment. It
-will create a Playwright report in `.artifacts/1/playwright-report/`.
-
-In theory, this can produce snapshots that will be usable by the CI. To run the update-snapshots workflow call `act
-workflow_dispatch`. This will generate new snapshots and copy them to `.artifacts/1/snapshots/snapshots.zip`.
-
-To make snapshots generated this way into the expected versions, you'll need to extract them from the zip file and move them to `e2e/visual.spec.js-snapshots`.
 
 ## Authors
 
