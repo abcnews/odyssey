@@ -66,11 +66,11 @@ To handle high-zoom and small-screen scenarios, we can disable complex featues l
 
 ### Viewport Threshold Detection
 
-You can set a minimum height threshold for your article using the `#odyssey` marker:
+You can enable a zoom threshold for your article using the `#odyssey` marker. This is useful for enabling fallback behaviours for visitors with low vision who have an extreme browser zoom.
 
 `#odysseyTHRESHOLDtrue`
 
-This sets a threshold of 350px. When the viewport height is below this value, `isBelowThreshold` becomes `true`. This calculation may be changed to be more inclusive of other properties in future so please only use the Odyssey API to check whether the conditions have been met.
+This sets a threshold of 350px height. When the viewport height is below this value, `isBelowThreshold` becomes `true`. This calculation may be changed to be more inclusive of other properties in future so please only use the Odyssey API to check whether the conditions have been met.
 
 Interactives can check the threshold state via the API:
 
@@ -97,7 +97,7 @@ The `#remove` marker is used to define fallback images that should only be shown
 #endremove
 ```
 
-To use the fallback image as alt text for screen readers in standard News articles as well as fallbacks:
+To use the fallback image's alt text for screen readers even when the content is hidden:
 
 ```
 #removeALTtrue
