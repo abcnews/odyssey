@@ -342,7 +342,7 @@ export const initMeta = terminusDocument => {
 
       return mediaCatalogue;
     },
-    // Parse global #config
+    // Parse global Odyssey config defined in an #odyssey tag
     () => {
       const configEl = selectMounts('odyssey')[0];
       const configString = configEl?.getAttribute('id') || '';
