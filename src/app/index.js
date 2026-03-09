@@ -1,4 +1,5 @@
 // @ts-check
+import { url2cmid } from '@abcnews/url2cmid';
 import api from './api';
 import { transformSection as transformSectionIntoBackdrop } from './components/Backdrop';
 import { transformSection as transformSectionIntoBlock } from './components/Block';
@@ -45,7 +46,8 @@ import { initMeta } from './meta';
 import { reset } from './reset';
 import { start } from './scheduler';
 import { mockDecoyActivationsUnderEl } from './utils/decoys';
-import { $, $$, append, detachAll, prepend, substitute } from './utils/dom';
+import { parse } from '@abcnews/alternating-case-to-object';
+import { $, $$, append, before, detach, detachAll, isElement, prepend, substitute } from './utils/dom';
 import { conditionalDebug, debug } from './utils/logging';
 import { getMarkers, getSections } from './utils/mounts';
 
@@ -93,8 +95,50 @@ export default terminusDocument => {
     transformedSections[section.name].push(section);
   };
 
+  // #remove/#endremove
   getSections(['remove']).forEach(section => {
-    detachAll([section.startNode, ...section.betweenNodes, section.endNode]);
+    const { alt: shouldExtractAlt, showunderthreshold: showUnderThreshold = true } = parse(section.configString);
+
+    /** Are we removing the elements from the DOM */
+    const willBeDetached = !(showUnderThreshold && meta.isBelowThreshold);
+
+    // Create <img> element for screen readers to provide the expected alt text
+    if (shouldExtractAlt && willBeDetached) {
+      const firstAlt = section.betweenNodes
+        .filter(isElement)
+        .map(node => $('a.Picture,img', node))
+        .filter(Boolean)
+        .map(el => {
+          if (!el) return null;
+          const alt = el.getAttribute('alt');
+          if (alt) return alt;
+          if (el.tagName !== 'A') return null;
+          const href = el.getAttribute('href');
+          const cmid = href ? url2cmid(href) : null;
+          return cmid ? meta.mediaById?.[cmid]?.alt : null;
+        })
+        .find(alt => !!alt);
+
+      if (firstAlt) {
+        const srEl = document.createElement('img');
+        srEl.alt = firstAlt;
+        srEl.setAttribute('loading', 'lazy');
+        // Visually hide the element, and move it far away to prevent
+        // Safari's lazy-loader from triggering.
+        srEl.style.cssText =
+          'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;top:-10000px;left:-10000px;';
+        before(section.startNode, srEl);
+      }
+    }
+
+    if (willBeDetached) {
+      detachAll([section.startNode, ...section.betweenNodes, section.endNode]);
+    } else {
+      // We want to show fallback images, so only remove the start & end nodes
+      detach(section.startNode);
+      detach(section.endNode);
+    }
+
     trackTransformedSection(section);
   });
   getSections(['backdrop']).forEach(section => {

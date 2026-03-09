@@ -28,6 +28,10 @@ export default {
     VideoPlayer,
     YouTubePlayer
   },
+  get isBelowThreshold() {
+    const _isBelowThreshold = meta.getMeta().isBelowThreshold;
+    return _isBelowThreshold;
+  },
   meta,
   scheduler,
   utils: {

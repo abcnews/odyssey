@@ -1,10 +1,12 @@
 // @ts-check
+import { parse } from '@abcnews/alternating-case-to-object';
 import { getTier, TIERS, getApplication, APPLICATIONS } from '@abcnews/env-utils';
 import { url2cmid } from '@abcnews/url2cmid';
-import { INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID, SELECTORS } from '../constants';
+import { INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID, SELECTORS, VIEWPORT_HEIGHT_THRESHOLD } from '../constants';
 import { fetchDocument } from '../utils/content';
 import { $, $$, detach, isAnchorElement, isElement, isNode } from '../utils/dom';
 import { debug } from '../utils/logging';
+import { selectMounts } from '@abcnews/mount-utils';
 
 /**
  * @typedef {Object} MetaData;
@@ -36,6 +38,8 @@ import { debug } from '../utils/logging';
  * @prop {boolean} isPL
  * @prop {boolean} isPreview
  * @prop {boolean} isFuture
+ * @prop {any} config
+ * @prop {boolean} isBelowThreshold
  */
 
 /** @type {Partial<MetaData> | null} */
@@ -96,8 +100,8 @@ function getBylineNodes() {
 
   const bylineEls = isElement(bylineNodesParentEl)
     ? Array.from(bylineNodesParentEl.childNodes).filter(
-        node => node.nodeType !== Node.COMMENT_NODE && (node.textContent || '').trim().length > -1
-      )
+      node => node.nodeType !== Node.COMMENT_NODE && (node.textContent || '').trim().length > -1
+    )
     : [];
 
   return [...bylineEls, clonedTagsEl].filter(isNode);
@@ -230,14 +234,14 @@ export const initMeta = terminusDocument => {
 
       return metaDataName
         ? {
-            _metaDataName: metaDataName,
-            url: metaDataName['replacement-url'] || url,
-            title: metaDataName['replacement-title'] || title,
-            description: metaDataName['replacement-description'] || description,
-            theme: metaDataName.theme || null,
-            hasCaptionAttributions: metaDataName['caption-attributions'] !== false,
-            isDarkMode: metaDataName['dark-mode'] === true
-          }
+          _metaDataName: metaDataName,
+          url: metaDataName['replacement-url'] || url,
+          title: metaDataName['replacement-title'] || title,
+          description: metaDataName['replacement-description'] || description,
+          theme: metaDataName.theme || null,
+          hasCaptionAttributions: metaDataName['caption-attributions'] !== false,
+          isDarkMode: metaDataName['dark-mode'] === true
+        }
         : null;
     },
     // Discover if the page was rendered by the News app
@@ -249,7 +253,7 @@ export const initMeta = terminusDocument => {
           window && window.location !== window.parent.location ? document.referrer : document.location.href;
 
         isNewsApp = pageURL.indexOf('newsapp') > -1;
-      } catch (err) {}
+      } catch (err) { }
 
       return {
         isNewsApp
@@ -337,6 +341,33 @@ export const initMeta = terminusDocument => {
       mediaRelated && mediaRelated.forEach((doc, i) => catalogueEmbeddedMedia({ doc, type: 'related' }, i));
 
       return mediaCatalogue;
+    },
+    // Parse global #config
+    () => {
+      const configEl = selectMounts('odyssey')[0];
+      const configString = configEl?.getAttribute('id') || '';
+      const config = parse(configString);
+
+      if (configEl) {
+        detach(configEl);
+      }
+
+      const getIsBelowThreshold = () => {
+        return !!config.threshold && window.innerHeight < VIEWPORT_HEIGHT_THRESHOLD;
+      };
+
+      window.addEventListener('resize', () => {
+        const isBelowThreshold = getIsBelowThreshold();
+        if (meta && isBelowThreshold !== meta.isBelowThreshold) {
+          meta.isBelowThreshold = isBelowThreshold;
+          window.dispatchEvent(new CustomEvent('odyssey:isBelowThreshold', { detail: { isBelowThreshold } }));
+        }
+      });
+
+      return {
+        config,
+        isBelowThreshold: getIsBelowThreshold()
+      };
     }
   ];
 
@@ -354,9 +385,9 @@ export const initMeta = terminusDocument => {
     infoSource:
       terminusDocument.source && terminusDocument.sourceURL
         ? {
-            name: terminusDocument.source,
-            url: terminusDocument.sourceURL
-          }
+          name: terminusDocument.source,
+          url: terminusDocument.sourceURL
+        }
         : undefined,
     // keep isPL around until we can audit Odyssey plugins and ensure none depend on it
     isPL: true,

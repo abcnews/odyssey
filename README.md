@@ -60,6 +60,69 @@ Use the internal DOM inspection/manipulation functions as an alternative to othe
 
 Use other internal utility functions for string mainpulation, event handling, element proximity, etc.
 
+## Accessibility
+
+To handle high-zoom and small-screen scenarios, we can disable complex featues like scrollyteller, and optionally show fallback images as a replacement.
+
+### Viewport Threshold Detection
+
+You can set a minimum height threshold for your article using the `#odyssey` marker:
+
+`#odysseyTHRESHOLDtrue`
+
+This sets a threshold of 350px. When the viewport height is below this value, `isBelowThreshold` becomes `true`. This calculation may be changed to be more inclusive of other properties in future so please only use the Odyssey API to check whether the conditions have been met.
+
+Interactives can check the threshold state via the API:
+
+```js
+const { isBelowThreshold } = window.__ODYSSEY__;
+
+// Listen for changes
+window.addEventListener('odyssey:isBelowThreshold', e => {
+  const { isBelowThreshold } = e.detail;
+  // Abort loading scrollytellers, etc.
+});
+
+// Or in Svelte:
+// <svelte:window onodyssey:isBelowThreshold={(e) => console.log(e.detail.isBelowThreshold)} />
+```
+
+### Fallback images
+
+The `#remove` marker is used to define fallback images that should only be shown for second class platforms like Apple News:
+
+```
+#remove
+[my image embed]
+#endremove
+```
+
+To use the fallback image as alt text for screen readers in standard News articles as well as fallbacks:
+
+```
+#removeALTtrue
+[my image embed]
+#endremove
+```
+
+When the page is below the given threshold, fallback images will ALWAYS be shown. The assumption is that interactives like scrollyteller should be hidden to allow fallback images to be shown instead, so the reader can use standard browser tools to inspect it.
+
+If you don't want this to happen you can opt out with:
+
+```
+#removeALTtrueSHOWUNDERTHRESHOLDfalse
+[my image embed]
+#endremove
+```
+
+Example:
+
+```
+#removeALTtrue
+<img src="fallback.jpg" alt="Important chart description">
+#endremove
+```
+
 ## Using Odyssey as a dependency
 
 Odyssey is well modularised and parts of it can readily be used as dependencies for other projects. An important caveat to this is that Webpack does not automatically transpile es6 code in the `node_modules` folder (for sensible reasons).
