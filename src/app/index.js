@@ -1,5 +1,4 @@
 // @ts-check
-import { url2cmid } from '@abcnews/url2cmid';
 import api from './api';
 import { transformSection as transformSectionIntoBackdrop } from './components/Backdrop';
 import { transformSection as transformSectionIntoBlock } from './components/Block';
@@ -106,17 +105,7 @@ export default terminusDocument => {
     if (shouldExtractAlt && willBeDetached) {
       const firstAlt = section.betweenNodes
         .filter(isElement)
-        .map(node => $('a.Picture,img', node))
-        .filter(Boolean)
-        .map(el => {
-          if (!el) return null;
-          const alt = el.getAttribute('alt');
-          if (alt) return alt;
-          if (el.tagName !== 'A') return null;
-          const href = el.getAttribute('href');
-          const cmid = href ? url2cmid(href) : null;
-          return cmid ? meta.mediaById?.[cmid]?.alt : null;
-        })
+        .flatMap(node => $('img', node)?.getAttribute('alt') || undefined)
         .find(alt => !!alt);
 
       if (firstAlt) {
