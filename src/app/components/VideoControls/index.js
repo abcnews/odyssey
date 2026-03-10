@@ -101,8 +101,6 @@ const VideoControls = (player, hasAmbientParent, videoDuration) => {
     isScrubbing = false;
   }
 
-  const { isFuture } = getMeta();
-
   const preplayButton = html`
     <div class="VideoPlayStart">
       <div class="PlayIcon"></div>
@@ -117,7 +115,7 @@ const VideoControls = (player, hasAmbientParent, videoDuration) => {
       onkeyup=${hasAmbientParent ? null : whenKeyIn([37, 38, 39, 40], steppingKeyUp)}
       onclick=${player.togglePlayback}
     >
-      ${isFuture ? preplayButton : ''}
+      ${preplayButton}
     </button>
   `;
   const muteEl = hasAmbientParent

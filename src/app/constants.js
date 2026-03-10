@@ -19,13 +19,9 @@ export const SELECTORS = {
     '[data-component="Decoy"][data-key="article"]>div>div[data-component="QuickReads"]>div:not([class])',
     '[data-component="Decoy"][data-key="article"] [data-component="GridRow"] div:not([class])'
   ].join(','),
-  SHARE_TOOLS: '[data-component="FixedHeader"] [data-component="Popover"]',
-  SHARE_UTILITY: '[data-component=ShareUtility]', // Future News
-  BYLINE: [
-    'header [data-component="Heading"]~[data-component="Byline"]',
-    '[data-component="ArticleHeadline"] [class^="ArticleHeadlineTitleByline"]' // Future News
-  ].join(','),
-  HEADER_TAGS: '[data-component="ArticleHeadline"] [class^="CardTagList"]', // Future News
+  SHARE_UTILITY: '[data-component=ShareUtility]',
+  BYLINE: ['[data-component="ArticleHeadline"] [class^="ArticleHeadlineTitleByline"]'].join(','),
+  HEADER_TAGS: '[data-component="ArticleHeadline"] [class^="CardTagList"]',
   METADATA: '[data-component="ArticleHeadline"] [class^="ArticleHeadlineTitle_meta"]',
   WYSIWYG_EMBED: '[data-component="LegacyWysiwyg"],[data-component="RelatedCard"]',
   QUOTE: '[data-component="Blockquote"],[data-component="EmphasisedText"],[data-component="Pullquote"]',

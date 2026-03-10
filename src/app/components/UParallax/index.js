@@ -39,7 +39,6 @@ function _checkIfParallaxesPropertiesNeedToBeUpdated() {
 
     if (opacity !== parallax.state.opacity) {
       enqueue(function _updateParallaxProperties() {
-        if (!meta.isFuture) parallax.el.style.opacity = opacity;
         parallax.el.style.transform = `translate3d(0, ${yOffset}%, 0)`;
       });
       parallax.state = { opacity, yOffset };

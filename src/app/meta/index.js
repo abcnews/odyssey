@@ -18,7 +18,6 @@ import { debug } from '../utils/logging';
  * @prop {Date} published
  * @prop {Date} updated
  * @prop {boolean} isNewsApp
- * @prop {boolean} isFuture
  * @prop {boolean} isDarkMode
  * @prop {string | null} theme
  * @prop {ShareLink[]} shareLinks
@@ -35,7 +34,6 @@ import { debug } from '../utils/logging';
  * @prop {Record<string, MediaEmbedded>} mediaById
  * @prop {boolean} isPL
  * @prop {boolean} isPreview
- * @prop {boolean} isFuture
  */
 
 /** @type {Partial<MetaData> | null} */
@@ -113,10 +111,10 @@ const SHARE_ORDERING = ['facebook', 'linkedin', 'twitter', 'native', 'email', 'c
 
 /**
  * Generate share links
- * @param {{url: string; title: string, isFuture: boolean}} options The title and URL of the article to generate share links for
+ * @param {{url: string; title: string}} options The title and URL of the article to generate share links for
  * @returns {ShareLink[]}
  */
-function getShareLinks({ url, title, isFuture }) {
+function getShareLinks({ url, title }) {
   /** @type {ShareLink[]} */
   const initLinks =
     // @ts-ignore Types claim navigator.share always exists, but it doesn't.
@@ -128,7 +126,7 @@ function getShareLinks({ url, title, isFuture }) {
     url: `${url}${LINK_QUERY_STRING}`
   });
 
-  return $$('a', $(isFuture ? SELECTORS.SHARE_UTILITY : SELECTORS.SHARE_TOOLS))
+  return $$('a', $(SELECTORS.SHARE_UTILITY))
     .reduce((links, linkEl) => {
       if (!isAnchorElement(linkEl)) return links;
 
@@ -173,7 +171,7 @@ function getRelatedMedia() {
     [
       '[data-component="FeatureMedia"] [data-component="Figure"]',
       '[data-component="FeatureMedia"] [data-component="WebContentWarning"]',
-      '[data-component="ArticleHeadline"] [data-component="Figure"]' // Future News
+      '[data-component="ArticleHeadline"] [data-component="Figure"]'
     ].join()
   );
 
@@ -186,14 +184,8 @@ function getRelatedMedia() {
 
 /**
  * Grab the metadata nodes (published time, etc).
- * Only relevant to Future News
- * @param {boolean} isFuture
  */
-function getMetadataNodes(isFuture) {
-  if (!isFuture) {
-    return [];
-  }
-
+function getMetadataNodes() {
   const metadataEl = $(SELECTORS.METADATA);
 
   if (!metadataEl) {
@@ -256,16 +248,13 @@ export const initMeta = terminusDocument => {
       };
     },
     // Parse share links from the DOM, using url & title props
-    ({ url, title, isFuture }) => ({
-      shareLinks:
-        typeof url !== 'undefined' && typeof title !== 'undefined' && typeof isFuture !== 'undefined'
-          ? getShareLinks({ url, title, isFuture })
-          : []
+    ({ url, title }) => ({
+      shareLinks: typeof url !== 'undefined' && typeof title !== 'undefined' ? getShareLinks({ url, title }) : []
     }),
     // Parse remaining props from the DOM, sometimes using defaults
     meta => ({
       bylineNodes: getBylineNodes(),
-      metadataNodes: getMetadataNodes(meta.isFuture || false),
+      metadataNodes: getMetadataNodes(),
       infoSourceLogosHTMLFragmentId: getDataAttribute('info-source-logos') || INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID,
       relatedMedia: getRelatedMedia(),
       relatedStoriesIds: getRelatedStoriesIds()
@@ -360,8 +349,7 @@ export const initMeta = terminusDocument => {
         : undefined,
     // keep isPL around until we can audit Odyssey plugins and ensure none depend on it
     isPL: true,
-    isPreview: getTier() === TIERS.PREVIEW,
-    isFuture: true
+    isPreview: getTier() === TIERS.PREVIEW
   };
 
   // Feed terminus document-based props through the above mixins

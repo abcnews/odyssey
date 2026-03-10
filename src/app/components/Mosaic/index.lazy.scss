@@ -92,32 +92,17 @@
   }
 }
 
-:where(.is-future) {
-  .Mosaic {
-    margin-top: var(--od-space-component-margin);
-    margin-bottom: var(--od-space-component-margin);
-  }
-
-  .Mosaic-item .Caption {
-    -webkit-backdrop-filter: blur(5px);
-    backdrop-filter: blur(5px);
-    background-color: var(--od-colour-theme-surface-over-image);
-    margin-left: calc($unit / 2);
-    margin-right: calc($unit / 2);
-    border-radius: $radius;
-    padding: var(--od-space-caption-padding);
-  }
+.Mosaic {
+  margin-top: var(--od-space-component-margin);
+  margin-bottom: var(--od-space-component-margin);
 }
 
-:where(.is-legacy) {
-  .Mosaic-item {
-    .Caption {
-      background-color: $color-black-transparent-60;
-      color: $color-lightBg;
-    }
-
-    .Caption-attribution {
-      color: $color-grey-100;
-    }
-  }
+.Mosaic-item .Caption {
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  background-color: var(--od-colour-theme-surface-over-image);
+  margin-left: calc($unit / 2);
+  margin-right: calc($unit / 2);
+  border-radius: $radius;
+  padding: var(--od-space-caption-padding);
 }

@@ -6,9 +6,8 @@ import { THEME, VIDEO_MARKER_PATTERN } from '../../constants';
 import { enqueue, subscribe } from '../../scheduler';
 import { fetchDocument } from '../../utils/content';
 import { $, detach, detectVideoId, getChildImage, isElement } from '../../utils/dom';
-import { clampNumber, formattedDate, getRatios, isDefined } from '../../utils/misc';
+import { clampNumber, getRatios, isDefined } from '../../utils/misc';
 import Picture from '../Picture';
-import ScrollHint from '../ScrollHint';
 import VideoPlayer from '../VideoPlayer';
 import YouTubePlayer from '../YouTubePlayer';
 import styles from './index.lazy.scss';
@@ -137,30 +136,13 @@ const Header = ({
         </p>
       `
     : null;
-  const [published, updated] = [meta.published, meta.updated].map(date =>
-    date
-      ? {
-          datetime: date.toISOString(),
-          text: formattedDate(date)
-        }
-      : null
-  );
 
   /** @type {(Node|null|undefined)[]} */
   const contentEls = [
     titleEl,
     ...clonedMiscContentEls,
     clonedBylineNodes ? html`<div class="Header-byline">${clonedBylineNodes}</div>` : null,
-    !meta.isFuture ? infoSourceEl : null,
-    meta.isFuture && clonedMetadataNodes?.length ? html`<div class="Header-meta">${clonedMetadataNodes}</div>` : null,
-    updated && !meta.isFuture
-      ? html`<div class="Header-updated">Updated <time datetime="${updated.datetime}">${updated.text}</time></div>`
-      : null,
-    published && !meta.isFuture
-      ? html`
-          <div class="Header-published">Published <time datetime="${published.datetime}">${published.text}</time></div>
-        `
-      : null
+    clonedMetadataNodes?.length ? html`<div class="Header-meta">${clonedMetadataNodes}</div>` : null
   ];
 
   const headerContentEl = html`<div class="Header-content u-richtext${isDark ? '-invert' : ''}">${contentEls}</div>`;
@@ -178,7 +160,7 @@ const Header = ({
               class="${mediaClassName}"
               style="${mediaWidth ? '--od-header-media-width: ' + mediaWidth.value + mediaWidth.units : ''}"
             >
-              ${!isLayered && !isAbreast && !meta.isFuture ? ScrollHint() : null} ${mediaEl}
+              ${mediaEl}
             </div>
           `
         : null}
@@ -258,11 +240,7 @@ export const transformSection = (section, meta) => {
   const isParallax = section.configString.indexOf('parallax') > -1;
   const isLayered = isFloating || section.configString.indexOf('layered') > -1;
   const isDark =
-    (isLayered && !meta.isFuture) || section.configString.indexOf('dark') > -1
-      ? true
-      : section.configString.indexOf('light') > -1
-      ? false
-      : null;
+    section.configString.indexOf('dark') > -1 ? true : section.configString.indexOf('light') > -1 ? false : null;
   const isPale = section.configString.indexOf('pale') > -1;
   const isAbreast = section.configString.indexOf('abreast') > -1;
   const isNoMedia = isFloating || section.configString.indexOf('nomedia') > -1;

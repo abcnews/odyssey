@@ -22,11 +22,6 @@
     padding-left: $layout-fluid-padding;
     padding-right: $layout-fluid-padding;
 
-    :where(.is-legacy) & {
-      background-color: $color-black-transparent-60;
-      color: $color-white;
-    }
-
     @media #{$mq-gt-md} {
       padding-left: $layout-fluid-padding;
       padding-right: $layout-fluid-padding;
@@ -57,50 +52,20 @@
   }
 }
 
-:where(.is-legacy) {
-  .Caption {
-    font-family: var(--od-font-stack-sans);
-
-    margin: 0;
-
-    padding-top: $unit * 0.4375;
-    padding-bottom: $unit * 0.375;
-
-    :first-child {
-      margin-right: $unit * 0.25;
-    }
-
-    .u-richtext .u-pull-left &,
-    .u-richtext .u-pull-right & {
-      @media #{$mq-gt-sm} {
-        padding-left: 0;
-        padding-right: 0;
-      }
-    }
-  }
-
-  .Caption-attribution {
-    font-size: 0.6875rem;
-    color: $color-grey-500;
+.Caption {
+  margin: $unit * 0.5 0;
+  font-size: var(--od-font-size-xs) !important;
+  line-height: 1.25rem;
+  padding: 0;
+  @media #{$mq-lt-lg} {
+    margin-inline: var(--od-space-component-inline-margin);
   }
 }
 
-:where(.is-future) {
+[class*='u-pull-'] {
   .Caption {
-    margin: $unit * 0.5 0;
-    font-size: var(--od-font-size-xs) !important;
-    line-height: 1.25rem;
-    padding: 0;
-    @media #{$mq-lt-lg} {
-      margin-inline: var(--od-space-component-inline-margin);
-    }
-  }
-
-  [class*='u-pull-'] {
-    .Caption {
-      @media #{$mq-gt-sm} {
-        margin-inline: 0;
-      }
+    @media #{$mq-gt-sm} {
+      margin-inline: 0;
     }
   }
 }

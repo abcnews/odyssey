@@ -3,7 +3,7 @@ import Caption from '../components/Caption';
 import Gallery from '../components/Gallery';
 import Picture from '../components/Picture';
 import Quote from '../components/Quote';
-import ShareLinks from '../components/legacy/ShareLinks';
+import Share from '../components/Share';
 import Sizer from '../components/Sizer';
 import VideoPlayer from '../components/VideoPlayer';
 import YouTubePlayer from '../components/YouTubePlayer';
@@ -23,7 +23,7 @@ export default {
     Gallery,
     Picture,
     Quote,
-    ShareLinks,
+    Share,
     Sizer,
     VideoPlayer,
     YouTubePlayer
