@@ -20,6 +20,7 @@
 		"test:local": "playwright test"
 	},
 	"dependencies": {
+		"@abcnews/alternating-case-to-object": "^3.2.0",
 		"@abcnews/dev-proxy": "^1.2.1",
 		"@abcnews/env-utils": "^6.0.0",
 		"@abcnews/url2cmid": "^1.1.0",
