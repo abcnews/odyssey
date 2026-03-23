@@ -39,7 +39,7 @@ const ARTICLES = [
   },
   {
     cmid: '105888546',
-    targets: [{ selector: '.Header', tags: ['Header'] }] // no media
+    targets: [{ selector: '.Header-content', tags: ['Header'] }] // no media
   },
   {
     cmid: '106004326', // When the southern lights are seen further north
