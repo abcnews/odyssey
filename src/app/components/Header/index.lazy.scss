@@ -173,10 +173,6 @@ $abreastChildSpacing: $unit * 2.5;
     margin-bottom: 0;
     padding: 0 $unit * 1.5;
 
-    :first-child {
-      margin-top: 0;
-    }
-
     border-radius: $radius $radius 0 0;
     background-color: $color-white-transparent-85;
 
