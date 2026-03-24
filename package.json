@@ -1,6 +1,6 @@
 {
 	"name": "odyssey",
-	"version": "8.8.7",
+	"version": "8.9.0",
 	"description": "Enhance feature-worthy stories",
 	"license": "MIT",
 	"private": true,
@@ -20,6 +20,7 @@
 		"test:local": "playwright test"
 	},
 	"dependencies": {
+		"@abcnews/alternating-case-to-object": "^3.2.0",
 		"@abcnews/dev-proxy": "^1.2.1",
 		"@abcnews/env-utils": "^6.0.0",
 		"@abcnews/url2cmid": "^1.1.0",

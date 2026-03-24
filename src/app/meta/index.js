@@ -1,10 +1,12 @@
 // @ts-check
+import { parse } from '@abcnews/alternating-case-to-object';
 import { getTier, TIERS, getApplication, APPLICATIONS } from '@abcnews/env-utils';
 import { url2cmid } from '@abcnews/url2cmid';
-import { INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID, SELECTORS } from '../constants';
+import { INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID, SELECTORS, VIEWPORT_HEIGHT_THRESHOLD } from '../constants';
 import { fetchDocument } from '../utils/content';
 import { $, $$, detach, isAnchorElement, isElement, isNode } from '../utils/dom';
 import { debug } from '../utils/logging';
+import { selectMounts } from '@abcnews/mount-utils';
 
 /**
  * @typedef {Object} MetaData;
@@ -34,6 +36,8 @@ import { debug } from '../utils/logging';
  * @prop {Record<string, MediaEmbedded>} mediaById
  * @prop {boolean} isPL
  * @prop {boolean} isPreview
+ * @prop {any} config
+ * @prop {boolean} isBelowThreshold
  */
 
 /** @type {Partial<MetaData> | null} */
@@ -326,6 +330,33 @@ export const initMeta = terminusDocument => {
       mediaRelated && mediaRelated.forEach((doc, i) => catalogueEmbeddedMedia({ doc, type: 'related' }, i));
 
       return mediaCatalogue;
+    },
+    // Parse global Odyssey config defined in an #odyssey tag
+    () => {
+      const configEl = selectMounts('odyssey')[0];
+      const configString = configEl?.getAttribute('id') || '';
+      const config = parse(configString);
+
+      if (configEl) {
+        detach(configEl);
+      }
+
+      const getIsBelowThreshold = () => {
+        return !!config.threshold && window.innerHeight < VIEWPORT_HEIGHT_THRESHOLD;
+      };
+
+      window.addEventListener('resize', () => {
+        const isBelowThreshold = getIsBelowThreshold();
+        if (meta && isBelowThreshold !== meta.isBelowThreshold) {
+          meta.isBelowThreshold = isBelowThreshold;
+          window.dispatchEvent(new CustomEvent('odyssey:isBelowThreshold', { detail: { isBelowThreshold } }));
+        }
+      });
+
+      return {
+        config,
+        isBelowThreshold: getIsBelowThreshold()
+      };
     }
   ];
 

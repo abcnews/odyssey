@@ -68,6 +68,12 @@ export const MOCK_TEXT = {
   nodeType: Node.TEXT_NODE
 };
 
+/**
+ * The minimum height (px) required to enable complex features (like scrollytellers).
+ * When the viewport is below this height, fallback content will be shown.
+ */
+export const VIEWPORT_HEIGHT_THRESHOLD = 350;
+
 export const UNIT = 16; // (px)
 export const BP = {
   MD: UNIT * 43.75,
@@ -109,7 +115,7 @@ export const SUPPORTS_PASSIVE = (isSupported => {
     });
 
     window.addEventListener('test', null, options);
-  } catch (err) {}
+  } catch (err) { }
 
   return isSupported;
 })(false);
