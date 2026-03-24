@@ -27,6 +27,9 @@ jobs:
         if: ${{ !env.ACT }}
         with:
           ref: ${{ steps.comment-branch.outputs.head_ref }}
+      - name: Checkout local branch
+        uses: actions/checkout@v6
+        if: ${{ env.ACT }}
       - name: Comment action started
         uses: thollander/actions-comment-pull-request@v3
         if: ${{ !env.ACT }}
