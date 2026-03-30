@@ -1,6 +1,9 @@
 @use '../../constants' as *;
 
 .ImageEmbed {
+  margin-top: var(--od-space-component-margin);
+  margin-bottom: var(--od-space-component-margin);
+
   &.u-full.is-cover {
     height: 100vh;
   }
@@ -24,12 +27,5 @@
       padding-right: 0;
       width: 100%;
     }
-  }
-}
-
-:where(.is-future) {
-  .ImageEmbed {
-    margin-top: var(--od-space-component-margin);
-    margin-bottom: var(--od-space-component-margin);
   }
 }

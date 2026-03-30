@@ -27,6 +27,10 @@ const CONTROL_ICON_MARKUP = `<svg role="presentation" viewBox="0 0 40 40">
   <polyline stroke="currentColor" stroke-width="2" fill="none" points="22.25 12.938 16 19.969 22.25 27" />
 </svg>`;
 
+/**
+ * @param {{items: MasterGalleryItem[], masterCaptionEl?: HTMLElement}} options
+ * @returns
+ */
 const Gallery = ({ items = [], masterCaptionEl }) => {
   let startItemsTransformXPct;
   let startX;
@@ -40,8 +44,6 @@ const Gallery = ({ items = [], masterCaptionEl }) => {
   let itemHeight;
   let mediaEls;
   let paneEl;
-
-  const { isFuture } = getMeta();
 
   function updateItemsAppearance(xPct, isImmediate) {
     let wasOnEndCalled = false;
@@ -108,11 +110,7 @@ const Gallery = ({ items = [], masterCaptionEl }) => {
     galleryEl.classList[index === 0 ? 'add' : 'remove']('is-at-start');
     galleryEl.classList[index === items.length - 1 ? 'add' : 'remove']('is-at-end');
     itemEls[currentIndex].classList.add('is-active');
-    if (isFuture) {
-      setText(indexEl, `${currentIndex + 1} of ${items.length}`);
-    } else {
-      setText(indexEl, `${currentIndex + 1} / ${items.length}`);
-    }
+    setText(indexEl, `${currentIndex + 1} of ${items.length}`);
 
     updateItemsAppearance(-currentIndex * 100, isImmediate);
     setTimeout(invalidateClient, 1000);
@@ -189,7 +187,7 @@ const Gallery = ({ items = [], masterCaptionEl }) => {
 
   /**
    * @this {HTMLElement}
-   * @param {PointerEvent} event
+   * @param {TouchEvent} event
    * @returns
    */
   function swipeIntent(event) {

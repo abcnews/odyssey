@@ -98,18 +98,6 @@ $abreastChildSpacing: $unit * 2.5;
     margin: 0;
   }
 
-  &::after {
-    .is-legacy & {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: $unit * 6.25;
-      background-image: $gradient-black-vertical-0-0-100-60;
-    }
-  }
-
   .is-pale > &::after {
     background-image: $gradient-white-vertical-0-0-100-60;
   }
@@ -135,127 +123,81 @@ $abreastChildSpacing: $unit * 2.5;
       max-width: none;
     }
   }
-
-  & > .ScrollHint {
-    position: absolute;
-  }
 }
 
 .Header-content {
   position: relative;
 
-  @layer odyssey.legacy {
-    .is-legacy & {
-      margin-left: $layout-fluid-padding;
-      margin-right: $layout-fluid-padding;
-      padding: $unit * 1.25 0;
-      text-align: center;
-
-      @media #{$mq-gt-md} {
-        margin-left: auto;
-        margin-right: auto;
-        width: $layout-fixed - $layout-fixed-gutter;
-      }
-    }
+  margin: 0 var(--od-space-md);
+  @media #{$mq-md} {
+    margin-left: 0;
+    margin-right: 0;
   }
-  @layer odyssey.future {
-    .is-future & {
-      margin: 0 var(--od-space-md);
-      @media #{$mq-md} {
-        margin-left: 0;
-        margin-right: 0;
-      }
-      @media #{$mq-gt-md} {
-        margin-left: auto;
-        margin-right: auto;
-        width: calc($layout-fixed * 0.666 - var(--od-space-component-inline-margin) * 2);
-        padding: 0;
-      }
-    }
+  @media #{$mq-gt-md} {
+    margin-left: auto;
+    margin-right: auto;
+    width: calc($layout-fixed * 0.666 - var(--od-space-component-inline-margin) * 2);
+    padding: 0;
   }
 
   @media #{$mq-md} {
-    @layer odyssey.future {
-      .is-future & {
-        margin-left: calc(#{cells(1)} + #{$layout-fluid-padding});
-        margin-right: calc(#{cells(1)} + #{$layout-fluid-padding});
-      }
-    }
+    margin-left: calc(#{cells(1)} + #{$layout-fluid-padding});
+    margin-right: calc(#{cells(1)} + #{$layout-fluid-padding});
   }
 
   @media #{$mq-gt-md} {
-    @layer odyssey.future {
-      .is-future & {
-        margin-left: auto;
-        margin-right: auto;
+    margin-left: auto;
+    margin-right: auto;
 
-        .is-abreast > & {
-          display: flex;
-          flex-direction: column;
-          align-items: stretch;
-          align-self: flex-end;
-          flex-grow: 0;
-          width: $unit * 25;
+    .is-abreast > & {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      align-self: flex-end;
+      flex-grow: 0;
+      width: $unit * 25;
 
-          & > * {
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-            width: 100%;
-          }
+      & > * {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        width: 100%;
+      }
 
-          & > h1 {
-            text-align: left;
-          }
-        }
+      & > h1 {
+        text-align: left;
       }
     }
   }
 
   .is-layered > & {
-    @layer odyssey.legacy {
-      .is-legacy & {
-        background-image: $gradient-black-vertical-0-45-100-75;
-      }
+    margin-bottom: 0;
+    padding: 0 $unit * 1.5;
+
+    border-radius: $radius $radius 0 0;
+    background-color: $color-white-transparent-85;
+
+    @media #{$mq-md} {
+      margin-top: 0;
+      margin-bottom: 0;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 0 $unit * 2;
+      width: calc(cells(10) + #{$unit * 2});
     }
 
-    @layer odyssey.future {
-      .is-future & {
-        margin-bottom: 0;
-        padding: 0 $unit * 1.5;
-
-        :first-child {
-          margin-top: 0;
-        }
-
-        border-radius: $radius $radius 0 0;
-        background-color: $color-white-transparent-85;
-
-        @media #{$mq-md} {
-          margin-top: 0;
-          margin-bottom: 0;
-          margin-left: auto;
-          margin-right: auto;
-          padding: 0 $unit * 2;
-          width: calc(cells(10) + #{$unit * 2});
-        }
-
-        @media #{$mq-gt-md} {
-          margin-top: 0;
-          margin-bottom: 0;
-          margin-left: auto;
-          margin-right: auto;
-          padding: var(--od-space-md) $unit * 3 0;
-          border-radius: calc($radius * 2) calc($radius * 2) 0 0;
-          width: calc($layout-fixed * 0.666 - var(--od-space-component-inline-margin) * 2 + $unit * 6);
-        }
-      }
+    @media #{$mq-gt-md} {
+      margin-top: 0;
+      margin-bottom: 0;
+      margin-left: auto;
+      margin-right: auto;
+      padding: var(--od-space-md) $unit * 3 0;
+      border-radius: calc($radius * 2) calc($radius * 2) 0 0;
+      width: calc($layout-fixed * 0.666 - var(--od-space-component-inline-margin) * 2 + $unit * 6);
     }
   }
 
   .is-layered.is-dark > & {
-    .is-future & {
-      background-color: $color-black-transparent-75;
-    }
+    background-color: $color-black-transparent-75;
   }
 
   .is-floating > & {
@@ -263,34 +205,7 @@ $abreastChildSpacing: $unit * 2.5;
   }
 }
 
-.Header-content > * {
-  @layer odyssey.legacy {
-    .is-legacy & {
-      padding-left: cells(1);
-      padding-right: cells(1);
-
-      @media #{$mq-md} {
-        padding-left: cells(1, 10);
-        padding-right: cells(1, 10);
-      }
-
-      @media #{$mq-gt-md} {
-        padding-left: calc(#{cells(1)} + #{$layout-fixed-padding});
-        padding-right: calc(#{cells(1)} + #{$layout-fixed-padding});
-      }
-    }
-  }
-}
-
 .Header-content > h1 {
-  @layer odyssey.legacy {
-    .is-legacy & {
-      @media #{$mq-sm} {
-        margin-left: -$layout-fluid-padding;
-        margin-right: -$layout-fluid-padding;
-      }
-    }
-  }
   > small {
     display: block;
     color: #80999d;
@@ -307,34 +222,14 @@ $abreastChildSpacing: $unit * 2.5;
     }
   }
 
-  @layer odyssey.legacy {
-    .is-legacy & {
-      &::after {
-        content: '';
-        transform: translate(0, 100%);
-        display: block;
-        margin: $unit * 1.125 auto;
-        width: $unit * 9;
-        height: $unit * 0.125;
-        background-color: $color-grey-300-transparent-70;
-
-        @media #{$mq-gt-sm} {
-          width: $unit * 18;
-        }
-      }
-    }
-  }
-
   @media #{$mq-gt-md} {
     .is-abreast &::after {
       margin-left: 0;
     }
   }
 
-  :where(.is-future) & {
-    margin-top: var(--od-space-xl);
-    margin-bottom: var(--od-space-xl);
-  }
+  margin-top: var(--od-space-xl);
+  margin-bottom: var(--od-space-xl);
 }
 
 .Header-content > h2 {
@@ -342,46 +237,40 @@ $abreastChildSpacing: $unit * 2.5;
 }
 
 .Header-content > .Header-miscEl {
-  :where(.is-future) & {
-    font-size: var(--od-font-size-lg);
-    margin-top: var(--od-space-md);
-    margin-bottom: var(--od-space-md);
-  }
+  font-size: var(--od-font-size-lg);
+  margin-top: var(--od-space-md);
+  margin-bottom: var(--od-space-md);
 }
 
 .Header .Header-content > .Header-byline {
-  :where(.is-future) & {
-    margin-bottom: var(--od-space-md);
-    font-size: var(--od-font-size-sm);
-  }
+  margin-bottom: var(--od-space-md);
+  font-size: var(--od-font-size-sm);
 }
 
 .Header-miscEl,
 .Header-byline {
-  :where(.is-future) & {
-    ul[class^='CardTagList'] {
-      margin-top: var(--od-space-md);
-      margin-bottom: var(--od-space-md);
-      a:any-link {
+  ul[class^='CardTagList'] {
+    margin-top: var(--od-space-md);
+    margin-bottom: var(--od-space-md);
+    a:any-link {
+      color: var(--od-colour-theme-text-accent);
+      background-color: var(--od-colour-theme-tag);
+      & > * {
         color: var(--od-colour-theme-text-accent);
-        background-color: var(--od-colour-theme-tag);
-        & > * {
-          color: var(--od-colour-theme-text-accent);
-        }
       }
-      a:hover {
+    }
+    a:hover {
+      color: var(--od-colour-text-inverse);
+      background-color: var(--od-button-secondary-hover);
+      & > * {
         color: var(--od-colour-text-inverse);
-        background-color: var(--od-button-secondary-hover);
-        & > * {
-          color: var(--od-colour-text-inverse);
-        }
       }
-      a:active {
+    }
+    a:active {
+      color: var(--od-colour-text-inverse);
+      background-color: var(--od-button-secondary-active);
+      & > * {
         color: var(--od-colour-text-inverse);
-        background-color: var(--od-button-secondary-active);
-        & > * {
-          color: var(--od-colour-text-inverse);
-        }
       }
     }
   }
@@ -412,16 +301,8 @@ ul.Header-miscEl > li {
 .Header-infoSource,
 .Header-infoSource + * {
   margin-top: $unit * -0.5;
-  :where(.is-future) & {
-    margin-top: 0;
-  }
-}
 
-.Header .Header-content .Header-byline,
-.Header .Header-content .Header-infoSource {
-  :where(.is-legacy) & {
-    font-size: 0.9375rem;
-  }
+  margin-top: 0;
 }
 
 .Header-byline > span {
@@ -476,41 +357,39 @@ ul.Header-miscEl > li {
   text-align: left;
 }
 
-:where(.is-future) {
-  .Header h1 {
-    line-height: 1.2;
+.Header h1 {
+  line-height: 1.2;
 
-    @media #{$mq-gt-sm} {
-      line-height: 1.15;
-    }
+  @media #{$mq-gt-sm} {
+    line-height: 1.15;
   }
+}
 
-  .Header.u-full {
-    margin-bottom: var(--od-space-paragraph-margin);
+.Header.u-full {
+  margin-bottom: var(--od-space-paragraph-margin);
+}
+
+.Header-miscEl {
+  line-height: 1.3;
+  @media #{$mq-gt-sm} {
+    line-height: 1.5;
   }
+}
 
-  .Header-miscEl {
-    line-height: 1.3;
-    @media #{$mq-gt-sm} {
-      line-height: 1.5;
-    }
-  }
+.Header .Header-content .Header-byline {
+  font-size: var(--od-font-size-sm);
+}
 
-  .Header .Header-content .Header-byline {
-    font-size: var(--od-font-size-sm);
-  }
+.Header.is-layered .Header-content {
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+}
 
-  .Header.is-layered .Header-content {
-    -webkit-backdrop-filter: blur(5px);
-    backdrop-filter: blur(5px);
-  }
-
-  [data-scheme='dark'] > .Header[data-scheme='light'],
-  [data-scheme='light'] > .Header[data-scheme='dark'],
-  .Header.is-layered {
+[data-scheme='dark'] > .Header[data-scheme='light'],
+[data-scheme='light'] > .Header[data-scheme='dark'],
+.Header.is-layered {
+  margin-bottom: var(--od-space-header-margin);
+  .Header-meta {
     margin-bottom: var(--od-space-header-margin);
-    .Header-meta {
-      margin-bottom: var(--od-space-header-margin);
-    }
   }
 }

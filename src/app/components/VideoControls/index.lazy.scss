@@ -190,72 +190,70 @@
   letter-spacing: 0.05em;
 }
 
-:where(.is-future) {
-  .VideoControls {
-    padding: $unit;
-  }
+.VideoControls {
+  padding: $unit;
+}
 
-  .VideoControls-playback[aria-label^='Play video,'] {
-    .VideoPlayStart {
-      .PlayIcon {
-        background-image: url(./play.svg);
-        height: 40px;
-        width: 40px;
-        transform: scale(0.7);
-      }
-
-      abbr {
-        text-decoration: none;
-      }
-
-      display: flex;
-      align-items: center;
-
-      position: absolute;
-      bottom: var(--nw-spacing-3);
-      left: var(--nw-spacing-3);
-      border-radius: $radius * 2;
-      padding: var(--nw-spacing-1) var(--nw-spacing-5) var(--nw-spacing-1) var(--nw-spacing-3);
-
-      background-color: $color-white;
-      color: $color-black;
-
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
+.VideoControls-playback[aria-label^='Play video,'] {
+  .VideoPlayStart {
+    .PlayIcon {
+      background-image: url(./play.svg);
+      height: 40px;
+      width: 40px;
+      transform: scale(0.7);
     }
 
-    &::before {
-      display: none;
+    abbr {
+      text-decoration: none;
     }
+
+    display: flex;
+    align-items: center;
+
+    position: absolute;
+    bottom: var(--nw-spacing-3);
+    left: var(--nw-spacing-3);
+    border-radius: $radius * 2;
+    padding: var(--nw-spacing-1) var(--nw-spacing-5) var(--nw-spacing-1) var(--nw-spacing-3);
+
+    background-color: $color-white;
+    color: $color-black;
+
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
   }
 
-  .VideoControls-progress {
-    margin: 0;
+  &::before {
+    display: none;
   }
+}
 
-  .VideoControls-timeRemaining {
-    margin: 0 0 0 $unit;
-  }
+.VideoControls-progress {
+  margin: 0;
+}
 
-  .VideoControls-mute {
-    margin: var(--nw-spacing-2);
-  }
+.VideoControls-timeRemaining {
+  margin: 0 0 0 $unit;
+}
 
-  .VideoControls-playback::before {
-    border-radius: $radius;
-  }
+.VideoControls-mute {
+  margin: var(--nw-spacing-2);
+}
 
-  .VideoControls-mute,
-  .VideoControls-timeRemaining,
-  .VideoControls-progressBar,
-  .VideoControls-progress {
-    border-radius: $radius !important;
-  }
+.VideoControls-playback::before {
+  border-radius: $radius;
+}
 
-  .VideoControls-progressBar::-webkit-progress-bar,
-  .VideoControls-progressBar::-webkit-progress-value,
-  .VideoControls-progressBar::-moz-progress-bar {
-    border-radius: $radius;
-  }
+.VideoControls-mute,
+.VideoControls-timeRemaining,
+.VideoControls-progressBar,
+.VideoControls-progress {
+  border-radius: $radius !important;
+}
+
+.VideoControls-progressBar::-webkit-progress-bar,
+.VideoControls-progressBar::-webkit-progress-value,
+.VideoControls-progressBar::-moz-progress-bar {
+  border-radius: $radius;
 }

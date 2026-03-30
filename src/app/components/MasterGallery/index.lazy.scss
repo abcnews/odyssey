@@ -60,12 +60,6 @@ html.is-master-gallery-open {
     @media #{$mq-gt-md} {
       font-size: 1rem !important;
       line-height: 1.625;
-      :where(.is-legacy) & {
-        .Caption-attribution {
-          display: block;
-          font-size: 0.8125rem !important;
-        }
-      }
     }
   }
 }
@@ -84,62 +78,48 @@ html.is-master-gallery-open {
   height: $size-control;
 }
 
-:where(.is-legacy) {
-  .MasterGallery-close {
-    padding: 0;
-    background-color: $color-black-transparent-60;
-    background-image: url(./close.svg);
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: 100%;
-    vertical-align: bottom;
+.MasterGallery-close {
+  background-color: var(--od-button-secondary);
+  color: var(--od-colour-text-primary);
+  border-radius: $radius * 2 !important;
+  font-size: 0.925rem;
+  margin: $unit * 0.75;
+  padding: $unit * 0.5;
+
+  width: 34px;
+  height: 34px;
+
+  @media #{$mq-gt-sm} {
+    width: 42px;
+    height: 42px;
+  }
+
+  &:hover {
+    background-color: var(--od-button-secondary-hover);
+    color: var(--od-colour-text-inverse);
+  }
+
+  svg {
+    height: 100%;
+    width: 100%;
   }
 }
 
-:where(.is-future) {
-  .MasterGallery-close {
-    background-color: var(--od-button-secondary);
-    color: var(--od-colour-text-primary);
-    border-radius: $radius * 2 !important;
-    font-size: 0.925rem;
-    margin: $unit * 0.75;
-    padding: $unit * 0.5;
-
-    width: 34px;
-    height: 34px;
-
-    @media #{$mq-gt-sm} {
-      width: 42px;
-      height: 42px;
-    }
-
-    &:hover {
-      background-color: var(--od-button-secondary-hover);
-      color: var(--od-colour-text-inverse);
-    }
-
-    svg {
-      height: 100%;
-      width: 100%;
-    }
+.MasterGallery {
+  .Gallery-pane {
+    margin: 0;
   }
 
-  .MasterGallery {
-    .Gallery-pane {
-      margin: 0;
-    }
+  .Gallery-item {
+    padding: 0;
+  }
 
-    .Gallery-item {
-      padding: 0;
-    }
-
-    .Caption {
-      margin: $unit 0;
-      max-width: 100%;
-      @media (max-width: 133vh) {
-        margin: $unit;
-        max-width: calc(100% - $unit * 2);
-      }
+  .Caption {
+    margin: $unit 0;
+    max-width: 100%;
+    @media (max-width: 133vh) {
+      margin: $unit;
+      max-width: calc(100% - $unit * 2);
     }
   }
 }

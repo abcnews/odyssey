@@ -39,7 +39,7 @@ const ARTICLES = [
   },
   {
     cmid: '105888546',
-    targets: [{ selector: '.Header', tags: ['Header'] }] // no media
+    targets: [{ selector: '.Header-content', tags: ['Header'] }] // no media
   },
   {
     cmid: '106004326', // When the southern lights are seen further north
@@ -139,6 +139,7 @@ ARTICLES.forEach(({ targets, cmid }) => {
               // Uncomment this to help diagnose errors inside the headless browser
               // which would be otherwise invisible.
               // page.on('console', msg => console.log(msg.text(), msg.location(), msg.args()));
+
               await page.goto(url);
               await page.mainFrame().waitForFunction(() => window.__ODYSSEY__);
             });
@@ -193,6 +194,27 @@ ARTICLES.forEach(({ targets, cmid }) => {
                     });
 
                     expect(naturalWidth).toBeGreaterThan(0);
+                  }).toPass();
+                }
+
+                // Do a similar thing for iframes
+                const frames = testElement.locator('iframe');
+                const framesLength = await frames.count();
+                for (let i = 0; i < framesLength; i++) {
+                  await expect(async () => {
+                    const frame = frames.nth(i);
+                    const loaded = await frame.evaluate(async frame => {
+                      if (frame instanceof HTMLIFrameElement) {
+                        return await new Promise(resolve => {
+                          const src = frame.src;
+                          frame.src = 'about:blank';
+                          frame.addEventListener('load', () => resolve(true));
+                          frame.src = src;
+                        });
+                      }
+                      throw new Error('<iframe> not an instance of HTMLIFrameElement?');
+                    });
+                    expect(loaded).toEqual(true);
                   }).toPass();
                 }
 

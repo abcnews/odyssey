@@ -131,6 +131,16 @@ interface MediaEmbeddedEmbedded {
   mediaThumbnail: MediaThumbnail;
 }
 
+interface GalleryElement extends HTMLElement {
+  api?: any; // TODO: type this better
+}
+
+interface MasterGalleryItem {
+  id: string;
+  mediaEl: GalleryElement;
+  captionEl: HTMLElement | null;
+}
+
 interface MediaThumbnail {
   _links: JavascriptLinks;
   alt: string;

@@ -15,8 +15,8 @@
 	"scripts": {
 		"start": "aunty serve",
 		"dev": "aunty serve",
-		"test": "act",
-		"test:update-snapshots": "act workflow_dispatch --artifact-server-path=./.artifacts && unzip -o -u -d e2e .artifacts/1/snapshots/snapshots.zip",
+		"test": "act --action-offline-mode",
+		"test:update-snapshots": "act workflow_dispatch --action-offline-mode --artifact-server-path=./.artifacts && unzip -o -u -d e2e .artifacts/1/snapshots/snapshots.zip",
 		"test:local": "playwright test"
 	},
 	"dependencies": {

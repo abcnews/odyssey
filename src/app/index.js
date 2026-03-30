@@ -3,7 +3,6 @@ import api from './api';
 import { transformSection as transformSectionIntoBackdrop } from './components/Backdrop';
 import { transformSection as transformSectionIntoBlock } from './components/Block';
 import FormatCredit from './components/FormatCredit';
-import FormatCreditLegacy from './components/legacy/FormatCredit';
 import { transformSection as transformSectionIntoGallery } from './components/Gallery';
 import { Lite as LiteHeader, transformSection as transformSectionIntoHeader } from './components/Header';
 import { transformMarker as transformMarkerIntoHR } from './components/HR';
@@ -20,7 +19,6 @@ import {
 import Picture from './components/Picture';
 import { transformElement as transformElementIntoQuote } from './components/Quote';
 import { transformMarker as transformMarkerIntoRecirculation } from './components/Recirculation';
-import { transformMarker as transformMarkerIntoScrollHint } from './components/ScrollHint';
 import { transformMarker as transformMarkerIntoSeries } from './components/Series';
 import { transformMarker as transformMarkerIntoShare } from './components/Share';
 import { transformMarker as transformMarkerIntoSurveyCTA } from './components/SurveyCTA';
@@ -60,7 +58,7 @@ export default terminusDocument => {
   }
 
   const mainEl = reset(storyEl, meta);
-  mainEl.parentElement?.classList.add(meta.isFuture ? 'is-future' : 'is-legacy');
+
   debug('Performed page reset');
 
   mockDecoyActivationsUnderEl(mainEl); // Mock PL's decoy activation events
@@ -203,7 +201,6 @@ export default terminusDocument => {
     'beforeandafterstart',
     'cta',
     'hr',
-    'scrollhint',
     'series',
     'share',
     'image',
@@ -227,9 +224,6 @@ export default terminusDocument => {
         break;
       case 'hr':
         transformMarkerIntoHR(marker, meta);
-        break;
-      case 'scrollhint':
-        transformMarkerIntoScrollHint(marker);
         break;
       case 'series':
         transformMarkerIntoSeries(marker);
@@ -374,7 +368,7 @@ export default terminusDocument => {
 
   // Append format credit for non-DSI stories
   if (meta.productionUnit !== 'EDL team' && (meta.infoSource || {}).name !== 'Digital Story Innovation Team') {
-    append(mainEl, meta.isFuture ? FormatCredit() : FormatCreditLegacy());
+    append(mainEl, FormatCredit());
     debug('Appended Odyssey format credit');
   }
 
