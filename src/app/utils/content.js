@@ -1,13 +1,12 @@
 // @ts-check
 import { fetchOne } from '@abcnews/terminus-fetch';
 
-/** @type {Record<string, Promise<TerminusArticle>>} */
+/** @type {Record<string, Promise<TerminusArticle | TerminusImage>>} */
 const cache = {};
 
 /**
  *
  * @param {{id:string; type: string}|string} optionsOrId
- * @returns {Promise<object>}
  */
 export const fetchDocument = optionsOrId => {
   const options = typeof optionsOrId === 'object' ? optionsOrId : { id: optionsOrId };
@@ -24,7 +23,6 @@ export const fetchDocument = optionsOrId => {
  *
  * @param {{id: string, type:string} | string} optionsOrId
  * @param {Partial<import('../meta').MetaData>} meta
- * @returns
  */
 export const getOrFetchDocument = (optionsOrId, meta) => {
   const { id } = typeof optionsOrId === 'object' ? optionsOrId : { id: optionsOrId };

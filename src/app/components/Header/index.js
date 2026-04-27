@@ -23,6 +23,7 @@ import styles from './index.lazy.scss';
  * @prop {boolean} isPale
  * @prop {boolean} isVideoYouTube
  * @prop {boolean} isParallax
+ * @prop {boolean} isArtDirected
  * @prop {Partial<import('src/app/meta').MetaData>} meta
  * @prop {{value: number; units: string}} [mediaWidth]
  * @prop {Element[]} miscContentEls
@@ -53,7 +54,8 @@ const Header = ({
   ratios = {},
   shouldVideoPlayOnce,
   shouldReplace,
-  videoId
+  videoId,
+  isArtDirected
 }) => {
   isFloating = isFloating || (isLayered && !imgEl && !videoId);
   isLayered = isLayered || isFloating;
@@ -91,7 +93,8 @@ const Header = ({
       src: imgEl.src,
       alt: imgEl.getAttribute('alt'),
       ratios,
-      shouldLazyLoad: false
+      shouldLazyLoad: false,
+      isArtDirected
     });
   } else if (videoId) {
     mediaEl = isVideoYouTube
@@ -226,13 +229,15 @@ function fetchInfoSourceLogo(meta, el, variant) {
 
     if (logoDocRef) {
       fetchDocument({ id: logoDocRef.id, type: logoDocRef.docType.toLowerCase() }).then(imageDoc => {
-        const image = imageDoc.media.image.primary.complete[0];
-        const imageRatio = image.height / image.width;
+        if ('media' in imageDoc) {
+          const image = imageDoc.media.image.primary.complete[0];
+          const imageRatio = image.height / image.width;
 
-        el.className = `${el.className} has-logo`;
-        // Height based on the image ratio (wider is shorter), clamped between 48px and 64px
-        el.style.height = `${clampNumber(Math.round(64 * imageRatio), 48, 64)}px`;
-        el.style.backgroundImage = `url(${image.url})`;
+          el.className = `${el.className} has-logo`;
+          // Height based on the image ratio (wider is shorter), clamped between 48px and 64px
+          el.style.height = `${clampNumber(Math.round(64 * imageRatio), 48, 64)}px`;
+          el.style.backgroundImage = `url(${image.url})`;
+        }
       });
     }
   });
@@ -249,6 +254,7 @@ export const transformSection = (section, meta) => {
   const isAbreast = section.configString.indexOf('abreast') > -1;
   const isNoMedia = isFloating || section.configString.indexOf('nomedia') > -1;
   const isKicker = section.configString.indexOf('kicker') > -1;
+  const isArtDirected = section.configString.indexOf('artdirected') > -1;
   const shouldSupplant = section.configString.indexOf('supplant') > -1;
   const shouldReplace = section.configString.indexOf('replace') > -1;
   const shouldVideoPlayOnce = section.configString.indexOf('once') > -1;
@@ -306,6 +312,7 @@ export const transformSection = (section, meta) => {
       isParallax,
       isLayered,
       isKicker,
+      isArtDirected,
       mediaWidth: mediaWidthValue
         ? { value: +mediaWidthValue, units: mediaWidthUnit?.replace('pct', '%') || 'px' }
         : undefined,

@@ -8,6 +8,7 @@ import { append } from '../../utils/dom';
 import Sizer from '../Sizer';
 import styles from './index.lazy.scss';
 import { addLazyLoadableAPI } from './lazy';
+import { initArtDirection } from './directed';
 
 const DEFAULT_RATIOS = {
   sm: '1x1',
@@ -25,6 +26,7 @@ const WIDTHS = [700, 940, 1400, 2150];
  * @param {Record<string, string | undefined>} [obj.ratios]
  * @param {string} [obj.linkUrl]
  * @param {boolean} [obj.isContained]
+ * @param {boolean} [obj.isArtDirected]
  * @param {boolean} [obj.shouldLazyLoad]
  * @returns {HTMLElement}
  */
@@ -34,8 +36,13 @@ const Picture = ({
   ratios: requestedRatios = {},
   linkUrl = '',
   isContained = false,
+  isArtDirected = false,
   shouldLazyLoad = true
 }) => {
+  if (isArtDirected) {
+    shouldLazyLoad = false;
+  }
+
   /** @type {Record<string, string>} */
   const ratios = {
     sm: requestedRatios.sm || DEFAULT_RATIOS.sm,
@@ -95,7 +102,13 @@ const Picture = ({
   /**
    * @type {HTMLElement & {api?: import('./lazy').LazyLoadAPI}}
    */
-  const rootEl = html`<a class=${cn('Picture', { 'is-contained': isContained, 'is-original': isOriginal })}
+  const rootEl = html`<a
+    class=${cn('Picture', {
+      'is-contained': isContained,
+      'is-original': isOriginal,
+      'is-art-directed': isArtDirected,
+      'awaiting-alternatives': isArtDirected
+    })}
     >${sizerEl}${pictureEl}</a
   >`;
 
@@ -116,6 +129,12 @@ const Picture = ({
     rootEl.setAttribute('loaded', '');
   }
 
+  // Unfortunately, we can't initialise the art-direction here because it needs to fetch more data from Terminus, so
+  // it's an async operation and everything else here is synchronous.
+  if (isArtDirected && imageDoc) {
+    initArtDirection({ primaryImage: imageDoc, pictureEl, rootEl });
+  }
+
   styles.use();
 
   return rootEl;
@@ -129,7 +148,7 @@ export default Picture;
  * @param {string} [preferredRatio]
  * @returns
  */
-function srcsetFromRenditions(renditions, preferredRatio) {
+export function srcsetFromRenditions(renditions, preferredRatio) {
   if (!renditions) {
     return null;
   }
