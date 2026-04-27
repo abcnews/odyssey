@@ -28,6 +28,7 @@ import styles from './index.lazy.scss';
  * @prop {Element[]} miscContentEls
  * @prop {import('../../utils/misc').Ratios} ratios
  * @prop {boolean} shouldVideoPlayOnce
+ * @prop {boolean} shouldReplace
  * @prop {string|number} videoId
  */
 
@@ -51,6 +52,7 @@ const Header = ({
   miscContentEls = [],
   ratios = {},
   shouldVideoPlayOnce,
+  shouldReplace,
   videoId
 }) => {
   isFloating = isFloating || (isLayered && !imgEl && !videoId);
@@ -109,7 +111,9 @@ const Header = ({
 
   const titleEl = html`
     <h1>
-      ${isKicker && meta.title && meta.title.indexOf(': ') > -1
+      ${shouldReplace
+        ? mediaEl
+        : isKicker && meta.title && meta.title.indexOf(': ') > -1
         ? meta.title.split(': ').map((text, index) => (index === 0 ? html`<small>${text}</small>` : text))
         : meta.title}
     </h1>
@@ -154,7 +158,7 @@ const Header = ({
 
   const headerEl = html`
     <div class="${className}" data-scheme="${scheme}" data-theme="${THEME}">
-      ${mediaEl
+      ${mediaEl && !shouldReplace
         ? html`
             <div
               class="${mediaClassName}"
@@ -246,6 +250,7 @@ export const transformSection = (section, meta) => {
   const isNoMedia = isFloating || section.configString.indexOf('nomedia') > -1;
   const isKicker = section.configString.indexOf('kicker') > -1;
   const shouldSupplant = section.configString.indexOf('supplant') > -1;
+  const shouldReplace = section.configString.indexOf('replace') > -1;
   const shouldVideoPlayOnce = section.configString.indexOf('once') > -1;
   /** @type {(string|undefined)[]} */
   const [, , mediaWidthValue, mediaWidthUnit] = section.configString.match(/mediawidth(([0-9]+)(px|pct|rem))/) || [];
@@ -305,7 +310,8 @@ export const transformSection = (section, meta) => {
         ? { value: +mediaWidthValue, units: mediaWidthUnit?.replace('pct', '%') || 'px' }
         : undefined,
       miscContentEls: [],
-      shouldVideoPlayOnce
+      shouldVideoPlayOnce,
+      shouldReplace
     }
   );
 
