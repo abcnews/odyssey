@@ -98,6 +98,11 @@ function onScroll() {
 }
 
 
+function setCSSCustomProperties() {
+  if (!icb) return;
+  document.documentElement.style.setProperty('--vw-ratio-16x9', `${Math.floor((icb.width / 16) * 9)}px`);
+}
+
 /**
  *
  * @param {*} event
@@ -124,6 +129,10 @@ function onClientInvalidated(event) {
   const hasChanged = nextICB && icb === nextICB;
 
   enqueue(notifySubscribers, hasChanged);
+
+  if (hasChanged) {
+    window.requestIdleCallback(setCSSCustomProperties);
+  }
 }
 
 const onClientInvalidated_debounced = debounce(onClientInvalidated, 50);
