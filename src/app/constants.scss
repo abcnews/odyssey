@@ -130,6 +130,17 @@ $radius: calc($unit * 0.75);
   --od-font-stack-serif: var(--dls-font-stack-serif, '"abcserif","Book Anitqua","Palatino Linotype",Palatino,serif');
   --od-font-stack-monospace: var(--dls-font-stack-monospace, '"abcsans tabbed",monospace');
 
+  --od-link-transition: var(
+    --dls-link-transition,
+    color 0.2s ease-out,
+    border-color 0.2s ease-out,
+    border-radius 0.2s ease-out,
+    background-color 0.2s ease-out,
+    box-shadow 0.2s ease-out,
+    transform 0.2s ease-out,
+    text-decoration 0.2s ease-out
+  );
+
   --od-font-size-xs: 0.75rem; // 12px
   --od-font-size-sm: 0.875rem; // 14px
   --od-font-size: 1.125rem; // 18px
