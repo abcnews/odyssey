@@ -14,21 +14,21 @@ const BUDGETED_MILLISECONDS_PER_PERIOD = 12;
 const BUDGETED_TICKS_PER_PERIOD = 24;
 const budget = IS_PROBABLY_RESISTING_FINGERPRINTING
   ? {
-    reset() {
-      this.ticks = 0;
-    },
-    measure() {
-      return this.ticks++ <= BUDGETED_TICKS_PER_PERIOD;
+      reset() {
+        this.ticks = 0;
+      },
+      measure() {
+        return this.ticks++ <= BUDGETED_TICKS_PER_PERIOD;
+      }
     }
-  }
   : {
-    reset() {
-      this.ms = performance.now();
-    },
-    measure() {
-      return performance.now() - this.ms <= BUDGETED_MILLISECONDS_PER_PERIOD;
-    }
-  };
+      reset() {
+        this.ms = performance.now();
+      },
+      measure() {
+        return performance.now() - this.ms <= BUDGETED_MILLISECONDS_PER_PERIOD;
+      }
+    };
 
 /** @type {Map<(client:Client) => void, boolean>} */
 const subscribers = new Map();
@@ -97,6 +97,11 @@ function onScroll() {
   }
 }
 
+function setCSSCustomProperties() {
+  if (!icb) return;
+  document.documentElement.style.setProperty('--scrollbar-width', `${window.innerWidth - icb.width}px`);
+  document.documentElement.style.setProperty('--vw-ratio-16x9', `${Math.floor((icb.width / 16) * 9)}px`);
+}
 
 /**
  *
@@ -124,6 +129,10 @@ function onClientInvalidated(event) {
   const hasChanged = nextICB && icb === nextICB;
 
   enqueue(notifySubscribers, hasChanged);
+
+  if (hasChanged) {
+    window.requestIdleCallback(setCSSCustomProperties);
+  }
 }
 
 const onClientInvalidated_debounced = debounce(onClientInvalidated, 50);
