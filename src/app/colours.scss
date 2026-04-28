@@ -35,6 +35,8 @@
   --od-button-secondary-active: var(--nw-colour-theme-button-secondary-active, #60769c);
   --od-button-secondary-disabled: var(--nw-colour-theme-button-secondary-disabled, #0000000d);
 
+  --od-colour-border-outline: var(--nw-colour-border-outline, #0058cc);
+
   // Text
   --od-colour-text-primary: var(--nw-colour-text-primary, rgb(0, 0, 0));
   --od-colour-text-secondary: var(--nw-colour-text-secondary, rgb(72, 75, 81));
@@ -81,6 +83,8 @@
   --od-button-secondary-hover: var(--nw-colour-theme-button-secondary-hover, #a0beeb);
   --od-button-secondary-active: var(--nw-colour-theme-button-secondary-active, #60769c);
   --od-button-secondary-disabled: var(--nw-colour-theme-button-secondary-disabled, #ffffff33);
+
+  --od-colour-border-outline: var(--nw-colour-border-outline, #8fbfff);
 
   // Text
   --od-colour-text-primary: var(--nw-colour-text-primary, rgb(235, 235, 235));
