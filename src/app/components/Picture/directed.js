@@ -16,7 +16,7 @@ import html from 'nanohtml';
 export const initArtDirection = async ({ primaryImage, pictureEl, rootEl }) => {
   const doc = await fetchDocument(primaryImage.id);
   const alts = await Promise.all(
-    (doc.contextSettings['meta.data.name'].alts || []).map(async d => {
+    (doc.contextSettings['odyssey'].alts || []).map(async d => {
       return { width: d.width, image: await fetchDocument(d.image.id) };
     })
   );
