@@ -1,6 +1,6 @@
 // @ts-check
 import { parse } from '@abcnews/alternating-case-to-object';
-import { getTier, TIERS, getApplication, APPLICATIONS } from '@abcnews/env-utils';
+import { getTier, TIERS } from '@abcnews/env-utils';
 import { url2cmid } from '@abcnews/url2cmid';
 import { INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID, SELECTORS, VIEWPORT_HEIGHT_THRESHOLD } from '../constants';
 import { fetchDocument } from '../utils/content';

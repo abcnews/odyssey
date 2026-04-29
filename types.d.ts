@@ -10,9 +10,36 @@ interface Window {
   dataLayer?: any;
 }
 
+interface TerminusImageEmbedded {
+  primaryContext: PrimaryContext;
+}
+
+interface TerminusImage {
+  _embedded: TerminusImageEmbedded;
+  _links: TerminusLinks;
+  alt: string;
+  canonicalURI: string;
+  canonicalURL: string;
+  contentSource: 'coremedia';
+  contextSettings: ContextSettings;
+  dates: Dates;
+  docType: string;
+  genre: string;
+  id: string;
+  isOriginalEnforced: boolean;
+  lang: string;
+  media: Media;
+  notChildFriendly: boolean;
+  rightsHolder: string[];
+  site: Site;
+  title: string;
+  titleAlt: TitleAlt;
+  version: number;
+}
+
 interface TerminusArticle {
   _embedded: TerminusArticleEmbedded;
-  _links: TerminusArticleLinks;
+  _links: TerminusLinks;
   canonicalURI: string;
   canonicalURL: string;
   contentSource: string;
@@ -33,9 +60,9 @@ interface TerminusArticle {
   sourceURL: string;
   synopsis: string;
   synopsisAlt: SynopsisAlt;
-  text: Text;
+  text: string;
   title: string;
-  titleAlt: MediaEmbeddedTitleAlt;
+  titleAlt: TitleAlt;
   version: number;
 }
 
@@ -117,7 +144,7 @@ interface MediaEmbedded {
   lang: string;
   media?: Media;
   title?: string;
-  titleAlt?: MediaEmbeddedTitleAlt;
+  titleAlt?: TitleAlt;
   _embedded?: MediaEmbeddedEmbedded;
   synopsis?: string;
   synopsisAlt?: SynopsisAlt;
@@ -321,7 +348,7 @@ interface FluffyParameters {
   show: string;
 }
 
-interface MediaEmbeddedTitleAlt {
+interface TitleAlt {
   lg: string;
   md: string;
   sm: string;
@@ -353,7 +380,7 @@ interface Subject {
   title: string;
 }
 
-interface TerminusArticleLinks {
+interface TerminusLinks {
   self: Self;
   'terminus:teasable': Self;
 }
@@ -367,8 +394,14 @@ interface ContextSettings {
 }
 
 interface MetaDataName {
-  'replacement-title': string;
-  theme: string;
+  'replacement-title'?: string;
+  theme?: string;
+  alts?: {
+    width: string;
+    image: {
+      id: string;
+    };
+  }[];
 }
 
 interface EmbeddedMedia {

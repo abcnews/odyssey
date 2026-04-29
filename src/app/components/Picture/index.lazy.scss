@@ -39,6 +39,19 @@
     }
   }
 
+  &.is-art-directed {
+    &.awaiting-alternatives {
+      opacity: 0;
+    }
+
+    .Sizer {
+      display: none;
+    }
+    img {
+      position: relative;
+    }
+  }
+
   @media #{$mq-lt-lg} {
     &.is-contained img {
       object-fit: contain;
