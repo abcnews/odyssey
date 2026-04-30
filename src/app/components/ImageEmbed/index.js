@@ -51,15 +51,16 @@ export const transformElement = el => {
 
   const isOriginal = imageDoc.media.image.primary.complete.length < 2;
 
+  const configString = grabPrecedingConfigString(el);
+  const isArtDirected = configString.indexOf('artdirected') > -1;
+
   // For backward compatibility reasons, we should not transform embedded images with 'use original image' checked in
   // the CMS. However, these images can be transformed into Odyssey image embeds by embedding them with a `#image<id>`
   // tag. It might be possible to re-visit this if we require a specific config to enable conversion which would exclude
   // previously published stories from conversion.
-  if (isOriginal && imgEl) {
+  if (isOriginal && imgEl && !isArtDirected) {
     return;
   }
-
-  const configString = grabPrecedingConfigString(el);
 
   // TODO: Support defining the size and positioning for 'use original' images.
   // /** @type {(string|undefined)[]} */
@@ -82,7 +83,8 @@ export const transformElement = el => {
       xl: ratios.xl
     },
     linkUrl: `/news/${imageDoc.id}`,
-    shouldLazyLoad: !isStatic
+    shouldLazyLoad: !isStatic,
+    isArtDirected
   });
 
   const imageEmbedEl = ImageEmbed({
