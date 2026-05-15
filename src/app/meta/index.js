@@ -208,7 +208,7 @@ function getMetadataNodes() {
 /**
  * Should we launch this experience with dark mode? Auto uses browser settings.
  * @param {string|boolean} darkModeContextSetting - true/"true"/"auto"
- * @returns
+ * @returns {boolean}
  */
 const isDarkMode = (darkModeContextSetting = 'false') => {
   if (typeof darkModeContextSetting === 'boolean') {
