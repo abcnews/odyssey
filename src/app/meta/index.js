@@ -98,8 +98,8 @@ function getBylineNodes() {
 
   const bylineEls = isElement(bylineNodesParentEl)
     ? Array.from(bylineNodesParentEl.childNodes).filter(
-        node => node.nodeType !== Node.COMMENT_NODE && (node.textContent || '').trim().length > -1
-      )
+      node => node.nodeType !== Node.COMMENT_NODE && (node.textContent || '').trim().length > -1
+    )
     : [];
 
   return [...bylineEls, clonedTagsEl].filter(isNode);
@@ -206,6 +206,24 @@ function getMetadataNodes() {
 }
 
 /**
+ * Should we launch this experience with dark mode? Auto uses browser settings.
+ * @param {string|boolean} darkModeContextSetting - true/"true"/"auto"
+ * @returns {boolean}
+ */
+const isDarkMode = (darkModeContextSetting = 'false') => {
+  if (typeof darkModeContextSetting === 'boolean') {
+    return darkModeContextSetting;
+  }
+
+  if (darkModeContextSetting === 'auto') {
+    const isABCDarkMode = document.body.dataset.scheme === 'dark';
+    return isABCDarkMode;
+  }
+
+  return darkModeContextSetting === 'true';
+}
+
+/**
  * Initialise the metadata for use everywhere else.
  *
  * @param {TerminusArticle} terminusDocument
@@ -226,14 +244,14 @@ export const initMeta = terminusDocument => {
 
       return metaDataName
         ? {
-            _metaDataName: metaDataName,
-            url: metaDataName['replacement-url'] || url,
-            title: metaDataName['replacement-title'] || title,
-            description: metaDataName['replacement-description'] || description,
-            theme: metaDataName.theme || null,
-            hasCaptionAttributions: metaDataName['caption-attributions'] !== false,
-            isDarkMode: metaDataName['dark-mode'] === true
-          }
+          _metaDataName: metaDataName,
+          url: metaDataName['replacement-url'] || url,
+          title: metaDataName['replacement-title'] || title,
+          description: metaDataName['replacement-description'] || description,
+          theme: metaDataName.theme || null,
+          hasCaptionAttributions: metaDataName['caption-attributions'] !== false,
+          isDarkMode: isDarkMode(metaDataName['dark-mode'])
+        }
         : null;
     },
     // Discover if the page was rendered by the News app
@@ -245,7 +263,7 @@ export const initMeta = terminusDocument => {
           window && window.location !== window.parent.location ? document.referrer : document.location.href;
 
         isNewsApp = pageURL.indexOf('newsapp') > -1;
-      } catch (err) {}
+      } catch (err) { }
 
       return {
         isNewsApp
@@ -374,9 +392,9 @@ export const initMeta = terminusDocument => {
     infoSource:
       terminusDocument.source && terminusDocument.sourceURL
         ? {
-            name: terminusDocument.source,
-            url: terminusDocument.sourceURL
-          }
+          name: terminusDocument.source,
+          url: terminusDocument.sourceURL
+        }
         : undefined,
     // keep isPL around until we can audit Odyssey plugins and ensure none depend on it
     isPL: true,
