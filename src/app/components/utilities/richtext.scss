@@ -1,285 +1,287 @@
 @use '../../constants' as *;
 
-// Attribute selectors are used for `u-richtext` so those styles also apply to
-// `u-richtext-invert`.
-[class*='u-richtext'],
-.is-not-piecemeal > [class*='u-richtext'] > div {
-  > h1,
-  > h2,
-  > h3 {
-    font-weight: bold;
-    text-transform: none;
-    font-family: var(--od-font-stack-serif);
-  }
-
-  > h2 {
-    clear: both;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  > ul,
-  > ol,
-  > ul ul,
-  > ol ul,
-  > ul ol,
-  > ol ol {
-    margin-left: auto;
-  }
-
-  > ul,
-  > ul ul,
-  > ol ul {
-    list-style: none;
-  }
-
-  > ol,
-  > ul ol,
-  > ol ol {
-    padding-left: calc(#{$layout-fluid-padding} + 0.85em);
-    list-style-position: outside;
-
-    @media #{$mq-gt-md} {
-      padding-left: calc(#{$layout-fixed-padding} + 0.85em);
+@scope ([data-key="body"]) to ([data-component]) {
+  // Attribute selectors are used for `u-richtext` so those styles also apply to
+  // `u-richtext-invert`.
+  [class*='u-richtext'],
+  .is-not-piecemeal > [class*='u-richtext'] > div {
+    > h1,
+    > h2,
+    > h3 {
+      font-weight: bold;
+      text-transform: none;
+      font-family: var(--od-font-stack-serif);
     }
-  }
 
-  > ul ul,
-  > ol ul,
-  > ul ol,
-  > ol ol {
-    margin-top: $unit * 0.5;
-    margin-bottom: 0;
-  }
+    > h2 {
+      clear: both;
+      margin-left: auto;
+      margin-right: auto;
+    }
 
-  > ul ol,
-  > ol ol {
-    padding-left: 0.85em;
-  }
+    > ul,
+    > ol,
+    > ul ul,
+    > ol ul,
+    > ul ol,
+    > ol ol {
+      margin-left: auto;
+    }
 
-  > ul li,
-  > ol li {
-    margin-bottom: $unit * 0.5;
-    text-align: left;
-  }
+    > ul,
+    > ul ul,
+    > ol ul {
+      list-style: none;
+    }
 
-  > ul > li,
-  > ul ul > li,
-  > ol ul > li {
-    padding-left: 1em;
-    background-image: url(./bullet.svg);
-    background-position: 0 0.65em;
-    background-repeat: no-repeat;
-  }
+    > ol,
+    > ul ol,
+    > ol ol {
+      padding-left: calc(#{$layout-fluid-padding} + 0.85em);
+      list-style-position: outside;
 
-  > ol > li,
-  > ul ol > li,
-  > ol ol > li {
-    padding-left: 0.25em;
-    background: none;
-  }
+      @media #{$mq-gt-md} {
+        padding-left: calc(#{$layout-fixed-padding} + 0.85em);
+      }
+    }
 
-  > table {
-    border-collapse: separate;
-    border-spacing: 0;
-    font-size: 1rem;
+    > ul ul,
+    > ol ul,
+    > ul ol,
+    > ol ol {
+      margin-top: $unit * 0.5;
+      margin-bottom: 0;
+    }
 
-    td,
-    th {
-      padding: $unit * 0.625 $unit * 0.75;
+    > ul ol,
+    > ol ol {
+      padding-left: 0.85em;
+    }
+
+    > ul li,
+    > ol li {
+      margin-bottom: $unit * 0.5;
       text-align: left;
-      vertical-align: top;
     }
 
-    tr > * {
-      border-bottom: $unit * 0.0625 solid $color-grey-300-transparent-70;
-    }
-  }
-
-  > a[id],
-  > a[name],
-  > [data-mount] {
-    padding: 0;
-  }
-
-  > br:first-child,
-  > br:first-child ~ br {
-    display: none;
-  }
-
-  > hr {
-    border: none;
-    padding-bottom: $unit * 0.5;
-  }
-
-  &::after {
-    content: '';
-    display: table;
-    clear: both;
-  }
-}
-
-[class*='u-richtext'] > [class*='u-richtext'],
-[class*='u-pull'] > [class*='u-richtext'] {
-  margin-top: $unit * 0.375;
-  padding-top: $unit * 2;
-  padding-bottom: $unit * 0.75;
-
-  & + [class*='u-richtext'] {
-    border-top: none;
-    padding-top: $unit;
-  }
-
-  > * {
-    margin-bottom: $unit * 1.25;
-
-    @media #{$mq-md} {
-      margin-bottom: $unit * 1.666666667;
-    }
-  }
-
-  > h2 {
-    max-width: none;
-    font-size: 1.375rem;
-    text-align: left;
-  }
-
-  > h3,
-  > h4 {
-    margin-bottom: $unit * 0.5;
-
-    @media #{$mq-md} {
-      margin-bottom: $unit * 0.666666667;
+    > ul > li,
+    > ul ul > li,
+    > ol ul > li {
+      padding-left: 1em;
+      background-image: url(./bullet.svg);
+      background-position: 0 0.65em;
+      background-repeat: no-repeat;
     }
 
-    @media #{$mq-gt-md} {
-      margin-bottom: $unit * 0.75;
+    > ol > li,
+    > ul ol > li,
+    > ol ol > li {
+      padding-left: 0.25em;
+      background: none;
+    }
+
+    > table {
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 1rem;
+
+      td,
+      th {
+        padding: $unit * 0.625 $unit * 0.75;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      tr > * {
+        border-bottom: $unit * 0.0625 solid $color-grey-300-transparent-70;
+      }
+    }
+
+    > a[id],
+    > a[name],
+    > [data-mount] {
+      padding: 0;
+    }
+
+    > br:first-child,
+    > br:first-child ~ br {
+      display: none;
+    }
+
+    > hr {
+      border: none;
+      padding-bottom: $unit * 0.5;
+    }
+
+    &::after {
+      content: '';
+      display: table;
+      clear: both;
     }
   }
 
-  > h3 {
-    font-size: 1.145833333rem;
+  [class*='u-richtext'] > [class*='u-richtext'],
+  [class*='u-pull'] > [class*='u-richtext'] {
+    margin-top: $unit * 0.375;
+    padding-top: $unit * 2;
+    padding-bottom: $unit * 0.75;
+
+    & + [class*='u-richtext'] {
+      border-top: none;
+      padding-top: $unit;
+    }
+
+    > * {
+      margin-bottom: $unit * 1.25;
+
+      @media #{$mq-md} {
+        margin-bottom: $unit * 1.666666667;
+      }
+    }
+
+    > h2 {
+      max-width: none;
+      font-size: 1.375rem;
+      text-align: left;
+    }
+
+    > h3,
+    > h4 {
+      margin-bottom: $unit * 0.5;
+
+      @media #{$mq-md} {
+        margin-bottom: $unit * 0.666666667;
+      }
+
+      @media #{$mq-gt-md} {
+        margin-bottom: $unit * 0.75;
+      }
+    }
+
+    > h3 {
+      font-size: 1.145833333rem;
+    }
+
+    > h4,
+    > p,
+    > ul li,
+    > ol li,
+    > blockquote {
+      font-size: 0.9375rem;
+    }
+
+    > ul,
+    > ol,
+    > ul ul,
+    > ol ul,
+    > ul ol,
+    > ol ol {
+      padding-left: 0;
+    }
+
+    > h2 {
+      &::before {
+        content: none;
+      }
+    }
   }
 
-  > h4,
-  > p,
-  > ul li,
-  > ol li,
-  > blockquote {
-    font-size: 0.9375rem;
-  }
-
-  > ul,
-  > ol,
-  > ul ul,
-  > ol ul,
-  > ul ol,
-  > ol ol {
+  [class*='u-pull'] > [class*='u-richtext'] {
     padding-left: 0;
+    padding-right: 0;
   }
 
-  > h2 {
-    &::before {
-      content: none;
+  .u-richtext-invert,
+  .is-not-piecemeal > .u-richtext-invert > div {
+    > ul > li,
+    > ul ul > li,
+    > ol ul > li {
+      background-image: url(./bullet-inverted.svg);
     }
   }
-}
 
-[class*='u-pull'] > [class*='u-richtext'] {
-  padding-left: 0;
-  padding-right: 0;
-}
+  [class*='u-richtext'] {
+    > * {
+      font-size: var(--od-font-size);
+      color: var(--od-colour-text-primary);
+      margin-top: var(--od-space-paragraph-margin);
+      margin-bottom: var(--od-space-paragraph-margin);
+      line-height: var(--od-line-height);
+    }
 
-.u-richtext-invert,
-.is-not-piecemeal > .u-richtext-invert > div {
-  > ul > li,
-  > ul ul > li,
-  > ol ul > li {
-    background-image: url(./bullet-inverted.svg);
+    > [data-mount] {
+      margin-top: var(--od-space-component-margin);
+      margin-bottom: var(--od-space-component-margin);
+    }
+
+    h1 {
+      font-size: var(--od-font-size-heading-lg);
+    }
+
+    h2 {
+      font-size: var(--od-font-size-heading-md);
+      margin-top: var(--od-space-component-margin);
+    }
+
+    h3 {
+      font-size: var(--od-font-size-heading-sm);
+      margin-top: var(--od-space-component-margin);
+    }
+
+    a:any-link,
+    a:any-link > * {
+      color: var(--od-colour-theme-text-link);
+    }
+
+    > h2 {
+      font-size: 1.5rem;
+      font-family: var(--od-font-stack-serif);
+
+      @media #{$mq-gt-sm} {
+        font-size: 2rem;
+      }
+    }
+
+    // TODO: This is a temporary fix for a bug in PL's dark mode
+    > table th {
+      background-color: var(--od-colour-surface-utility);
+    }
+
+    > hr {
+      clear: both;
+      &::before {
+        content: '';
+        display: block;
+        margin: $unit * 2 auto $unit * 1 0;
+        width: 33%;
+        height: $unit * 0.25;
+        opacity: 0.4;
+        background-color: var(--od-colour-theme-text-tag);
+      }
+    }
   }
-}
 
-[class*='u-richtext'] {
-  > * {
-    font-size: var(--od-font-size);
-    color: var(--od-colour-text-primary);
-    margin-top: var(--od-space-paragraph-margin);
-    margin-bottom: var(--od-space-paragraph-margin);
-    line-height: var(--od-line-height);
-  }
-
-  > [data-mount] {
+  // Styles for embedded wysiwyg teasers
+  [class*='u-richtext'] > [class*='u-richtext'],
+  [class*='u-pull'] > [class*='u-richtext'] {
+    border-style: solid;
+    border-color: var(--od-colour-border-opacity-low);
+    border-width: 1px 0;
     margin-top: var(--od-space-component-margin);
     margin-bottom: var(--od-space-component-margin);
-  }
-
-  h1 {
-    font-size: var(--od-font-size-heading-lg);
-  }
-
-  h2 {
-    font-size: var(--od-font-size-heading-md);
-    margin-top: var(--od-space-component-margin);
-  }
-
-  h3 {
-    font-size: var(--od-font-size-heading-sm);
-    margin-top: var(--od-space-component-margin);
-  }
-
-  a:any-link,
-  a:any-link > * {
-    color: var(--od-colour-theme-text-link);
-  }
-
-  > h2 {
-    font-size: 1.5rem;
-    font-family: var(--od-font-stack-serif);
+    padding-top: var(--od-space-md);
+    padding-bottom: var(--od-space-md);
 
     @media #{$mq-gt-sm} {
-      font-size: 2rem;
+      padding-top: var(--od-space-lg);
+      padding-bottom: var(--od-space-lg);
     }
-  }
 
-  // TODO: This is a temporary fix for a bug in PL's dark mode
-  > table th {
-    background-color: var(--od-colour-surface-utility);
-  }
-
-  > hr {
-    clear: both;
-    &::before {
-      content: '';
-      display: block;
-      margin: $unit * 2 auto $unit * 1 0;
-      width: 33%;
-      height: $unit * 0.25;
-      opacity: 0.4;
-      background-color: var(--od-colour-theme-text-tag);
+    :first-child {
+      margin-top: 0;
     }
-  }
-}
-
-// Styles for embedded wysiwyg teasers
-[class*='u-richtext'] > [class*='u-richtext'],
-[class*='u-pull'] > [class*='u-richtext'] {
-  border-style: solid;
-  border-color: var(--od-colour-border-opacity-low);
-  border-width: 1px 0;
-  margin-top: var(--od-space-component-margin);
-  margin-bottom: var(--od-space-component-margin);
-  padding-top: var(--od-space-md);
-  padding-bottom: var(--od-space-md);
-
-  @media #{$mq-gt-sm} {
-    padding-top: var(--od-space-lg);
-    padding-bottom: var(--od-space-lg);
-  }
-
-  :first-child {
-    margin-top: 0;
-  }
-  :last-child {
-    margin-bottom: 0;
+    :last-child {
+      margin-bottom: 0;
+    }
   }
 }

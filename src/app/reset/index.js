@@ -130,6 +130,7 @@ export const reset = (storyEl, meta) => {
   // Clean up Presentation Layer components
   $$('[data-component="Table"', mainEl).forEach(el => unwrap(el));
 
+  // Remove PL classes from components we want to style for ourselves
   $$(
     [
       '[data-component="ContentLink"]',
@@ -138,7 +139,8 @@ export const reset = (storyEl, meta) => {
       '[data-component="List"]',
       '[data-component="ListItem"]',
       '[data-component="Table"]',
-      'p'
+      '#content > p', // All p elements that are direct children of mainEl
+      'p:not([data-component] *)' // All p elements that are decendents of mainEl but not inside a [data-component] element
     ].join(),
     mainEl
   ).forEach(el => {
