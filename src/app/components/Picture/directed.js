@@ -28,11 +28,7 @@ export const initArtDirection = async ({ primaryImage, pictureEl, rootEl }) => {
   srcsets.forEach(({ width, srcset }) => {
     const mq = MQ[width.toUpperCase()];
     if (mq) {
-      const source = html`<source
-        media="${mq}"
-        srcset="${srcset}"
-        sizes="${MQ.GT_MD} ${Math.round(BP.LG * 0.666)}px, 100vw"
-      />`;
+      const source = html`<source media="${mq}" srcset="${srcset}" sizes="${MQ.GT_MD} ${BP.LG}px, 100vw" />`;
       prepend(pictureEl, source);
     }
   });
