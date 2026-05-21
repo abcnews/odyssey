@@ -76,9 +76,9 @@ export const VIEWPORT_HEIGHT_THRESHOLD = 350;
 
 export const UNIT = 16; // (px)
 export const BP = {
-  MD: UNIT * 43.75,
-  LG: UNIT * 61.25,
-  XL: UNIT * 112.5
+  MD: UNIT * 43.75, // 700px
+  LG: UNIT * 61.25, // 980px
+  XL: UNIT * 112.5 // 1800px
 };
 export const MQ = {};
 MQ.LT_MD = `(max-width: ${BP.MD - 1}px)`;
@@ -115,7 +115,7 @@ export const SUPPORTS_PASSIVE = (isSupported => {
     });
 
     window.addEventListener('test', null, options);
-  } catch (err) { }
+  } catch (err) {}
 
   return isSupported;
 })(false);
