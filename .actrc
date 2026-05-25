@@ -1,2 +1,3 @@
 --artifact-server-path $PWD/.artifacts
+--env RUNNER_TOOL_CACHE=/tmp/hostedtoolcache
 -e ./event.json
