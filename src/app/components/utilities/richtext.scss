@@ -1,6 +1,6 @@
 @use '../../constants' as *;
 @layer richtext {
-  @scope ([data-key="body"]) to ([data-component]) {
+  @scope ([data-key="body"]) to ([data-component]:not([data-component="LegacyWysiwyg"])) {
     // Attribute selectors are used for `u-richtext` so those styles also apply to
     // `u-richtext-invert`.
     [class*='u-richtext'],
