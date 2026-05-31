@@ -99,7 +99,7 @@ export default terminusDocument => {
     /** Are we removing the elements from the DOM */
     const willBeDetached = !(showUnderThreshold && meta.isBelowThreshold);
 
-    // Create <img> element for screen readers to provide the expected alt text
+    // Create an ARIA image for screen readers to provide the expected alt text
     if (shouldExtractAlt && willBeDetached) {
       const firstAlt = section.betweenNodes
         .filter(isElement)
@@ -107,13 +107,12 @@ export default terminusDocument => {
         .find(alt => !!alt);
 
       if (firstAlt) {
-        const srEl = document.createElement('img');
-        srEl.alt = firstAlt;
-        srEl.setAttribute('loading', 'lazy');
-        // Visually hide the element, and move it far away to prevent
-        // Safari's lazy-loader from triggering.
+        const srEl = document.createElement('span');
+        srEl.setAttribute('role', 'img');
+        srEl.setAttribute('aria-label', firstAlt);
+        // Visually hide the element
         srEl.style.cssText =
-          'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;top:-10000px;left:-10000px;';
+          'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;';
         before(section.startNode, srEl);
       }
     }
