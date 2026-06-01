@@ -101,6 +101,10 @@ const ARTICLES = [
       { selector: '.u-cta', tags: ['CTA'] },
       { selector: '[data-component="Iframe"]', tags: ['Datawrapper', 'iframe'] }
     ]
+  },
+  {
+    cmid: '105884760',
+    targets: [{ selector: '[data-component="LegacyWysiwyg"]', tags: ['wysiwyg teaser'] }]
   }
 ];
 
