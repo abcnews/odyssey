@@ -55,7 +55,8 @@ const ARTICLES = [
   {
     cmid: '7355810',
     targets: [
-      { selector: '.Quote.is-pullquote', tags: ['Quote'] } // Quote with attribution
+      { selector: '.ImageEmbed + .Quote.is-pullquote', tags: ['Quote'] }, // Quote with attribution
+      { selector: '.Mosaic-item .Quote.is-pullquote', tags: ['Quote'] } // Quote in a Mosaic component
     ]
   },
   {
