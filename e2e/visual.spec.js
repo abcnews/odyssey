@@ -53,6 +53,12 @@ const ARTICLES = [
     ]
   },
   {
+    cmid: '7355810',
+    targets: [
+      { selector: '.Quote.is-pullquote', tags: ['Quote'] } // Quote with attribution
+    ]
+  },
+  {
     cmid: '105866280', // The ocean’s ‘wall of death’
     targets: [{ selector: '.Gallery', tags: ['Gallery'] }]
   },
