@@ -6,6 +6,7 @@ import { $, $$, isElement, substitute } from '../../utils/dom';
 import { grabPrecedingConfigString } from '../../utils/mounts';
 import { conditionallyApply as conditionallyApplyUQuote } from '../UQuote';
 import styles from './index.lazy.scss';
+import { stripPLAttributes } from '../../reset';
 
 /**
  *
@@ -60,17 +61,20 @@ export const createFromElement = (el, options) => {
 
   const componentName = clone instanceof HTMLElement && clone.getAttribute('data-component');
 
+  // The News Web EmphasisedText component returns contents as either
+  // paragraph(s), or a combo of blockquote+span depending on the text.
+  const parEls = $$('p,blockquote,span', clone);
+
+  // Remove unwanted PL classes and attributes not removed by reset/index.js
+  parEls.forEach(stripPLAttributes);
+
   /**
    * @type {QuoteOptions}
    */
   const config = {
     isPullquote: componentName === 'Pullquote' || componentName === 'EmphasisedText',
     alignment,
-
-    // The News Web EmphasisedText component returns contents as either
-    // paragraph(s), or a combo of blockquote+span depending on the text.
-    parEls: $$('p,blockquote,span', clone),
-
+    parEls,
     // These can no longer be created in Core, but still exist in articles created before the upgrade to CM10.
     attributionNodes: ($('cite', clone) || MOCK_NODE).childNodes
   };

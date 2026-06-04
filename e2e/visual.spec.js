@@ -111,7 +111,10 @@ const ARTICLES = [
   },
   {
     cmid: '105884760',
-    targets: [{ selector: '[data-component="LegacyWysiwyg"]', tags: ['wysiwyg teaser'] }]
+    targets: [
+      { selector: '[data-component="LegacyWysiwyg"]', tags: ['wysiwyg teaser'] },
+      { selector: '[data-component="LegacyWysiwyg"].u-pull-right', tags: ['wysiwyg teaser'] }
+    ]
   }
 ];
 

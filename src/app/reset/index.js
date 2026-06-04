@@ -120,10 +120,18 @@ export const reset = (storyEl, meta) => {
 
   // Treat WYSIWYG teaser embeds as nested richtext content
   $$(SELECTORS.WYSIWYG_EMBED, mainEl).forEach(el => {
-    el.className = `u-richtext${isDarkMode ? '-invert' : ''}`;
     if (isHTMLElement(el)) {
+      const alignment = el.className.includes('ContentAlignment_floatRight')
+        ? 'right'
+        : el.className.includes('ContentAlignment_floatLeft')
+        ? 'left'
+        : 'center';
+      stripPLAttributes(el);
+      el.className = `u-richtext${isDarkMode ? '-invert' : ''}`;
+      el.dataset.component = 'LegacyWysiwyg';
       el.dataset.theme = THEME;
       el.dataset.scheme = isDarkMode ? 'dark' : 'light';
+      el.classList.add(alignment === 'left' ? 'u-pull-left' : alignment === 'right' ? 'u-pull-right' : 'u-pull-in');
     }
   });
 
@@ -131,22 +139,39 @@ export const reset = (storyEl, meta) => {
   $$('[data-component="Table"', mainEl).forEach(el => unwrap(el));
 
   // Remove PL classes from components we want to style for ourselves
+  // Note that this doesn't successfully strip PL styles from all the components we might want to.
+  // For example, we want Blockquote, EmphasisedText and Pullquote components to take styles from PL except under
+  // specific circumstances such as being embedded inside a Gallery or Mosaic, so we don't strip PL attributes from
+  // those elements. When Odyssey which may include these PL styled components are initialised, they may need to conduct
+  // further PL attribute removal.
   $$(
     [
-      '[data-component="ContentLink"]',
-      '[data-component="Heading"]',
-      '[data-component="Link"]',
-      '[data-component="List"]',
-      '[data-component="ListItem"]',
-      '[data-component="Table"]',
+      '[data-component="ContentLink"]:not(#content [data-component] *)',
+      '[data-component="Heading"]:not(#content [data-component] *)',
+      '[data-component="Link"]:not(#content [data-component] *)', // All Link components that are decendents of mainEl but not inside a [data-component] element that's inside #content
+      '[data-component="List"]:not(#content [data-component] *)',
+      '[data-component="ListItem"]:not(#content [data-component] *)',
+      '[data-component="Table"]:not(#content [data-component] *)',
       '#content > p', // All p elements that are direct children of mainEl
-      'p:not([data-component] *)' // All p elements that are decendents of mainEl but not inside a [data-component] element
+      'p:not(#content [data-component] *)' // All p elements that are decendents of mainEl but not inside a [data-component] element that's inside .Main
     ].join(),
     mainEl
-  ).forEach(el => {
-    el.removeAttribute('class');
-    el.removeAttribute('data-component');
-  });
+  ).forEach(stripPLAttributes);
 
   return mainEl;
+};
+
+/**
+ * @param {Element} el
+ */
+export const stripPLAttributes = el => {
+  el.removeAttribute('class');
+  el.removeAttribute('data-component');
+
+  // There are some circumstances (e.g. A link inside a list) where the decendent elements will not be selected by the
+  // above selectors, so we further strip relevant attributes from all decendents here.
+  $$('*', el).forEach(subEl => {
+    subEl.removeAttribute('class');
+    subEl.removeAttribute('data-component');
+  });
 };
