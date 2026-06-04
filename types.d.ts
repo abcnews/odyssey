@@ -463,3 +463,10 @@ class Convert {
     return JSON.stringify(value);
   }
 }
+
+interface QuoteOptions {
+  isPullquote: boolean;
+  alignment?: string;
+  parEls: (Element | null)[];
+  attributionNodes?: NodeListOf<ChildNode>;
+}

@@ -279,7 +279,7 @@ export default terminusDocument => {
 
   // Transform quotes (native and embedded) that haven't already been transformed
   const nativeQuotesAndQuoteEmbeds = $$(SELECTORS.QUOTE, mainEl);
-  nativeQuotesAndQuoteEmbeds.forEach(transformElementIntoQuote);
+  nativeQuotesAndQuoteEmbeds.forEach(el => transformElementIntoQuote(el));
   conditionalDebug(
     nativeQuotesAndQuoteEmbeds.length > 0,
     `Transformed ${nativeQuotesAndQuoteEmbeds.length} native quotes / quote embeds`

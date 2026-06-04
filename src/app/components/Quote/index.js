@@ -7,20 +7,25 @@ import { grabPrecedingConfigString } from '../../utils/mounts';
 import { conditionallyApply as conditionallyApplyUQuote } from '../UQuote';
 import styles from './index.lazy.scss';
 
-const Quote = ({ isPullquote = false, alignment, parEls = [], attributionNodes = [] }) => {
+/**
+ *
+ * @param {QuoteOptions} options
+ */
+const Quote = ({ isPullquote = false, alignment, parEls = [], attributionNodes }) => {
   const className = cn('Quote', {
     'is-pullquote': isPullquote,
     [`u-pull-${alignment}`]: alignment
   });
-  const attributionEl = attributionNodes.length
-    ? html`
-        <footer>
-          ${Array.from(attributionNodes).map(node => {
-            return node.tagName === 'A' ? html`<cite>${node}</cite>` : node;
-          })}
-        </footer>
-      `
-    : null;
+  const attributionEl =
+    attributionNodes && attributionNodes.length
+      ? html`
+          <footer>
+            ${Array.from(attributionNodes).map(node => {
+              return node instanceof HTMLElement && node.tagName === 'A' ? html`<cite>${node}</cite>` : node;
+            })}
+          </footer>
+        `
+      : null;
 
   // Smart double quotes & indentation
   if (parEls.length) {
@@ -34,6 +39,12 @@ const Quote = ({ isPullquote = false, alignment, parEls = [], attributionNodes =
 
 export default Quote;
 
+/**
+ *
+ * @param {Element} el
+ * @param {Partial<QuoteOptions>} options
+ * @returns
+ */
 export const createFromElement = (el, options) => {
   if (!isElement(el)) {
     return null;
@@ -49,6 +60,9 @@ export const createFromElement = (el, options) => {
 
   const componentName = clone instanceof HTMLElement && clone.getAttribute('data-component');
 
+  /**
+   * @type {QuoteOptions}
+   */
   const config = {
     isPullquote: componentName === 'Pullquote' || componentName === 'EmphasisedText',
     alignment,
@@ -64,7 +78,12 @@ export const createFromElement = (el, options) => {
   return Quote({ ...config, ...(typeof options === 'object' ? options : {}) });
 };
 
-export const transformElement = (el, options) => {
+/**
+ * @param {Element} el
+ * @param {Partial<QuoteOptions>} [options]
+ * @returns
+ */
+export const transformElement = (el, options = {}) => {
   const component = createFromElement(el, options);
   if (!component) return;
   substitute(el, component);

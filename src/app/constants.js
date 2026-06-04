@@ -31,6 +31,9 @@ export const SELECTORS = {
 export const RICHTEXT_BLOCK_TAGNAMES = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'OL', 'UL'];
 export const EMBED_TAGNAMES = ['ASIDE', 'BLOCKQUOTE', 'DIV', 'FIGURE'];
 
+/**
+ * @type {Node}
+ */
 export const MOCK_NODE = {
   nodeValue: '',
   parentNode: null,
