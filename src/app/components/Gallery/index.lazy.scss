@@ -282,3 +282,18 @@
   display: flex;
   align-items: end;
 }
+
+.Gallery-item .RichtextTile-content {
+  padding-bottom: 64px;
+}
+
+.Gallery-item .Quote.is-pullquote {
+  font-size: var(--od-font-size);
+  @media #{$mq-gt-sm} {
+    font-size: var(--od-font-size-lg);
+  }
+
+  @media #{$mq-gt-md} {
+    font-size: var(--od-font-size-xl);
+  }
+}

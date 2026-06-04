@@ -49,23 +49,36 @@
     padding: 0 !important;
   }
 
+  // TODO: this should all be replaced with container queries.
   @media #{$mq-lt-lg} {
-    &[data-row-length='2'] .RichtextTile-content > .Quote.is-pullquote p {
-      font-size: 1.125rem;
+    &[data-row-length='2'] .RichtextTile-content > .Quote.is-pullquote {
+      & blockquote,
+      & p {
+        font-size: 1.125rem;
+      }
     }
 
-    &[data-row-length='3'] .RichtextTile-content > .Quote.is-pullquote p {
-      font-size: 0.875rem;
+    &[data-row-length='3'] .RichtextTile-content > .Quote.is-pullquote {
+      & blockquote,
+      & p {
+        font-size: 0.875rem;
+      }
     }
   }
 
   @media #{$mq-gt-md} {
-    &[data-large-display-row-length='3'] .RichtextTile-content > .Quote.is-pullquote p {
-      font-size: 1.125rem;
+    &[data-large-display-row-length='3'] .RichtextTile-content > .Quote.is-pullquote {
+      & blockquote,
+      & p {
+        font-size: 1.125rem;
+      }
     }
 
-    &[data-large-display-row-length='4'] .RichtextTile-content > .Quote.is-pullquote p {
-      font-size: 0.875rem;
+    &[data-large-display-row-length='4'] .RichtextTile-content > .Quote.is-pullquote {
+      & blockquote,
+      & p {
+        font-size: 0.875rem;
+      }
     }
   }
 
