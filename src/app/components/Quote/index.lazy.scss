@@ -8,7 +8,7 @@
     background-color: transparent;
   }
 
-  footer {
+  figcaption {
     color: $color-grey-500;
     font-family: var(--od-font-stack-sans);
     font-size: 0.9375rem;
@@ -51,7 +51,7 @@
     }
   }
 
-  footer {
+  figcaption {
     padding-top: $unit * 0.25;
     font-size: 1rem;
     color: $color-grey-300;

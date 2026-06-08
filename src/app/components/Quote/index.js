@@ -20,11 +20,11 @@ const Quote = ({ isPullquote = false, alignment, parEls = [], attributionNodes }
   const attributionEl =
     attributionNodes && attributionNodes.length
       ? html`
-          <footer>
+          <figcaption>
             ${Array.from(attributionNodes).map(node => {
               return node instanceof HTMLElement && node.tagName === 'A' ? html`<cite>${node}</cite>` : node;
             })}
-          </footer>
+          </figcaption>
         `
       : null;
 
@@ -35,7 +35,7 @@ const Quote = ({ isPullquote = false, alignment, parEls = [], attributionNodes }
 
   styles.use();
 
-  return html` <div class="${className}">${parEls.concat(attributionEl)}</div> `;
+  return html` <figure class="${className}">${parEls.concat(attributionEl)}</figure> `;
 };
 
 export default Quote;
@@ -61,12 +61,21 @@ export const createFromElement = (el, options) => {
 
   const componentName = clone instanceof HTMLElement && clone.getAttribute('data-component');
 
+  // Turn specific trailing em elements into cite elements so they can be picked up as attributions below.
+  const emCite = $('em:last-child', clone);
+  if (emCite?.firstChild?.TEXT_NODE && emCite?.textContent?.match(/^\p{Dash_Punctuation}/u)) {
+    emCite.firstChild.textContent = emCite.firstChild.textContent?.replace(/^\p{Dash_Punctuation}/u, '') || null;
+    substitute(emCite, html`<cite>${Array.from(emCite.childNodes)}</cite>`);
+  }
+
   // The News Web EmphasisedText component returns contents as either
   // paragraph(s), or a combo of blockquote+span depending on the text.
   const parEls = $$('p,blockquote,span', clone);
 
   // Remove unwanted PL classes and attributes not removed by reset/index.js
   parEls.forEach(stripPLAttributes);
+
+  const attributionNodes = ($('cite', clone) || MOCK_NODE).childNodes;
 
   /**
    * @type {QuoteOptions}
@@ -76,7 +85,7 @@ export const createFromElement = (el, options) => {
     alignment,
     parEls,
     // These can no longer be created in Core, but still exist in articles created before the upgrade to CM10.
-    attributionNodes: ($('cite', clone) || MOCK_NODE).childNodes
+    attributionNodes
   };
 
   return Quote({ ...config, ...(typeof options === 'object' ? options : {}) });
