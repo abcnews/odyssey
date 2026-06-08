@@ -35,7 +35,7 @@ export const isElement = node => {
  * @returns {node is HTMLElement}
  */
 export const isHTMLElement = node => {
-  return isElement(Node) && node instanceof HTMLElement;
+  return isElement(node) && node instanceof HTMLElement;
 };
 
 export const isDocument = node => {

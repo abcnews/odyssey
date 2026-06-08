@@ -6,21 +6,27 @@ import { $, $$, isElement, substitute } from '../../utils/dom';
 import { grabPrecedingConfigString } from '../../utils/mounts';
 import { conditionallyApply as conditionallyApplyUQuote } from '../UQuote';
 import styles from './index.lazy.scss';
+import { stripPLAttributes } from '../../reset';
 
-const Quote = ({ isPullquote = false, alignment, parEls = [], attributionNodes = [] }) => {
+/**
+ *
+ * @param {QuoteOptions} options
+ */
+const Quote = ({ isPullquote = false, alignment, parEls = [], attributionNodes }) => {
   const className = cn('Quote', {
     'is-pullquote': isPullquote,
     [`u-pull-${alignment}`]: alignment
   });
-  const attributionEl = attributionNodes.length
-    ? html`
-        <footer>
-          ${Array.from(attributionNodes).map(node => {
-            return node.tagName === 'A' ? html`<cite>${node}</cite>` : node;
-          })}
-        </footer>
-      `
-    : null;
+  const attributionEl =
+    attributionNodes && attributionNodes.length
+      ? html`
+          <footer>
+            ${Array.from(attributionNodes).map(node => {
+              return node instanceof HTMLElement && node.tagName === 'A' ? html`<cite>${node}</cite>` : node;
+            })}
+          </footer>
+        `
+      : null;
 
   // Smart double quotes & indentation
   if (parEls.length) {
@@ -34,6 +40,12 @@ const Quote = ({ isPullquote = false, alignment, parEls = [], attributionNodes =
 
 export default Quote;
 
+/**
+ *
+ * @param {Element} el
+ * @param {Partial<QuoteOptions>} options
+ * @returns
+ */
 export const createFromElement = (el, options) => {
   if (!isElement(el)) {
     return null;
@@ -49,14 +61,20 @@ export const createFromElement = (el, options) => {
 
   const componentName = clone instanceof HTMLElement && clone.getAttribute('data-component');
 
+  // The News Web EmphasisedText component returns contents as either
+  // paragraph(s), or a combo of blockquote+span depending on the text.
+  const parEls = $$('p,blockquote,span', clone);
+
+  // Remove unwanted PL classes and attributes not removed by reset/index.js
+  parEls.forEach(stripPLAttributes);
+
+  /**
+   * @type {QuoteOptions}
+   */
   const config = {
     isPullquote: componentName === 'Pullquote' || componentName === 'EmphasisedText',
     alignment,
-
-    // The News Web EmphasisedText component returns contents as either
-    // paragraph(s), or a combo of blockquote+span depending on the text.
-    parEls: $$('p,blockquote,span', clone),
-
+    parEls,
     // These can no longer be created in Core, but still exist in articles created before the upgrade to CM10.
     attributionNodes: ($('cite', clone) || MOCK_NODE).childNodes
   };
@@ -64,7 +82,12 @@ export const createFromElement = (el, options) => {
   return Quote({ ...config, ...(typeof options === 'object' ? options : {}) });
 };
 
-export const transformElement = (el, options) => {
+/**
+ * @param {Element} el
+ * @param {Partial<QuoteOptions>} [options]
+ * @returns
+ */
+export const transformElement = (el, options = {}) => {
   const component = createFromElement(el, options);
   if (!component) return;
   substitute(el, component);
