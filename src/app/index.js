@@ -50,6 +50,7 @@ import { getMarkers, getSections } from './utils/mounts';
 
 export default terminusDocument => {
   const meta = initMeta(terminusDocument);
+  console.log('meta :>> ', meta);
   const storyEl = $(SELECTORS.STORY);
 
   if (!storyEl) {

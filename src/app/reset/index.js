@@ -10,7 +10,7 @@ const TEMPLATE_REMOVABLES = {
   all: [
     '[data-component="AppDetailLayout"]',
     '[data-component="DetailLayout"]',
-    '[data-component="WebContentWarning"]',
+    '[data-component="WebContentWarning"]:has(+ *:not(#endmosaic))',
     '[data-component="NewsTicker"]',
     '[data-component="StickyHeader"]',
     ':not(aside)>[data-component="Sidebar"]'

@@ -1,3 +1,4 @@
+// @ts-check
 import { getMountValue, isMount } from '@abcnews/mount-utils';
 import cn from 'classnames';
 import html from 'nanohtml';
@@ -16,6 +17,7 @@ import { SIZES } from '../Sizer';
 import VideoPlayer from '../VideoPlayer';
 import styles from './index.lazy.scss';
 import IFrameTile from '../IFrameTile';
+import { fetchDocument } from '../../utils/content';
 
 const ROW_LENGTHS_PATTERN = /mosaic[a-z]*(\d+)(?:\:(\d+))?/;
 const MAX_ROW_ITEMS = 3;
@@ -236,6 +238,16 @@ export const transformSection = section => {
       } else if (!masterCaptionAttribution) {
         masterCaptionAttribution = node.textContent;
       }
+    } else if (
+      !masterCaptionText &&
+      !masterCaptionAttribution &&
+      node.dataset.uri?.startsWith('coremedia://htmlfragment/')
+    ) {
+      const id = node.dataset.uri.substring(25);
+      fetchDocument({ id, type: 'HtmlFragment' }).then(doc => {
+        // TODO: Convert this into caption elements and inssert into the DOM
+        console.log('doc :>> ', doc);
+      });
     }
   });
 
