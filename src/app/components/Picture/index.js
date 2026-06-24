@@ -93,26 +93,29 @@ const Picture = ({
   const srcsets = Object.entries(sources).filter(([, srcset]) => !!srcset);
   const pictureEl = html`<picture
     >${srcsets.map(
-      // TODO: Ideally this would have a more nuanced sizes attribute right now it is assumed that images display at
-      // full viewport width, but that is not always the case.
-      ([media, srcset]) => html`<source media=${media} srcset=${srcset} sizes="100vw"></source>`
-    )}</picture
+    // TODO: Ideally this would have a more nuanced sizes attribute right now it is assumed that images display at
+    // full viewport width, but that is not always the case.
+    ([media, srcset]) => html`<source media=${media} srcset=${srcset} sizes="100vw"></source>`
+  )}</picture
   >`;
+
+  /** Tag to wrap the <picture>. Art directed images shouldn't be clickable */
+  const Tag = isArtDirected ? 'div' : 'a';
 
   /**
    * @type {HTMLElement & {api?: import('./lazy').LazyLoadAPI}}
    */
-  const rootEl = html`<a
+  const rootEl = html`<${Tag}
     class=${cn('Picture', {
-      'is-contained': isContained,
-      'is-original': isOriginal,
-      'is-art-directed': isArtDirected,
-      'awaiting-alternatives': isArtDirected
-    })}
-    >${sizerEl}${pictureEl}</a
+    'is-contained': isContained,
+    'is-original': isOriginal,
+    'is-art-directed': isArtDirected,
+    'awaiting-alternatives': isArtDirected
+  })}
+    >${sizerEl}${pictureEl}</${Tag}
   >`;
 
-  if (linkUrl) {
+  if (linkUrl && Tag === 'a') {
     rootEl.setAttribute('href', linkUrl);
   }
 
