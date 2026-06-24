@@ -93,28 +93,25 @@ const Picture = ({
   const srcsets = Object.entries(sources).filter(([, srcset]) => !!srcset);
   const pictureEl = html`<picture
     >${srcsets.map(
-      // TODO: Ideally this would have a more nuanced sizes attribute right now it is assumed that images display at
-      // full viewport width, but that is not always the case.
-      ([media, srcset]) => html`<source media=${media} srcset=${srcset} sizes="100vw"></source>`
-    )}</picture
+    // TODO: Ideally this would have a more nuanced sizes attribute right now it is assumed that images display at
+    // full viewport width, but that is not always the case.
+    ([media, srcset]) => html`<source media=${media} srcset=${srcset} sizes="100vw"></source>`
+  )}</picture
   >`;
+
+  const className = cn('Picture', {
+    'is-contained': isContained,
+    'is-original': isOriginal,
+    'is-art-directed': isArtDirected,
+    'awaiting-alternatives': isArtDirected
+  });
 
   /**
    * @type {HTMLElement & {api?: import('./lazy').LazyLoadAPI}}
    */
-  const rootEl = html`<a
-    class=${cn('Picture', {
-      'is-contained': isContained,
-      'is-original': isOriginal,
-      'is-art-directed': isArtDirected,
-      'awaiting-alternatives': isArtDirected
-    })}
-    >${sizerEl}${pictureEl}</a
-  >`;
-
-  if (linkUrl) {
-    rootEl.setAttribute('href', linkUrl);
-  }
+  const rootEl = (!isArtDirected && linkUrl)
+    ? html`<a href=${linkUrl} class=${className}>${sizerEl}${pictureEl}</a>`
+    : html`<div class=${className}>${sizerEl}${pictureEl}</div>`;
 
   if (shouldLazyLoad) {
     addLazyLoadableAPI({ rootEl, placeholderEl: sizerEl, pictureEl, blurSrc: src, alt });
