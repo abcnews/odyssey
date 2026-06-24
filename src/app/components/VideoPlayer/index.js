@@ -277,22 +277,28 @@ const VideoPlayer = ({
         return;
       }
 
-      const playback = videoEl.play();
+      videoEl
+        .play()
+        .then(() => {
+          if (isAmbient && !isInvariablyAmbient && videoControlsEl.parentElement) {
+            videoPlayerEl.removeChild(videoControlsEl);
+          }
+        })
+        .catch(err => {
+          if (isAmbient && !isInvariablyAmbient && String(err).indexOf('NotAllowedError') === 0) {
+            // Browser is blocking non-user-initited playback
+            videoPlayerEl.appendChild(videoControlsEl);
+            return;
+          }
 
-      if (isAmbient && !isInvariablyAmbient && playback != null) {
-        playback
-          .then(() => {
-            if (videoControlsEl.parentElement) {
-              videoPlayerEl.removeChild(videoControlsEl);
-            }
-          })
-          .catch(err => {
-            if (String(err).indexOf('NotAllowedError') === 0) {
-              // Browser is blocking non-user-initited playback
-              videoPlayerEl.appendChild(videoControlsEl);
-            }
-          });
-      }
+          if (err.name === 'AbortError') {
+            // This is a harmless error usually triggered by a user scrolling fast enough past an auto-play video that
+            // the browser aborts the play attempt before it started.
+            return;
+          }
+
+          throw err;
+        });
     },
     pause: () => {
       if (videoEl.paused) {
