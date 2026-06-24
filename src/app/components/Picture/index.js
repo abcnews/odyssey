@@ -99,25 +99,19 @@ const Picture = ({
   )}</picture
   >`;
 
-  /** Tag to wrap the <picture>. Art directed images shouldn't be clickable */
-  const Tag = isArtDirected ? 'div' : 'a';
-
-  /**
-   * @type {HTMLElement & {api?: import('./lazy').LazyLoadAPI}}
-   */
-  const rootEl = html`<${Tag}
-    class=${cn('Picture', {
+  const className = cn('Picture', {
     'is-contained': isContained,
     'is-original': isOriginal,
     'is-art-directed': isArtDirected,
     'awaiting-alternatives': isArtDirected
-  })}
-    >${sizerEl}${pictureEl}</${Tag}
-  >`;
+  });
 
-  if (linkUrl && Tag === 'a') {
-    rootEl.setAttribute('href', linkUrl);
-  }
+  /**
+   * @type {HTMLElement & {api?: import('./lazy').LazyLoadAPI}}
+   */
+  const rootEl = (!isArtDirected && linkUrl)
+    ? html`<a href=${linkUrl} class=${className}>${sizerEl}${pictureEl}</a>`
+    : html`<div class=${className}>${sizerEl}${pictureEl}</div>`;
 
   if (shouldLazyLoad) {
     addLazyLoadableAPI({ rootEl, placeholderEl: sizerEl, pictureEl, blurSrc: src, alt });
