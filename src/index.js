@@ -37,7 +37,6 @@ proxy('odyssey').then(() => {
     // Try again, once.
     // It appears possible that sometimes this request is made before PL sets up the decoy request listener
     // See: NEWSWEB-3258
-    debug('Attempting second request for "body" DOM permit');
     return requestDOMPermit('body');
   });
   debug('Requested "body" DOM permit');
@@ -45,6 +44,13 @@ proxy('odyssey').then(() => {
 
   // ...we can run the app, using the terminus document to initialise metadata
   Promise.all([importAppModuleTask, fetchArticleDocumentTask, obtainBodyDOMPermitTask]).then(
-    ([appModule, terminusDocument]) => appModule.default(terminusDocument)
+    ([appModule, terminusDocument, domPermit]) => {
+      appModule.default(terminusDocument);
+
+      // Let PL know we're ready to load "islands" back in, such as expandable cards.
+      if (domPermit && typeof domPermit.onRender === 'function') {
+        domPermit.onRender();
+      }
+    }
   );
 });
