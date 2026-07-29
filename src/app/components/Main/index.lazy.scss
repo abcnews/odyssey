@@ -1,7 +1,7 @@
 @use '../../constants' as *;
 @use '../../colours';
 @layer main {
-  @scope ([data-key="body"]) to ([data-component]:not([data-component="LegacyWysiwyg"], [data-component="Decoy"])) {
+  @scope ([data-key="body"]) to ([data-component]:not([data-component="LegacyWysiwyg"], [data-component="Decoy"], [data-component="Anchor"])) {
     .Main {
       --Main-offsetTop: #{$unit * 4}; // default: will change
       display: block;
