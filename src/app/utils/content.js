@@ -13,7 +13,7 @@ export const fetchDocument = optionsOrId => {
   const key = options.id;
 
   if (!cache[key]) {
-    cache[key] = fetchOne({ ...options }).then(doc => deepFreeze(doc));
+    cache[key] = fetchOne({ ...options }, process.env.TERMINUS_FETCH_API_KEY).then(doc => deepFreeze(doc));
   }
 
   return cache[key];
