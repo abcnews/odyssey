@@ -33,7 +33,7 @@
 	"devDependencies": {
 		"@abcnews/aunty": "^16.0.1",
 		"@abcnews/mount-utils": "^3.0.1",
-		"@abcnews/terminus-fetch": "^7.0.0",
+		"@abcnews/terminus-fetch": "^7.1.0",
 		"@playwright/test": "^1.54.0",
 		"@types/d3-array": "^3.2.1",
 		"@types/node": "^22.15.29",
