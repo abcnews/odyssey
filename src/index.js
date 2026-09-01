@@ -5,6 +5,14 @@ import { fetchDocument } from './app/utils/content';
 import { debug, debugWhen } from './app/utils/logging';
 import './polyfills';
 import './unveil';
+import { unsupported } from './support';
+
+// Do this as early as possible.
+if (unsupported()) {
+  window.unveil && window.unveil();
+  // Odyssey uses critical features not supported by this browser, give up here.
+  return debug('Odyssey not supported in this browser');
+}
 
 // Provide a hint as early as possible that the Odyssey format will be driving
 // this story, so that other interactives can opt to wait for Odyssey to load
@@ -12,16 +20,6 @@ import './unveil';
 window.__IS_ODYSSEY_FORMAT__ = true;
 
 proxy('odyssey').then(() => {
-  // Don't run on IE or old-Edge, which we no longer support
-  if (/* IE <= 9 */ (document.all && !window.atob) || /* IE >= 10 */ window.navigator.msPointerEnabled) {
-    return debug('Trident-based browsers are not supported');
-  }
-
-  // Don't run on non-PL website generations
-  if (getGeneration() !== GENERATIONS.PL) {
-    return debug('Non-Presentation Layer ABC websites are not supported');
-  }
-
   // Once we've got:
 
   // 1. the dynamically imported app module, and
