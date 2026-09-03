@@ -205,7 +205,7 @@ repository.
 
 - Joshua Byrd ([Byrd.Joshua@abc.net.au](mailto:Byrd.Joshua@abc.net.au))
 - Simon Elvery ([Elvery.Simon@abc.net.au](mailto:Elvery.Simon@abc.net.au))
-- Julian Fell ([Fell.Julian@abc.net.au](Fell.Julian@abc.net.au))"
-- Ash Kyd ([Kyd.Ashley>@abc.net.au](Kyd.Ashley>@abc.net.au))"
+- Julian Fell ([Fell.Julian@abc.net.au](mailto:Fell.Julian@abc.net.au))"
+- Ash Kyd ([Kyd.Ashley@abc.net.au](mailto:Kyd.Ashley@abc.net.au))"
 - Colin Gourlay
 - Nathan Hoad
