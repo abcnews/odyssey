@@ -2,7 +2,6 @@ const ATTR = 'veiled';
 const CSS = `
 html[${ATTR}] {
   overflow: hidden;
-  max-height: 100%;
 }
 html:not([${ATTR}]) > body {
   transition: opacity cubic-bezier(.25, .46, .45, .94) 1s;
