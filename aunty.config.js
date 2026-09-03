@@ -40,5 +40,10 @@ module.exports = {
   serve: {
     hasBundleAnalysis: true,
     hot: false
+  },
+  webpackDevServer: {
+    client: {
+      overlay: false
+    }
   }
 };
