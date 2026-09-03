@@ -13,8 +13,14 @@ export const unsupported = () => {
   track('css-scope-supported', String(supportsScope));
 
   // Conditions that are unsupported
-  if (!supportsLayers || !supportsScope || isOldIE()) return true;
-
+  if (
+    // TODO: enable these exclusions once we've captured some stats
+    // !supportsLayers ||
+    // !supportsScope ||
+    isOldIE()
+  ) {
+    return true;
+  }
   return false; // Default to the assumption that the browser is supported.
 };
 
@@ -47,7 +53,7 @@ const supportsScopeRule = () => {
     const sheet = new CSSStyleSheet();
     sheet.replaceSync('@scope (.selector-1) to (.selector-2) { }');
     if (sheet.cssRules.length === 0) return false;
-    return typeof CSSLayerBlockRule !== 'undefined' && sheet.cssRules[0] instanceof CSSLayerBlockRule;
+    return typeof CSSScopeRule !== 'undefined' && sheet.cssRules[0] instanceof CSSScopeRule;
   } catch {
     return false;
   }

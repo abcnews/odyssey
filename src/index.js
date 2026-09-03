@@ -7,19 +7,19 @@ import './polyfills';
 import './unveil';
 import { unsupported } from './support';
 
-// Do this as early as possible.
-if (unsupported()) {
-  window.unveil && window.unveil();
-  // Odyssey uses critical features not supported by this browser, give up here.
-  return debug('Odyssey not supported in this browser');
-}
-
 // Provide a hint as early as possible that the Odyssey format will be driving
 // this story, so that other interactives can opt to wait for Odyssey to load
 // before trying to touch the DOM (mounts, decoys, etc.)
 window.__IS_ODYSSEY_FORMAT__ = true;
 
 proxy('odyssey').then(() => {
+  // Do this as early as possible.
+  if (unsupported()) {
+    // Odyssey uses critical features not supported by this browser, give up here.
+    window.unveil && window.unveil();
+    return debug('Odyssey not supported in this browser');
+  }
+
   // Once we've got:
 
   // 1. the dynamically imported app module, and
