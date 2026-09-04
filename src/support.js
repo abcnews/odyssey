@@ -14,9 +14,9 @@ export const unsupported = () => {
 
   // Conditions that are unsupported
   if (
-    // TODO: enable these exclusions once we've captured some stats
-    // !supportsLayers ||
-    // !supportsScope ||
+    // TODO: re-visit this once we have more statistics and have thought through other potential solutions.
+    !supportsLayers ||
+    !supportsScope ||
     isOldIE()
   ) {
     return true;
