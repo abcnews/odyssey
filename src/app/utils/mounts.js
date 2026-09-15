@@ -43,7 +43,7 @@ export const grabPrecedingConfigString = el => {
 /**
  *
  * @param {Element} el An element to replace the section with
- * @param {Node[]} remainingBetweenNodes
+ * @param {Node[]} remainingBetweenNodes These simply get removed from the document
  * @this {Section}
  * @returns
  */
