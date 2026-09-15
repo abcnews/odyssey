@@ -13,7 +13,10 @@ export const fetchDocument = optionsOrId => {
   const key = options.id;
 
   if (!cache[key]) {
-    cache[key] = fetchOne({ ...options }, process.env.TERMINUS_FETCH_API_KEY).then(doc => deepFreeze(doc));
+    // Terminus content is fetched anonymously here: this module runs in the
+    // client bundle, so a build-time API key must never be embedded in it
+    // (it would be extractable by anyone via the served JavaScript).
+    cache[key] = fetchOne({ ...options }).then(doc => deepFreeze(doc));
   }
 
   return cache[key];
