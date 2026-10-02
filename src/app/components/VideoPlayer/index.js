@@ -60,7 +60,6 @@ let hasSubscribed = false;
  * @param {boolean} [config.isMuted] Should the video be muted?
  * @param {number} [config.scrollplayPct] What protion of the video should be visible for play on scroll
  * @param {Element} [config.videoDuration] A <time> element to display the video duration.
- * @returns
  */
 const VideoPlayer = ({
   videoId,

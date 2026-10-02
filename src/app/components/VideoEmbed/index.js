@@ -32,28 +32,35 @@ const VideoEmbed = ({ playerEl, captionEl, alignment, isFull, isCover, isAnon, i
 
 export default VideoEmbed;
 
+/**
+ *
+ * @param {Element & import('../../utils/dom').Descriptor} el
+ * @returns
+ */
 export const transformElement = el => {
   const mountValue = isMount(el) ? getMountValue(el) : '';
   const isVideoMarker = !!mountValue.match(VIDEO_MARKER_PATTERN);
   const linkEl = $('a[href]', el);
-  const playerIdEl = $('[data-component="VideoPlayer"]', el) || el;
+  const playerIdEl = $('[data-component="VideoPlayer"]', el);
   const expiredMediaWarningEl = $('[data-component="ExpiredMediaWarning"]', el);
-  const videoId = isVideoMarker
-    ? mountValue.match(VIDEO_MARKER_PATTERN)?.[1]
-    : playerIdEl
-    ? detectVideoId(el)
-    : expiredMediaWarningEl
-    ? el.getAttribute('data-uri').match(/\d+/)
-    : linkEl
-    ? url2cmid(linkEl.getAttribute('href'))
-    : false;
+  /** @type {string|undefined|null|false} */
+  let videoId = false;
+  if (isVideoMarker) {
+    videoId = mountValue.match(VIDEO_MARKER_PATTERN)?.[1];
+  } else if (playerIdEl) {
+    videoId = detectVideoId(el);
+  } else if (expiredMediaWarningEl) {
+    videoId = el.getAttribute('data-uri')?.match(/\d+/)?.[0];
+  } else if (linkEl) {
+    videoId = url2cmid(linkEl.getAttribute('href'));
+  }
 
   if (!videoId) {
     return;
   }
 
   const configString = grabPrecedingConfigString(el);
-  const descriptorAlignment = el._descriptor ? EMBED_ALIGNMENT_MAP[el._descriptor.props.align] : undefined;
+  const descriptorAlignment = el._descriptor ? EMBED_ALIGNMENT_MAP[el._descriptor?.props?.align] : undefined;
   const [, alignment] = configString.match(ALIGNMENT_PATTERN) || [, descriptorAlignment];
   const unlink = configString.indexOf('unlink') > -1;
 

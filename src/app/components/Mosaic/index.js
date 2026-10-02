@@ -1,9 +1,10 @@
+// @ts-check
 import { getMountValue, isMount } from '@abcnews/mount-utils';
 import cn from 'classnames';
 import html from 'nanohtml';
 import { SELECTORS, VIDEO_MARKER_PATTERN } from '../../constants';
 import { lookupImageByAssetURL } from '../../meta';
-import { $, $$, append, detach, detectVideoId, getChildImage, isElement } from '../../utils/dom';
+import { $, $$, append, detach, detectVideoId, getChildImage, isElementWithDescriptor } from '../../utils/dom';
 import { getRatios } from '../../utils/misc';
 import Caption, {
   createFromElement as createCaptionFromElement,
@@ -16,6 +17,21 @@ import { SIZES } from '../Sizer';
 import VideoPlayer from '../VideoPlayer';
 import styles from './index.lazy.scss';
 import IFrameTile from '../IFrameTile';
+
+/**
+ * @typedef {Object} MosaicItem
+ * @property {typeof VideoPlayer | typeof RichtextTile | typeof Picture | typeof IFrameTile} component
+ * @property {Parameters<typeof VideoPlayer>[0] | Parameters<typeof RichtextTile>[0] | Parameters<typeof Picture>[0] | Parameters<typeof IFrameTile>[0]} componentProps
+ * @property {HTMLElement} [captionEl]
+ * @property {string} [formattedRatio]
+ *
+ *
+ * @typedef {Object} MosaicItemLayout
+ * @property {number} rowLength
+ * @property {number} horizontalFraction
+ * @property {number} [largeDisplayRowLength]
+ * @property {number} [largeDisplayHorizontalFraction]
+ */
 
 const ROW_LENGTHS_PATTERN = /mosaic[a-z]*(\d+)(?:\:(\d+))?/;
 const MAX_ROW_ITEMS = 3;
@@ -46,6 +62,9 @@ const DEFAULT_ROW_LENGTH_BASED_RATIOS = [
   }
 ];
 
+/**
+ * @param {{items: (MosaicItem & MosaicItemLayout)[], masterCaptionEl?: HTMLElement, isFull: boolean}} param0
+ */
 const Mosaic = ({ items = [], masterCaptionEl, isFull = false }) => {
   const mosaicEl = html`
     <div
@@ -88,11 +107,19 @@ const Mosaic = ({ items = [], masterCaptionEl, isFull = false }) => {
                 captionLinkEl.setAttribute('tabindex', '-1');
               }
             } else if (component === VideoPlayer) {
-              mediaEl.api.metadataHook = ({ alternativeText }) => {
-                if (alternativeText) {
-                  append(itemEl, Caption({ text: alternativeText, attribution: 'ABC News' }));
-                }
-              };
+              // @ts-expect-error Not all types in the union have API, but we know VideoPlayer might and we check for
+              // existence before accessing.
+              if (mediaEl && mediaEl.api) {
+                // @ts-expect-error See above
+                mediaEl.api.metadataHook = ({ alternativeText }) => {
+                  if (alternativeText) {
+                    const caption = Caption({ text: alternativeText, attribution: 'ABC News' });
+                    if (caption) {
+                      append(itemEl, caption);
+                    }
+                  }
+                };
+              }
             }
 
             return itemEl;
@@ -110,30 +137,36 @@ const Mosaic = ({ items = [], masterCaptionEl, isFull = false }) => {
 
 export default Mosaic;
 
-const getItemsAsRows = (items, definedRowLengths) =>
-  items.reduce(
-    (memo, item, index) => {
-      if (definedRowLengths.length === 0) {
-        definedRowLengths.push(1);
+/**
+ *
+ * @template {MosaicItem} T
+ * @param {T[]} items The items in the mosaic
+ * @param {number[]} definedRowLengths
+ * @returns {T[][]}
+ */
+const getItemsAsRows = (items, definedRowLengths) => {
+  /** @type {T[][]} */
+  const memo = [[]];
+  return items.reduce((memo, item, index) => {
+    if (definedRowLengths.length === 0) {
+      definedRowLengths.push(1);
+    }
+
+    memo[memo.length - 1].push(item);
+
+    definedRowLengths[0]--;
+
+    if (definedRowLengths[0] === 0) {
+      definedRowLengths.shift();
+
+      if (index + 1 < items.length) {
+        memo.push([]);
       }
+    }
 
-      memo[memo.length - 1].push(item);
-
-      definedRowLengths[0]--;
-
-      if (definedRowLengths[0] === 0) {
-        definedRowLengths.shift();
-
-        if (index + 1 < items.length) {
-          memo.push([]);
-        }
-      }
-
-      return memo;
-    },
-    [[]]
-  );
-
+    return memo;
+  }, memo);
+};
 const getHorizontalFractionCalculationValues = (row, shouldFormat) => {
   if (!shouldFormat) {
     return [row.map(() => 1), row.length];
@@ -146,6 +179,11 @@ const getHorizontalFractionCalculationValues = (row, shouldFormat) => {
   return [horizontalPortions, horizontalPortions.reduce((total, share) => total + share, 0)];
 };
 
+/**
+ *
+ * @param {import('src/app/utils/mounts').Section} section
+ * @returns
+ */
 export const transformSection = section => {
   // Parse options from config string
   const [, definedRowLengthsString, definedLargeDisplayRowLengthsString] =
@@ -163,6 +201,7 @@ export const transformSection = section => {
   const shouldUnlink = section.configString.indexOf('unlink') > -1;
 
   // Define calculated variables
+  /** @type {MosaicItem[]} */
   const items = [];
   let masterCaptionText = null;
   let masterCaptionAttribution = null;
@@ -173,13 +212,13 @@ export const transformSection = section => {
   [...section.betweenNodes].forEach(node => {
     detach(node);
 
-    if (!isElement(node)) {
+    if (!isElementWithDescriptor(node)) {
       return;
     }
 
     const formattedRatio =
-      node._descriptor && node._descriptor.props.ratio ? node._descriptor.props.ratio : DEFAULT_FORMATTED_RATIO;
-    const videoId = isMount(node, 'video') ? getMountValue(node).match(VIDEO_MARKER_PATTERN)[1] : detectVideoId(node);
+      node._descriptor && node._descriptor.props?.ratio ? node._descriptor.props.ratio : DEFAULT_FORMATTED_RATIO;
+    const videoId = isMount(node, 'video') ? getMountValue(node).match(VIDEO_MARKER_PATTERN)?.[1] : detectVideoId(node);
     const imgEl = getChildImage(node);
     const isQuote = node.matches(SELECTORS.QUOTE);
     const isIFrame = node.matches(SELECTORS.IFRAME);
@@ -192,7 +231,7 @@ export const transformSection = section => {
           isInvariablyAmbient: true
         },
         formattedRatio,
-        captionEl: createCaptionFromElement(node, shouldUnlink)
+        captionEl: createCaptionFromElement(node, shouldUnlink) || undefined
       });
     } else if (imgEl) {
       const imageDoc = lookupImageByAssetURL(imgEl.src);
@@ -202,12 +241,12 @@ export const transformSection = section => {
         componentProps: {
           src: imgEl.src,
           alt: imgEl.getAttribute('alt'),
-          linkUrl: imageDoc ? `/news/${imageDoc.id}` : null
+          linkUrl: imageDoc ? `/news/${imageDoc.id}` : undefined
         },
         formattedRatio,
         captionEl: imageDoc
-          ? createCaptionFromTerminusDoc(imageDoc, shouldUnlink)
-          : createCaptionFromElement(node, shouldUnlink)
+          ? createCaptionFromTerminusDoc(imageDoc, shouldUnlink) || undefined
+          : createCaptionFromElement(node, shouldUnlink) || undefined
       });
     } else if (isQuote) {
       items.push({
@@ -253,27 +292,41 @@ export const transformSection = section => {
   //     a) the CM10 chosen aspect ratio across all screen sizes for formatted mosaics,
   //     b) marker-defined ratios for one or more screen sizes, or
   //     c) defaults for each row length (defined above) that vary based on screen size.
-  getItemsAsRows(items, [...definedRowLengths]).forEach(row => {
+  const itemsWithLayout = getItemsAsRows(items, [...definedRowLengths]).flatMap(row => {
     const rowLength = row.length;
     const defaultRatios = DEFAULT_ROW_LENGTH_BASED_RATIOS[rowLength - 1];
     const [horizontalPortions, totalHorizontal] = getHorizontalFractionCalculationValues(row, shouldFormat);
 
-    row.forEach((item, itemIndex) => {
-      item.rowLength = rowLength;
-      item.horizontalFraction = (1 / totalHorizontal) * horizontalPortions[itemIndex];
-      item.componentProps.ratios = SIZES.reduce(
-        (ratios, size) => ({
-          ...ratios,
-          [size]: shouldFormat ? item.formattedRatio : definedRatios[size] || defaultRatios[size]
-        }),
-        {}
-      );
-    });
+    /**
+     * @param {MosaicItem} item
+     * @param {number} itemIndex
+     * @returns {MosaicItem & MosaicItemLayout}
+     */
+    const layoutItem = (item, itemIndex) => {
+      return {
+        ...item,
+        rowLength,
+        horizontalFraction: (1 / totalHorizontal) * horizontalPortions[itemIndex],
+        componentProps: {
+          ...item.componentProps,
+          ratios: SIZES.reduce(
+            (ratios, size) => ({
+              ...ratios,
+              [size]: shouldFormat ? item.formattedRatio : definedRatios[size] || defaultRatios[size]
+            }),
+            {}
+          )
+        }
+      };
+    };
+
+    return row.map(layoutItem);
   });
 
-  // If large display row lengths are defined, repeat the last step to define large display-only props
+  // If large display row lengths are defined, loop over the layed out items and add additional properties to define the
+  // layout for large display only props
   if (definedLargeDisplayRowLengths !== null) {
-    getItemsAsRows(items, [...definedLargeDisplayRowLengths]).forEach(row => {
+    getItemsAsRows(itemsWithLayout, [...definedLargeDisplayRowLengths]).forEach(row => {
       const rowLength = row.length;
       const defaultRatios = DEFAULT_ROW_LENGTH_BASED_RATIOS[rowLength - 1];
       const [horizontalPortions, totalHorizontal] = getHorizontalFractionCalculationValues(row, shouldFormat);
@@ -291,26 +344,32 @@ export const transformSection = section => {
   const masterCaptionEl = masterCaptionText
     ? Caption({
         text: masterCaptionText,
-        attribution: masterCaptionAttribution
+        attribution: masterCaptionAttribution || undefined
       })
-    : null;
+    : undefined;
 
   // Create the mosaic and replace the section with it
   section.substituteWith(
     Mosaic({
-      items,
-      masterCaptionEl,
+      items: itemsWithLayout,
+      masterCaptionEl: masterCaptionEl || undefined,
       isFull
     }),
     []
   );
 };
 
+/**
+ * TODO: Remove this once PL Before & Afters are confirmed working inside Odysseys.
+ * @param {import('src/app/utils/mounts').Marker} marker
+ * @returns
+ */
 export const transformBeforeAndAfterMarker = marker => {
   // This is a hack for two-image before/after components. If we don't find two images,
   // or if we find a video, we should bail out, as it's probably a custom implementation.
   const componentEl = marker.node.nextElementSibling;
-  const images = $$('img', componentEl);
+  if (!componentEl) return false;
+  const images = Array.from(componentEl.querySelectorAll('img'));
   const videos = $$('video', componentEl);
 
   if (images.length < 2 || videos.length > 0) {
@@ -335,14 +394,17 @@ export const transformBeforeAndAfterMarker = marker => {
           },
           shouldLazyLoad: false
         },
-        captionEl: imageDoc ? createCaptionFromTerminusDoc(imageDoc, true) : createCaptionFromElement(node, true),
+        captionEl: imageDoc
+          ? createCaptionFromTerminusDoc(imageDoc, true) || undefined
+          : createCaptionFromElement(imgEl, true) || undefined,
         rowLength: 2,
         horizontalFraction: 0.5
       };
     }),
-    masterCaptionEl: Caption({
-      text: $('figcaption', componentEl).textContent
-    }),
+    masterCaptionEl:
+      Caption({
+        text: $('figcaption', componentEl)?.textContent
+      }) || undefined,
     isFull: true
   });
   const id = Math.floor(Math.random() * 1e8).toString(16);

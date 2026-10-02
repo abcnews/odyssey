@@ -3,6 +3,10 @@
 import { debug } from './logging';
 
 /**
+ * @typedef {{_descriptor?: {props?: {alignment: string, align?: string, ratio?: string}}}} Descriptor
+ */
+
+/**
  *
  * @param {any} node
  * @returns {node is Node}
@@ -26,6 +30,15 @@ export const isText = node => {
  * @returns {node is Element}
  */
 export const isElement = node => {
+  return !!node && node.nodeType === Node.ELEMENT_NODE;
+};
+
+/**
+ * Type guard for elements with possible descriptors
+ * @param {any} node
+ * @returns {node is Element & Descriptor}
+ */
+export const isElementWithDescriptor = node => {
   return !!node && node.nodeType === Node.ELEMENT_NODE;
 };
 

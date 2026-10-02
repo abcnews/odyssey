@@ -32,7 +32,7 @@ const ImageEmbed = ({ pictureEl, captionEl, alignment, isFull, isCover, isAnon }
 export default ImageEmbed;
 
 /**
- * @param {Element & {_descriptor?: {props: {align: 'floatLeft' | 'floatRight'}}}} el The element to transform into an image embed
+ * @param {Element & import('../../utils/dom').Descriptor} el The element to transform into an image embed
  */
 export const transformElement = el => {
   const mountValue = isMount(el) ? getMountValue(el) : '';
@@ -66,7 +66,7 @@ export const transformElement = el => {
   // /** @type {(string|undefined)[]} */
   // const [, , imageWidthValue, imageWidthUnit] = configString.match(/width(([0-9]+)(px|pct|rem))/) || [];
 
-  const descriptorAlignment = el._descriptor ? EMBED_ALIGNMENT_MAP[el._descriptor.props.align] : undefined;
+  const descriptorAlignment = el._descriptor ? EMBED_ALIGNMENT_MAP[el._descriptor?.props?.align] : undefined;
   const [, alignment] = configString.match(ALIGNMENT_PATTERN) || [, descriptorAlignment];
   const ratios = getRatios(configString);
   const isStatic = configString.indexOf('static') > -1;
