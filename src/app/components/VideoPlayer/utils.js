@@ -6,7 +6,7 @@ import { getOrFetchDocument } from '../../utils/content';
  * @typedef {{width: number; height: number; url: string}} VideoSource
 
 /**
- * @typedef {{alternativeText: string; posterURL: string; sources: VideoSource[]}} VideoMetadata
+ * @typedef {{alternativeText: string; caption: string; attribution: string; posterURL: string; sources: VideoSource[]}} VideoMetadata
  */
 
 const NO_CMID_ERROR = 'No CMID available for video';
@@ -26,8 +26,8 @@ const getSources = videoDoc => [...videoDoc.media.video.renditions.files].sort((
  * @param {string|number} videoId The CMID for the video
  * @returns {Promise<VideoMetadata>}
  */
-export const getMetadata = videoId =>
-  new Promise((resolve, reject) => {
+export const getMetadata = videoId => {
+  return new Promise((resolve, reject) => {
     if (!videoId) {
       return reject(new Error(NO_CMID_ERROR));
     }
@@ -39,6 +39,8 @@ export const getMetadata = videoId =>
         // Keep the alt text from the title of the teaser doc (if exists).
         // Otherwise return the alt text from the thumbnail image.
         const alternativeText = videoDocOrTeaserDoc?._embedded?.mediaThumbnail?.alt || videoDocOrTeaserDoc.title;
+        const caption = videoDocOrTeaserDoc?.caption;
+        const attribution = videoDocOrTeaserDoc?.byLine.plain;
 
         if (videoDocOrTeaserDoc.target) {
           // We need to fetch & parse the (teased) target document
@@ -46,6 +48,8 @@ export const getMetadata = videoId =>
             .then(videoDoc =>
               resolve({
                 alternativeText,
+                caption,
+                attribution,
                 posterURL: getPosterURL(videoDoc),
                 sources: getSources(videoDoc)
               })
@@ -56,12 +60,15 @@ export const getMetadata = videoId =>
         // We can parse this document
         return resolve({
           alternativeText,
+          caption,
+          attribution,
           posterURL: getPosterURL(videoDocOrTeaserDoc),
           sources: getSources(videoDocOrTeaserDoc)
         });
       })
       .catch(err => reject(err));
   });
+};
 
 export const hasAudio = el => {
   return el.mozHasAudio || !!el.webkitAudioDecodedByteCount || !!(el.audioTracks && el.audioTracks.length);

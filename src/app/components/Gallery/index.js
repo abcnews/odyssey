@@ -462,11 +462,11 @@ export const transformSection = section => {
         // Videos that don't have captions right now can append them them later using metadata
         if (!videoCaptionEl) {
           // @ts-ignore element api props are currently not typed
-          videoPlayerEl.api.metadataHook = ({ alternativeText }) => {
-            if (alternativeText && isElement(videoPlayerEl?.parentElement)) {
-              const cap = Caption({ text: alternativeText, attribution: 'ABC News' });
-              if (cap) {
-                append(videoPlayerEl.parentElement, cap);
+          videoPlayerEl.api.metadataHook = ({ caption, attribution }) => {
+            if (caption && isElement(videoPlayerEl?.parentElement)) {
+              const captionEl = Caption({ text: caption, attribution });
+              if (captionEl) {
+                append(videoPlayerEl.parentElement, captionEl);
               }
             }
           };

@@ -111,11 +111,11 @@ const Mosaic = ({ items = [], masterCaptionEl, isFull = false }) => {
               // existence before accessing.
               if (mediaEl && mediaEl.api) {
                 // @ts-expect-error See above
-                mediaEl.api.metadataHook = ({ alternativeText }) => {
-                  if (alternativeText) {
-                    const caption = Caption({ text: alternativeText, attribution: 'ABC News' });
-                    if (caption) {
-                      append(itemEl, caption);
+                mediaEl.api.metadataHook = ({ caption, attribution }) => {
+                  if (caption) {
+                    const captionEl = Caption({ text: caption, attribution });
+                    if (captionEl) {
+                      append(itemEl, captionEl);
                     }
                   }
                 };
