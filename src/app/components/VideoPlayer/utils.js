@@ -70,6 +70,18 @@ export const getMetadata = videoId => {
   });
 };
 
+/**
+ * Check if a video has audio attached.
+ * @param {HTMLVideoElement} el
+ * @returns {boolean}
+ */
 export const hasAudio = el => {
-  return el.mozHasAudio || !!el.webkitAudioDecodedByteCount || !!(el.audioTracks && el.audioTracks.length);
+  return (
+    // @ts-expect-error Non-standard attribute
+    el.mozHasAudio ||
+    // @ts-expect-error Non-standard attribute
+    !!el.webkitAudioDecodedByteCount ||
+    // @ts-expect-error Standard attribute but not adopted widely by browsers
+    !!(el.audioTracks && el.audioTracks.length)
+  );
 };
