@@ -1,6 +1,5 @@
 // @ts-check
 import { getMountValue, isMount } from '@abcnews/mount-utils';
-import { url2cmid } from '@abcnews/url2cmid';
 import cn from 'classnames';
 import html from 'nanohtml';
 import { ALIGNMENT_PATTERN, EMBED_ALIGNMENT_MAP, VIDEO_MARKER_PATTERN, SCROLLPLAY_PCT_PATTERN } from '../../constants';
@@ -40,19 +39,15 @@ export default VideoEmbed;
 export const transformElement = el => {
   const mountValue = isMount(el) ? getMountValue(el) : '';
   const isVideoMarker = !!mountValue.match(VIDEO_MARKER_PATTERN);
-  const linkEl = $('a[href]', el);
-  const playerIdEl = $('[data-component="VideoPlayer"]', el);
   const expiredMediaWarningEl = $('[data-component="ExpiredMediaWarning"]', el);
   /** @type {string|undefined|null|false} */
   let videoId = false;
   if (isVideoMarker) {
     videoId = mountValue.match(VIDEO_MARKER_PATTERN)?.[1];
-  } else if (playerIdEl) {
-    videoId = detectVideoId(el);
   } else if (expiredMediaWarningEl) {
     videoId = el.getAttribute('data-uri')?.match(/\d+/)?.[0];
-  } else if (linkEl) {
-    videoId = url2cmid(linkEl.getAttribute('href'));
+  } else {
+    videoId = detectVideoId(el);
   }
 
   if (!videoId) {
