@@ -4,7 +4,7 @@ import cn from 'classnames';
 import html from 'nanohtml';
 import { SELECTORS, VIDEO_MARKER_PATTERN } from '../../constants';
 import { lookupImageByAssetURL } from '../../meta';
-import { $, $$, append, detach, detectVideoId, getChildImage, isElementWithDescriptor } from '../../utils/dom';
+import { $, $$, append, detach, detectVideoId, getChildImage, isElement } from '../../utils/dom';
 import { getRatios } from '../../utils/misc';
 import Caption, {
   createFromElement as createCaptionFromElement,
@@ -212,12 +212,11 @@ export const transformSection = section => {
   [...section.betweenNodes].forEach(node => {
     detach(node);
 
-    if (!isElementWithDescriptor(node)) {
+    if (!isElement(node)) {
       return;
     }
 
-    const formattedRatio =
-      node._descriptor && node._descriptor.props?.ratio ? node._descriptor.props.ratio : DEFAULT_FORMATTED_RATIO;
+    const formattedRatio = node._descriptor?.props?.ratio ? node._descriptor.props.ratio : DEFAULT_FORMATTED_RATIO;
     const videoId = isMount(node, 'video') ? getMountValue(node).match(VIDEO_MARKER_PATTERN)?.[1] : detectVideoId(node);
     const imgEl = getChildImage(node);
     const isQuote = node.matches(SELECTORS.QUOTE);
