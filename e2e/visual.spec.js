@@ -115,6 +115,13 @@ const ARTICLES = [
       { selector: '[data-component="LegacyWysiwyg"]', tags: ['wysiwyg teaser'] },
       { selector: '[data-component="LegacyWysiwyg"].u-pull-right', tags: ['wysiwyg teaser'] }
     ]
+  },
+  {
+    cmid: '102963260',
+    targets: [
+      { selector: '[data-provider="instagram"]', tags: ['Interactive', 'Instagram'] },
+      { selector: '[data-provider="singleTweet"]', tags: ['Interactive', 'Twitter'] }
+    ]
   }
 ];
 
