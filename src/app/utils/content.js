@@ -1,7 +1,7 @@
 // @ts-check
 import { fetchOne } from '@abcnews/terminus-fetch';
 
-/** @type {Record<string, Promise<TerminusArticle | TerminusImage>>} */
+/** @type {Record<string, Promise<TerminusDocumentsUnion>>} */
 const cache = {};
 
 /**
@@ -13,7 +13,10 @@ export const fetchDocument = optionsOrId => {
   const key = options.id;
 
   if (!cache[key]) {
-    cache[key] = fetchOne({ ...options }, process.env.TERMINUS_FETCH_API_KEY).then(doc => deepFreeze(doc));
+    cache[key] = fetchOne({ ...options }, process.env.TERMINUS_FETCH_API_KEY).then(doc => {
+      // deepFreeze turns the response into an `any` type, which is not ideal.
+      return /** @type {Readonly<TerminusDocumentsUnion>} */ deepFreeze(doc);
+    });
   }
 
   return cache[key];
@@ -23,6 +26,7 @@ export const fetchDocument = optionsOrId => {
  *
  * @param {{id: string, type:string} | string} optionsOrId
  * @param {Partial<import('../meta').MetaData>} meta
+ * @returns {Promise<EmbeddedUnion|TerminusDocumentsUnion>}
  */
 export const getOrFetchDocument = (optionsOrId, meta) => {
   const { id } = typeof optionsOrId === 'object' ? optionsOrId : { id: optionsOrId };
@@ -32,7 +36,6 @@ export const getOrFetchDocument = (optionsOrId, meta) => {
 };
 
 /**
- *
  * @param {object} object
  * @returns {object}
  */

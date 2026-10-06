@@ -224,12 +224,13 @@ function fetchInfoSourceLogo(meta, el, variant) {
   }
 
   fetchDocument({ id: meta.infoSourceLogosHTMLFragmentId, type: 'htmlfragment' }).then(htmlFragmentDoc => {
-    const logoDocsRefs = htmlFragmentDoc.contextSettings['meta.data.name'];
-    const logoDocRef = logoDocsRefs[`${meta.infoSource.name} (${variant})`] || logoDocsRefs[meta.infoSource.name];
+    if (htmlFragmentDoc.docType !== 'HTMLFragment') return;
+    const logoDocsRefs = htmlFragmentDoc.contextSettings?.['meta.data.name'];
+    const logoDocRef = logoDocsRefs?.[`${meta.infoSource.name} (${variant})`] || logoDocsRefs?.[meta.infoSource.name];
 
-    if (logoDocRef) {
+    if (logoDocRef && logoDocRef.id && logoDocRef.docType) {
       fetchDocument({ id: logoDocRef.id, type: logoDocRef.docType.toLowerCase() }).then(imageDoc => {
-        if ('media' in imageDoc) {
+        if (imageDoc.docType === 'Image') {
           const image = imageDoc.media.image.primary.complete[0];
           const imageRatio = image.height / image.width;
 

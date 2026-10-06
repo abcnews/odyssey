@@ -341,20 +341,7 @@ const VideoPlayer = ({
       }
     }
 
-    /** @type {[import('./utils').VideoSource[], import('./utils').VideoSource[]]} */
-    const initSources = [[], []];
-    const [portraitSources, landscapeSources] = sources.reduce(
-      // 1x1 is considered portrait
-      (memo, source) => (memo[+(source.width > source.height)].push(source), memo),
-      initSources
-    );
-    const candidateSources =
-      isInitiallyPreferredPortraitContainer && portraitSources.length
-        ? portraitSources
-        : landscapeSources.length
-        ? landscapeSources
-        : sources;
-    const source = candidateSources[isInitiallySmallViewport ? 0 : candidateSources.length - 1];
+      /** @type {[VideoSource[], VideoSource[]]} */
 
     if (source) {
       videoEl.src = source.url;

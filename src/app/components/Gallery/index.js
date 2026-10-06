@@ -28,7 +28,7 @@ const CONTROL_ICON_MARKUP = `<svg role="presentation" viewBox="0 0 40 40">
 </svg>`;
 
 /**
- * @param {{items: MasterGalleryItem[], masterCaptionEl?: HTMLElement}} options
+ * @param {{items: import('../MasterGallery').MasterGalleryItem[], masterCaptionEl?: HTMLElement}} options
  * @returns
  */
 const Gallery = ({ items = [], masterCaptionEl }) => {

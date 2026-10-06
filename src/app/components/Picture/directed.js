@@ -3,8 +3,9 @@ import { getImages } from '@abcnews/terminus-fetch';
 import { fetchDocument } from '../../utils/content';
 import { srcsetFromRenditions } from '.';
 import { prepend } from '../../utils/dom';
-import { BP, MQ, UNIT } from '../../constants';
+import { BP, MQ } from '../../constants';
 import html from 'nanohtml';
+import { debug } from '../../utils/logging';
 
 /**
  *
@@ -15,17 +16,29 @@ import html from 'nanohtml';
  */
 export const initArtDirection = async ({ primaryImage, pictureEl, rootEl }) => {
   const doc = await fetchDocument(primaryImage.id);
-  const alts = await Promise.all(
-    (doc.contextSettings['odyssey'].alts || []).map(async d => {
-      return { width: d.width, image: await fetchDocument(d.image.id) };
-    })
-  );
+  if (!(doc.docType === 'Image' || doc.docType === 'ImageProxy')) {
+    debug(
+      `Attempting to initialise art directed image with reference to a non-image document (ID: ${primaryImage.id})`
+    );
+    return;
+  }
+
+  const alts = (
+    await Promise.all(
+      (doc.contextSettings['odyssey']?.alts || []).map(async d => {
+        if (!d.image?.id) return undefined;
+        return { width: d.width, image: await fetchDocument(d.image.id) };
+      })
+    )
+  ).filter(d => !!d);
+
   const srcsets = alts.map(({ width, image }) => {
     const renditions = getImages(image).renditions;
     return { width, srcset: srcsetFromRenditions(renditions) };
   });
 
   srcsets.forEach(({ width, srcset }) => {
+    if (!width) return;
     const mq = MQ[width.toUpperCase()];
     if (mq) {
       const source = html`<source media="${mq}" srcset="${srcset}" sizes="${MQ.GT_MD} ${BP.LG}px, 100vw" />`;

@@ -3,22 +3,25 @@ import { getMeta } from '../../meta';
 import { getOrFetchDocument } from '../../utils/content';
 
 /**
- * @typedef {{width: number; height: number; url: string}} VideoSource
-
-/**
- * @typedef {{alternativeText: string; caption: string; attribution: string; posterURL: string; sources: VideoSource[]}} VideoMetadata
+ * @typedef {{alternativeText?: string; caption?: string; attribution?: string; posterURL?: string; sources: VideoSource[]}} VideoMetadata
  */
 
 const NO_CMID_ERROR = 'No CMID available for video';
 
+/**
+ * @param {TerminusVideo|EmbeddedVideo} videoDoc
+ */
 const getPosterURL = videoDoc => {
   try {
-    return videoDoc.media.image ? videoDoc.media.image.poster.images['16x9'] : null;
+    return videoDoc.media?.image?.poster.images['16x9'];
   } catch (e) {
-    return null;
+    return undefined;
   }
 };
 
+/**
+ * @param {TerminusVideo | EmbeddedVideo} videoDoc
+ */
 const getSources = videoDoc => [...videoDoc.media.video.renditions.files].sort((a, b) => a.size - b.size);
 
 /**

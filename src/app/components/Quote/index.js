@@ -9,7 +9,14 @@ import styles from './index.lazy.scss';
 import { stripPLAttributes } from '../../reset';
 
 /**
- *
+ * @typedef {object} QuoteOptions
+ * @property {boolean} isPullquote
+ * @property  {string} [alignment]
+ * @property {(Element | null)[]} parEls
+ * @property  {NodeListOf<ChildNode>} attributionNodes
+ */
+
+/**
  * @param {QuoteOptions} options
  */
 const Quote = ({ isPullquote = false, alignment, parEls = [], attributionNodes }) => {

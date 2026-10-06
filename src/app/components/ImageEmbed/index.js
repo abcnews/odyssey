@@ -45,7 +45,7 @@ export const transformElement = el => {
 
   const imageDoc = imgEl ? lookupImageByAssetURL(imgEl.src) : getMeta().mediaById?.[imgId || ''];
 
-  if (!imageDoc?.media) {
+  if (!(imageDoc?.docType === 'Image' || imageDoc?.docType === 'ImageProxy') || !imageDoc.media) {
     return;
   }
 
