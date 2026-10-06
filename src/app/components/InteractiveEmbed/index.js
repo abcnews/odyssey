@@ -56,7 +56,7 @@ const InteractiveEmbed = ({ url, providerType, alignment, isFull }) => {
   )
     .then(res => res.json())
     .then(data => {
-      const normalisedHTML = normaliseHTML(data.html, providerType);
+      const normalisedHTML = normaliseHTML(data.oembed.html, providerType);
       const documentFragment = document.createRange().createContextualFragment(normalisedHTML);
 
       embedContainerEl.innerHTML = '';
