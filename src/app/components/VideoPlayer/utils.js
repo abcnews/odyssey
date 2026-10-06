@@ -39,35 +39,46 @@ export const getMetadata = videoId => {
 
     getOrFetchDocument({ id: String(videoId), type: 'video' }, meta)
       .then(videoDocOrTeaserDoc => {
-        // Keep the alt text from the title of the teaser doc (if exists).
-        // Otherwise return the alt text from the thumbnail image.
-        const alternativeText = videoDocOrTeaserDoc?._embedded?.mediaThumbnail?.alt || videoDocOrTeaserDoc.title;
-        const caption = videoDocOrTeaserDoc?.caption;
-        const attribution = videoDocOrTeaserDoc?.byLine.plain;
+        // If the doc is a teaser, we need to fetch & parse the target document
+        if (videoDocOrTeaserDoc.docType === 'Teaser') {
+          if (!videoDocOrTeaserDoc.target) {
+            throw new Error('Embedded video teaser has no target.');
+          }
 
-        if (videoDocOrTeaserDoc.target) {
-          // We need to fetch & parse the (teased) target document
           return getOrFetchDocument({ id: videoDocOrTeaserDoc.target.id, type: 'video' }, meta)
-            .then(videoDoc =>
-              resolve({
-                alternativeText,
-                caption,
-                attribution,
-                posterURL: getPosterURL(videoDoc),
-                sources: getSources(videoDoc)
-              })
-            )
+            .then(videoDoc => {
+              if (videoDoc.docType === 'Video') {
+                const alternativeText =
+                  videoDocOrTeaserDoc._embedded?.mediaThumbnail?.alt || videoDoc._embedded?.mediaThumbnail?.alt;
+                const caption = videoDoc.caption;
+                const attribution = videoDocOrTeaserDoc.byLine?.plain || videoDoc.byLine?.plain;
+                resolve({
+                  alternativeText,
+                  caption,
+                  attribution,
+                  posterURL: getPosterURL(videoDoc),
+                  sources: getSources(videoDoc)
+                });
+              } else {
+                throw new Error('Teaser points to a non-video document.');
+              }
+            })
             .catch(err => reject(err));
+        } else if (videoDocOrTeaserDoc.docType === 'Video') {
+          // This is a video document so use directly.
+          const alternativeText = videoDocOrTeaserDoc._embedded?.mediaThumbnail?.alt;
+          const caption = videoDocOrTeaserDoc.caption;
+          const attribution = videoDocOrTeaserDoc.byLine?.plain;
+          return resolve({
+            alternativeText,
+            caption,
+            attribution,
+            posterURL: getPosterURL(videoDocOrTeaserDoc),
+            sources: getSources(videoDocOrTeaserDoc)
+          });
         }
 
-        // We can parse this document
-        return resolve({
-          alternativeText,
-          caption,
-          attribution,
-          posterURL: getPosterURL(videoDocOrTeaserDoc),
-          sources: getSources(videoDocOrTeaserDoc)
-        });
+        throw new Error('Not a video or teaser document.');
       })
       .catch(err => reject(err));
   });
