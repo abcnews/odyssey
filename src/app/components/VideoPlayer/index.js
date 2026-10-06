@@ -419,7 +419,7 @@ const VideoPlayer = ({
   styles.use();
 
   videoPlayerEl = html`
-    <div class="VideoPlayer${isContained ? ' is-contained' : ''}" draggable="false">
+    <div class="VideoPlayer${isContained ? ' is-contained' : ''}${isExpired ? ' is-expired' : ''}" draggable="false">
       ${placeholderEl} ${videoEl} ${isAmbient ? null : videoControlsEl}
     </div>
   `;

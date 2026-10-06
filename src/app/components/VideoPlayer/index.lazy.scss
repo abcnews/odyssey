@@ -8,6 +8,19 @@
   user-select: none;
   background-color: $color-darkBg;
 
+  &.is-expired::after {
+    content: 'Sorry, this video is not yet available or has expired.';
+    display: block;
+    padding: 4rem;
+    background-color: var(--black-70-opacity);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    width: 80%;
+  }
+
   .u-full > & {
     height: 100%;
   }
