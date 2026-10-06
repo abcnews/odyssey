@@ -40,12 +40,14 @@ export const transformElement = el => {
   const mountValue = isMount(el) ? getMountValue(el) : '';
   const isVideoMarker = !!mountValue.match(VIDEO_MARKER_PATTERN);
   const expiredMediaWarningEl = $('[data-component="ExpiredMediaWarning"]', el);
+  let isExpired = false;
   /** @type {string|undefined|null|false} */
   let videoId = false;
   if (isVideoMarker) {
     videoId = mountValue.match(VIDEO_MARKER_PATTERN)?.[1];
   } else if (expiredMediaWarningEl) {
     videoId = el.getAttribute('data-uri')?.match(/\d+/)?.[0];
+    isExpired = true;
   } else {
     videoId = detectVideoId(el);
   }
@@ -86,7 +88,8 @@ export const transformElement = el => {
     isLoop: configString.indexOf('loop') > -1 ? true : configString.indexOf('once') > -1 ? false : undefined,
     isMuted: configString.indexOf('muted') > -1 ? true : undefined,
     scrollplayPct,
-    videoDuration: $('time', el) || undefined
+    videoDuration: $('time', el) || undefined,
+    isExpired
   };
 
   substitute(

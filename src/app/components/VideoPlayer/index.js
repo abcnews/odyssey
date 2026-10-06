@@ -58,8 +58,10 @@ let hasSubscribed = false;
  * @param {boolean} [config.isInvariablyAmbient] Force the video to be displayed as ambient, regardless of configuration.
  * @param {boolean} [config.isLoop] Should the video loop?
  * @param {boolean} [config.isMuted] Should the video be muted?
+ * @param {boolean} [config.isExpired] Should this video show the expired media warning and not be playable?
  * @param {number} [config.scrollplayPct] What protion of the video should be visible for play on scroll
  * @param {Element} [config.videoDuration] A <time> element to display the video duration.
+ * @returns {VideoPlayerEl | undefined}
  */
 const VideoPlayer = ({
   videoId,
@@ -70,12 +72,13 @@ const VideoPlayer = ({
   isInvariablyAmbient,
   isLoop,
   isMuted,
+  isExpired,
   videoDuration,
   scrollplayPct
 }) => {
   /** @type {VideoPlayerEl} */
   let videoPlayerEl;
-  /** @type {import('../VideoControls').VideoControlsEl} */
+  /** @type {import('../VideoControls').VideoControlsEl | undefined} */
   let videoControlsEl;
   let fuzzyCurrentTime = 0;
   let fuzzyTimeout;
@@ -279,12 +282,12 @@ const VideoPlayer = ({
       videoEl
         .play()
         .then(() => {
-          if (isAmbient && !isInvariablyAmbient && videoControlsEl.parentElement) {
+          if (isAmbient && !isInvariablyAmbient && videoControlsEl?.parentElement) {
             videoPlayerEl.removeChild(videoControlsEl);
           }
         })
         .catch(err => {
-          if (isAmbient && !isInvariablyAmbient && String(err).indexOf('NotAllowedError') === 0) {
+          if (isAmbient && videoControlsEl && !isInvariablyAmbient && String(err).indexOf('NotAllowedError') === 0) {
             // Browser is blocking non-user-initited playback
             videoPlayerEl.appendChild(videoControlsEl);
             return;
@@ -341,10 +344,25 @@ const VideoPlayer = ({
       }
     }
 
+    if (!isExpired) {
       /** @type {[VideoSource[], VideoSource[]]} */
+      const initSources = [[], []];
+      const [portraitSources, landscapeSources] = sources.reduce(
+        // 1x1 is considered portrait
+        (memo, source) => (memo[+(source.width > source.height)].push(source), memo),
+        initSources
+      );
+      const candidateSources =
+        isInitiallyPreferredPortraitContainer && portraitSources.length
+          ? portraitSources
+          : landscapeSources.length
+          ? landscapeSources
+          : sources;
+      const source = candidateSources[isInitiallySmallViewport ? 0 : candidateSources.length - 1];
 
-    if (source) {
-      videoEl.src = source.url;
+      if (source) {
+        videoEl.src = source.url;
+      }
     }
 
     registerPlayer(player);
@@ -361,7 +379,9 @@ const VideoPlayer = ({
     }
   });
 
-  videoControlsEl = VideoControls(player, isAmbient, videoDuration instanceof HTMLElement ? videoDuration : undefined);
+  videoControlsEl = isExpired
+    ? undefined
+    : VideoControls(player, isAmbient, videoDuration instanceof HTMLElement ? videoDuration : undefined);
 
   /**
    * Jump to a time on the video
@@ -386,7 +406,7 @@ const VideoPlayer = ({
   if (!isAmbient) {
     videoEl.addEventListener('timeupdate', () => {
       if (videoEl.readyState > 0) {
-        videoControlsEl.api?.setTimeRemaining(videoEl.duration - videoEl.currentTime);
+        videoControlsEl?.api?.setTimeRemaining(videoEl.duration - videoEl.currentTime);
       }
     });
 
@@ -396,6 +416,8 @@ const VideoPlayer = ({
     initialiseVideoAnalytics(videoId, videoEl);
   }
 
+  styles.use();
+
   videoPlayerEl = html`
     <div class="VideoPlayer${isContained ? ' is-contained' : ''}" draggable="false">
       ${placeholderEl} ${videoEl} ${isAmbient ? null : videoControlsEl}
@@ -403,8 +425,6 @@ const VideoPlayer = ({
   `;
 
   videoPlayerEl.api = player;
-
-  styles.use();
 
   return videoPlayerEl;
 };
