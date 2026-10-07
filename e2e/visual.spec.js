@@ -119,8 +119,8 @@ const ARTICLES = [
   {
     cmid: '102963260',
     targets: [
-      { selector: '[data-provider="instagram"]', tags: ['Interactive', 'Instagram'] },
-      { selector: '[data-provider="singleTweet"]', tags: ['Interactive', 'Twitter'] }
+      { selector: '.InteractiveEmbed[data-provider="instagram"]', tags: ['Interactive', 'Instagram'] },
+      { selector: '.InteractiveEmbed[data-provider="singleTweet"]', tags: ['Interactive', 'Twitter'] }
     ]
   }
 ];
@@ -217,6 +217,11 @@ ARTICLES.forEach(({ targets, cmid }) => {
                     expect(naturalWidth).toBeGreaterThan(0);
                   }).toPass();
                 }
+
+                // Wait until interactive components have loaded their content
+                await expect(async () => {
+                  expect(testElement).not.toHaveText('Loading…', { useInnerText: true });
+                }).toPass();
 
                 // Do a similar thing for iframes
                 const frames = testElement.locator('iframe');
