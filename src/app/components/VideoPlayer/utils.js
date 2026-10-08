@@ -29,59 +29,36 @@ const getSources = videoDoc => [...videoDoc.media.video.renditions.files].sort((
  * @param {string|number} videoId The CMID for the video
  * @returns {Promise<VideoMetadata>}
  */
-export const getMetadata = videoId => {
-  return new Promise((resolve, reject) => {
-    if (!videoId) {
-      return reject(new Error(NO_CMID_ERROR));
-    }
+export const getMetadata = async videoId => {
+  if (!videoId) {
+    throw new Error(NO_CMID_ERROR);
+  }
 
-    const meta = getMeta();
+  const meta = getMeta();
 
-    getOrFetchDocument({ id: String(videoId), type: 'video' }, meta)
-      .then(videoDocOrTeaserDoc => {
-        // If the doc is a teaser, we need to fetch & parse the target document
-        if (videoDocOrTeaserDoc.docType === 'Teaser') {
-          if (!videoDocOrTeaserDoc.target) {
-            throw new Error('Embedded video teaser has no target.');
-          }
-
-          return getOrFetchDocument({ id: videoDocOrTeaserDoc.target.id, type: 'video' }, meta)
-            .then(videoDoc => {
-              if (videoDoc.docType === 'Video') {
-                const alternativeText =
-                  videoDocOrTeaserDoc._embedded?.mediaThumbnail?.alt || videoDoc._embedded?.mediaThumbnail?.alt;
-                const caption = videoDoc.caption;
-                const attribution = videoDocOrTeaserDoc.byLine?.plain || videoDoc.byLine?.plain;
-                resolve({
-                  alternativeText,
-                  caption,
-                  attribution,
-                  posterURL: getPosterURL(videoDoc),
-                  sources: getSources(videoDoc)
-                });
-              } else {
-                throw new Error('Teaser points to a non-video document.');
-              }
-            })
-            .catch(err => reject(err));
-        } else if (videoDocOrTeaserDoc.docType === 'Video') {
-          // This is a video document so use directly.
-          const alternativeText = videoDocOrTeaserDoc._embedded?.mediaThumbnail?.alt;
-          const caption = videoDocOrTeaserDoc.caption;
-          const attribution = videoDocOrTeaserDoc.byLine?.plain;
-          return resolve({
-            alternativeText,
-            caption,
-            attribution,
-            posterURL: getPosterURL(videoDocOrTeaserDoc),
-            sources: getSources(videoDocOrTeaserDoc)
-          });
+  const { videoDoc, teaserDoc } = await getOrFetchDocument({ id: String(videoId), type: 'video' }, meta).then(
+    async videoDocOrTeaserDoc => {
+      if (videoDocOrTeaserDoc.docType === 'Teaser' && videoDocOrTeaserDoc.target) {
+        const videoDoc = await getOrFetchDocument({ id: videoDocOrTeaserDoc.target.id, type: 'video' }, meta);
+        if (videoDoc.docType !== 'Video') {
+          throw new Error('Teaser targets a non-video document.');
         }
+        return { videoDoc, teaserDoc: videoDocOrTeaserDoc };
+      }
+      if (videoDocOrTeaserDoc.docType === 'Video') {
+        return { videoDoc: videoDocOrTeaserDoc, teaserDoc: undefined };
+      }
+      throw new Error('Not a video or teaser document.');
+    }
+  );
 
-        throw new Error('Not a video or teaser document.');
-      })
-      .catch(err => reject(err));
-  });
+  return {
+    alternativeText: teaserDoc?._embedded?.mediaThumbnail?.alt || videoDoc._embedded?.mediaThumbnail?.alt,
+    caption: videoDoc.caption,
+    attribution: teaserDoc?.byLine?.plain || videoDoc.byLine?.plain,
+    posterURL: getPosterURL(videoDoc),
+    sources: getSources(videoDoc)
+  };
 };
 
 /**

@@ -10,6 +10,7 @@ import { registerPlayer, forEachPlayer } from './players';
 import { initialiseVideoAnalytics } from './stats';
 import { getMetadata, hasAudio } from './utils';
 import styles from './index.lazy.scss';
+import { debug } from '../../utils/logging';
 
 /**
  * @typedef {object} VideoPlayerAPI
@@ -320,64 +321,68 @@ const VideoPlayer = ({
     jumpBy: time => jumpTo(videoEl.currentTime + time)
   };
 
-  getMetadata(videoId).then(metadata => {
-    const { alternativeText, posterURL, sources } = metadata;
+  getMetadata(videoId)
+    .then(metadata => {
+      const { alternativeText, posterURL, sources } = metadata;
 
-    if (alternativeText) {
-      player.alternativeText = alternativeText;
-    }
+      if (alternativeText) {
+        player.alternativeText = alternativeText;
+      }
 
-    if (posterURL) {
-      videoEl.poster = SMALLEST_IMAGE;
-      videoEl.style.backgroundImage = `url("${posterURL}")`;
+      if (posterURL) {
+        videoEl.poster = SMALLEST_IMAGE;
+        videoEl.style.backgroundImage = `url("${posterURL}")`;
 
-      if (isContained) {
-        enqueue(function _createAndAddPlaceholderImage() {
-          blurImage(posterURL, (err, blurredImageURL) => {
-            if (err) {
-              return;
-            }
+        if (isContained) {
+          enqueue(function _createAndAddPlaceholderImage() {
+            blurImage(posterURL, (err, blurredImageURL) => {
+              if (err) {
+                return;
+              }
 
-            placeholderEl.style.setProperty(PLACEHOLDER_IMAGE_CUSTOM_PROPERTY, `url("${blurredImageURL}")`);
+              placeholderEl.style.setProperty(PLACEHOLDER_IMAGE_CUSTOM_PROPERTY, `url("${blurredImageURL}")`);
+            });
           });
-        });
+        }
       }
-    }
 
-    if (!isExpired) {
-      /** @type {[VideoSource[], VideoSource[]]} */
-      const initSources = [[], []];
-      const [portraitSources, landscapeSources] = sources.reduce(
-        // 1x1 is considered portrait
-        (memo, source) => (memo[+(source.width > source.height)].push(source), memo),
-        initSources
-      );
-      const candidateSources =
-        isInitiallyPreferredPortraitContainer && portraitSources.length
-          ? portraitSources
-          : landscapeSources.length
-          ? landscapeSources
-          : sources;
-      const source = candidateSources[isInitiallySmallViewport ? 0 : candidateSources.length - 1];
+      if (!isExpired) {
+        /** @type {[VideoSource[], VideoSource[]]} */
+        const initSources = [[], []];
+        const [portraitSources, landscapeSources] = sources.reduce(
+          // 1x1 is considered portrait
+          (memo, source) => (memo[+(source.width > source.height)].push(source), memo),
+          initSources
+        );
+        const candidateSources =
+          isInitiallyPreferredPortraitContainer && portraitSources.length
+            ? portraitSources
+            : landscapeSources.length
+            ? landscapeSources
+            : sources;
+        const source = candidateSources[isInitiallySmallViewport ? 0 : candidateSources.length - 1];
 
-      if (source) {
-        videoEl.src = source.url;
+        if (source) {
+          videoEl.src = source.url;
+        }
       }
-    }
 
-    registerPlayer(player);
+      registerPlayer(player);
 
-    if (!hasSubscribed) {
-      subscribe(_checkIfVideoPlayersNeedToUpdateUIBasedOnMedia);
-      hasSubscribed = true;
-    }
+      if (!hasSubscribed) {
+        subscribe(_checkIfVideoPlayersNeedToUpdateUIBasedOnMedia);
+        hasSubscribed = true;
+      }
 
-    invalidateClient();
+      invalidateClient();
 
-    if (player.metadataHook) {
-      player.metadataHook(metadata);
-    }
-  });
+      if (player.metadataHook) {
+        player.metadataHook(metadata);
+      }
+    })
+    .catch(e => {
+      debug(`Error fetching video metadata for document ID ${videoId}`, e);
+    });
 
   videoControlsEl = isExpired
     ? undefined
