@@ -115,6 +115,13 @@ const ARTICLES = [
       { selector: '[data-component="LegacyWysiwyg"]', tags: ['wysiwyg teaser'] },
       { selector: '[data-component="LegacyWysiwyg"].u-pull-right', tags: ['wysiwyg teaser'] }
     ]
+  },
+  {
+    cmid: '102963260',
+    targets: [
+      { selector: '.InteractiveEmbed[data-provider="instagram"]', tags: ['Interactive', 'Instagram'] },
+      { selector: '.InteractiveEmbed[data-provider="singleTweet"]', tags: ['Interactive', 'Twitter'] }
+    ]
   }
 ];
 
@@ -191,6 +198,13 @@ ARTICLES.forEach(({ targets, cmid }) => {
                     ) {
                       expect(data.loaded).toBe(true);
                     }
+                  }).toPass();
+                }
+
+                // Wait until interactive components have loaded their iframes
+                if (tags?.includes('Interactive')) {
+                  await expect(async () => {
+                    expect(await testElement.locator('iframe').count()).toBeGreaterThan(0);
                   }).toPass();
                 }
 
