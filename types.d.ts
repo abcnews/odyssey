@@ -125,30 +125,6 @@ interface EmbeddedTeaser extends MediaEmbedded {
 
 type EmbeddedUnion = EmbeddedImage | EmbeddedVideo | EmbeddedTeaser;
 
-// interface MediaEmbedded {
-//
-//   alt?: string;
-//   byLine?: ByLine;
-//   canonicalURI?: string;
-//   canonicalURL?: string;
-//   caption?: string;
-//   contentSource: string;
-//   dates: Dates;
-//   docType: string;
-//   id: string;
-//   lang: string;
-//
-//   title?: string;
-//   titleAlt?: TitleAlt;
-//   _embedded?: MediaEmbeddedEmbedded;
-//   synopsis?: string;
-//   synopsisAlt?: SynopsisAlt;
-//   externalembed?: Externalembed;
-//   teaserText?: TeaserText;
-//   viewType?: string;
-//   contactable?: boolean;
-// }
-
 interface VideoMedia {
   image: {
     poster: ImageDetail;
