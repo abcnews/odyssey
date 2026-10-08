@@ -201,6 +201,14 @@ ARTICLES.forEach(({ targets, cmid }) => {
                   }).toPass();
                 }
 
+                // Wait until interactive components have loaded their content
+                if (tags?.includes('Interactive')) {
+                  await expect(async () => {
+                    expect(testElement).not.toHaveText('Loading…', { useInnerText: true });
+                    expect(testElement.locator('iframe').count).toBeGreaterThan(0);
+                  }).toPass();
+                }
+
                 // It seem to sometimes be possible that there's a moment between the Picture component's lazy load API
                 // marking the component as loaded and the image actually loading.
                 // This checks that any image elements inside the Picture component being tested has actually loaded an
@@ -217,11 +225,6 @@ ARTICLES.forEach(({ targets, cmid }) => {
                     expect(naturalWidth).toBeGreaterThan(0);
                   }).toPass();
                 }
-
-                // Wait until interactive components have loaded their content
-                await expect(async () => {
-                  expect(testElement).not.toHaveText('Loading…', { useInnerText: true });
-                }).toPass();
 
                 // Do a similar thing for iframes
                 const frames = testElement.locator('iframe');
