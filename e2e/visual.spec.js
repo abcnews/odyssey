@@ -201,11 +201,10 @@ ARTICLES.forEach(({ targets, cmid }) => {
                   }).toPass();
                 }
 
-                // Wait until interactive components have loaded their content
+                // Wait until interactive components have loaded their iframes
                 if (tags?.includes('Interactive')) {
                   await expect(async () => {
-                    expect(testElement).not.toHaveText('Loading…', { useInnerText: true });
-                    expect(testElement.locator('iframe').count).toBeGreaterThan(0);
+                    expect(await testElement.locator('iframe').count()).toBeGreaterThan(0);
                   }).toPass();
                 }
 
