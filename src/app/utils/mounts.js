@@ -9,10 +9,10 @@ import { debug } from './logging';
  * @prop {string} name
  * @prop {string} configString,
  * @prop {Node} startNode
- * @prop {Node[]} betweenNodes,
+ * @prop {(Node & import('./dom').Descriptor)[]} betweenNodes,
  * @prop {Node} endNode
  * @prop {Node} [substitutionNode]
- * @prop {typeof _substituteSectionWith} [substituteWith]
+ * @prop {typeof _substituteSectionWith | (() => void)} substituteWith
  */
 
 /**
@@ -20,7 +20,7 @@ import { debug } from './logging';
  * @prop {string} name,
  * @prop {string} configString,
  * @prop {Element} node
- * @prop {(replacementNode: Node) => Node | undefined} [substituteWith]
+ * @prop {((node: Node) => Node | undefined) | (() => void)} substituteWith
  */
 
 /**
@@ -108,7 +108,8 @@ export const getSections = names => {
         configString,
         startNode,
         betweenNodes,
-        endNode: nextNode
+        endNode: nextNode,
+        substituteWith: () => {}
       };
 
       if (isMoreContent) {
@@ -151,10 +152,11 @@ export const getMarkers = names => {
         const marker = {
           name,
           configString,
-          node
+          node,
+          substituteWith: () => {}
         };
 
-        marker.substituteWith = substitute.bind(null, marker.node);
+        marker.substituteWith = node => substitute(marker.node, node);
 
         return marker;
       })

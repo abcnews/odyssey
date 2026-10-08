@@ -3,6 +3,10 @@
 import { debug } from './logging';
 
 /**
+ * @typedef {{_descriptor?: {props?: {alignment: string, align?: string, ratio?: string}}}} Descriptor
+ */
+
+/**
  *
  * @param {any} node
  * @returns {node is Node}
@@ -21,9 +25,11 @@ export const isText = node => {
 };
 
 /**
- * Type guard for elements
+ * Type guard for elements. this returns a type that includes an optional _descriptor key on elements, because Odyssey
+ * addes that to elements in a number of places. As well as being a genuine guard to check something is an element, it
+ * can be used to add the Descriptor type annotation to satisify Typescript.
  * @param {any} node
- * @returns {node is Element}
+ * @returns {node is Element & Descriptor}
  */
 export const isElement = node => {
   return !!node && node.nodeType === Node.ELEMENT_NODE;

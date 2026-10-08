@@ -4,13 +4,22 @@ import html from 'nanohtml';
 import { enqueue, invalidateClient } from '../../scheduler';
 import { track } from '../../utils/behaviour';
 import { $, $$, isHTMLElement, prepend } from '../../utils/dom';
-import { getMeta } from '../../meta';
 import { createFromTerminusDoc as createCaptionFromTerminusDoc } from '../Caption';
 import Gallery from '../Gallery';
 import Picture from '../Picture';
 import Icon from '../Icon';
 import styles from './index.lazy.scss';
 import { THEME } from '../../../app/constants';
+
+/**
+ * @typedef {HTMLElement & {api?: any}} GalleryElement
+ */
+/**
+ * @typedef {object} MasterGalleryItem
+ * @property {string} id
+ * @property {GalleryElement} mediaEl
+ * @property {HTMLElement | null} captionEl
+ */
 
 const TAB_KEY = 9;
 
@@ -182,8 +191,7 @@ function has(id) {
 }
 
 /**
- *
- * @param {MediaEmbedded} image
+ * @param {EmbeddedImage | TerminusImage} image
  * @returns {void}
  */
 export const register = image => {

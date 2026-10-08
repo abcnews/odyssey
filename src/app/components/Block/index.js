@@ -156,7 +156,7 @@ const Block = ({
           });
         } else if (background.type === 'image') {
           const imageDoc = getMeta().mediaById?.[background.imgId];
-          if (!imageDoc) {
+          if (!(imageDoc?.docType === 'Image' || imageDoc?.docType === 'ImageProxy')) {
             debug(`Missing block background image ${background.imgId}, has it been added to featured media?`);
             return;
           }
@@ -196,6 +196,10 @@ const Block = ({
       .filter(d => !!d);
   } else if (imgEl || imgId) {
     const imageDoc = imgEl ? lookupImageByAssetURL(imgEl.src) : getMeta().mediaById?.[imgId || ''];
+    if (!(imageDoc?.docType === 'Image' || imageDoc?.docType === 'ImageProxy')) {
+      debug(`Missing block background image ${imgEl?.src || imgId}, has it been added to featured media?`);
+      return;
+    }
     const src = imgEl?.src || imageDoc?.media?.image.primary.images['3x2'];
     const alt = imageDoc?.alt;
 

@@ -10,7 +10,7 @@ import { selectMounts } from '@abcnews/mount-utils';
 
 /**
  * @typedef {Object} MetaData;
- * @prop {MetaDataName} _metaDataName
+ * @prop {OdysseyContextSettings} _metaDataName
  * @prop {any} _articledetail
  * @prop {TerminusArticle} _terminusDocument
  * @prop {string} id
@@ -30,17 +30,17 @@ import { selectMounts } from '@abcnews/mount-utils';
  * @prop {any} infoSourceLogosHTMLFragmentId
  * @prop {any} relatedMedia
  * @prop {any} relatedStoriesIds
- * @prop {MediaEmbedded[]} images
- * @prop {MediaEmbedded[]} masterGalleryImages
- * @prop {Record<string, MediaEmbedded>} imagesByBinaryKey
- * @prop {Record<string, MediaEmbedded>} mediaById
+ * @prop {EmbeddedImage[]} images
+ * @prop {EmbeddedImage[]} masterGalleryImages
+ * @prop {Record<string, EmbeddedImage>} imagesByBinaryKey
+ * @prop {Record<string, EmbeddedUnion>} mediaById
  * @prop {boolean} isPL
  * @prop {boolean} isPreview
  * @prop {any} config
  * @prop {boolean} isBelowThreshold
  */
 
-/** @type {Partial<MetaData> | null} */
+/** @type {MetaData | null} */
 let meta = null; // singleton
 
 /**
@@ -227,7 +227,7 @@ const isDarkMode = (darkModeContextSetting = 'false') => {
  * Initialise the metadata for use everywhere else.
  *
  * @param {TerminusArticle} terminusDocument
- * @returns {Partial<MetaData>}
+ * @returns {MetaData}
  */
 export const initMeta = terminusDocument => {
   if (meta) {
@@ -240,6 +240,7 @@ export const initMeta = terminusDocument => {
   const mixins = [
     // Add or update props defined by the 'meta.data.name' context setting
     ({ url, title, description }) => {
+      // TODO: support using the 'odyssey' key on context settings instead of 'meta.data.name'
       const metaDataName = terminusDocument.contextSettings && terminusDocument.contextSettings['meta.data.name'];
 
       return metaDataName
@@ -274,7 +275,7 @@ export const initMeta = terminusDocument => {
       shareLinks: typeof url !== 'undefined' && typeof title !== 'undefined' ? getShareLinks({ url, title }) : []
     }),
     // Parse remaining props from the DOM, sometimes using defaults
-    meta => ({
+    () => ({
       bylineNodes: getBylineNodes(),
       metadataNodes: getMetadataNodes(),
       infoSourceLogosHTMLFragmentId: getDataAttribute('info-source-logos') || INFO_SOURCE_LOGOS_HTML_FRAGMENT_ID,
@@ -285,12 +286,12 @@ export const initMeta = terminusDocument => {
     () => {
       /**
        * @typedef {object} Media
-       * @prop {MediaEmbedded[]} images
-       * @prop {MediaEmbedded[]} masterGalleryImages
-       * @prop {Record<string, MediaEmbedded>} imagesByBinaryKey
-       * @prop {Record<string, MediaEmbedded>} imagesById
-       * @prop {MediaEmbedded[]} media
-       * @prop {Record<string, MediaEmbedded>} mediaById
+       * @prop {EmbeddedImage[]} images
+       * @prop {EmbeddedImage[]} masterGalleryImages
+       * @prop {Record<string, EmbeddedImage>} imagesByBinaryKey
+       * @prop {Record<string, EmbeddedImage>} imagesById
+       * @prop {EmbeddedUnion[]} media
+       * @prop {Record<string, EmbeddedUnion>} mediaById
        */
       /** @type Media */
       const mediaCatalogue = {
@@ -303,11 +304,11 @@ export const initMeta = terminusDocument => {
       };
 
       /**
-       * @param {{doc:MediaEmbedded, type: string}} doc
+       * @param {{doc:EmbeddedUnion, type: "embedded"|"featured"|"related"}} doc
        * @param {number} index
        */
       const catalogueEmbeddedMedia = ({ doc, type }, index) => {
-        const { docType, id, media, target } = doc;
+        const { docType, id } = doc;
 
         if (!mediaCatalogue.mediaById[id]) {
           mediaCatalogue.media.push(doc);
@@ -316,6 +317,7 @@ export const initMeta = terminusDocument => {
 
         switch (docType) {
           case 'Teaser':
+            const { target } = doc;
             if (target) {
               // Pre-empt a future fetch of the target document
               fetchDocument({ id: target.id, type: target.docType.toLowerCase() });
@@ -323,6 +325,7 @@ export const initMeta = terminusDocument => {
             break;
           case 'Image':
           case 'ImageProxy':
+            const { media } = doc;
             // It's possible for the `media` key to be undefined if it's an ImageProxy
             // pointing at a deleted image. The `!!media` condition will stop Odyssey
             // falling over in that case.
@@ -342,11 +345,12 @@ export const initMeta = terminusDocument => {
         return mediaCatalogue;
       };
 
-      const { mediaEmbedded, mediaFeatured, mediaRelated } = terminusDocument._embedded;
-      mediaEmbedded && mediaEmbedded.forEach((doc, i) => catalogueEmbeddedMedia({ doc, type: 'embedded' }, i));
-      mediaFeatured && mediaFeatured.forEach((doc, i) => catalogueEmbeddedMedia({ doc, type: 'featured' }, i));
-      mediaRelated && mediaRelated.forEach((doc, i) => catalogueEmbeddedMedia({ doc, type: 'related' }, i));
-
+      if (terminusDocument._embedded) {
+        const { mediaEmbedded, mediaFeatured, mediaRelated } = terminusDocument._embedded;
+        mediaEmbedded && mediaEmbedded.forEach((doc, i) => catalogueEmbeddedMedia({ doc, type: 'embedded' }, i));
+        mediaFeatured && mediaFeatured.forEach((doc, i) => catalogueEmbeddedMedia({ doc, type: 'featured' }, i));
+        mediaRelated && mediaRelated.forEach((doc, i) => catalogueEmbeddedMedia({ doc, type: 'related' }, i));
+      }
       return mediaCatalogue;
     },
     // Parse global Odyssey config defined in an #odyssey tag
@@ -402,7 +406,7 @@ export const initMeta = terminusDocument => {
   };
 
   // Feed terminus document-based props through the above mixins
-  meta = mixins.reduce((meta, step) => ({ ...meta, ...(step(meta) || {}) }), initMeta);
+  meta = /** @type {MetaData} */ (mixins.reduce((meta, step) => ({ ...meta, ...(step(meta) || {}) }), initMeta));
 
   return meta;
 };

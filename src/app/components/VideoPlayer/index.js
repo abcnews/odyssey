@@ -10,6 +10,7 @@ import { registerPlayer, forEachPlayer } from './players';
 import { initialiseVideoAnalytics } from './stats';
 import { getMetadata, hasAudio } from './utils';
 import styles from './index.lazy.scss';
+import { debug } from '../../utils/logging';
 
 /**
  * @typedef {object} VideoPlayerAPI
@@ -58,9 +59,10 @@ let hasSubscribed = false;
  * @param {boolean} [config.isInvariablyAmbient] Force the video to be displayed as ambient, regardless of configuration.
  * @param {boolean} [config.isLoop] Should the video loop?
  * @param {boolean} [config.isMuted] Should the video be muted?
+ * @param {boolean} [config.isExpired] Should this video show the expired media warning and not be playable?
  * @param {number} [config.scrollplayPct] What protion of the video should be visible for play on scroll
  * @param {Element} [config.videoDuration] A <time> element to display the video duration.
- * @returns
+ * @returns {VideoPlayerEl | undefined}
  */
 const VideoPlayer = ({
   videoId,
@@ -71,12 +73,13 @@ const VideoPlayer = ({
   isInvariablyAmbient,
   isLoop,
   isMuted,
+  isExpired,
   videoDuration,
   scrollplayPct
 }) => {
   /** @type {VideoPlayerEl} */
   let videoPlayerEl;
-  /** @type {import('../VideoControls').VideoControlsEl} */
+  /** @type {import('../VideoControls').VideoControlsEl | undefined} */
   let videoControlsEl;
   let fuzzyCurrentTime = 0;
   let fuzzyTimeout;
@@ -280,12 +283,12 @@ const VideoPlayer = ({
       videoEl
         .play()
         .then(() => {
-          if (isAmbient && !isInvariablyAmbient && videoControlsEl.parentElement) {
+          if (isAmbient && !isInvariablyAmbient && videoControlsEl?.parentElement) {
             videoPlayerEl.removeChild(videoControlsEl);
           }
         })
         .catch(err => {
-          if (isAmbient && !isInvariablyAmbient && String(err).indexOf('NotAllowedError') === 0) {
+          if (isAmbient && videoControlsEl && !isInvariablyAmbient && String(err).indexOf('NotAllowedError') === 0) {
             // Browser is blocking non-user-initited playback
             videoPlayerEl.appendChild(videoControlsEl);
             return;
@@ -318,64 +321,72 @@ const VideoPlayer = ({
     jumpBy: time => jumpTo(videoEl.currentTime + time)
   };
 
-  getMetadata(videoId).then(metadata => {
-    const { alternativeText, posterURL, sources } = metadata;
+  getMetadata(videoId)
+    .then(metadata => {
+      const { alternativeText, posterURL, sources } = metadata;
 
-    if (alternativeText) {
-      player.alternativeText = alternativeText;
-    }
-
-    if (posterURL) {
-      videoEl.poster = SMALLEST_IMAGE;
-      videoEl.style.backgroundImage = `url("${posterURL}")`;
-
-      if (isContained) {
-        enqueue(function _createAndAddPlaceholderImage() {
-          blurImage(posterURL, (err, blurredImageURL) => {
-            if (err) {
-              return;
-            }
-
-            placeholderEl.style.setProperty(PLACEHOLDER_IMAGE_CUSTOM_PROPERTY, `url("${blurredImageURL}")`);
-          });
-        });
+      if (alternativeText) {
+        player.alternativeText = alternativeText;
       }
-    }
 
-    /** @type {[import('./utils').VideoSource[], import('./utils').VideoSource[]]} */
-    const initSources = [[], []];
-    const [portraitSources, landscapeSources] = sources.reduce(
-      // 1x1 is considered portrait
-      (memo, source) => (memo[+(source.width > source.height)].push(source), memo),
-      initSources
-    );
-    const candidateSources =
-      isInitiallyPreferredPortraitContainer && portraitSources.length
-        ? portraitSources
-        : landscapeSources.length
-        ? landscapeSources
-        : sources;
-    const source = candidateSources[isInitiallySmallViewport ? 0 : candidateSources.length - 1];
+      if (posterURL) {
+        videoEl.poster = SMALLEST_IMAGE;
+        videoEl.style.backgroundImage = `url("${posterURL}")`;
 
-    if (source) {
-      videoEl.src = source.url;
-    }
+        if (isContained) {
+          enqueue(function _createAndAddPlaceholderImage() {
+            blurImage(posterURL, (err, blurredImageURL) => {
+              if (err) {
+                return;
+              }
 
-    registerPlayer(player);
+              placeholderEl.style.setProperty(PLACEHOLDER_IMAGE_CUSTOM_PROPERTY, `url("${blurredImageURL}")`);
+            });
+          });
+        }
+      }
 
-    if (!hasSubscribed) {
-      subscribe(_checkIfVideoPlayersNeedToUpdateUIBasedOnMedia);
-      hasSubscribed = true;
-    }
+      if (!isExpired) {
+        /** @type {[VideoSource[], VideoSource[]]} */
+        const initSources = [[], []];
+        const [portraitSources, landscapeSources] = sources.reduce(
+          // 1x1 is considered portrait
+          (memo, source) => (memo[+(source.width > source.height)].push(source), memo),
+          initSources
+        );
+        const candidateSources =
+          isInitiallyPreferredPortraitContainer && portraitSources.length
+            ? portraitSources
+            : landscapeSources.length
+            ? landscapeSources
+            : sources;
+        const source = candidateSources[isInitiallySmallViewport ? 0 : candidateSources.length - 1];
 
-    invalidateClient();
+        if (source) {
+          videoEl.src = source.url;
+        }
+      }
 
-    if (player.metadataHook) {
-      player.metadataHook(metadata);
-    }
-  });
+      registerPlayer(player);
 
-  videoControlsEl = VideoControls(player, isAmbient, videoDuration instanceof HTMLElement ? videoDuration : undefined);
+      if (!hasSubscribed) {
+        subscribe(_checkIfVideoPlayersNeedToUpdateUIBasedOnMedia);
+        hasSubscribed = true;
+      }
+
+      invalidateClient();
+
+      if (player.metadataHook) {
+        player.metadataHook(metadata);
+      }
+    })
+    .catch(e => {
+      debug(`Error fetching video metadata for document ID ${videoId}`, e);
+    });
+
+  videoControlsEl = isExpired
+    ? undefined
+    : VideoControls(player, isAmbient, videoDuration instanceof HTMLElement ? videoDuration : undefined);
 
   /**
    * Jump to a time on the video
@@ -400,7 +411,7 @@ const VideoPlayer = ({
   if (!isAmbient) {
     videoEl.addEventListener('timeupdate', () => {
       if (videoEl.readyState > 0) {
-        videoControlsEl.api?.setTimeRemaining(videoEl.duration - videoEl.currentTime);
+        videoControlsEl?.api?.setTimeRemaining(videoEl.duration - videoEl.currentTime);
       }
     });
 
@@ -410,15 +421,15 @@ const VideoPlayer = ({
     initialiseVideoAnalytics(videoId, videoEl);
   }
 
+  styles.use();
+
   videoPlayerEl = html`
-    <div class="VideoPlayer${isContained ? ' is-contained' : ''}" draggable="false">
+    <div class="VideoPlayer${isContained ? ' is-contained' : ''}${isExpired ? ' is-expired' : ''}" draggable="false">
       ${placeholderEl} ${videoEl} ${isAmbient ? null : videoControlsEl}
     </div>
   `;
 
   videoPlayerEl.api = player;
-
-  styles.use();
 
   return videoPlayerEl;
 };

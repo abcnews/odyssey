@@ -22,6 +22,10 @@ export const initialiseVideoAnalytics = (id, el) => {
 
   const pushEmbedMetadata = async () => {
     const doc = await getOrFetchDocument(String(id), getMeta());
+    if (doc.docType !== 'Video') {
+      debug(`analytics: Attempted to initialise video analytics on a non-video document (ID: ${id}).`);
+      return;
+    }
     debug(`analytics: push embed metadata (${uri})`);
     analyticsPush({
       document: {

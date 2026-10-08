@@ -98,13 +98,13 @@ export default InteractiveEmbed;
 
 /**
  *
- * @param {HTMLElement & {_descriptor: any}} el
+ * @param {HTMLElement & import('../../utils/dom').Descriptor} el
  */
 export const transformElement = el => {
   const url = el.getAttribute('itemid');
   const providerType = el.getAttribute('data-provider');
   const configString = grabPrecedingConfigString(el);
-  const descriptorAlignment = el._descriptor ? EMBED_ALIGNMENT_MAP[el._descriptor.props.alignment] : undefined;
+  const descriptorAlignment = el._descriptor ? EMBED_ALIGNMENT_MAP[el._descriptor?.props?.alignment] : undefined;
   const [, alignment] = configString.match(ALIGNMENT_PATTERN) || [, descriptorAlignment];
 
   substitute(
