@@ -326,7 +326,14 @@ export default terminusDocument => {
           event.data.type === 'embed-size' &&
           typeof event.data.height === 'number'
         ) {
-          el.setAttribute('height', event.data.height);
+          const h = event.data.height;
+
+          // This is fixes an issue with Chrome. For some reason the scrollbar rail often persists even when no
+          // scrollbar is needed. This is a legacy attribute that Chrome still respects and appears to fix the issue.
+          el.setAttribute('scrolling', 'no');
+
+          el.setAttribute('height', h);
+          el.style.height = h + 'px';
         }
       },
       false
