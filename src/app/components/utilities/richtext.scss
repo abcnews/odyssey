@@ -214,6 +214,11 @@
         margin-bottom: var(--od-space-component-margin);
       }
 
+      > [data-mount]:empty {
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+
       h1 {
         font-size: var(--od-font-size-heading-lg);
       }
