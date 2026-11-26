@@ -123,6 +123,22 @@ Example:
 #endremove
 ```
 
+## Pull sections
+
+Wrap content in `#pull…` / `#endpull` to change its width:
+
+- `#pull` – wider than the text column
+- `#pullin` – narrower than the text column
+- `#pullout` – wider than `#pull` on large screens
+- `#pullleft` / `#pullright` – floated beside the text
+- `#pullfull` – full page width (100% on small screens). Intended for embeds and iframes; text inside isn't styled as richtext.
+
+```
+#pullfull
+[my iframe embed]
+#endpull
+```
+
 ## Using Odyssey as a dependency
 
 Odyssey is well modularised and parts of it can readily be used as dependencies for other projects. An important caveat to this is that Webpack does not automatically transpile es6 code in the `node_modules` folder (for sensible reasons).

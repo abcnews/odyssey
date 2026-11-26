@@ -26,10 +26,10 @@
   }
 }
 
-// Collapse margin between subsequent Backdrop, Block and Header
-// components, even when separated by a mount point
+// Collapse margin between subsequent Backdrop, Block, Header and
+// full-width pull components, even when separated by a mount point
 
-$isFlush: '.u-full:is(.Backdrop, .Block, .Header)';
+$isFlush: '.u-full:is(.Backdrop, .Block, .Header, .u-pull-full)';
 
 #{$isFlush} + #{$isFlush},
 #{$isFlush} + [data-mount]:not([class]) + #{$isFlush} {
